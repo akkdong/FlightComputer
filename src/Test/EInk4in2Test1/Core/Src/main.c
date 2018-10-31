@@ -71,6 +71,7 @@
 #define UNCOLORED    0
 
 unsigned char frame[EPD_WIDTH * EPD_HEIGHT / 8];
+char strBuf[32];
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -134,6 +135,7 @@ int main(void)
   Paint_Init(&paint, frame_buffer, epd.width, epd.height);
   Paint_Clear(&paint, UNCOLORED);
 
+#if 0
 #if 1
 
 	Paint_DrawFilledCircle(&paint, 32, 32, 8, COLORED);
@@ -243,12 +245,55 @@ int main(void)
   /* Display the image buffer */
   EPD_DisplayFrameEx(&epd, IMAGE_BUTTERFLY);
 #endif
+#endif
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
+  int graph[50];
+  int sOffset = 0;
+  int y1, y2;
+
+  for (int i = 0; i < 50; i++)
+	  graph[i] = 60;
+
   while (1)
   {
+	  // area1 (0,0) - (200,150)
+	  Paint_DrawFilledRectangle(&paint, 0, 0, 200, 150, UNCOLORED);
+	  Paint_DrawRectangle(&paint, 0, 0, 200, 150, COLORED);
+	  graph[sOffset] = rand() % 100;
+	  sOffset = (sOffset + 1) % 50;
+	  y1 = graph[sOffset] + 25;
+	  for (int i = 1; i < 50; i++)
+	  {
+		  int j = (sOffset + i) % 50;
+		  y2 = graph[j] + 25;
+		  Paint_DrawLine(&paint, (i - 1) * 4, y1, i * 4, y2, COLORED);
+		  y1 = y2;
+	  }
+
+	  // area2 (200,0) - (400,150)
+	  Paint_DrawFilledRectangle(&paint, 200, 0, 400, 150, UNCOLORED);
+	  Paint_DrawRectangle(&paint, 200, 0, 400, 150, COLORED);
+	  Paint_DrawFilledCircle(&paint, 300, 75, rand() % 50 + 10, COLORED);
+
+
+	  // area3 (0,150) - (200,300)
+	  Paint_DrawFilledRectangle(&paint, 0, 150, 200, 300, UNCOLORED);
+	  Paint_DrawRectangle(&paint, 0, 150, 200, 300, COLORED);
+	  Paint_DrawCircle(&paint, 100, 225, rand() % 50 + 10, COLORED);
+
+	  // area4 (200,15) - (400,300)
+	  Paint_DrawFilledRectangle(&paint, 200, 150, 400, 300, UNCOLORED);
+	  Paint_DrawRectangle(&paint, 200, 150, 400, 300, COLORED);
+
+	  itoa(HAL_GetTick(), strBuf, 10);
+	  Paint_DrawStringAt(&paint, 260, 210, strBuf, &Font24, COLORED);
+
+	  EPD_SetPartialWindow(&epd, Paint_GetImage(&paint), 0, 0, Paint_GetWidth(&paint), Paint_GetHeight(&paint),2);
+	  EPD_DisplayFrameQuick(&epd);
+	  EPD_DelayMs(&epd, 500);
 
   /* USER CODE END WHILE */
 
