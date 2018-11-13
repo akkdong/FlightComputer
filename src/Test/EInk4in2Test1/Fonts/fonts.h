@@ -65,6 +65,18 @@ extern sFONT Font16;
 extern sFONT Font12;
 extern sFONT Font8;
 
+typedef enum _FontType
+{
+	Font_8,
+	Font_12,
+	Font_16,
+	Font_20,
+	Font_24,
+	Font_Count
+} FontType;
+
+extern sFONT * Fonts[Font_Count];
+
 #ifdef __cplusplus
 }
 #endif

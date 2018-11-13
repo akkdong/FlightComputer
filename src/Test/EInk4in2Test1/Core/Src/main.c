@@ -84,6 +84,399 @@ void SystemClock_Config(void);
 
 /* USER CODE BEGIN 0 */
 
+
+// Widget
+//   position
+//   size
+//   data
+//
+// Widget_position : x, y
+// Widget_size: w, h
+// Widget_data: title, value
+// Widget_data_title: const char *
+// Widget_data_value: data pointer, data type(...), extra(precision, ... ??)
+#if 1
+
+typedef enum _WidgetContent
+{
+    Widget_Empty,
+	Widget_Speed_Ground,
+	Widget_Speed_Air,
+	Widget_Speed_Vertical,
+
+	Widget_Time_Flight,
+	Widget_Time_Current,
+	Widget_Date_Current,
+
+	Widget_Altitude_GPS,
+	Widget_Altitude_QNH,
+	Widget_Altitude_Takeoff,
+	Widget_Altitdue_Gain,
+	Widget_Altitude_Ref,
+
+	Widget_Heading,
+	Widget_Bearing,
+
+	Widget_LD,
+
+	Widget_Status_GPS,
+	Widget_Status_Battery,
+	Widget_Status_Date,
+	Widget_Status_Time,
+	Widget_Status_Bluetooth,
+	Widget_Status_Temperature,
+
+	Widget_Wind_Direction,
+	Widget_Wind_Speed,
+
+	Widget_G_VarioBar,
+	Widget_G_VarioHistory,
+	Widget_G_Heading,
+	Widget_G_Bearing,
+	Widget_G_North,
+	Widget_G_ThermalAssist
+} WidgetContent;
+
+typedef struct _Widget Widget;
+
+#define WS_TA_LEFT			0x0000 // WidgetStyle_TextAlign: default LEFT, MIDDLE
+#define WS_TA_RIGHT			0x0001
+#define WS_TA_CENTER		0x0002
+#define WS_TA_MIDDLE		0x0000
+#define WS_TA_TOP			0x0004
+#define WS_TA_BOTTOM		0x0008
+#define WS_LA_LEFT			0x0000 // WidgetStyle_LabelAlign: default LEFT
+#define WS_LA_RIGHT			0x0010
+#define WS_LA_CENTER		0x0020
+#define WS_DRAW_LABEL		0x0100
+#define WS_DRAW_BOARDER		0x0200
+#define WS_OWNERDRAW		0x8000 // WidgetStyle_OwnerDraw
+
+typedef struct _WidgetStyle
+{
+	unsigned short style;
+	unsigned char bkgndColor;
+	unsigned char textColor;
+	unsigned char lableFont;
+	unsigned char textFont;
+
+} WidgetStyle;
+
+typedef struct _Widget
+{
+	unsigned short x, y, w, h;
+	unsigned short styleId;
+	unsigned short cId; // content id
+
+	void (* draw)(Widget * this, Paint * paint);
+} Widget;
+
+
+
+
+Widget _widget[] =
+{
+	{
+		0, 0, 60, 16,
+		0,
+		Widget_Date_Current,
+		0
+	},
+	{
+		60, 0, 60, 16,
+		1,
+		Widget_Time_Current,
+		0
+	},
+	{
+		120, 0, 60, 16,
+		6,
+		Widget_Time_Current,
+		0
+	},
+
+	{
+		2, 18, 120, 48,
+		2,
+		Widget_Altitude_GPS,
+		0
+	},
+	{
+		122, 18, 120, 48,
+		3,
+		Widget_Speed_Ground,
+		0
+	},
+	{
+		242, 18, 120, 48,
+		4,
+		Widget_Altitude_GPS,
+		0
+	},
+	{
+		2, 84, 120, 48,
+		5,
+		Widget_Speed_Ground,
+		0
+	},
+};
+
+WidgetStyle _style[] =
+{
+	// 0: no label, reverse, center --> for title
+	{
+		WS_TA_CENTER,
+		COLORED,
+		UNCOLORED,
+		Font_8,
+		Font_8
+	},
+	// 1: no label, center --> for title
+	{
+		WS_TA_RIGHT | WS_DRAW_BOARDER,
+		UNCOLORED,
+		COLORED,
+		Font_12,
+		Font_12
+	},
+	// 2: left aligned label, right aligned text, big font
+	{
+		WS_LA_LEFT | WS_TA_LEFT | WS_TA_TOP | WS_DRAW_LABEL | WS_DRAW_BOARDER,
+		UNCOLORED,
+		COLORED,
+		Font_12,
+		Font_24
+	},
+	// 3: left aligned label, right aligned text, small font
+	{
+		WS_LA_RIGHT | WS_TA_CENTER | WS_TA_MIDDLE | WS_DRAW_LABEL | WS_DRAW_BOARDER,
+		UNCOLORED,
+		COLORED,
+		Font_12,
+		Font_24
+	},
+	// 4: left aligned label, right aligned text, small font
+	{
+		WS_LA_CENTER | WS_TA_RIGHT | WS_TA_BOTTOM | WS_DRAW_LABEL | WS_DRAW_BOARDER,
+		UNCOLORED,
+		COLORED,
+		Font_12,
+		Font_24
+	},
+	// 5: left aligned label, right aligned text, small font
+	{
+		WS_LA_CENTER | WS_TA_RIGHT | WS_DRAW_LABEL | WS_DRAW_BOARDER,
+		UNCOLORED,
+		COLORED,
+		Font_8,
+		Font_20
+	},
+	// 6: no label, center --> for title
+	{
+		WS_TA_LEFT | WS_DRAW_BOARDER,
+		COLORED,
+		UNCOLORED,
+		Font_12,
+		Font_12
+	},
+
+};
+
+
+const char * Widget_GetLabel(unsigned short id)
+{
+	switch (id)
+	{
+	case Widget_Empty :
+		break;
+	case Widget_Speed_Ground :
+		return (const char *)"Speed (Km/h)";
+	case Widget_Speed_Air :
+	case Widget_Speed_Vertical :
+		break;
+
+	case Widget_Time_Flight :
+	case Widget_Time_Current :
+	case Widget_Date_Current :
+		break;
+
+	case Widget_Altitude_GPS :
+		return "Altitude (m)";
+	case Widget_Altitude_QNH :
+	case Widget_Altitude_Takeoff :
+	case Widget_Altitdue_Gain :
+	case Widget_Altitude_Ref :
+
+	case Widget_Heading :
+	case Widget_Bearing :
+
+	case Widget_LD :
+
+	case Widget_Status_GPS :
+	case Widget_Status_Battery :
+	case Widget_Status_Date :
+	case Widget_Status_Time :
+	case Widget_Status_Bluetooth :
+	case Widget_Status_Temperature :
+
+	case Widget_Wind_Direction :
+	case Widget_Wind_Speed :
+
+	case Widget_G_VarioBar :
+	case Widget_G_VarioHistory :
+	case Widget_G_Heading :
+	case Widget_G_Bearing :
+	case Widget_G_North :
+	case Widget_G_ThermalAssist :
+		break;
+	}
+
+	return "";
+}
+
+const char * Widget_GetString(unsigned short id)
+{
+	switch (id)
+	{
+	case Widget_Empty :
+		break;
+	case Widget_Speed_Ground :
+		return "32";
+	case Widget_Speed_Air :
+	case Widget_Speed_Vertical :
+
+	case Widget_Time_Flight :
+	case Widget_Time_Current :
+		return "10:33";
+	case Widget_Date_Current :
+		return "11/14";
+
+	case Widget_Altitude_GPS :
+		return "1450";
+	case Widget_Altitude_QNH :
+	case Widget_Altitude_Takeoff :
+	case Widget_Altitdue_Gain :
+	case Widget_Altitude_Ref :
+
+	case Widget_Heading :
+	case Widget_Bearing :
+
+	case Widget_LD :
+
+	case Widget_Status_GPS :
+	case Widget_Status_Battery :
+	case Widget_Status_Date :
+	case Widget_Status_Time :
+	case Widget_Status_Bluetooth :
+	case Widget_Status_Temperature :
+
+	case Widget_Wind_Direction :
+	case Widget_Wind_Speed :
+
+	case Widget_G_VarioBar :
+	case Widget_G_VarioHistory :
+	case Widget_G_Heading :
+	case Widget_G_Bearing :
+	case Widget_G_North :
+	case Widget_G_ThermalAssist :
+		break;
+	}
+
+	return "";
+}
+
+void Widget_DrawLabel(Widget * this, Paint * paint)
+{
+	// erase bkground
+	Paint_DrawFilledRectangle(paint, this->x, this->y, this->x + this->w - 0, this->y + this->h - 0, COLORED);
+	// draw frame
+	//Paint_DrawRectangle(paint, this->x, this->y, this->x + this->w - 1, this->y + this->h - 1, COLORED);
+
+	// draw value
+	const char * value = Widget_GetString(this->cId);
+	int x = this->x + 2;
+	int y = this->y + 2;
+	Paint_DrawStringAt(paint, x, y, value, &Font12, UNCOLORED);
+}
+
+void Widget_DrawText(Widget * this, Paint * paint)
+{
+	// erase bkground
+	Paint_DrawFilledRectangle(paint, this->x, this->y, this->x + this->w - 0, this->y + this->h - 0, UNCOLORED);
+	// draw frame
+	Paint_DrawRectangle(paint, this->x, this->y, this->x + this->w - 0, this->y + this->h - 0, COLORED);
+
+	// draw label
+	const char * label = Widget_GetLabel(this->cId);
+	int x = this->x + 2;
+	int y = this->y + 2;
+	if (label)
+		Paint_DrawStringAt(paint, x, y, label, &Font12, COLORED);
+
+	// draw value
+	const char * value = Widget_GetString(this->cId);
+	x = this->x + this->w - (Font24.Width * strlen((char *)value));
+	y = y + 12;
+	Paint_DrawStringAt(paint, x, y, value, &Font24, COLORED);
+}
+
+void Widget_Draw(Widget * this, Paint * paint)
+{
+	WidgetStyle * ws = &_style[this->styleId];
+
+	// erase bkground
+	Paint_DrawFilledRectangle(paint, this->x, this->y, this->x + this->w - 0, this->y + this->h - 0, ws->bkgndColor);
+
+	// draw frame
+	if (ws->style & WS_DRAW_BOARDER)
+		Paint_DrawRectangle(paint, this->x, this->y, this->x + this->w - 0, this->y + this->h - 0, ws->textColor);
+
+	// draw label
+	int x = this->x;
+	int y = this->y;
+	int w = this->w;
+	int h = this->h;
+
+	if (ws->style & WS_DRAW_LABEL)
+	{
+		const char * label = Widget_GetLabel(this->cId);
+		sFONT * font = Fonts[ws->lableFont];
+		int lx = x + 2;
+		int ly = y + 2;
+
+		if (ws->style & WS_LA_RIGHT)
+			lx = x + w - (font->Width * strlen((char *)label) + 2);
+		else if (ws->style & WS_LA_CENTER)
+			lx = x + (w - (font->Width * strlen((char *)label))) / 2;
+
+		Paint_DrawStringAt(paint, lx, ly, label, font, ws->textColor);
+
+		y = ly + font->Height;
+		h = h - (font->Height + 2);
+	}
+
+	// draw text
+	const char * value = Widget_GetString(this->cId);
+	sFONT * font = Fonts[ws->textFont];
+
+	if (ws->style & WS_TA_RIGHT)
+		x = x + w - (font->Width * strlen((char *)value) + 2);
+	else if (ws->style & WS_TA_CENTER)
+		x = x + (w - (font->Width * strlen((char *)value))) / 2;
+
+	if (ws->style & WS_TA_TOP)
+		y = y + 2;
+	else if (ws->style & WS_TA_BOTTOM)
+		y = y + h - (font->Height + 2);
+	else
+		y = y + (h -  font->Height) / 2;
+
+	Paint_DrawStringAt(paint, x, y, value, font, ws->textColor);
+}
+
+
+#endif
+
 /* USER CODE END 0 */
 
 /**
@@ -253,12 +646,18 @@ int main(void)
   int graph[50];
   int sOffset = 0;
   int y1, y2;
+  int x, y, w, h;
+  uint32_t tick = HAL_GetTick();
 
   for (int i = 0; i < 50; i++)
 	  graph[i] = 60;
 
+  Paint_DrawFilledRectangle(&paint, 0, 0, 399, 299, UNCOLORED);
+
+
   while (1)
   {
+#if 0
 	  // area1 (0,0) - (200,150)
 	  Paint_DrawFilledRectangle(&paint, 0, 0, 200, 150, UNCOLORED);
 	  Paint_DrawRectangle(&paint, 0, 0, 200, 150, COLORED);
@@ -285,12 +684,62 @@ int main(void)
 	  Paint_DrawCircle(&paint, 100, 225, rand() % 50 + 10, COLORED);
 
 	  // area4 (200,15) - (400,300)
+	  /*
 	  Paint_DrawFilledRectangle(&paint, 200, 150, 400, 300, UNCOLORED);
 	  Paint_DrawRectangle(&paint, 200, 150, 400, 300, COLORED);
 
 	  itoa(HAL_GetTick(), strBuf, 10);
 	  Paint_DrawStringAt(&paint, 260, 210, strBuf, &Font24, COLORED);
+	  */
 
+	  // 5x8 * 10 = 50x8
+	  // 7x12 * 10 = 70x12
+	  // 17x24 * 5 = 85x24
+	  // w = 85 + 1 + 1 = 87
+	  // h = 1 + 12 + 24 + 1 = 38
+	  x = 210; y = 155;
+	  Paint_DrawRectangle(&paint, x, y, x+ 87, y+ 38, COLORED);
+	  Paint_DrawStringAt(&paint, x+1, y+1, "Speed Km/h", &Font12, COLORED);
+	  Paint_DrawStringAt(&paint, x+1, y+14, "   32", &Font24, COLORED);
+
+	  x = 210; y = 155 + 38;
+	  Paint_DrawRectangle(&paint, x, y, x+ 87, y+ 38, COLORED);
+	  Paint_DrawStringAt(&paint, x+1, y+1, "Altitude m", &Font12, COLORED);
+	  Paint_DrawStringAt(&paint, x+1, y+14, " 1702", &Font24, COLORED);
+#else
+	  /*
+	  //
+	  //Paint_DrawFilledRectangle(&paint, 0, 0, 399, 299, UNCOLORED);
+
+	  //
+	  x = 0; y = 0;
+	  Paint_DrawStringAt(&paint, x, y, "2018-11-12 ", &Font12, COLORED);
+	  x = x + 11 * 7; y = 0;
+	  Paint_DrawStringAt(&paint, x, y, "08:10 ", &Font12, COLORED);
+	  x = x + 6 * 7; y = 0;
+	  Paint_DrawStringAt(&paint, x, y, "98%", &Font12, COLORED);
+
+	  //
+	  x = 0; y = 12; w = 90; h = 38;
+	  //Paint_DrawRectangle(&paint, x, y, x + w, y + h, COLORED);
+	  Paint_DrawStringAt(&paint, x+1, y+1, "Altitude (m)", &Font12, COLORED);
+	  Paint_DrawStringAt(&paint, x+1, y+14, "1702  ", &Font24, COLORED);
+
+	  x = 0; y = y + h;
+	  sprintf((char *)graph, "%d", (HAL_GetTick() - tick) / 100);
+	  Paint_DrawFilledRectangle(&paint, x + 1, y + 1, x + w - 2, y + h - 2, UNCOLORED);
+	  Paint_DrawStringAt(&paint, x+1, y+1, "Speed Km/h", &Font12, COLORED);
+	  x += Font24.Width * (5 - strlen((char *)graph));
+	  Paint_DrawStringAt(&paint, x+1, y+14, graph, &Font24, COLORED);
+	  */
+	  for (int i = 0; i < sizeof(_widget) / sizeof(_widget[0]); i++)
+	  {
+		  Widget_Draw(&_widget[i], &paint);
+	  }
+
+#endif
+
+	  //
 	  EPD_SetPartialWindow(&epd, Paint_GetImage(&paint), 0, 0, Paint_GetWidth(&paint), Paint_GetHeight(&paint),2);
 	  EPD_DisplayFrameQuick(&epd);
 	  EPD_DelayMs(&epd, 500);
