@@ -165,13 +165,12 @@ typedef struct _WidgetStyle
 typedef struct _Widget
 {
 	unsigned short x, y, w, h;
-	unsigned short styleId;
+	unsigned short sId; // style id
 	unsigned short cId; // content id
-
-	void (* draw)(Widget * this, Paint * paint);
 } Widget;
 
 
+char _Widget_TempString[16];
 
 
 Widget _widget[] =
@@ -179,46 +178,44 @@ Widget _widget[] =
 	{
 		0, 0, 60, 16,
 		0,
-		Widget_Date_Current,
-		0
+		Widget_Date_Current
 	},
 	{
 		60, 0, 60, 16,
 		1,
-		Widget_Time_Current,
-		0
+		Widget_Time_Current
 	},
 	{
 		120, 0, 60, 16,
 		6,
-		Widget_Time_Current,
-		0
+		Widget_Time_Current
 	},
 
 	{
 		2, 18, 120, 48,
-		2,
-		Widget_Altitude_GPS,
-		0
+		4,
+		Widget_Altitude_GPS
 	},
 	{
 		122, 18, 120, 48,
-		3,
-		Widget_Speed_Ground,
-		0
+		4,
+		Widget_Speed_Ground
 	},
 	{
 		242, 18, 120, 48,
 		4,
-		Widget_Altitude_GPS,
-		0
+		Widget_Speed_Vertical
 	},
 	{
 		2, 84, 120, 48,
 		5,
-		Widget_Speed_Ground,
-		0
+		Widget_Speed_Air
 	},
+	{
+		140, 132, 160, 160,
+		7,
+		Widget_G_Heading
+	}
 };
 
 WidgetStyle _style[] =
@@ -257,7 +254,7 @@ WidgetStyle _style[] =
 	},
 	// 4: left aligned label, right aligned text, small font
 	{
-		WS_LA_CENTER | WS_TA_RIGHT | WS_TA_BOTTOM | WS_DRAW_LABEL | WS_DRAW_BOARDER,
+		WS_LA_LEFT | WS_TA_RIGHT | WS_TA_BOTTOM | WS_DRAW_LABEL | WS_DRAW_BOARDER,
 		UNCOLORED,
 		COLORED,
 		Font_12,
@@ -268,7 +265,7 @@ WidgetStyle _style[] =
 		WS_LA_CENTER | WS_TA_RIGHT | WS_DRAW_LABEL | WS_DRAW_BOARDER,
 		UNCOLORED,
 		COLORED,
-		Font_8,
+		Font_12,
 		Font_20
 	},
 	// 6: no label, center --> for title
@@ -279,11 +276,163 @@ WidgetStyle _style[] =
 		Font_12,
 		Font_12
 	},
-
+	// 7: owner-draw
+	{
+		WS_OWNERDRAW,
+		UNCOLORED,
+		COLORED,
+		Font_12,
+		Font_12,
+	}
 };
 
+typedef struct _WidgetRepository
+{
+	unsigned short id;
+	const char * (* getLabel)();
+	const char * (* getString)();
+	void * (* getDataPtr)();
 
-const char * Widget_GetLabel(unsigned short id)
+} WidgetRepository;
+
+
+const char * _Widget_Empty_Label()
+{
+	return "";
+}
+
+const char * _Widget_Empty_String()
+{
+	return "";
+}
+
+void * _Widget_Empty_DataPtr()
+{
+	return 0;
+}
+
+const char * _Widget_SpeedGround_Label()
+{
+	return (const char *)"G Speed (Km/h)";
+}
+
+const char * _Widget_SpeedAir_Label()
+{
+	return (const char *)"A Speed (Km/h)";
+}
+
+const char * _Widget_TimeCurrent_Label()
+{
+	return (const char *)"Time";
+}
+
+const char * _Widget_DataCurrent_Label()
+{
+	return (const char *)"Date";
+}
+
+const char * _Widget_AltitudeGPS_Label()
+{
+	return (const char *)"Altitude (m)";
+}
+
+const char * _Widget_SpeedVertical_Label()
+{
+	return (const char *)"Vario (m/s)";
+}
+
+
+const char * _Widget_SpeedGround_String()
+{
+	itoa(rand() % 60, &_Widget_TempString[0], 10);
+	return (const char *)&_Widget_TempString[0];
+}
+
+const char * _Widget_SpeedAir_String()
+{
+	itoa(rand() % 60, &_Widget_TempString[0], 10);
+	return (const char *)&_Widget_TempString[0];
+}
+
+const char * _Widget_TimeCurrent_String()
+{
+	return (const char *)"12:00";
+}
+
+const char * _Widget_DataCurrent_String()
+{
+	return (const char *)"11/12";
+}
+
+const char * _Widget_AltitudeGPS_String()
+{
+	itoa(rand() % 1000 + 1200, &_Widget_TempString[0], 10);
+	return (const char *)&_Widget_TempString[0];
+}
+
+const char * _Widget_SpeedVertical_String()
+{
+	sprintf(&_Widget_TempString[0], "%d.%d", rand() % 10, rand() % 10);
+	return (const char *)&_Widget_TempString[0];
+}
+
+
+WidgetRepository _repo[] =
+{
+	{ Widget_Empty, _Widget_Empty_Label, _Widget_Empty_String, _Widget_Empty_DataPtr },
+	{ Widget_Speed_Ground, _Widget_SpeedGround_Label, _Widget_SpeedGround_String, _Widget_Empty_DataPtr },
+	{ Widget_Speed_Air, _Widget_SpeedAir_Label, _Widget_SpeedAir_String, _Widget_Empty_DataPtr },
+	{ Widget_Speed_Vertical, _Widget_SpeedVertical_Label, _Widget_SpeedVertical_String, _Widget_Empty_DataPtr },
+
+	{ Widget_Time_Flight, _Widget_Empty_Label, _Widget_Empty_String, _Widget_Empty_DataPtr },
+	{ Widget_Time_Current, _Widget_TimeCurrent_Label, _Widget_TimeCurrent_String, _Widget_Empty_DataPtr },
+	{ Widget_Date_Current, _Widget_DataCurrent_Label, _Widget_DataCurrent_String, _Widget_Empty_DataPtr },
+
+	{ Widget_Altitude_GPS, _Widget_AltitudeGPS_Label, _Widget_AltitudeGPS_String, _Widget_Empty_DataPtr },
+	{ Widget_Altitude_QNH, _Widget_Empty_Label, _Widget_Empty_String, _Widget_Empty_DataPtr },
+	{ Widget_Altitude_Takeoff, _Widget_Empty_Label, _Widget_Empty_String, _Widget_Empty_DataPtr },
+	{ Widget_Altitdue_Gain, _Widget_Empty_Label, _Widget_Empty_String, _Widget_Empty_DataPtr },
+	{ Widget_Altitude_Ref, _Widget_Empty_Label, _Widget_Empty_String, _Widget_Empty_DataPtr },
+
+	{ Widget_Heading, _Widget_Empty_Label, _Widget_Empty_String, _Widget_Empty_DataPtr },
+	{ Widget_Bearing, _Widget_Empty_Label, _Widget_Empty_String, _Widget_Empty_DataPtr },
+
+	{ Widget_LD, _Widget_Empty_Label, _Widget_Empty_String, _Widget_Empty_DataPtr },
+
+	{ Widget_Status_GPS, _Widget_Empty_Label, _Widget_Empty_String, _Widget_Empty_DataPtr },
+	{ Widget_Status_Battery, _Widget_Empty_Label, _Widget_Empty_String, _Widget_Empty_DataPtr },
+	{ Widget_Status_Date, _Widget_Empty_Label, _Widget_Empty_String, _Widget_Empty_DataPtr },
+	{ Widget_Status_Time, _Widget_Empty_Label, _Widget_Empty_String, _Widget_Empty_DataPtr },
+	{ Widget_Status_Bluetooth, _Widget_Empty_Label, _Widget_Empty_String, _Widget_Empty_DataPtr },
+	{ Widget_Status_Temperature, _Widget_Empty_Label, _Widget_Empty_String, _Widget_Empty_DataPtr },
+
+	{ Widget_Wind_Direction, _Widget_Empty_Label, _Widget_Empty_String, _Widget_Empty_DataPtr },
+	{ Widget_Wind_Speed, _Widget_Empty_Label, _Widget_Empty_String, _Widget_Empty_DataPtr },
+
+	{ Widget_G_VarioBar, _Widget_Empty_Label, _Widget_Empty_String, _Widget_Empty_DataPtr },
+	{ Widget_G_VarioHistory, _Widget_Empty_Label, _Widget_Empty_String, _Widget_Empty_DataPtr },
+	{ Widget_G_Heading, _Widget_Empty_Label, _Widget_Empty_String, _Widget_Empty_DataPtr },
+	{ Widget_G_Bearing, _Widget_Empty_Label, _Widget_Empty_String, _Widget_Empty_DataPtr },
+	{ Widget_G_North, _Widget_Empty_Label, _Widget_Empty_String, _Widget_Empty_DataPtr },
+	{ Widget_G_ThermalAssist, _Widget_Empty_Label, _Widget_Empty_String, _Widget_Empty_DataPtr }
+};
+
+inline const char * Widget_GetLabel(unsigned short id)
+{
+	return _repo[id].getLabel();
+}
+
+inline const char * Widget_GetString(unsigned short id)
+{
+	return _repo[id].getString();
+}
+
+inline const char * Widget_GetDataPtr(unsigned short id)
+{
+	return _repo[id].getDataPtr();
+}
+
+const char * Widget_GetLabel2(unsigned short id)
 {
 	switch (id)
 	{
@@ -334,7 +483,7 @@ const char * Widget_GetLabel(unsigned short id)
 	return "";
 }
 
-const char * Widget_GetString(unsigned short id)
+const char * Widget_GetString2(unsigned short id)
 {
 	switch (id)
 	{
@@ -385,6 +534,52 @@ const char * Widget_GetString(unsigned short id)
 	return "";
 }
 
+void * Widget_GetDataPtr2(unsigned short id)
+{
+	switch (id)
+	{
+	case Widget_Empty :
+	case Widget_Speed_Ground :
+	case Widget_Speed_Air :
+	case Widget_Speed_Vertical :
+
+	case Widget_Time_Flight :
+	case Widget_Time_Current :
+	case Widget_Date_Current :
+
+	case Widget_Altitude_GPS :
+	case Widget_Altitude_QNH :
+	case Widget_Altitude_Takeoff :
+	case Widget_Altitdue_Gain :
+	case Widget_Altitude_Ref :
+
+	case Widget_Heading :
+	case Widget_Bearing :
+
+	case Widget_LD :
+
+	case Widget_Status_GPS :
+	case Widget_Status_Battery :
+	case Widget_Status_Date :
+	case Widget_Status_Time :
+	case Widget_Status_Bluetooth :
+	case Widget_Status_Temperature :
+
+	case Widget_Wind_Direction :
+	case Widget_Wind_Speed :
+
+	case Widget_G_VarioBar :
+	case Widget_G_VarioHistory :
+	case Widget_G_Heading :
+	case Widget_G_Bearing :
+	case Widget_G_North :
+	case Widget_G_ThermalAssist :
+		break;
+	}
+
+	return 0;
+}
+
 void Widget_DrawLabel(Widget * this, Paint * paint)
 {
 	// erase bkground
@@ -401,7 +596,7 @@ void Widget_DrawLabel(Widget * this, Paint * paint)
 
 void Widget_DrawText(Widget * this, Paint * paint)
 {
-	// erase bkground
+	// erase background
 	Paint_DrawFilledRectangle(paint, this->x, this->y, this->x + this->w - 0, this->y + this->h - 0, UNCOLORED);
 	// draw frame
 	Paint_DrawRectangle(paint, this->x, this->y, this->x + this->w - 0, this->y + this->h - 0, COLORED);
@@ -420,58 +615,77 @@ void Widget_DrawText(Widget * this, Paint * paint)
 	Paint_DrawStringAt(paint, x, y, value, &Font24, COLORED);
 }
 
+
+void Widget_OwnerDraw(Widget * this, Paint * paint)
+{
+	if (this->cId == Widget_G_Heading)
+	{
+		WidgetStyle * ws = &_style[this->sId];
+
+		Paint_DrawFilledRectangle(paint, this->x, this->y, this->x + this->w - 0, this->y + this->h - 0, ws->bkgndColor);
+		Paint_DrawCircle(paint, this->x + this->w / 2, this->y + this->h / 2, this->w / 2, ws->textColor);
+	}
+}
+
 void Widget_Draw(Widget * this, Paint * paint)
 {
-	WidgetStyle * ws = &_style[this->styleId];
+	WidgetStyle * ws = &_style[this->sId];
 
-	// erase bkground
-	Paint_DrawFilledRectangle(paint, this->x, this->y, this->x + this->w - 0, this->y + this->h - 0, ws->bkgndColor);
-
-	// draw frame
-	if (ws->style & WS_DRAW_BOARDER)
-		Paint_DrawRectangle(paint, this->x, this->y, this->x + this->w - 0, this->y + this->h - 0, ws->textColor);
-
-	// draw label
-	int x = this->x;
-	int y = this->y;
-	int w = this->w;
-	int h = this->h;
-
-	if (ws->style & WS_DRAW_LABEL)
+	if (ws->style & WS_OWNERDRAW)
 	{
-		const char * label = Widget_GetLabel(this->cId);
-		sFONT * font = Fonts[ws->lableFont];
-		int lx = x + 2;
-		int ly = y + 2;
-
-		if (ws->style & WS_LA_RIGHT)
-			lx = x + w - (font->Width * strlen((char *)label) + 2);
-		else if (ws->style & WS_LA_CENTER)
-			lx = x + (w - (font->Width * strlen((char *)label))) / 2;
-
-		Paint_DrawStringAt(paint, lx, ly, label, font, ws->textColor);
-
-		y = ly + font->Height;
-		h = h - (font->Height + 2);
+		Widget_OwnerDraw(this, paint);
 	}
-
-	// draw text
-	const char * value = Widget_GetString(this->cId);
-	sFONT * font = Fonts[ws->textFont];
-
-	if (ws->style & WS_TA_RIGHT)
-		x = x + w - (font->Width * strlen((char *)value) + 2);
-	else if (ws->style & WS_TA_CENTER)
-		x = x + (w - (font->Width * strlen((char *)value))) / 2;
-
-	if (ws->style & WS_TA_TOP)
-		y = y + 2;
-	else if (ws->style & WS_TA_BOTTOM)
-		y = y + h - (font->Height + 2);
 	else
-		y = y + (h -  font->Height) / 2;
+	{
+		// erase bkground
+		Paint_DrawFilledRectangle(paint, this->x, this->y, this->x + this->w - 0, this->y + this->h - 0, ws->bkgndColor);
 
-	Paint_DrawStringAt(paint, x, y, value, font, ws->textColor);
+		// draw frame
+		if (ws->style & WS_DRAW_BOARDER)
+			Paint_DrawRectangle(paint, this->x, this->y, this->x + this->w - 0, this->y + this->h - 0, ws->textColor);
+
+		// draw label
+		int x = this->x;
+		int y = this->y;
+		int w = this->w;
+		int h = this->h;
+
+		if (ws->style & WS_DRAW_LABEL)
+		{
+			const char * label = Widget_GetLabel(this->cId);
+			sFONT * font = Fonts[ws->lableFont];
+			int lx = x + 2;
+			int ly = y + 2;
+
+			if (ws->style & WS_LA_RIGHT)
+				lx = x + w - (font->Width * strlen((char *)label) + 2);
+			else if (ws->style & WS_LA_CENTER)
+				lx = x + (w - (font->Width * strlen((char *)label))) / 2;
+
+			Paint_DrawStringAt(paint, lx, ly, label, font, ws->textColor);
+
+			y = ly + font->Height;
+			h = h - (font->Height + 2);
+		}
+
+		// draw text
+		const char * value = Widget_GetString(this->cId);
+		sFONT * font = Fonts[ws->textFont];
+
+		if (ws->style & WS_TA_RIGHT)
+			x = x + w - (font->Width * strlen((char *)value) + 2);
+		else if (ws->style & WS_TA_CENTER)
+			x = x + (w - (font->Width * strlen((char *)value))) / 2;
+
+		if (ws->style & WS_TA_TOP)
+			y = y + 2;
+		else if (ws->style & WS_TA_BOTTOM)
+			y = y + h - (font->Height + 2);
+		else
+			y = y + (h -  font->Height) / 2;
+
+		Paint_DrawStringAt(paint, x, y, value, font, ws->textColor);
+	}
 }
 
 
