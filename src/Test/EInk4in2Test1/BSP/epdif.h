@@ -40,6 +40,11 @@
 #define LOW             0
 #define HIGH            1
 
+//
+#define COLORED      1
+#define UNCOLORED    0
+
+
 typedef struct {
   GPIO_TypeDef* port;
   int pin;

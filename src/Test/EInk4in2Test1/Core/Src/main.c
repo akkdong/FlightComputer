@@ -59,6 +59,7 @@
 #include "epdif.h"
 #include "epdpaint.h"
 #include "imagedata.h"
+#include "Page.h"
 #include <stdlib.h>
 #include <math.h>
 /* USER CODE END Includes */
@@ -67,8 +68,6 @@
 
 /* USER CODE BEGIN PV */
 /* Private variables ---------------------------------------------------------*/
-#define COLORED      1
-#define UNCOLORED    0
 
 unsigned char frame[EPD_WIDTH * EPD_HEIGHT / 8];
 char strBuf[32];
@@ -97,341 +96,9 @@ void SystemClock_Config(void);
 // Widget_data_value: data pointer, data type(...), extra(precision, ... ??)
 #if 1
 
-typedef enum _WidgetContent
-{
-    Widget_Empty,
-	Widget_Speed_Ground,
-	Widget_Speed_Air,
-	Widget_Speed_Vertical,
-
-	Widget_Time_Flight,
-	Widget_Time_Current,
-	Widget_Date_Current,
-
-	Widget_Altitude_GPS,
-	Widget_Altitude_QNH,
-	Widget_Altitude_Takeoff,
-	Widget_Altitdue_Gain,
-	Widget_Altitude_Ref,
-
-	Widget_Heading,
-	Widget_Bearing,
-
-	Widget_LD,
-
-	Widget_Status_GPS,
-	Widget_Status_Battery,
-	Widget_Status_Date,
-	Widget_Status_Time,
-	Widget_Status_Bluetooth,
-	Widget_Status_Temperature,
-
-	Widget_Wind_Direction,
-	Widget_Wind_Speed,
-
-	Widget_G_VarioBar,
-	Widget_G_VarioHistory,
-	Widget_G_Heading,
-	Widget_G_Bearing,
-	Widget_G_North,
-	Widget_G_ThermalAssist
-} WidgetContent;
-
-typedef struct _Widget Widget;
-
-#define WS_TA_LEFT			0x0000 // WidgetStyle_TextAlign: default LEFT, MIDDLE
-#define WS_TA_RIGHT			0x0001
-#define WS_TA_CENTER		0x0002
-#define WS_TA_MIDDLE		0x0000
-#define WS_TA_TOP			0x0004
-#define WS_TA_BOTTOM		0x0008
-#define WS_LA_LEFT			0x0000 // WidgetStyle_LabelAlign: default LEFT
-#define WS_LA_RIGHT			0x0010
-#define WS_LA_CENTER		0x0020
-#define WS_DRAW_LABEL		0x0100
-#define WS_DRAW_BOARDER		0x0200
-#define WS_OWNERDRAW		0x8000 // WidgetStyle_OwnerDraw
-
-typedef struct _WidgetStyle
-{
-	unsigned short style;
-	unsigned char bkgndColor;
-	unsigned char textColor;
-	unsigned char lableFont;
-	unsigned char textFont;
-
-} WidgetStyle;
-
-typedef struct _Widget
-{
-	unsigned short x, y, w, h;
-	unsigned short sId; // style id
-	unsigned short cId; // content id
-} Widget;
 
 
-char _Widget_TempString[16];
-
-
-Widget _widget[] =
-{
-	{
-		0, 0, 60, 16,
-		0,
-		Widget_Date_Current
-	},
-	{
-		60, 0, 60, 16,
-		1,
-		Widget_Time_Current
-	},
-	{
-		120, 0, 60, 16,
-		6,
-		Widget_Time_Current
-	},
-
-	{
-		2, 18, 120, 48,
-		4,
-		Widget_Altitude_GPS
-	},
-	{
-		122, 18, 120, 48,
-		4,
-		Widget_Speed_Ground
-	},
-	{
-		242, 18, 120, 48,
-		4,
-		Widget_Speed_Vertical
-	},
-	{
-		2, 84, 120, 48,
-		5,
-		Widget_Speed_Air
-	},
-	{
-		140, 132, 160, 160,
-		7,
-		Widget_G_Heading
-	}
-};
-
-WidgetStyle _style[] =
-{
-	// 0: no label, reverse, center --> for title
-	{
-		WS_TA_CENTER,
-		COLORED,
-		UNCOLORED,
-		Font_8,
-		Font_8
-	},
-	// 1: no label, center --> for title
-	{
-		WS_TA_RIGHT | WS_DRAW_BOARDER,
-		UNCOLORED,
-		COLORED,
-		Font_12,
-		Font_12
-	},
-	// 2: left aligned label, right aligned text, big font
-	{
-		WS_LA_LEFT | WS_TA_LEFT | WS_TA_TOP | WS_DRAW_LABEL | WS_DRAW_BOARDER,
-		UNCOLORED,
-		COLORED,
-		Font_12,
-		Font_24
-	},
-	// 3: left aligned label, right aligned text, small font
-	{
-		WS_LA_RIGHT | WS_TA_CENTER | WS_TA_MIDDLE | WS_DRAW_LABEL | WS_DRAW_BOARDER,
-		UNCOLORED,
-		COLORED,
-		Font_12,
-		Font_24
-	},
-	// 4: left aligned label, right aligned text, small font
-	{
-		WS_LA_LEFT | WS_TA_RIGHT | WS_TA_BOTTOM | WS_DRAW_LABEL | WS_DRAW_BOARDER,
-		UNCOLORED,
-		COLORED,
-		Font_12,
-		Font_24
-	},
-	// 5: left aligned label, right aligned text, small font
-	{
-		WS_LA_CENTER | WS_TA_RIGHT | WS_DRAW_LABEL | WS_DRAW_BOARDER,
-		UNCOLORED,
-		COLORED,
-		Font_12,
-		Font_20
-	},
-	// 6: no label, center --> for title
-	{
-		WS_TA_LEFT | WS_DRAW_BOARDER,
-		COLORED,
-		UNCOLORED,
-		Font_12,
-		Font_12
-	},
-	// 7: owner-draw
-	{
-		WS_OWNERDRAW,
-		UNCOLORED,
-		COLORED,
-		Font_12,
-		Font_12,
-	}
-};
-
-typedef struct _WidgetRepository
-{
-	unsigned short id;
-	const char * (* getLabel)();
-	const char * (* getString)();
-	void * (* getDataPtr)();
-
-} WidgetRepository;
-
-
-const char * _Widget_Empty_Label()
-{
-	return "";
-}
-
-const char * _Widget_Empty_String()
-{
-	return "";
-}
-
-void * _Widget_Empty_DataPtr()
-{
-	return 0;
-}
-
-const char * _Widget_SpeedGround_Label()
-{
-	return (const char *)"G Speed (Km/h)";
-}
-
-const char * _Widget_SpeedAir_Label()
-{
-	return (const char *)"A Speed (Km/h)";
-}
-
-const char * _Widget_TimeCurrent_Label()
-{
-	return (const char *)"Time";
-}
-
-const char * _Widget_DataCurrent_Label()
-{
-	return (const char *)"Date";
-}
-
-const char * _Widget_AltitudeGPS_Label()
-{
-	return (const char *)"Altitude (m)";
-}
-
-const char * _Widget_SpeedVertical_Label()
-{
-	return (const char *)"Vario (m/s)";
-}
-
-
-const char * _Widget_SpeedGround_String()
-{
-	itoa(rand() % 60, &_Widget_TempString[0], 10);
-	return (const char *)&_Widget_TempString[0];
-}
-
-const char * _Widget_SpeedAir_String()
-{
-	itoa(rand() % 60, &_Widget_TempString[0], 10);
-	return (const char *)&_Widget_TempString[0];
-}
-
-const char * _Widget_TimeCurrent_String()
-{
-	return (const char *)"12:00";
-}
-
-const char * _Widget_DataCurrent_String()
-{
-	return (const char *)"11/12";
-}
-
-const char * _Widget_AltitudeGPS_String()
-{
-	itoa(rand() % 1000 + 1200, &_Widget_TempString[0], 10);
-	return (const char *)&_Widget_TempString[0];
-}
-
-const char * _Widget_SpeedVertical_String()
-{
-	sprintf(&_Widget_TempString[0], "%d.%d", rand() % 10, rand() % 10);
-	return (const char *)&_Widget_TempString[0];
-}
-
-
-WidgetRepository _repo[] =
-{
-	{ Widget_Empty, _Widget_Empty_Label, _Widget_Empty_String, _Widget_Empty_DataPtr },
-	{ Widget_Speed_Ground, _Widget_SpeedGround_Label, _Widget_SpeedGround_String, _Widget_Empty_DataPtr },
-	{ Widget_Speed_Air, _Widget_SpeedAir_Label, _Widget_SpeedAir_String, _Widget_Empty_DataPtr },
-	{ Widget_Speed_Vertical, _Widget_SpeedVertical_Label, _Widget_SpeedVertical_String, _Widget_Empty_DataPtr },
-
-	{ Widget_Time_Flight, _Widget_Empty_Label, _Widget_Empty_String, _Widget_Empty_DataPtr },
-	{ Widget_Time_Current, _Widget_TimeCurrent_Label, _Widget_TimeCurrent_String, _Widget_Empty_DataPtr },
-	{ Widget_Date_Current, _Widget_DataCurrent_Label, _Widget_DataCurrent_String, _Widget_Empty_DataPtr },
-
-	{ Widget_Altitude_GPS, _Widget_AltitudeGPS_Label, _Widget_AltitudeGPS_String, _Widget_Empty_DataPtr },
-	{ Widget_Altitude_QNH, _Widget_Empty_Label, _Widget_Empty_String, _Widget_Empty_DataPtr },
-	{ Widget_Altitude_Takeoff, _Widget_Empty_Label, _Widget_Empty_String, _Widget_Empty_DataPtr },
-	{ Widget_Altitdue_Gain, _Widget_Empty_Label, _Widget_Empty_String, _Widget_Empty_DataPtr },
-	{ Widget_Altitude_Ref, _Widget_Empty_Label, _Widget_Empty_String, _Widget_Empty_DataPtr },
-
-	{ Widget_Heading, _Widget_Empty_Label, _Widget_Empty_String, _Widget_Empty_DataPtr },
-	{ Widget_Bearing, _Widget_Empty_Label, _Widget_Empty_String, _Widget_Empty_DataPtr },
-
-	{ Widget_LD, _Widget_Empty_Label, _Widget_Empty_String, _Widget_Empty_DataPtr },
-
-	{ Widget_Status_GPS, _Widget_Empty_Label, _Widget_Empty_String, _Widget_Empty_DataPtr },
-	{ Widget_Status_Battery, _Widget_Empty_Label, _Widget_Empty_String, _Widget_Empty_DataPtr },
-	{ Widget_Status_Date, _Widget_Empty_Label, _Widget_Empty_String, _Widget_Empty_DataPtr },
-	{ Widget_Status_Time, _Widget_Empty_Label, _Widget_Empty_String, _Widget_Empty_DataPtr },
-	{ Widget_Status_Bluetooth, _Widget_Empty_Label, _Widget_Empty_String, _Widget_Empty_DataPtr },
-	{ Widget_Status_Temperature, _Widget_Empty_Label, _Widget_Empty_String, _Widget_Empty_DataPtr },
-
-	{ Widget_Wind_Direction, _Widget_Empty_Label, _Widget_Empty_String, _Widget_Empty_DataPtr },
-	{ Widget_Wind_Speed, _Widget_Empty_Label, _Widget_Empty_String, _Widget_Empty_DataPtr },
-
-	{ Widget_G_VarioBar, _Widget_Empty_Label, _Widget_Empty_String, _Widget_Empty_DataPtr },
-	{ Widget_G_VarioHistory, _Widget_Empty_Label, _Widget_Empty_String, _Widget_Empty_DataPtr },
-	{ Widget_G_Heading, _Widget_Empty_Label, _Widget_Empty_String, _Widget_Empty_DataPtr },
-	{ Widget_G_Bearing, _Widget_Empty_Label, _Widget_Empty_String, _Widget_Empty_DataPtr },
-	{ Widget_G_North, _Widget_Empty_Label, _Widget_Empty_String, _Widget_Empty_DataPtr },
-	{ Widget_G_ThermalAssist, _Widget_Empty_Label, _Widget_Empty_String, _Widget_Empty_DataPtr }
-};
-
-inline const char * Widget_GetLabel(unsigned short id)
-{
-	return _repo[id].getLabel();
-}
-
-inline const char * Widget_GetString(unsigned short id)
-{
-	return _repo[id].getString();
-}
-
-inline const char * Widget_GetDataPtr(unsigned short id)
-{
-	return _repo[id].getDataPtr();
-}
-
+/*
 const char * Widget_GetLabel2(unsigned short id)
 {
 	switch (id)
@@ -614,79 +281,7 @@ void Widget_DrawText(Widget * this, Paint * paint)
 	y = y + 12;
 	Paint_DrawStringAt(paint, x, y, value, &Font24, COLORED);
 }
-
-
-void Widget_OwnerDraw(Widget * this, Paint * paint)
-{
-	if (this->cId == Widget_G_Heading)
-	{
-		WidgetStyle * ws = &_style[this->sId];
-
-		Paint_DrawFilledRectangle(paint, this->x, this->y, this->x + this->w - 0, this->y + this->h - 0, ws->bkgndColor);
-		Paint_DrawCircle(paint, this->x + this->w / 2, this->y + this->h / 2, this->w / 2, ws->textColor);
-	}
-}
-
-void Widget_Draw(Widget * this, Paint * paint)
-{
-	WidgetStyle * ws = &_style[this->sId];
-
-	if (ws->style & WS_OWNERDRAW)
-	{
-		Widget_OwnerDraw(this, paint);
-	}
-	else
-	{
-		// erase bkground
-		Paint_DrawFilledRectangle(paint, this->x, this->y, this->x + this->w - 0, this->y + this->h - 0, ws->bkgndColor);
-
-		// draw frame
-		if (ws->style & WS_DRAW_BOARDER)
-			Paint_DrawRectangle(paint, this->x, this->y, this->x + this->w - 0, this->y + this->h - 0, ws->textColor);
-
-		// draw label
-		int x = this->x;
-		int y = this->y;
-		int w = this->w;
-		int h = this->h;
-
-		if (ws->style & WS_DRAW_LABEL)
-		{
-			const char * label = Widget_GetLabel(this->cId);
-			sFONT * font = Fonts[ws->lableFont];
-			int lx = x + 2;
-			int ly = y + 2;
-
-			if (ws->style & WS_LA_RIGHT)
-				lx = x + w - (font->Width * strlen((char *)label) + 2);
-			else if (ws->style & WS_LA_CENTER)
-				lx = x + (w - (font->Width * strlen((char *)label))) / 2;
-
-			Paint_DrawStringAt(paint, lx, ly, label, font, ws->textColor);
-
-			y = ly + font->Height;
-			h = h - (font->Height + 2);
-		}
-
-		// draw text
-		const char * value = Widget_GetString(this->cId);
-		sFONT * font = Fonts[ws->textFont];
-
-		if (ws->style & WS_TA_RIGHT)
-			x = x + w - (font->Width * strlen((char *)value) + 2);
-		else if (ws->style & WS_TA_CENTER)
-			x = x + (w - (font->Width * strlen((char *)value))) / 2;
-
-		if (ws->style & WS_TA_TOP)
-			y = y + 2;
-		else if (ws->style & WS_TA_BOTTOM)
-			y = y + h - (font->Height + 2);
-		else
-			y = y + (h -  font->Height) / 2;
-
-		Paint_DrawStringAt(paint, x, y, value, font, ws->textColor);
-	}
-}
+*/
 
 
 #endif
@@ -727,6 +322,9 @@ int main(void)
   MX_SPI1_Init();
 
   /* USER CODE BEGIN 2 */
+  printf("EInk4in2 Test start...\n");
+
+
   EPD epd;
   if (EPD_Init(&epd) != 0) {
     printf("e-Paper init failed\n");
@@ -857,6 +455,7 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
+  /*
   int graph[50];
   int sOffset = 0;
   int y1, y2;
@@ -865,6 +464,7 @@ int main(void)
 
   for (int i = 0; i < 50; i++)
 	  graph[i] = 60;
+	*/
 
   Paint_DrawFilledRectangle(&paint, 0, 0, 399, 299, UNCOLORED);
 
@@ -946,16 +546,21 @@ int main(void)
 	  x += Font24.Width * (5 - strlen((char *)graph));
 	  Paint_DrawStringAt(&paint, x+1, y+14, graph, &Font24, COLORED);
 	  */
-	  for (int i = 0; i < sizeof(_widget) / sizeof(_widget[0]); i++)
-	  {
-		  Widget_Draw(&_widget[i], &paint);
-	  }
+
+	  //for (int i = 0; i < sizeof(_widget) / sizeof(_widget[0]); i++)
+	  //{
+	  //	  Widget_Draw(&_widget[i], &paint);
+	  //}
+	  Page_Draw(0, &paint);
 
 #endif
 
 	  //
+	  uint32_t tickStart = HAL_GetTick();
 	  EPD_SetPartialWindow(&epd, Paint_GetImage(&paint), 0, 0, Paint_GetWidth(&paint), Paint_GetHeight(&paint),2);
 	  EPD_DisplayFrameQuick(&epd);
+	  printf("refresh screen: %lu\n", HAL_GetTick() - tickStart);
+
 	  EPD_DelayMs(&epd, 500);
 
   /* USER CODE END WHILE */
@@ -1065,6 +670,29 @@ void assert_failed(uint8_t* file, uint32_t line)
 /**
   * @}
   */
+
+#ifdef __cplusplus
+ extern "C" {
+#endif
+
+int __io_putchar(int ch) {
+  HAL_UART_Transmit(&huart1, (uint8_t *)&ch, 1, 0xFFFF);
+  return ch;
+}
+
+int _write(int file, char *ptr, int len)
+{
+  /* Implement your write code here, this is used by puts and printf for example */
+  int i=0;
+  for(i=0 ; i<len ; i++)
+	  HAL_UART_Transmit(&huart1, (uint8_t *)&ptr[i], 1, 0xFFFF);
+	  //ITM_SendChar((*ptr++));
+  return len;
+}
+
+#ifdef __cplusplus
+}
+#endif
 
 /**
   * @}
