@@ -427,6 +427,19 @@ const char * _getString__Bluetooth_Status()
 	return (const char *)"";
 }
 
+// Widget_Pressure
+//
+
+const char * _getLabel__Pressure()
+{
+	return (const char *)"Prs";
+}
+
+const char * _getString__Pressure()
+{
+	return (const char *)"";
+}
+
 // Widget_Temperature
 //
 
@@ -581,6 +594,11 @@ WidgetRepository _repo[] =
 		Widget_Bluetooth_Status,
 		_getLabel__Bluetooth_Status,
 		_getString__Bluetooth_Status
+	},
+	{
+		Widget_Pressure,
+		_getLabel__Pressure,
+		_getString__Pressure
 	},
 	{
 		Widget_Temperature,

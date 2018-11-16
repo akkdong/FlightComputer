@@ -1,0 +1,3 @@
+[submodule "ref/GxEPD"]
+	path = ref/GxEPD
+	url = https://github.com/ZinggJM/GxEPD.git

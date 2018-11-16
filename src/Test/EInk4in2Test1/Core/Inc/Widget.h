@@ -63,6 +63,7 @@ typedef enum _WidgetContent
 
 	Widget_Battery_Power,
 	Widget_Bluetooth_Status,
+	Widget_Pressure,
 	Widget_Temperature,
 
 	Widget_Thermal_Assist
