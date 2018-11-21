@@ -325,6 +325,21 @@ int main(void)
   printf("EInk4in2 Test start...\n");
 
 
+  {
+	  for (int i = 0; i < 10; i++)
+	  {
+		  HAL_GPIO_TogglePin(GPIOD, GPIO_PIN_2);
+		  HAL_Delay(500);
+	  }
+  }
+
+  HAL_GPIO_WritePin(GPIOD, GPIO_PIN_2, GPIO_PIN_RESET);
+  HAL_Delay(2000);
+  HAL_PWR_EnterSTANDBYMode();
+
+
+
+
   EPD epd;
   if (EPD_Init(&epd) != 0) {
     printf("e-Paper init failed\n");
