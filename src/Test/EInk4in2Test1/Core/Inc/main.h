@@ -55,10 +55,6 @@
 
 /* USER CODE BEGIN Includes */
 
-/* USER CODE END Includes */
-
-/* Private define ------------------------------------------------------------*/
-
 #define RST_Pin GPIO_PIN_1
 #define RST_GPIO_Port GPIOA
 #define DC_Pin GPIO_PIN_2
@@ -67,6 +63,10 @@
 #define BUSY_GPIO_Port GPIOA
 #define SPI_CS_Pin GPIO_PIN_4
 #define SPI_CS_GPIO_Port GPIOA
+
+/* USER CODE END Includes */
+
+/* Private define ------------------------------------------------------------*/
 
 /* ########################## Assert Selection ############################## */
 /**

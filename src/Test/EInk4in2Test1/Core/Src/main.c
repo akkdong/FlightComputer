@@ -75,6 +75,7 @@ char strBuf[32];
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
+static void MX_NVIC_Init(void);
 
 /* USER CODE BEGIN PFP */
 /* Private function prototypes -----------------------------------------------*/
@@ -286,6 +287,49 @@ void Widget_DrawText(Widget * this, Paint * paint)
 
 #endif
 
+
+/**
+  * @brief  EXTI line detection callbacks.
+  * @param  GPIO_Pin: Specifies the pins connected EXTI line
+  * @retval None
+  */
+
+
+volatile int pressed = 0;
+volatile uint32_t tick;
+volatile uint32_t tickPress;
+
+void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
+{
+	tickPress = tick = HAL_GetTick();
+	pressed = 1;
+}
+
+void goStandbyMode()
+{
+	  /* Enable Power Clock*/
+	  __HAL_RCC_PWR_CLK_ENABLE();
+
+	  /* Allow access to Backup */
+	  //HAL_PWR_EnableBkUpAccess();
+
+	  /* Reset RTC Domain */
+	  //__HAL_RCC_BACKUPRESET_FORCE();
+	  //__HAL_RCC_BACKUPRESET_RELEASE();
+
+	  /* Disable all used wake-up sources: Pin1(PA.0) */
+	  HAL_PWR_DisableWakeUpPin(PWR_WAKEUP_PIN1);
+
+	  /* Clear all related wake-up flags */
+	  __HAL_PWR_CLEAR_FLAG(PWR_FLAG_WU);
+
+	  /* Re-enable all used wake-up sources: Pin1(PA.0) */
+	  HAL_PWR_EnableWakeUpPin(PWR_WAKEUP_PIN1);
+
+	  /* Request to enter STANDBY mode  */
+	  HAL_PWR_EnterSTANDBYMode();
+}
+
 /* USER CODE END 0 */
 
 /**
@@ -321,21 +365,54 @@ int main(void)
   MX_USB_DEVICE_Init();
   MX_SPI1_Init();
 
+  /* Initialize interrupts */
+  MX_NVIC_Init();
   /* USER CODE BEGIN 2 */
   printf("EInk4in2 Test start...\n");
 
+  pressed = 0;
+  tick = HAL_GetTick();
 
+  while (1)
   {
-	  for (int i = 0; i < 10; i++)
+	  if (! pressed)
 	  {
-		  HAL_GPIO_TogglePin(GPIOD, GPIO_PIN_2);
-		  HAL_Delay(500);
+		  if ((HAL_GetTick() - tick) > 500)
+		  {
+			  HAL_GPIO_TogglePin(GPIOD, GPIO_PIN_2);
+			  tick = HAL_GetTick();
+		  }
+	  }
+	  else
+	  {
+		  if ((HAL_GetTick() - tickPress) > 200)
+		  {
+			  HAL_GPIO_TogglePin(GPIOD, GPIO_PIN_2);
+			  tickPress = HAL_GetTick();
+		  }
+
+		  if (HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_0) == GPIO_PIN_RESET)
+		  {
+			  if ((HAL_GetTick() - tick) > 2000)
+			  {
+				 for (int i = 0; i < 10; i++)
+				 {
+					 HAL_GPIO_TogglePin(GPIOD, GPIO_PIN_2);
+					 HAL_Delay(100);
+				 }
+
+				 HAL_GPIO_WritePin(GPIOD, GPIO_PIN_2, GPIO_PIN_RESET);
+				 HAL_Delay(1000);
+
+				 goStandbyMode();
+			  }
+			  else
+			  {
+				  pressed = 0;
+			  }
+		  }
 	  }
   }
-
-  HAL_GPIO_WritePin(GPIOD, GPIO_PIN_2, GPIO_PIN_RESET);
-  HAL_Delay(2000);
-  HAL_PWR_EnterSTANDBYMode();
 
 
 
@@ -645,7 +722,41 @@ void SystemClock_Config(void)
   HAL_NVIC_SetPriority(SysTick_IRQn, 0, 0);
 }
 
+/**
+  * @brief NVIC Configuration.
+  * @retval None
+  */
+static void MX_NVIC_Init(void)
+{
+  /* EXTI0_IRQn interrupt configuration */
+  HAL_NVIC_SetPriority(EXTI0_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(EXTI0_IRQn);
+}
+
 /* USER CODE BEGIN 4 */
+
+#ifdef __cplusplus
+ extern "C" {
+#endif
+
+int __io_putchar(int ch) {
+  HAL_UART_Transmit(&huart1, (uint8_t *)&ch, 1, 0xFFFF);
+  return ch;
+}
+
+int _write(int file, char *ptr, int len)
+{
+  /* Implement your write code here, this is used by puts and printf for example */
+  int i=0;
+  for(i=0 ; i<len ; i++)
+	  HAL_UART_Transmit(&huart1, (uint8_t *)&ptr[i], 1, 0xFFFF);
+	  //ITM_SendChar((*ptr++));
+  return len;
+}
+
+#ifdef __cplusplus
+}
+#endif
 
 /* USER CODE END 4 */
 
@@ -685,29 +796,6 @@ void assert_failed(uint8_t* file, uint32_t line)
 /**
   * @}
   */
-
-#ifdef __cplusplus
- extern "C" {
-#endif
-
-int __io_putchar(int ch) {
-  HAL_UART_Transmit(&huart1, (uint8_t *)&ch, 1, 0xFFFF);
-  return ch;
-}
-
-int _write(int file, char *ptr, int len)
-{
-  /* Implement your write code here, this is used by puts and printf for example */
-  int i=0;
-  for(i=0 ; i<len ; i++)
-	  HAL_UART_Transmit(&huart1, (uint8_t *)&ptr[i], 1, 0xFFFF);
-	  //ITM_SendChar((*ptr++));
-  return len;
-}
-
-#ifdef __cplusplus
-}
-#endif
 
 /**
   * @}
