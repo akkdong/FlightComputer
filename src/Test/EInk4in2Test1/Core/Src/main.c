@@ -308,7 +308,7 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 void goStandbyMode()
 {
 	  /* Enable Power Clock*/
-	  __HAL_RCC_PWR_CLK_ENABLE();
+	  //__HAL_RCC_PWR_CLK_ENABLE();
 
 	  /* Allow access to Backup */
 	  //HAL_PWR_EnableBkUpAccess();
@@ -328,6 +328,11 @@ void goStandbyMode()
 
 	  /* Request to enter STANDBY mode  */
 	  HAL_PWR_EnterSTANDBYMode();
+
+	  /* This code will never be reached! */
+	  while (1)
+	  {
+	  }
 }
 
 /* USER CODE END 0 */
@@ -368,6 +373,12 @@ int main(void)
   /* Initialize interrupts */
   MX_NVIC_Init();
   /* USER CODE BEGIN 2 */
+  if (__HAL_PWR_GET_FLAG(PWR_FLAG_SB) != RESET)
+  {
+    /* Clear Standby flag */
+    __HAL_PWR_CLEAR_FLAG(PWR_FLAG_SB);
+  }
+
   printf("EInk4in2 Test start...\n");
 
   pressed = 0;
