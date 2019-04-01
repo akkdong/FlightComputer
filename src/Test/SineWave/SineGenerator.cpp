@@ -24,11 +24,12 @@
  * over an JTAG interface
  */
 int clk_8m_div = 0;      // RTC 8M clock divider (division is by clk_8m_div+1, i.e. 0 means 8MHz frequency)
+#if 0
 int frequency_step = 8;  // Frequency step for CW generator
 int scale = 1;           // 50% of the full scale
 int offset;              // leave it default / 0 = no any offset
 int invert = 2;          // invert MSB to get sine waveform
-
+#endif
 
 /*
  * Enable cosine waveform generator on a DAC channel

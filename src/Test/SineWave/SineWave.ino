@@ -6,8 +6,9 @@
 
 
 SineGenerator sGen;
-uint32_t tickCount;
+uint32_t tickCount, tickCount2;
 int freq = 260;
+SineGenerator::SCALE scale = SineGenerator::SCALE_FULL;
 
 void __dacWrite(uint8_t pin, uint8_t value);
 
@@ -28,7 +29,7 @@ void setup()
 	#endif
 	
 	
-	sGen.begin(SineGenerator::USE_CHANNEL_1, SineGenerator::SCALE_HALF);
+	sGen.begin(SineGenerator::USE_DIFFERENTIAL, SineGenerator::SCALE_FULL);
 	
 	//sGen.turnOn(frequency);
 	//sGen.turnOff();
@@ -37,15 +38,16 @@ void setup()
 	
 	sGen.setFrequency(freq);
 	tickCount = millis();
+	tickCount2 = tickCount;
 	
 	//
-	__dacWrite(26, dacValue);
+	//__dacWrite(26, dacValue);
 }
 
 void loop()
 {
-	#if 0
-	if ((millis() - tickCount) > 2000)
+	#if 1
+	if ((millis() - tickCount) > 1000)
 	{
 		freq += 200;
 		if (freq > 1400)
@@ -56,6 +58,21 @@ void loop()
 		
 		Serial.print("freqency = "); Serial.println(freq);
 	}
+	if ((millis() - tickCount2) > 5000)
+	{
+		scale = (SineGenerator::SCALE)(scale + 1);
+		if (scale > SineGenerator::SCALE_QUATER)
+			scale = SineGenerator::SCALE_FULL;
+		
+		freq = 200;
+		sGen.setFrequency(freq);
+		
+		sGen.setScale(scale);
+		tickCount2 = millis();
+		tickCount = tickCount2;
+		
+		Serial.print("scale = "); Serial.println(scale);
+	}	
 	#endif
 	
 	#if 0
@@ -67,7 +84,7 @@ void loop()
     delay(100);	
 	#endif
 	
-	#if 1
+	#if 0
 	if ((millis() - tickCount) > 100)
 	{
 		__dacWrite(26, ++dacValue);
