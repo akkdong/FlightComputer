@@ -1,3 +1,9 @@
 [submodule "ref/GxEPD"]
 	path = ref/GxEPD
 	url = https://github.com/ZinggJM/GxEPD.git
+[submodule "ref/libvncserver"]
+	path = ref/libvncserver
+	url = https://github.com/LibVNC/libvncserver.git
+[submodule "ref/PaperTTY"]
+	path = ref/PaperTTY
+	url = https://github.com/joukos/PaperTTY.git
