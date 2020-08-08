@@ -1,6 +1,7 @@
-test
+/Test
 
 
 *.bak
-
+*.o
+*.swp
 
