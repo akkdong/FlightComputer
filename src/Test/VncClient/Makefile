@@ -5,7 +5,8 @@ DIR_GUI      = ./lib/GUI
 DIR_BIN      = ./bin
 DIR_Client	 = ./src
 
-OBJ_C = $(wildcard ${DIR_EPD}/*.c ${DIR_GUI}/*.c ${DIR_Client}/*.c ${DIR_FONTS}/*.c )
+OBJ_C = $(wildcard ${DIR_EPD}/*.c ${DIR_GUI}/*.c ${DIR_Client}/*.c )
+#OBJ_C += $(wildcard ${DIR_FONTS}/*.c )
 OBJ_O = $(patsubst %.c,${DIR_BIN}/%.o,$(notdir ${OBJ_C}))
 RPI_DEV_C = $(wildcard $(DIR_BIN)/dev_hardware_SPI.o $(DIR_BIN)/RPI_sysfs_gpio.o $(DIR_BIN)/DEV_Config.o )
 JETSON_DEV_C = $(wildcard $(DIR_BIN)/sysfs_software_spi.o $(DIR_BIN)/sysfs_gpio.o $(DIR_BIN)/DEV_Config.o )
@@ -41,7 +42,7 @@ RPI:RPI_DEV RPI_epd
 JETSON: JETSON_DEV JETSON_epd
 
 TARGET = VncClient
-CC = gcc
+CC = g++
 MSG = -g -O0 -Wall
 CFLAGS += $(MSG)
 CFLAGS += `pkg-config --cflags --libs libvncclient`

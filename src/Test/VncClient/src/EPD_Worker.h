@@ -9,7 +9,7 @@
 #include "GUI_BMPfile.h"
 #include "Debug.h"
 
-#include "EPD_4in2.h"
+#include "EPD_4in2_Ex.h"
 
 
 #endif // __EPD_WORKER_H__

@@ -697,6 +697,7 @@ void EPD_4IN2_Sleep(void)
 {
     EPD_4IN2_SendCommand(0x02); // POWER_OFF
     EPD_4IN2_ReadBusy();
+	
     EPD_4IN2_SendCommand(0x07); // DEEP_SLEEP
-    EPD_4IN2_SendData(0XA5);
+    EPD_4IN2_SendData(0xA5);
 }

@@ -35,9 +35,9 @@ void* updateDisplay(void* arg)
 		
 		//
 		if (updateCount == 0)
-			EPD_4IN2_Display(bwDisplay);
+			EPD_4IN2_Ex_Display(bwDisplay);
 		else
-			EPD_4IN2_PartialDisplay(0, 0, 400, 300, bwDisplay);
+			EPD_4IN2_Ex_PartialDisplay(0, 0, 400, 300, bwDisplay);
 		
 		updateCount = (updateCount + 1) % 50;
 		printf("update count: %d\n", updateCount);
@@ -204,8 +204,8 @@ int main(int argc, char **argv)
     }	
 	
     printf("e-Paper Init and Clear...\r\n");
-    EPD_4IN2_Init();
-    EPD_4IN2_Clear();
+    EPD_4IN2_Ex_Init();
+    EPD_4IN2_Ex_Clear();
     DEV_Delay_ms(500);
 	
 	memset(bwFrame, 0, sizeof(bwFrame));
