@@ -119,6 +119,17 @@ void MX_USB_HOST_Process(void)
 {
   /* USB Host Background task */
   USBH_Process(&hUsbHostHS);
+
+  //
+  if (Appli_state == APPLICATION_READY)
+  {
+	  if (USBH_HID_GetDeviceType(&hUsbHostHS) == HID_TOUCH)
+	  {
+		  HID_TOUCH_Info_TypeDef* pinfo;
+
+		  pinfo = USBH_HID_GetTouchInfo(&hUsbHostHS);
+	  }
+  }
 }
 /*
  * user callback definition
@@ -137,6 +148,7 @@ static void USBH_UserProcess  (USBH_HandleTypeDef *phost, uint8_t id)
 	  printf("APPLICATION_DISCONNECT\n");
 	  break;
 
+  case HOST_USER_CLASS_SELECTED:
   case HOST_USER_CLASS_ACTIVE:
 	  Appli_state = APPLICATION_READY;
 	  printf("APPLICATION_READY\n");
