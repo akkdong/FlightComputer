@@ -84,7 +84,7 @@ static USBH_StatusTypeDef USBH_HID_MouseDecode(USBH_HandleTypeDef *phost);
   * @{
   */
 HID_MOUSE_Info_TypeDef    mouse_info;
-uint32_t                  mouse_report_data[1];
+uint8_t                  mouse_report_data[4];
 
 /* Structures defining how to access items in a HID mouse report */
 /* Access button 1 state. */
@@ -131,7 +131,7 @@ static const HID_Report_ItemTypedef prop_b3={
 
 /* Access x coordinate change. */
 static const HID_Report_ItemTypedef prop_x={
-  (uint8_t *)mouse_report_data+1, /*data*/
+  (uint8_t *)mouse_report_data+2, /*data*/
   8,     /*size*/
   0,     /*shift*/
   0,     /*count (only for array items)*/  
@@ -145,7 +145,7 @@ static const HID_Report_ItemTypedef prop_x={
 
 /* Access y coordinate change. */
 static const HID_Report_ItemTypedef prop_y={
-  (uint8_t *)mouse_report_data+2, /*data*/
+  (uint8_t *)mouse_report_data+3, /*data*/
   8,     /*size*/
   0,     /*shift*/
   0,     /*count (only for array items)*/  
@@ -239,6 +239,13 @@ static USBH_StatusTypeDef USBH_HID_MouseDecode(USBH_HandleTypeDef *phost)
     mouse_info.buttons[1]=(uint8_t)HID_ReadItem((HID_Report_ItemTypedef *) &prop_b2, 0);
     mouse_info.buttons[2]=(uint8_t)HID_ReadItem((HID_Report_ItemTypedef *) &prop_b3, 0);
     
+    //printf("%02X02X02X02X\n", mouse_report_data[0]);
+    printf("%s%s%s %d,%d\n",
+    		mouse_info.buttons[0] ? "X" : "-",
+    		mouse_info.buttons[1] ? "X" : "-",
+    		mouse_info.buttons[2] ? "X" : "-",
+    		mouse_info.x, mouse_info.y);
+
     return USBH_OK;  
   }
   return   USBH_FAIL;

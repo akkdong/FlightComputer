@@ -128,6 +128,12 @@ void MX_USB_HOST_Process(void)
 		  HID_TOUCH_Info_TypeDef* pinfo;
 
 		  pinfo = USBH_HID_GetTouchInfo(&hUsbHostHS);
+		  if (pinfo)
+			  printf("%s %d, %d\n", pinfo->state ? "X" : "-", pinfo->x, pinfo->y);
+	  }
+	  else if (USBH_HID_GetDeviceType(&hUsbHostHS) == HID_MOUSE)
+	  {
+		  USBH_HID_GetMouseInfo(&hUsbHostHS);
 	  }
   }
 }
@@ -148,7 +154,7 @@ static void USBH_UserProcess  (USBH_HandleTypeDef *phost, uint8_t id)
 	  printf("APPLICATION_DISCONNECT\n");
 	  break;
 
-  case HOST_USER_CLASS_SELECTED:
+  //case HOST_USER_CLASS_SELECTED:
   case HOST_USER_CLASS_ACTIVE:
 	  Appli_state = APPLICATION_READY;
 	  printf("APPLICATION_READY\n");

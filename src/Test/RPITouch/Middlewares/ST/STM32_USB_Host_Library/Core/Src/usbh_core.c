@@ -423,7 +423,7 @@ USBH_StatusTypeDef  USBH_Process(USBH_HandleTypeDef *phost)
     USBH_UsrLog("USB Device Attached");  
       
     /* Wait for 100 ms after Reset */
-    USBH_Delay(100); 
+    USBH_Delay(200);
           
     phost->device.speed = USBH_LL_GetSpeed(phost);
     
@@ -451,6 +451,8 @@ USBH_StatusTypeDef  USBH_Process(USBH_HandleTypeDef *phost)
                    USBH_EP_CONTROL,
                    phost->Control.pipe_size);
     
+    USBH_Delay(200);
+
 #if (USBH_USE_OS == 1)
     osMessagePut ( phost->os_event, USBH_PORT_EVENT, 0);
 #endif    

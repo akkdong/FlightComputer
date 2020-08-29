@@ -107,6 +107,7 @@ static void  USBH_HID_ParseHIDDesc (HID_DescTypeDef *desc, uint8_t *buf);
 
 extern USBH_StatusTypeDef USBH_HID_MouseInit(USBH_HandleTypeDef *phost);
 extern USBH_StatusTypeDef USBH_HID_KeybdInit(USBH_HandleTypeDef *phost);
+extern USBH_StatusTypeDef USBH_HID_TouchInit(USBH_HandleTypeDef *phost);
 
 USBH_ClassTypeDef  HID_Class = 
 {
@@ -144,7 +145,7 @@ static USBH_StatusTypeDef USBH_HID_InterfaceInit (USBH_HandleTypeDef *phost)
   USBH_StatusTypeDef status = USBH_FAIL ;
   HID_HandleTypeDef *HID_Handle;
   
-  interface = USBH_FindInterface(phost, phost->pActiveClass->ClassCode, HID_BOOT_CODE, 0xFF);
+  interface = USBH_FindInterface(phost, phost->pActiveClass->ClassCode, 0xFF /*HID_BOOT_CODE*/, 0xFF);
   
   if(interface == 0xFF) /* No Valid Interface */
   {
@@ -171,8 +172,16 @@ static USBH_StatusTypeDef USBH_HID_InterfaceInit (USBH_HandleTypeDef *phost)
     }
     else
     {
-      USBH_UsrLog ("Protocol not supported.");  
-      return USBH_FAIL;
+    	if (phost->device.DevDesc.idVendor == 0x0EEF && phost->device.DevDesc.idProduct == 0x0005)
+    	{
+		  USBH_UsrLog ("Touch device found!");
+		  HID_Handle->Init =  USBH_HID_TouchInit;
+    	}
+    	else
+    	{
+		  USBH_UsrLog ("Protocol not supported.");
+		  return USBH_FAIL;
+    	}
     }
     
     HID_Handle->state     = HID_INIT;
@@ -330,7 +339,9 @@ static USBH_StatusTypeDef USBH_HID_ClassRequest(USBH_HandleTypeDef *phost)
     
   case HID_REQ_SET_PROTOCOL:
     /* set protocol */
-    if (USBH_HID_SetProtocol (phost, 0) == USBH_OK)
+	  status = USBH_HID_SetProtocol (phost, 0);
+	  if (status == USBH_OK || status == USBH_NOT_SUPPORTED)
+    //if (USBH_HID_SetProtocol (phost, 0) == USBH_OK)
     {
       HID_Handle->ctl_state = HID_REQ_IDLE;
       
@@ -338,6 +349,10 @@ static USBH_StatusTypeDef USBH_HID_ClassRequest(USBH_HandleTypeDef *phost)
       phost->pUser(phost, HOST_USER_CLASS_ACTIVE); 
       status = USBH_OK; 
     } 
+	  else
+	  {
+		  USBH_UsrLog ("REQ SET_PROTOCOL: %d.", status);
+	  }
     break;
     
   case HID_REQ_IDLE:
@@ -362,19 +377,31 @@ static USBH_StatusTypeDef USBH_HID_Process(USBH_HandleTypeDef *phost)
   switch (HID_Handle->state)
   {
   case HID_INIT:
-    HID_Handle->Init(phost); 
+    HID_Handle->Init(phost);
+    HID_Handle->state = HID_IDLE;
+    break;
+
   case HID_IDLE:
-    if(USBH_HID_GetReport (phost,
-                           0x01,
-                            0,
-                            HID_Handle->pData,
-                            HID_Handle->length) == USBH_OK)
-    {
-      
-      fifo_write(&HID_Handle->fifo, HID_Handle->pData, HID_Handle->length);  
-      HID_Handle->state = HID_SYNC;
-    }
-    
+	status = USBH_HID_GetReport(phost, 0x01U, 0U, HID_Handle->pData, (uint8_t)HID_Handle->length);
+	if (status == USBH_OK)
+	{
+	  HID_Handle->state = HID_SYNC;
+	}
+	else if (status == USBH_BUSY)
+	{
+	  HID_Handle->state = HID_IDLE;
+	  status = USBH_OK;
+	}
+	else if (status == USBH_NOT_SUPPORTED)
+	{
+	  HID_Handle->state = HID_SYNC;
+	  status = USBH_OK;
+	}
+	else
+	{
+	  HID_Handle->state = HID_ERROR;
+	  status = USBH_FAIL;
+	}
     break;
     
   case HID_SYNC:
@@ -666,6 +693,10 @@ HID_TypeTypeDef USBH_HID_GetDeviceType(USBH_HandleTypeDef *phost)
       == HID_MOUSE_BOOT_CODE)		  
     {
       type=  HID_MOUSE;  
+    }
+    else
+    {
+    	type= HID_TOUCH;
     }
   }
   return type;
