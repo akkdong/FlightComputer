@@ -89,7 +89,7 @@ uint8_t                  mouse_report_data[4];
 /* Structures defining how to access items in a HID mouse report */
 /* Access button 1 state. */
 static const HID_Report_ItemTypedef prop_b1={
-  (uint8_t *)mouse_report_data+0, /*data*/
+  (uint8_t *)mouse_report_data+1, /*data*/
   1,     /*size*/
   0,     /*shift*/
   0,     /*count (only for array items)*/
@@ -103,7 +103,7 @@ static const HID_Report_ItemTypedef prop_b1={
 
 /* Access button 2 state. */
 static const HID_Report_ItemTypedef prop_b2={
-  (uint8_t *)mouse_report_data+0, /*data*/
+  (uint8_t *)mouse_report_data+1, /*data*/
   1,     /*size*/
   1,     /*shift*/
   0,     /*count (only for array items)*/  
@@ -117,7 +117,7 @@ static const HID_Report_ItemTypedef prop_b2={
 
 /* Access button 3 state. */   
 static const HID_Report_ItemTypedef prop_b3={
-  (uint8_t *)mouse_report_data+0, /*data*/
+  (uint8_t *)mouse_report_data+1, /*data*/
   1,     /*size*/
   2,     /*shift*/
   0,     /*count (only for array items)*/
@@ -184,6 +184,9 @@ USBH_StatusTypeDef USBH_HID_MouseInit(USBH_HandleTypeDef *phost)
   mouse_info.buttons[2]=0;
   
   mouse_report_data[0]=0;
+  mouse_report_data[1]=0;
+  mouse_report_data[2]=0;
+  mouse_report_data[3]=0;
   
   if(HID_Handle->length > sizeof(mouse_report_data))
   {
@@ -230,7 +233,6 @@ static USBH_StatusTypeDef USBH_HID_MouseDecode(USBH_HandleTypeDef *phost)
   /*Fill report */
   if(fifo_read(&HID_Handle->fifo, &mouse_report_data, HID_Handle->length) ==  HID_Handle->length)
   {
-    
     /*Decode report */
     mouse_info.x = (int16_t )HID_ReadItem((HID_Report_ItemTypedef *) &prop_x, 0);
     mouse_info.y = (int16_t )HID_ReadItem((HID_Report_ItemTypedef *) &prop_y, 0);
@@ -239,12 +241,12 @@ static USBH_StatusTypeDef USBH_HID_MouseDecode(USBH_HandleTypeDef *phost)
     mouse_info.buttons[1]=(uint8_t)HID_ReadItem((HID_Report_ItemTypedef *) &prop_b2, 0);
     mouse_info.buttons[2]=(uint8_t)HID_ReadItem((HID_Report_ItemTypedef *) &prop_b3, 0);
     
-    //printf("%02X02X02X02X\n", mouse_report_data[0]);
+    //printf("%02X %02X %02X %02X\n", mouse_report_data[0], mouse_report_data[1], mouse_report_data[2], mouse_report_data[3]);
     printf("%s%s%s %d,%d\n",
     		mouse_info.buttons[0] ? "X" : "-",
     		mouse_info.buttons[1] ? "X" : "-",
     		mouse_info.buttons[2] ? "X" : "-",
-    		mouse_info.x, mouse_info.y);
+    		(int8_t)mouse_info.x, (int8_t)mouse_info.y);
 
     return USBH_OK;  
   }
