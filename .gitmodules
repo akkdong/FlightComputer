@@ -16,3 +16,6 @@
 [submodule "src/Test/libsuinput"]
 	path = src/Test/libsuinput
 	url = https://github.com/tuomasjjrasanen/libsuinput.git
+[submodule "src/Test/rpi_touch_driver"]
+	path = src/Test/rpi_touch_driver
+	url = https://github.com/bsteinsbo/rpi_touch_driver.git
