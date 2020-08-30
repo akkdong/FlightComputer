@@ -7,3 +7,15 @@
 [submodule "ref/PaperTTY"]
 	path = ref/PaperTTY
 	url = https://github.com/joukos/PaperTTY.git
+[submodule "src/Test/wm8960"]
+	path = src/Test/wm8960
+	url = https://github.com/pguyot/wm8960.git
+[submodule "src/Test/rpi-5inch-hdmi-touchscreen-driver"]
+	path = src/Test/rpi-5inch-hdmi-touchscreen-driver
+	url = https://github.com/saper-2/rpi-5inch-hdmi-touchscreen-driver.git
+[submodule "src/Test/libsuinput"]
+	path = src/Test/libsuinput
+	url = https://github.com/tuomasjjrasanen/libsuinput.git
+[submodule "src/Test/rpi_touch_driver"]
+	path = rpi_touch_driver
+	url = https://github.com/bsteinsbo/rpi_touch_driver.git
