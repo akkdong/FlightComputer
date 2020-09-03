@@ -144,7 +144,7 @@ USBH_StatusTypeDef USBH_HID_TouchInit(USBH_HandleTypeDef *phost)
     HID_Handle->length = sizeof(touch_report_data);
 
   HID_Handle->pData = (uint8_t *)touch_report_data;
-  fifo_init(&HID_Handle->fifo, phost->device.Data, HID_QUEUE_SIZE * sizeof(touch_report_data));
+  USBH_HID_FifoInit(&HID_Handle->fifo, phost->device.Data, HID_QUEUE_SIZE * sizeof(touch_report_data));
 
   return USBH_OK;
 }
@@ -184,13 +184,15 @@ static USBH_StatusTypeDef USBH_HID_TouchDecode(USBH_HandleTypeDef *phost)
   }
 
   /*Fill report */
-  if(fifo_read(&HID_Handle->fifo, &touch_report_data, HID_Handle->length) ==  HID_Handle->length)
+  if (USBH_HID_FifoRead(&HID_Handle->fifo, &touch_report_data, HID_Handle->length) ==  HID_Handle->length)
   {
     /*Decode report */
-	touch_info.state = (uint8_t)HID_ReadItem((HID_Report_ItemTypedef *) &prop_state, 0);
-
-	touch_info.x = (uint16_t)HID_ReadItem((HID_Report_ItemTypedef *) &prop_x, 0);
-	touch_info.y = (uint16_t)HID_ReadItem((HID_Report_ItemTypedef *) &prop_y, 0);
+	//touch_info.state = (uint8_t)HID_ReadItem((HID_Report_ItemTypedef *) &prop_state, 0);
+	//touch_info.x = (uint16_t)HID_ReadItem((HID_Report_ItemTypedef *) &prop_x, 0);
+	//touch_info.y = (uint16_t)HID_ReadItem((HID_Report_ItemTypedef *) &prop_y, 0);
+	  touch_info.state = touch_report_data[1];
+	  touch_info.x = touch_report_data[2] * 256 + touch_report_data[3];
+	  touch_info.y = touch_report_data[4] * 256 + touch_report_data[5];
 
     return USBH_OK;
   }

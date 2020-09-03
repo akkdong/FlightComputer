@@ -129,7 +129,11 @@ void MX_USB_HOST_Process(void)
 
 		  pinfo = USBH_HID_GetTouchInfo(&hUsbHostHS);
 		  if (pinfo)
-			  printf("%s %d, %d\n", pinfo->state ? "X" : "-", pinfo->x, pinfo->y);
+		  {
+		  	  //printf("%s %d, %d\n", pinfo->state ? "X" : "-", pinfo->x, pinfo->y);
+
+			  HAL_GPIO_WritePin(GPIOG, GPIO_PIN_14, pinfo->state ? GPIO_PIN_SET : GPIO_PIN_RESET);
+		  }
 	  }
 	  else if (USBH_HID_GetDeviceType(&hUsbHostHS) == HID_MOUSE)
 	  {

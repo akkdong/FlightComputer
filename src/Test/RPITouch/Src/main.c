@@ -125,12 +125,20 @@ int main(void)
 
   /* USER CODE BEGIN 3 */
     HAL_GPIO_WritePin(GPIOG, GPIO_PIN_13, on ? GPIO_PIN_RESET : GPIO_PIN_SET);
-	HAL_GPIO_WritePin(GPIOG, GPIO_PIN_14, on ? GPIO_PIN_SET : GPIO_PIN_RESET);
+	//HAL_GPIO_WritePin(GPIOG, GPIO_PIN_14, on ? GPIO_PIN_SET : GPIO_PIN_RESET);
 
 	if (HAL_GetTick() - lastTick > 200)
 	{
+		static int i = 0;
+
 		lastTick = HAL_GetTick();
 		on = 1 - on;
+
+		if (++i == 10)
+		{
+			i = 0;
+			printf("!");
+		}
 	}
 
   }
