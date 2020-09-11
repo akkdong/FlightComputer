@@ -1,5 +1,6 @@
 EESchema Schematic File Version 4
-EELAYER 30 0
+LIBS:FlightComputer-cache
+EELAYER 26 0
 EELAYER END
 $Descr A4 11693 8268
 encoding utf-8
@@ -117,4 +118,10 @@ Wire Wire Line
 	6900 1900 4400 1900
 Wire Wire Line
 	4400 2100 6900 2100
+$Sheet
+S 4700 6900 1000 500 
+U 5F5976A1
+F0 "EINK-PMIC" 50
+F1 "EINK-PMIC.sch" 50
+$EndSheet
 $EndSCHEMATC
