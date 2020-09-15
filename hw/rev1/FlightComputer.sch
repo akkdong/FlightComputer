@@ -1,10 +1,9 @@
 EESchema Schematic File Version 4
-LIBS:FlightComputer-cache
-EELAYER 26 0
+EELAYER 30 0
 EELAYER END
 $Descr A4 11693 8268
 encoding utf-8
-Sheet 1 6
+Sheet 1 8
 Title ""
 Date ""
 Rev ""
@@ -123,5 +122,11 @@ S 4700 6900 1000 500
 U 5F5976A1
 F0 "EINK-PMIC" 50
 F1 "EINK-PMIC.sch" 50
+$EndSheet
+$Sheet
+S 2350 6800 1050 600 
+U 5F60AB0F
+F0 "Memory" 50
+F1 "Memory.sch" 50
 $EndSheet
 $EndSCHEMATC
