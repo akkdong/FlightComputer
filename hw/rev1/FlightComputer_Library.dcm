@@ -1,5 +1,21 @@
 EESchema-DOCLIB  Version 2.0
 #
+$CMP +22V
+D Power flag, +22V
+K power-flag
+$ENDCMP
+#
+$CMP -20V
+D Power flag, -20V
+K power-flag
+$ENDCMP
+#
+$CMP ED060SC7_EPD
+D EPD Connector, AXT334124
+K connector
+F ~
+$ENDCMP
+#
 $CMP STM32F103
 D ARM Cortex-M3 MCU, 64KB flash, 20KB RAM, 72MHz, 2-3.6V, 37 GPIO, LQFP-48
 K ARM Cortex-M3 STM32F1 STM32F103
