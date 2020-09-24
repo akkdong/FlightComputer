@@ -28,4 +28,44 @@ K ARM Cortex-M7 STM32H7 STM32H7x3
 F http://www.st.com/st-web-ui/static/active/en/resource/technical/document/datasheet/DM00387108.pdf
 $ENDCMP
 #
+$CMP VCC_3V3
+D Power flag, VCC_3V3
+K power-flag
+$ENDCMP
+#
+$CMP VCC_5V
+D Power flag, VCC_5V
+K power-flag
+$ENDCMP
+#
+$CMP VCC_BAT
+D Power flag, VCC_BAT
+K power-flag
+$ENDCMP
+#
+$CMP VCC_EINK
+D Power flag, VCC_EINK
+K power-flag
+$ENDCMP
+#
+$CMP VCC_IMU
+D Power flag, VCC_IMU
+K power-flag
+$ENDCMP
+#
+$CMP VCC_MCU
+D Power flag, VCC_MCU
+K power-flag
+$ENDCMP
+#
+$CMP VCC_PERI
+D Power flag, VCC_PERI
+K power-flag
+$ENDCMP
+#
+$CMP VCC_USB
+D Power flag, VCC_USB
+K power-flag
+$ENDCMP
+#
 #End Doc Library

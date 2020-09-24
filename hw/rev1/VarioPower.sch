@@ -1,10 +1,9 @@
 EESchema Schematic File Version 4
-LIBS:FlightComputer-cache
-EELAYER 26 0
+EELAYER 30 0
 EELAYER END
 $Descr A4 11693 8268
 encoding utf-8
-Sheet 6 8
+Sheet 6 11
 Title ""
 Date ""
 Rev ""
@@ -54,19 +53,6 @@ F 3 "~" H 5400 2450 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L power:+BATT #PWR?
-U 1 1 5F371CB8
-P 3550 2100
-AR Path="/5F2A50C6/5F371CB8" Ref="#PWR?"  Part="1" 
-AR Path="/5F2A508D/5F371147/5F371CB8" Ref="#PWR?"  Part="1" 
-F 0 "#PWR?" H 3550 1950 50  0001 C CNN
-F 1 "+BATT" H 3565 2273 50  0000 C CNN
-F 2 "" H 3550 2100 50  0001 C CNN
-F 3 "" H 3550 2100 50  0001 C CNN
-	1    3550 2100
-	1    0    0    -1  
-$EndComp
-$Comp
 L power:GND #PWR?
 U 1 1 5F371CBE
 P 3550 2750
@@ -84,9 +70,9 @@ Wire Wire Line
 Wire Wire Line
 	3550 2400 3550 2750
 Wire Wire Line
-	3650 2200 3550 2200
+	3650 2200 3050 2200
 Wire Wire Line
-	3550 2200 3550 2100
+	3050 2200 3050 2000
 $Comp
 L Device:C_Small C?
 U 1 1 5F371CC8
@@ -158,31 +144,12 @@ Wire Wire Line
 	5400 2550 5400 2750
 Wire Wire Line
 	4950 2550 4950 2750
-$Comp
-L power:VCC #PWR?
-U 1 1 5F371CEB
-P 5400 2000
-AR Path="/5F2A50C6/5F371CEB" Ref="#PWR?"  Part="1" 
-AR Path="/5F2A508D/5F371147/5F371CEB" Ref="#PWR?"  Part="1" 
-F 0 "#PWR?" H 5400 1850 50  0001 C CNN
-F 1 "VCC" H 5417 2173 50  0000 C CNN
-F 2 "" H 5400 2000 50  0001 C CNN
-F 3 "" H 5400 2000 50  0001 C CNN
-	1    5400 2000
-	1    0    0    -1  
-$EndComp
 Wire Wire Line
 	5400 2000 5400 2200
 Connection ~ 5400 2200
 Wire Wire Line
 	3450 2300 3650 2300
-Wire Wire Line
-	3550 2200 3050 2200
-Connection ~ 3550 2200
-Text HLabel 5650 2200 2    50   Input ~ 0
-VCC_PERIPH
-Wire Wire Line
-	5400 2200 5650 2200
+Connection ~ 3050 2200
 $Comp
 L Device:C_Small C?
 U 1 1 5F371CF8
@@ -379,19 +346,6 @@ Wire Wire Line
 Connection ~ 3500 4850
 Wire Wire Line
 	3500 4850 3700 4850
-$Comp
-L power:+BATT #PWR?
-U 1 1 5F371D61
-P 2700 4450
-AR Path="/5F2A50C6/5F371D61" Ref="#PWR?"  Part="1" 
-AR Path="/5F2A508D/5F371147/5F371D61" Ref="#PWR?"  Part="1" 
-F 0 "#PWR?" H 2700 4300 50  0001 C CNN
-F 1 "+BATT" H 2715 4623 50  0000 C CNN
-F 2 "" H 2700 4450 50  0001 C CNN
-F 3 "" H 2700 4450 50  0001 C CNN
-	1    2700 4450
-	1    0    0    -1  
-$EndComp
 Wire Wire Line
 	2700 4650 3700 4650
 Wire Wire Line
@@ -529,13 +483,37 @@ F 3 "" H 2650 2750 50  0001 C CNN
 $EndComp
 Wire Wire Line
 	2650 2700 2650 2750
-Text HLabel 2500 4650 0    50   Input ~ 0
-VCC_BAT
-Text HLabel 2500 2200 0    50   Input ~ 0
-VCC_BAT
-Wire Wire Line
-	2500 2200 3050 2200
-Connection ~ 3050 2200
-Wire Wire Line
-	2700 4650 2500 4650
+$Comp
+L FlightComputer_Library:VCC_BAT #PWR?
+U 1 1 5FC6A625
+P 3050 2000
+F 0 "#PWR?" H 3050 1850 50  0001 C CNN
+F 1 "VCC_BAT" H 3067 2173 50  0000 C CNN
+F 2 "" H 3050 2000 50  0001 C CNN
+F 3 "" H 3050 2000 50  0001 C CNN
+	1    3050 2000
+	1    0    0    -1  
+$EndComp
+$Comp
+L FlightComputer_Library:VCC_PERI #PWR?
+U 1 1 5FC6A66E
+P 5400 2000
+F 0 "#PWR?" H 5400 1850 50  0001 C CNN
+F 1 "VCC_PERI" H 5417 2173 50  0000 C CNN
+F 2 "" H 5400 2000 50  0001 C CNN
+F 3 "" H 5400 2000 50  0001 C CNN
+	1    5400 2000
+	1    0    0    -1  
+$EndComp
+$Comp
+L FlightComputer_Library:VCC_BAT #PWR?
+U 1 1 5FC6A800
+P 2700 4450
+F 0 "#PWR?" H 2700 4300 50  0001 C CNN
+F 1 "VCC_BAT" H 2717 4623 50  0000 C CNN
+F 2 "" H 2700 4450 50  0001 C CNN
+F 3 "" H 2700 4450 50  0001 C CNN
+	1    2700 4450
+	1    0    0    -1  
+$EndComp
 $EndSCHEMATC

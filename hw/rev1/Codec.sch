@@ -1,10 +1,9 @@
 EESchema Schematic File Version 4
-LIBS:FlightComputer-cache
-EELAYER 26 0
+EELAYER 30 0
 EELAYER END
 $Descr A4 11693 8268
 encoding utf-8
-Sheet 2 8
+Sheet 2 11
 Title ""
 Date ""
 Rev ""
@@ -69,30 +68,6 @@ F 3 "http://www.abracon.com/Oscillators/ASV.pdf" H 9150 3650 50  0001 C CNN
 	1    9250 3650
 	1    0    0    -1  
 $EndComp
-$Comp
-L power:+3V3 #PWR0164
-U 1 1 5F349802
-P 5650 1250
-F 0 "#PWR0164" H 5650 1100 50  0001 C CNN
-F 1 "+3V3" H 5665 1423 50  0000 C CNN
-F 2 "" H 5650 1250 50  0001 C CNN
-F 3 "" H 5650 1250 50  0001 C CNN
-	1    5650 1250
-	1    0    0    -1  
-$EndComp
-$Comp
-L power:+5V #PWR0165
-U 1 1 5F34983A
-P 6050 1250
-F 0 "#PWR0165" H 6050 1100 50  0001 C CNN
-F 1 "+5V" H 6065 1423 50  0000 C CNN
-F 2 "" H 6050 1250 50  0001 C CNN
-F 3 "" H 6050 1250 50  0001 C CNN
-	1    6050 1250
-	1    0    0    -1  
-$EndComp
-Wire Wire Line
-	5650 1250 5650 1350
 Wire Wire Line
 	5650 1600 5750 1600
 Wire Wire Line
@@ -105,8 +80,6 @@ Wire Wire Line
 Wire Wire Line
 	5850 1600 5850 1700
 Connection ~ 5750 1600
-Wire Wire Line
-	6050 1250 6050 1350
 Wire Wire Line
 	6050 1600 6150 1600
 Wire Wire Line
@@ -543,17 +516,6 @@ Wire Wire Line
 Connection ~ 8800 2550
 Wire Wire Line
 	8800 2550 8150 2550
-$Comp
-L power:+3V3 #PWR0173
-U 1 1 5F373629
-P 8800 1300
-F 0 "#PWR0173" H 8800 1150 50  0001 C CNN
-F 1 "+3V3" H 8815 1473 50  0000 C CNN
-F 2 "" H 8800 1300 50  0001 C CNN
-F 3 "" H 8800 1300 50  0001 C CNN
-	1    8800 1300
-	1    0    0    -1  
-$EndComp
 Wire Wire Line
 	8800 1300 8800 1650
 $Comp
@@ -692,19 +654,6 @@ Text HLabel 4200 2600 0    50   Input ~ 0
 I2C_SCL
 Text HLabel 4200 2700 0    50   Input ~ 0
 I2C_SDA
-$Comp
-L power:+3V3 #PWR0174
-U 1 1 5F3B4E63
-P 9250 3250
-F 0 "#PWR0174" H 9250 3100 50  0001 C CNN
-F 1 "+3V3" H 9265 3423 50  0000 C CNN
-F 2 "" H 9250 3250 50  0001 C CNN
-F 3 "" H 9250 3250 50  0001 C CNN
-	1    9250 3250
-	1    0    0    -1  
-$EndComp
-Wire Wire Line
-	9250 3250 9250 3300
 Wire Wire Line
 	9250 3300 8850 3300
 Wire Wire Line
@@ -817,24 +766,6 @@ Text Label 3850 3200 0    50   ~ 0
 RADIO_L
 Text Label 3850 3300 0    50   ~ 0
 RADIO_R
-Text HLabel 5850 1250 1    50   Input ~ 0
-VCC_3V3
-Text HLabel 6250 1250 1    50   Input ~ 0
-VCC_5V
-Wire Wire Line
-	6050 1350 6250 1350
-Wire Wire Line
-	6250 1350 6250 1250
-Connection ~ 6050 1350
-Wire Wire Line
-	6050 1350 6050 1600
-Wire Wire Line
-	5650 1350 5850 1350
-Wire Wire Line
-	5850 1350 5850 1250
-Connection ~ 5650 1350
-Wire Wire Line
-	5650 1350 5650 1600
 Wire Wire Line
 	4400 2200 4200 2200
 Wire Wire Line
@@ -887,8 +818,6 @@ F 3 "" H 3000 5800 50  0001 C CNN
 	1    3000 5800
 	0    1    1    0   
 $EndComp
-Text HLabel 1550 6000 0    50   Input ~ 0
-VCC_3V3
 Wire Wire Line
 	3000 5800 3200 5800
 $Comp
@@ -904,8 +833,6 @@ F 3 "~" H 2000 6000 50  0001 C CNN
 	1    2000 6000
 	1    0    0    -1  
 $EndComp
-Wire Wire Line
-	1550 6000 1750 6000
 $Comp
 L Device:C_Small C?
 U 1 1 5F41EDB4
@@ -1083,4 +1010,69 @@ Wire Wire Line
 	4350 5600 4350 5400
 Wire Wire Line
 	4350 5400 4500 5400
+$Comp
+L FlightComputer_Library:VCC_3V3 #PWR?
+U 1 1 5FC8BC9C
+P 1600 5850
+F 0 "#PWR?" H 1600 5700 50  0001 C CNN
+F 1 "VCC_3V3" H 1617 6023 50  0000 C CNN
+F 2 "" H 1600 5850 50  0001 C CNN
+F 3 "" H 1600 5850 50  0001 C CNN
+	1    1600 5850
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	1750 6000 1600 6000
+Wire Wire Line
+	1600 6000 1600 5850
+$Comp
+L FlightComputer_Library:VCC_3V3 #PWR?
+U 1 1 5FC91A41
+P 9250 3200
+F 0 "#PWR?" H 9250 3050 50  0001 C CNN
+F 1 "VCC_3V3" H 9267 3373 50  0000 C CNN
+F 2 "" H 9250 3200 50  0001 C CNN
+F 3 "" H 9250 3200 50  0001 C CNN
+	1    9250 3200
+	1    0    0    -1  
+$EndComp
+$Comp
+L FlightComputer_Library:VCC_3V3 #PWR?
+U 1 1 5FC921AE
+P 8800 1300
+F 0 "#PWR?" H 8800 1150 50  0001 C CNN
+F 1 "VCC_3V3" H 8817 1473 50  0000 C CNN
+F 2 "" H 8800 1300 50  0001 C CNN
+F 3 "" H 8800 1300 50  0001 C CNN
+	1    8800 1300
+	1    0    0    -1  
+$EndComp
+$Comp
+L FlightComputer_Library:VCC_5V #PWR?
+U 1 1 5FC92224
+P 6050 1250
+F 0 "#PWR?" H 6050 1100 50  0001 C CNN
+F 1 "VCC_5V" H 6067 1423 50  0000 C CNN
+F 2 "" H 6050 1250 50  0001 C CNN
+F 3 "" H 6050 1250 50  0001 C CNN
+	1    6050 1250
+	1    0    0    -1  
+$EndComp
+$Comp
+L FlightComputer_Library:VCC_3V3 #PWR?
+U 1 1 5FC9228A
+P 5650 1250
+F 0 "#PWR?" H 5650 1100 50  0001 C CNN
+F 1 "VCC_3V3" H 5667 1423 50  0000 C CNN
+F 2 "" H 5650 1250 50  0001 C CNN
+F 3 "" H 5650 1250 50  0001 C CNN
+	1    5650 1250
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	5650 1250 5650 1600
+Wire Wire Line
+	6050 1250 6050 1600
+Wire Wire Line
+	9250 3200 9250 3300
 $EndSCHEMATC
