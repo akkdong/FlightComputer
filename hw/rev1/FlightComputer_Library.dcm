@@ -43,6 +43,11 @@ D Power flag, VCC_BAT
 K power-flag
 $ENDCMP
 #
+$CMP VCC_BAT+
+D Power flag, VCC_BAT+
+K power-flag
+$ENDCMP
+#
 $CMP VCC_EINK
 D Power flag, VCC_EINK
 K power-flag
