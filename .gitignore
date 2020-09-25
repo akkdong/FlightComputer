@@ -6,4 +6,5 @@ Debug/
 *.bak
 *.o
 *.swp
-
+*.sch-bak
+*.bck
