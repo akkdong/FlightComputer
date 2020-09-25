@@ -63,8 +63,13 @@ D Power flag, VCC_MCU
 K power-flag
 $ENDCMP
 #
-$CMP VCC_PERI
-D Power flag, VCC_PERI
+$CMP VCC_MEM
+D Power flag, VCC_MEM
+K power-flag
+$ENDCMP
+#
+$CMP VCC_PERIH
+D Power flag, VCC_PERIH
 K power-flag
 $ENDCMP
 #
