@@ -303,137 +303,59 @@ F 3 "" H 1900 5300 50  0001 C CNN
 $EndComp
 Wire Wire Line
 	1900 5300 2100 5300
-$Comp
-L Device:R_US R?
-U 1 1 5F6E8378
-P 2250 5000
-AR Path="/5F2A50C6/5F6E8378" Ref="R?"  Part="1" 
-AR Path="/5F2A508D/5F6E8378" Ref="R?"  Part="1" 
-AR Path="/5F741CFB/5F6E8378" Ref="R?"  Part="1" 
-F 0 "R?" V 2300 5150 50  0000 L CNN
-F 1 "10K" V 2300 4700 50  0000 L CNN
-F 2 "" V 2290 4990 50  0001 C CNN
-F 3 "~" H 2250 5000 50  0001 C CNN
-	1    2250 5000
-	0    -1   -1   0   
-$EndComp
-$Comp
-L Device:R_US R?
-U 1 1 5F6E837E
-P 2250 5100
-AR Path="/5F2A50C6/5F6E837E" Ref="R?"  Part="1" 
-AR Path="/5F2A508D/5F6E837E" Ref="R?"  Part="1" 
-AR Path="/5F741CFB/5F6E837E" Ref="R?"  Part="1" 
-F 0 "R?" V 2300 5250 50  0000 L CNN
-F 1 "N/C" V 2300 4800 50  0000 L CNN
-F 2 "" V 2290 5090 50  0001 C CNN
-F 3 "~" H 2250 5100 50  0001 C CNN
-	1    2250 5100
-	0    -1   -1   0   
-$EndComp
 Wire Wire Line
-	2400 5000 2650 5000
-Wire Wire Line
-	2400 5100 2650 5100
-$Comp
-L FlightComputer_Library:VCC_MCU #PWR?
-U 1 1 5F6E8386
-P 1900 5000
-F 0 "#PWR?" H 1900 4850 50  0001 C CNN
-F 1 "VCC_MCU" V 1900 5350 50  0000 C CNN
-F 2 "" H 1900 5000 50  0001 C CNN
-F 3 "" H 1900 5000 50  0001 C CNN
-	1    1900 5000
-	0    -1   -1   0   
-$EndComp
-Wire Wire Line
-	1900 5000 2100 5000
-$Comp
-L power:GND #PWR?
-U 1 1 5F6E838D
-P 1900 5100
-F 0 "#PWR?" H 1900 4850 50  0001 C CNN
-F 1 "GND" V 1900 4850 50  0000 C CNN
-F 2 "" H 1900 5100 50  0001 C CNN
-F 3 "" H 1900 5100 50  0001 C CNN
-	1    1900 5100
-	0    1    1    0   
-$EndComp
-Wire Wire Line
-	1900 5100 2100 5100
-Wire Wire Line
-	2650 5100 2650 5000
-Wire Wire Line
-	2650 5000 3050 5000
-Connection ~ 2650 5000
-Wire Wire Line
-	3050 4700 2450 4700
-Text Label 2450 4700 0    50   ~ 0
+	3050 4700 2150 4700
+Text Label 2150 4700 0    50   ~ 0
 ~RESET~
 $Comp
 L Oscillator:ASE-xxxMHz X?
 U 1 1 5F824DEC
-P 1300 3500
-F 0 "X?" H 1644 3546 50  0000 L CNN
-F 1 "ASE-25MHz" H 1644 3455 50  0000 L CNN
-F 2 "Oscillator:Oscillator_SMD_Abracon_ASE-4Pin_3.2x2.5mm" H 2000 3150 50  0001 C CNN
-F 3 "http://www.abracon.com/Oscillators/ASV.pdf" H 1200 3500 50  0001 C CNN
-	1    1300 3500
+P 1350 3900
+F 0 "X?" H 1400 3450 50  0000 L CNN
+F 1 "ASE-25MHz" H 1250 3350 50  0000 L CNN
+F 2 "Oscillator:Oscillator_SMD_Abracon_ASE-4Pin_3.2x2.5mm" H 2050 3550 50  0001 C CNN
+F 3 "http://www.abracon.com/Oscillators/ASV.pdf" H 1250 3900 50  0001 C CNN
+	1    1350 3900
 	1    0    0    -1  
 $EndComp
 $Comp
 L Device:R_US R?
 U 1 1 5F8259FF
-P 800 3250
+P 800 3650
 AR Path="/5F2A50C6/5F8259FF" Ref="R?"  Part="1" 
 AR Path="/5F2A508D/5F8259FF" Ref="R?"  Part="1" 
 AR Path="/5F741CFB/5F8259FF" Ref="R?"  Part="1" 
-F 0 "R?" H 900 3200 50  0000 L CNN
-F 1 "10K" H 900 3300 50  0000 L CNN
-F 2 "" V 840 3240 50  0001 C CNN
-F 3 "~" H 800 3250 50  0001 C CNN
-	1    800  3250
+F 0 "R?" H 900 3600 50  0000 L CNN
+F 1 "10K" H 900 3700 50  0000 L CNN
+F 2 "" V 840 3640 50  0001 C CNN
+F 3 "~" H 800 3650 50  0001 C CNN
+	1    800  3650
 	1    0    0    1   
 $EndComp
 $Comp
 L FlightComputer_Library:VCC_MCU #PWR?
 U 1 1 5F825D9B
-P 800 2900
-F 0 "#PWR?" H 800 2750 50  0001 C CNN
-F 1 "VCC_MCU" H 817 3073 50  0000 C CNN
-F 2 "" H 800 2900 50  0001 C CNN
-F 3 "" H 800 2900 50  0001 C CNN
-	1    800  2900
+P 800 3300
+F 0 "#PWR?" H 800 3150 50  0001 C CNN
+F 1 "VCC_MCU" H 817 3473 50  0000 C CNN
+F 2 "" H 800 3300 50  0001 C CNN
+F 3 "" H 800 3300 50  0001 C CNN
+	1    800  3300
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	800  2900 800  3000
+	800  3300 800  3400
 Wire Wire Line
-	800  3000 1300 3000
+	800  3400 1350 3400
 Wire Wire Line
-	1300 3000 1300 3200
-Connection ~ 800  3000
-Wire Wire Line
-	800  3000 800  3100
+	1350 3400 1350 3600
+Connection ~ 800  3400
 Wire Wire Line
 	800  3400 800  3500
 Wire Wire Line
-	800  3500 1000 3500
-$Comp
-L power:GND #PWR?
-U 1 1 5F82BF15
-P 1300 3900
-F 0 "#PWR?" H 1300 3650 50  0001 C CNN
-F 1 "GND" H 1305 3727 50  0000 C CNN
-F 2 "" H 1300 3900 50  0001 C CNN
-F 3 "" H 1300 3900 50  0001 C CNN
-	1    1300 3900
-	1    0    0    -1  
-$EndComp
+	800  3800 800  3900
 Wire Wire Line
-	1300 3800 1300 3900
-Wire Wire Line
-	1600 3500 3050 3500
+	800  3900 1050 3900
 Wire Wire Line
 	3050 3100 2150 3100
 Wire Wire Line
@@ -451,7 +373,7 @@ DEBUG_JTCK_SWCLK
 Text Label 2150 3100 0    50   ~ 0
 DEBUG_JTDI
 Text Label 5650 1900 2    50   ~ 0
-DEBUG_JTDO_TRACESWO
+DEBUG_JTDO-TRACESWO
 Text Label 5650 2000 2    50   ~ 0
 DEBUG_NJTRST
 Wire Wire Line
@@ -506,12 +428,8 @@ Text Label 9700 3700 2    50   ~ 0
 FMC_A10
 Text Label 9700 3800 2    50   ~ 0
 FMC_A11
-Text Label 9700 3900 2    50   ~ 0
-FMC_A12
 Wire Wire Line
 	9000 4000 9700 4000
-Text Label 9700 4000 2    50   ~ 0
-FMC_A13
 Wire Wire Line
 	9000 4200 9700 4200
 Text Label 9700 4100 2    50   ~ 0
@@ -671,10 +589,6 @@ Wire Wire Line
 Text Label 5650 2900 2    50   ~ 0
 USB_OTG_HS_VBUS
 Wire Wire Line
-	3050 2600 2150 2600
-Wire Wire Line
-	3050 2500 2150 2500
-Wire Wire Line
 	3050 1800 2150 1800
 Wire Wire Line
 	3050 1900 2150 1900
@@ -690,8 +604,6 @@ Text Label 2150 1800 0    50   ~ 0
 USART2_TX
 Text Label 2150 1900 0    50   ~ 0
 USART2_RX
-Text Label 2150 2500 0    50   ~ 0
-OTG_FS_VBUS
 Wire Wire Line
 	3050 2700 2150 2700
 Wire Wire Line
@@ -719,8 +631,6 @@ Wire Wire Line
 Wire Wire Line
 	7400 2200 6750 2200
 Wire Wire Line
-	7400 2300 6750 2300
-Wire Wire Line
 	9000 4600 9700 4600
 Wire Wire Line
 	9000 4700 9700 4700
@@ -732,18 +642,6 @@ Wire Wire Line
 	9000 5000 9700 5000
 Wire Wire Line
 	9000 5100 9700 5100
-Text Label 9700 4600 2    50   ~ 0
-EINK_DATA6
-Text Label 9700 4700 2    50   ~ 0
-EINK_DATA7
-Text Label 9700 4800 2    50   ~ 0
-PMIC_PWR_GOOD
-Text Label 9700 4900 2    50   ~ 0
-PMIC_VCOM
-Text Label 9700 5000 2    50   ~ 0
-PMIC_WAKEUP
-Text Label 9700 5100 2    50   ~ 0
-PMIC_PWRUP
 Wire Wire Line
 	9000 1800 9700 1800
 Wire Wire Line
@@ -754,16 +652,6 @@ Wire Wire Line
 	9000 2100 9700 2100
 Wire Wire Line
 	9000 2200 9700 2200
-Text Label 9700 1800 2    50   ~ 0
-EPD_CL
-Text Label 9700 1900 2    50   ~ 0
-EPD_OE
-Text Label 9700 2000 2    50   ~ 0
-EPD_LE
-Text Label 9700 2100 2    50   ~ 0
-EPD_SPH
-Text Label 9700 2200 2    50   ~ 0
-EPD_GMODE
 Wire Wire Line
 	7400 2700 6750 2700
 Wire Wire Line
@@ -771,11 +659,11 @@ Wire Wire Line
 Wire Wire Line
 	7400 2900 6750 2900
 Text Label 6750 2700 0    50   ~ 0
-EPD_CKV
-Text Label 6750 2800 0    50   ~ 0
 EPD_SPV
+Text Label 6750 2800 0    50   ~ 0
+EPD_CKV
 Text Label 6750 2900 0    50   ~ 0
-EPD_PIMIC_nINT
+EPD_SPH
 Wire Wire Line
 	3050 3800 2150 3800
 Wire Wire Line
@@ -790,32 +678,12 @@ Wire Wire Line
 	3050 4350 2150 4350
 Wire Wire Line
 	3050 4450 2150 4450
-Text Label 2150 3800 0    50   ~ 0
-KEY_LEFT
-Text Label 2150 3900 0    50   ~ 0
-KEY_RIGHT
-Text Label 2150 4000 0    50   ~ 0
-KEY_UP
-Text Label 2150 4100 0    50   ~ 0
-KEY_DOWN
-Text Label 2150 4250 0    50   ~ 0
-KEY_ESCAPE
-Text Label 2150 4350 0    50   ~ 0
-KEY_FUNC1
-Text Label 2150 4450 0    50   ~ 0
-KEY_FUNC2
 Wire Wire Line
 	4650 5000 5650 5000
 Wire Wire Line
 	4650 5100 5650 5100
-Text Label 5650 5000 2    50   ~ 0
-KEY_POWER
-Text Label 5650 5100 2    50   ~ 0
-KEY_ENTER
 Wire Wire Line
 	4650 1600 5650 1600
-Wire Wire Line
-	4650 1700 5650 1700
 Wire Wire Line
 	4650 4100 5650 4100
 Wire Wire Line
@@ -846,4 +714,235 @@ Text Label 5650 4800 2    50   ~ 0
 USART3_RX
 Text Label 6750 1900 0    50   ~ 0
 SPI2_SCK
+$Comp
+L Device:R_US R?
+U 1 1 5F7151F0
+P 2300 3500
+AR Path="/5F2A50C6/5F7151F0" Ref="R?"  Part="1" 
+AR Path="/5F2A508D/5F7151F0" Ref="R?"  Part="1" 
+AR Path="/5F741CFB/5F7151F0" Ref="R?"  Part="1" 
+F 0 "R?" V 2350 3650 50  0000 L CNN
+F 1 "33R" V 2350 3200 50  0000 L CNN
+F 2 "" V 2340 3490 50  0001 C CNN
+F 3 "~" H 2300 3500 50  0001 C CNN
+	1    2300 3500
+	0    -1   -1   0   
+$EndComp
+Wire Wire Line
+	2450 3500 3050 3500
+$Comp
+L Device:C_Small C?
+U 1 1 5F728082
+P 800 4100
+AR Path="/5F2A50C6/5F728082" Ref="C?"  Part="1" 
+AR Path="/5F2A508D/5F728082" Ref="C?"  Part="1" 
+AR Path="/5F741CFB/5F728082" Ref="C?"  Part="1" 
+F 0 "C?" H 900 4150 50  0000 L CNN
+F 1 "0.1uF" H 900 4050 50  0000 L CNN
+F 2 "" H 800 4100 50  0001 C CNN
+F 3 "~" H 800 4100 50  0001 C CNN
+	1    800  4100
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	800  3900 800  4000
+Connection ~ 800  3900
+Wire Wire Line
+	1350 4300 1350 4200
+Wire Wire Line
+	800  4200 800  4300
+$Comp
+L power:GND #PWR?
+U 1 1 5F82BF15
+P 800 4400
+F 0 "#PWR?" H 800 4150 50  0001 C CNN
+F 1 "GND" H 805 4227 50  0000 C CNN
+F 2 "" H 800 4400 50  0001 C CNN
+F 3 "" H 800 4400 50  0001 C CNN
+	1    800  4400
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	1350 4300 800  4300
+Connection ~ 800  4300
+Wire Wire Line
+	800  4300 800  4400
+NoConn ~ 3050 3600
+Wire Wire Line
+	3050 5000 2150 5000
+Text Label 2150 5000 0    50   ~ 0
+BOOT0
+Text Label 2150 2600 0    50   ~ 0
+USART1_RX
+Text Label 2150 2500 0    50   ~ 0
+USART1_TX
+Wire Wire Line
+	3050 2400 2150 2400
+Text Label 2150 2400 0    50   ~ 0
+USB_OTG_HS_OVCR
+Text Label 5650 1600 2    50   ~ 0
+PWR_BAT_SENSING
+Wire Wire Line
+	4650 2500 5650 2500
+Wire Wire Line
+	4650 2800 5650 2800
+Text Label 5650 2800 2    50   ~ 0
+USB_OTG_HS_PWR_EN
+Text Label 5650 2500 2    50   ~ 0
+KEY_FUNC2
+Wire Wire Line
+	4650 4500 5650 4500
+Wire Wire Line
+	4650 4900 5650 4900
+Wire Wire Line
+	4650 5200 5650 5200
+Text Label 5650 4900 2    50   ~ 0
+PMIC_nINT
+Text Label 5650 5000 2    50   ~ 0
+KEY_POWER
+Text Label 5650 5100 2    50   ~ 0
+KEY_ESCAPE
+Text Label 5650 5200 2    50   ~ 0
+KEY_FUNC1
+Wire Wire Line
+	4650 4600 5650 4600
+Text Label 5650 4500 2    50   ~ 0
+EPD_OE
+Text Label 5650 4600 2    50   ~ 0
+EPD_LE
+Text Label 6750 1800 0    50   ~ 0
+PMIC_PWR_GOOD
+Text Label 6750 2000 0    50   ~ 0
+PMIC_VCOM
+Text Label 6750 2100 0    50   ~ 0
+PMIC_WAKEUP
+Text Label 6750 2200 0    50   ~ 0
+PMIC_PWRUP
+Text Label 9700 1800 2    50   ~ 0
+KEY_LEFT
+Text Label 9700 1900 2    50   ~ 0
+KEY_RIGHT
+Text Label 9700 2000 2    50   ~ 0
+KEY_UP
+Text Label 9700 2100 2    50   ~ 0
+KEY_DOWN
+Text Label 9700 2200 2    50   ~ 0
+KEY_ENTER
+Text Label 9700 4700 2    50   ~ 0
+PWR_PERIPH_nEN
+Text Label 9700 4800 2    50   ~ 0
+PWR_BAT+_EN
+Text Label 9700 4900 2    50   ~ 0
+IMU_FSYNC
+Text Label 9700 5000 2    50   ~ 0
+IMU_nINT
+Text Label 9700 5100 2    50   ~ 0
+IMU_DRDY
+Text Label 9700 3900 2    50   ~ 0
+EPD_D7
+Text Label 9700 4000 2    50   ~ 0
+EPD_GMODE
+Wire Wire Line
+	9000 4400 9700 4400
+Text Label 9700 4400 2    50   ~ 0
+EPD_CL
+Text Label 9700 4600 2    50   ~ 0
+PWR_5V_EN
+Text Label 2150 3800 0    50   ~ 0
+EPD_D0
+Text Label 2150 3900 0    50   ~ 0
+EPD_D1
+Text Label 2150 4000 0    50   ~ 0
+EPD_D2
+Text Label 2150 4250 0    50   ~ 0
+EPD_D4
+Text Label 2150 4350 0    50   ~ 0
+EPD_D5
+Text Label 2150 4450 0    50   ~ 0
+EPD_D6
+Text Label 2150 4100 0    50   ~ 0
+EPD_D3
+$Comp
+L Connector_Generic:Conn_01x04 J?
+U 1 1 605CE987
+P 900 2500
+F 0 "J?" H 850 2150 50  0000 L CNN
+F 1 "Conn_01x04" H 650 2050 50  0000 L CNN
+F 2 "" H 900 2500 50  0001 C CNN
+F 3 "~" H 900 2500 50  0001 C CNN
+	1    900  2500
+	-1   0    0    -1  
+$EndComp
+Wire Wire Line
+	1650 3900 1900 3900
+Wire Wire Line
+	1900 3900 1900 3500
+Wire Wire Line
+	1900 3500 2150 3500
+$Comp
+L Device:R_US R?
+U 1 1 605EEB93
+P 1650 2500
+AR Path="/5F2A50C6/605EEB93" Ref="R?"  Part="1" 
+AR Path="/5F2A508D/605EEB93" Ref="R?"  Part="1" 
+AR Path="/5F741CFB/605EEB93" Ref="R?"  Part="1" 
+F 0 "R?" V 1700 2650 50  0000 L CNN
+F 1 "33R" V 1700 2200 50  0000 L CNN
+F 2 "" V 1690 2490 50  0001 C CNN
+F 3 "~" H 1650 2500 50  0001 C CNN
+	1    1650 2500
+	0    -1   -1   0   
+$EndComp
+$Comp
+L Device:R_US R?
+U 1 1 605EEEDC
+P 1650 2600
+AR Path="/5F2A50C6/605EEEDC" Ref="R?"  Part="1" 
+AR Path="/5F2A508D/605EEEDC" Ref="R?"  Part="1" 
+AR Path="/5F741CFB/605EEEDC" Ref="R?"  Part="1" 
+F 0 "R?" V 1700 2750 50  0000 L CNN
+F 1 "33R" V 1700 2300 50  0000 L CNN
+F 2 "" V 1690 2590 50  0001 C CNN
+F 3 "~" H 1650 2600 50  0001 C CNN
+	1    1650 2600
+	0    -1   -1   0   
+$EndComp
+Wire Wire Line
+	1800 2500 3050 2500
+Wire Wire Line
+	1800 2600 3050 2600
+Wire Wire Line
+	1500 2600 1100 2600
+Wire Wire Line
+	1500 2500 1100 2500
+$Comp
+L FlightComputer_Library:VCC_MCU #PWR?
+U 1 1 60618F98
+P 1350 2250
+F 0 "#PWR?" H 1350 2100 50  0001 C CNN
+F 1 "VCC_MCU" H 1367 2423 50  0000 C CNN
+F 2 "" H 1350 2250 50  0001 C CNN
+F 3 "" H 1350 2250 50  0001 C CNN
+	1    1350 2250
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	1100 2400 1350 2400
+Wire Wire Line
+	1350 2400 1350 2250
+$Comp
+L power:GND #PWR?
+U 1 1 6063A270
+P 1350 2800
+F 0 "#PWR?" H 1350 2550 50  0001 C CNN
+F 1 "GND" H 1355 2627 50  0000 C CNN
+F 2 "" H 1350 2800 50  0001 C CNN
+F 3 "" H 1350 2800 50  0001 C CNN
+	1    1350 2800
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	1100 2700 1350 2700
+Wire Wire Line
+	1350 2700 1350 2800
 $EndSCHEMATC
