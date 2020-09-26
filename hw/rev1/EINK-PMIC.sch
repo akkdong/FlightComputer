@@ -3,7 +3,7 @@ EELAYER 30 0
 EELAYER END
 $Descr A4 11693 8268
 encoding utf-8
-Sheet 3 11
+Sheet 3 12
 Title ""
 Date ""
 Rev ""
@@ -1581,11 +1581,11 @@ F 3 "" H 1150 3200 50  0001 C CNN
 	0    -1   -1   0   
 $EndComp
 Wire Bus Line
-	10200 3050 10300 2950
+	10200 5100 10100 5000
 Wire Bus Line
-	10300 2950 10650 2950
-Text HLabel 10650 2950 2    50   Input ~ 0
-EINK
+	10100 5000 9700 5000
+Text HLabel 9700 5000 0    50   Input ~ 0
+EPD_DAT[0..7]
 Entry Wire Line
 	10100 6100 10200 6200
 Entry Wire Line
@@ -1602,20 +1602,6 @@ Entry Wire Line
 	10100 5500 10200 5600
 Entry Wire Line
 	10100 5400 10200 5500
-Entry Wire Line
-	10100 5300 10200 5400
-Entry Wire Line
-	10100 5200 10200 5300
-Entry Wire Line
-	10100 5100 10200 5200
-Entry Wire Line
-	10100 5000 10200 5100
-Entry Wire Line
-	10100 4900 10200 5000
-Entry Wire Line
-	10100 4800 10200 4900
-Entry Wire Line
-	10100 4700 10200 4800
 Wire Wire Line
 	10100 6100 9200 6100
 Wire Wire Line
@@ -1632,20 +1618,6 @@ Wire Wire Line
 	10100 5500 9200 5500
 Wire Wire Line
 	10100 5400 9200 5400
-Wire Wire Line
-	10100 5300 9200 5300
-Wire Wire Line
-	10100 5200 9200 5200
-Wire Wire Line
-	10100 5100 9200 5100
-Wire Wire Line
-	10100 5000 9200 5000
-Wire Wire Line
-	10100 4900 9200 4900
-Wire Wire Line
-	10100 4800 9200 4800
-Wire Wire Line
-	10100 4700 9200 4700
 Text Label 9200 5400 0    50   ~ 0
 EPD_D0
 Text Label 9200 5500 0    50   ~ 0
@@ -1662,20 +1634,6 @@ Text Label 9200 6000 0    50   ~ 0
 EDP_D6
 Text Label 9200 6100 0    50   ~ 0
 EDP_D7
-Text Label 9200 5300 0    50   ~ 0
-EPD_SPV
-Text Label 9200 5200 0    50   ~ 0
-EPD_CKV
-Text Label 9200 5100 0    50   ~ 0
-EPD_GMODE
-Text Label 9200 5000 0    50   ~ 0
-EDP_SPH
-Text Label 9200 4900 0    50   ~ 0
-EPD_LE
-Text Label 9200 4800 0    50   ~ 0
-EPD_OE
-Text Label 9200 4700 0    50   ~ 0
-EPD_CL
 Text Label 2550 5900 0    50   ~ 0
 EPD_CL
 Text Label 2550 6000 0    50   ~ 0
@@ -1706,50 +1664,8 @@ Text Label 4900 6800 2    50   ~ 0
 EPD_CKV
 Text Label 4900 6900 2    50   ~ 0
 EPD_SPV
-Entry Wire Line
-	10100 3250 10200 3350
-Entry Wire Line
-	10100 3350 10200 3450
-Entry Wire Line
-	10100 3450 10200 3550
-Entry Wire Line
-	10100 3550 10200 3650
-Entry Wire Line
-	10100 3650 10200 3750
-Entry Wire Line
-	10100 3750 10200 3850
-Entry Wire Line
-	10100 3850 10200 3950
-Wire Wire Line
-	10100 3250 9200 3250
-Wire Wire Line
-	10100 3350 9200 3350
-Wire Wire Line
-	10100 3450 9200 3450
-Wire Wire Line
-	10100 3550 9200 3550
-Wire Wire Line
-	10100 3650 9200 3650
-Wire Wire Line
-	10100 3750 9200 3750
-Wire Wire Line
-	10100 3850 9200 3850
-Text Label 9200 3250 0    50   ~ 0
-EPD_PMICINTN
-Text Label 9200 3350 0    50   ~ 0
-EPD_PMIC_PWR_GOOD
-Text Label 9200 3450 0    50   ~ 0
-EPD_PMIC_VCOM
-Text Label 9200 3550 0    50   ~ 0
-EPD_PMIC_SDA
-Text Label 9200 3650 0    50   ~ 0
-EPD_PMIC_SCL
-Text Label 9200 3750 0    50   ~ 0
-EPD_PMIC_PWRUP
-Text Label 9200 3850 0    50   ~ 0
-EPD_PMIC_WAKEUP
 Text Label 7050 4350 2    50   ~ 0
-EPD_PMIC_INTN
+EPD_PMIC_nINT
 Text Label 7050 4450 2    50   ~ 0
 EPD_PMIC_PWR_GOOD
 Text Label 2900 4350 0    50   ~ 0
@@ -1774,5 +1690,33 @@ F 3 "" H 6350 4000 50  0001 C CNN
 	0    1    1    0   
 $EndComp
 Wire Bus Line
-	10200 3050 10200 6250
+	10200 5100 10200 6250
+Text HLabel 2550 5900 0    50   Input ~ 0
+EPD_CL
+Text HLabel 2550 6000 0    50   Input ~ 0
+EPD_OE
+Text HLabel 4900 5900 2    50   Input ~ 0
+EPD_LE
+Text HLabel 4900 6000 2    50   Input ~ 0
+EPD_SPH
+Text HLabel 4900 6700 2    50   Input ~ 0
+EPD_GMODE
+Text HLabel 4900 6800 2    50   Input ~ 0
+EPD_CKV
+Text HLabel 4900 6900 2    50   Input ~ 0
+EPD_SPV
+Text HLabel 7050 4350 2    50   Input ~ 0
+EPD_PMIC_nINT
+Text HLabel 7050 4450 2    50   Input ~ 0
+EPD_PMIC_PWR_GOOD
+Text HLabel 2900 3550 0    50   Input ~ 0
+EPD_PMIC_VCOM
+Text HLabel 2900 3950 0    50   Input ~ 0
+EPD_PMIC_SDA
+Text HLabel 2900 4050 0    50   Input ~ 0
+EPD_PMIC_SCL
+Text HLabel 2900 4250 0    50   Input ~ 0
+EPD_PMIC_PWRUP
+Text HLabel 2900 4350 0    50   Input ~ 0
+EPD_PMIC_WAKEUP
 $EndSCHEMATC

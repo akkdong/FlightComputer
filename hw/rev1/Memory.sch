@@ -3,7 +3,7 @@ EELAYER 30 0
 EELAYER END
 $Descr A4 11693 8268
 encoding utf-8
-Sheet 4 11
+Sheet 4 12
 Title ""
 Date ""
 Rev ""
@@ -135,8 +135,6 @@ Text Label 2650 3250 0    50   ~ 0
 SDRAM_D14
 Text Label 2650 3350 0    50   ~ 0
 SDRAM_D15
-Text HLabel 1400 700  0    50   Input ~ 0
-EXT_MEMORY
 Wire Bus Line
 	5050 1400 4900 1250
 Wire Bus Line
@@ -219,72 +217,24 @@ Text Label 4400 2950 0    50   ~ 0
 SDRAM_A11
 Text Label 4400 3050 0    50   ~ 0
 SDRAM_A12
-Entry Bus Bus
-	1750 1150 1850 1250
-Entry Bus Bus
-	1750 1350 1850 1450
-Wire Bus Line
-	1750 800  1650 700 
-Wire Bus Line
-	1650 700  1400 700 
-Entry Wire Line
-	4950 3700 5050 3800
-Entry Wire Line
-	4950 3800 5050 3900
-Entry Wire Line
-	4950 4050 5050 4150
-Entry Wire Line
-	4950 4150 5050 4250
-Entry Wire Line
-	4950 4550 5050 4650
-Entry Wire Line
-	4950 4650 5050 4750
-Entry Wire Line
-	4950 4750 5050 4850
-Entry Wire Line
-	4950 4850 5050 4950
-Entry Wire Line
-	4950 5050 5050 5150
-Entry Wire Line
-	4950 5150 5050 5250
-Wire Wire Line
-	4950 5150 4350 5150
-Wire Wire Line
-	4350 5050 4950 5050
-Wire Wire Line
-	4950 4850 4350 4850
-Wire Wire Line
-	4350 4750 4950 4750
-Wire Wire Line
-	4950 4650 4350 4650
-Wire Wire Line
-	4350 4550 4950 4550
-Wire Wire Line
-	4350 4150 4950 4150
-Wire Wire Line
-	4950 4050 4350 4050
-Wire Wire Line
-	4350 3800 4950 3800
-Wire Wire Line
-	4950 3700 4350 3700
 Text Label 4400 3700 0    50   ~ 0
 SDRAM_BA0
 Text Label 4400 3800 0    50   ~ 0
 SDRAM_BA1
 Text Label 4400 4050 0    50   ~ 0
-SDRAM_NBL0
+SDRAM_nBL0
 Text Label 4400 4150 0    50   ~ 0
-SDRAM_NBL1
+SDRAM_nBL1
 Text Label 4400 4550 0    50   ~ 0
-SDRAM_NWE
+SDRAM_nWE
 Text Label 4400 4650 0    50   ~ 0
-SDRAM_NCAS
+SDRAM_nCAS
 Text Label 4400 4750 0    50   ~ 0
-SDRAM_NRAS
+SDRAM_nRAS
 Text Label 4400 4850 0    50   ~ 0
-SDRAM_NE1
+SDRAM_nNE
 Text Label 4400 5150 0    50   ~ 0
-SDRAM_CKE1
+SDRAM_CKE
 Text Label 4400 5050 0    50   ~ 0
 SDRAM_CLK
 NoConn ~ 7750 2750
@@ -310,24 +260,10 @@ Wire Bus Line
 	10150 1300 9850 1050
 Wire Bus Line
 	9850 1050 1850 1050
-Entry Bus Bus
-	1750 950  1850 1050
 Text Label 9600 2900 0    50   ~ 0
 NOR_DQ3
-Entry Wire Line
-	10050 3400 10150 3500
-Entry Wire Line
-	10050 3500 10150 3600
-Wire Wire Line
-	10050 3400 9600 3400
-Wire Wire Line
-	10050 3500 9600 3500
-Text Label 9600 3400 0    50   ~ 0
-NOR_NCS
-Text Label 9600 3500 0    50   ~ 0
-NOR_CLK
 Text Label 7200 2850 0    50   ~ 0
-NOR_NCS
+NOR_nCS
 Text Label 7200 2950 0    50   ~ 0
 NOR_CLK
 $Comp
@@ -359,52 +295,52 @@ $EndComp
 $Comp
 L Device:C_Small C?
 U 1 1 5F813C59
-P 6750 2850
+P 6300 2850
 AR Path="/5F2A50C6/5F813C59" Ref="C?"  Part="1" 
 AR Path="/5F60AB0F/5F813C59" Ref="C?"  Part="1" 
-F 0 "C?" H 6842 2896 50  0000 L CNN
-F 1 "0.1uF" H 6842 2805 50  0000 L CNN
-F 2 "" H 6750 2850 50  0001 C CNN
-F 3 "~" H 6750 2850 50  0001 C CNN
-	1    6750 2850
+F 0 "C?" H 6392 2896 50  0000 L CNN
+F 1 "0.1uF" H 6392 2805 50  0000 L CNN
+F 2 "" H 6300 2850 50  0001 C CNN
+F 3 "~" H 6300 2850 50  0001 C CNN
+	1    6300 2850
 	1    0    0    -1  
 $EndComp
 $Comp
 L power:GND #PWR?
 U 1 1 5F813C5F
-P 6750 3250
+P 6300 3250
 AR Path="/5F2A50C6/5F813C5F" Ref="#PWR?"  Part="1" 
 AR Path="/5F60AB0F/5F813C5F" Ref="#PWR0215"  Part="1" 
-F 0 "#PWR0215" H 6750 3000 50  0001 C CNN
-F 1 "GND" H 6755 3077 50  0000 C CNN
-F 2 "" H 6750 3250 50  0001 C CNN
-F 3 "" H 6750 3250 50  0001 C CNN
-	1    6750 3250
+F 0 "#PWR0215" H 6300 3000 50  0001 C CNN
+F 1 "GND" H 6305 3077 50  0000 C CNN
+F 2 "" H 6300 3250 50  0001 C CNN
+F 3 "" H 6300 3250 50  0001 C CNN
+	1    6300 3250
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	7750 2600 6750 2600
+	7750 2600 6300 2600
 Wire Wire Line
-	6750 2750 6750 2600
-Connection ~ 6750 2600
+	6300 2750 6300 2600
+Connection ~ 6300 2600
 Wire Wire Line
-	6750 2950 6750 3100
+	6300 2950 6300 3100
 Wire Wire Line
-	7750 3100 6750 3100
-Connection ~ 6750 3100
+	7750 3100 6300 3100
+Connection ~ 6300 3100
 Wire Wire Line
-	6750 3100 6750 3250
+	6300 3100 6300 3250
 Wire Wire Line
-	6750 2600 6750 2400
+	6300 2600 6300 2400
 $Comp
 L FlightComputer_Library:VCC_PERIH #PWR0216
 U 1 1 5F815505
-P 6750 2400
-F 0 "#PWR0216" H 6750 2250 50  0001 C CNN
-F 1 "VCC_PERIH" H 6767 2573 50  0000 C CNN
-F 2 "" H 6750 2400 50  0001 C CNN
-F 3 "" H 6750 2400 50  0001 C CNN
-	1    6750 2400
+P 6300 2400
+F 0 "#PWR0216" H 6300 2250 50  0001 C CNN
+F 1 "VCC_PERIH" H 6317 2573 50  0000 C CNN
+F 2 "" H 6300 2400 50  0001 C CNN
+F 3 "" H 6300 2400 50  0001 C CNN
+	1    6300 2400
 	1    0    0    -1  
 $EndComp
 $Comp
@@ -724,12 +660,60 @@ Wire Wire Line
 	10050 2700 9400 2700
 Wire Wire Line
 	9400 2600 10050 2600
+Text HLabel 1850 1450 0    50   Input ~ 0
+SDRAM_D[0..15]
+Text HLabel 1850 1250 0    50   Input ~ 0
+SDRAM_A[0..12]
+Text HLabel 1850 1050 0    50   Input ~ 0
+NOR_DQ[0..3]
+Wire Wire Line
+	4950 3700 4350 3700
+Wire Wire Line
+	4350 3800 4950 3800
+Wire Wire Line
+	4950 4050 4350 4050
+Wire Wire Line
+	4350 4150 4950 4150
+Wire Wire Line
+	4350 4550 4950 4550
+Wire Wire Line
+	4950 4650 4350 4650
+Wire Wire Line
+	4350 4750 4950 4750
+Wire Wire Line
+	4950 4850 4350 4850
+Wire Wire Line
+	4350 5050 4950 5050
+Wire Wire Line
+	4950 5150 4350 5150
+Text HLabel 7200 2850 0    50   Input ~ 0
+NOR_nCS
+Text HLabel 7200 2950 0    50   Input ~ 0
+NOR_CLK
 Wire Bus Line
-	1750 800  1750 1650
+	10150 1300 10150 3400
 Wire Bus Line
-	10150 1300 10150 3850
+	5050 1400 5050 3400
 Wire Bus Line
 	2550 1600 2550 3400
-Wire Bus Line
-	5050 1400 5050 5350
+Text HLabel 4950 3700 2    50   Input ~ 0
+SDRAM_BA0
+Text HLabel 4950 3800 2    50   Input ~ 0
+SDRAM_BA1
+Text HLabel 4950 4050 2    50   Input ~ 0
+SDRAM_nBL0
+Text HLabel 4950 4150 2    50   Input ~ 0
+SDRAM_nBL1
+Text HLabel 4950 4550 2    50   Input ~ 0
+SDRAM_nWE
+Text HLabel 4950 4650 2    50   Input ~ 0
+SDRAM_nCAS
+Text HLabel 4950 4750 2    50   Input ~ 0
+SDRAM_nRAS
+Text HLabel 4950 4850 2    50   Input ~ 0
+SDRAM_nCS
+Text HLabel 4950 5050 2    50   Input ~ 0
+SDRAM_CLK
+Text HLabel 4950 5150 2    50   Input ~ 0
+SDRAM_CKE
 $EndSCHEMATC

@@ -3,7 +3,7 @@ EELAYER 30 0
 EELAYER END
 $Descr A4 11693 8268
 encoding utf-8
-Sheet 5 11
+Sheet 5 12
 Title ""
 Date ""
 Rev ""
@@ -67,9 +67,9 @@ I2C_SCL
 Text HLabel 5150 2100 2    50   Input ~ 0
 I2S_SCLK
 Text HLabel 5150 1900 2    50   Input ~ 0
-UART_VARIO_TX
+UART_TX
 Text HLabel 5150 2000 2    50   Input ~ 0
-UART_VARIO_RX
+UART_RX
 Text HLabel 4950 3400 2    50   Input ~ 0
 I2S_DIN
 Text HLabel 4950 3500 2    50   Input ~ 0
@@ -585,22 +585,6 @@ F 3 "~" H 5200 2700 50  0001 C CNN
 	0    1    1    0   
 $EndComp
 Wire Wire Line
-	8150 2150 7500 2150
-Wire Wire Line
-	8150 2250 7500 2250
-Wire Wire Line
-	8150 2350 7500 2350
-Wire Wire Line
-	7500 2050 8150 2050
-Text Label 7500 2150 0    50   ~ 0
-EINK_MOSI
-Text Label 7500 2250 0    50   ~ 0
-EINK_SCLK
-Text Label 7500 2350 0    50   ~ 0
-EINK_CS
-Text Label 7500 2050 0    50   ~ 0
-EINK_MISO
-Wire Wire Line
 	2900 2500 2250 2500
 Wire Wire Line
 	2900 2700 2250 2700
@@ -671,20 +655,6 @@ Text Label 2250 2600 0    50   ~ 0
 EINK_MISO
 Text HLabel 3300 3300 0    50   Input ~ 0
 I2S_LRCK
-Wire Bus Line
-	8250 1850 8150 1750
-Wire Bus Line
-	8150 1750 7450 1750
-Text HLabel 7450 1750 0    50   Input ~ 0
-EINK_DATA
-Entry Wire Line
-	8150 2050 8250 2150
-Entry Wire Line
-	8150 2150 8250 2250
-Entry Wire Line
-	8150 2250 8250 2350
-Entry Wire Line
-	8150 2350 8250 2450
 Wire Wire Line
 	3200 2500 3500 2500
 Wire Wire Line
@@ -695,6 +665,12 @@ Wire Wire Line
 	4700 2700 5050 2700
 Wire Wire Line
 	5350 2700 5900 2700
-Wire Bus Line
-	8250 1850 8250 2650
+Text HLabel 5900 2700 2    50   Input ~ 0
+SPI_nCS
+Text HLabel 2250 2500 0    50   Input ~ 0
+SPI_MOSI
+Text HLabel 2250 2600 0    50   Input ~ 0
+SPI_MISO
+Text HLabel 2250 2700 0    50   Input ~ 0
+SPI_SCLK
 $EndSCHEMATC

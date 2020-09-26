@@ -3,7 +3,7 @@ EELAYER 30 0
 EELAYER END
 $Descr A4 11693 8268
 encoding utf-8
-Sheet 11 11
+Sheet 11 12
 Title ""
 Date ""
 Rev ""
@@ -789,60 +789,6 @@ Connection ~ 10000 2000
 Wire Wire Line
 	10000 4000 10500 4000
 Connection ~ 10000 4000
-Wire Bus Line
-	1750 6750 1550 6550
-Wire Bus Line
-	1550 6550 1550 6150
-Entry Wire Line
-	2400 6650 2500 6750
-Entry Wire Line
-	2500 6650 2600 6750
-Entry Wire Line
-	2600 6650 2700 6750
-Entry Wire Line
-	2700 6650 2800 6750
-Entry Wire Line
-	2800 6650 2900 6750
-Entry Wire Line
-	2900 6650 3000 6750
-Entry Wire Line
-	3000 6650 3100 6750
-Entry Wire Line
-	3100 6650 3200 6750
-Wire Wire Line
-	2400 6650 2400 6100
-Wire Wire Line
-	2500 6650 2500 6100
-Wire Wire Line
-	2600 6650 2600 6100
-Wire Wire Line
-	2700 6650 2700 6100
-Wire Wire Line
-	2800 6650 2800 6100
-Wire Wire Line
-	2900 6650 2900 6100
-Wire Wire Line
-	3000 6650 3000 6100
-Wire Wire Line
-	3100 6650 3100 6100
-Text Label 2400 6100 3    50   ~ 0
-KEY_LEFT
-Text Label 2500 6100 3    50   ~ 0
-KEY_RIGHT
-Text Label 2600 6100 3    50   ~ 0
-KEY_UP
-Text Label 2700 6100 3    50   ~ 0
-KEY_DOWN
-Text Label 2800 6100 3    50   ~ 0
-KEY_ENTER
-Text Label 2900 6100 3    50   ~ 0
-KEY_ESCAPE
-Text Label 3000 6100 3    50   ~ 0
-KEY_FUNC1
-Text Label 3100 6100 3    50   ~ 0
-KEY_FUNC2
-Text HLabel 1550 6150 1    50   Input ~ 0
-KEYBOARD
 $Comp
 L FlightComputer_Library:VCC_PERIH #PWR?
 U 1 1 5FF9A6A7
@@ -931,6 +877,130 @@ F 3 "" H 9000 3600 50  0001 C CNN
 	1    9000 3600
 	1    0    0    -1  
 $EndComp
-Wire Bus Line
-	1750 6750 3350 6750
+Text HLabel 3000 2000 2    50   Input ~ 0
+KEY_UP
+Text HLabel 3000 4000 2    50   Input ~ 0
+KEY_ENTER
+Text HLabel 5500 4000 2    50   Input ~ 0
+KEY_ESCAPE
+Text HLabel 5500 2000 2    50   Input ~ 0
+KEY_DOWN
+Text HLabel 8000 2000 2    50   Input ~ 0
+KEY_LEFT
+Text HLabel 10500 2000 2    50   Input ~ 0
+KEY_RIGHT
+Text HLabel 8000 4000 2    50   Input ~ 0
+KEY_FUNC1
+Text HLabel 10500 4000 2    50   Input ~ 0
+KEY_FUNC2
+$Comp
+L Switch:SW_Push SW?
+U 1 1 5F77CA5C
+P 1900 6500
+AR Path="/5F2A508D/5F77CA5C" Ref="SW?"  Part="1" 
+AR Path="/5FD0B99E/5F77CA5C" Ref="SW?"  Part="1" 
+F 0 "SW?" H 1900 6785 50  0000 C CNN
+F 1 "SW_Push" H 1900 6694 50  0000 C CNN
+F 2 "" H 1900 6700 50  0001 C CNN
+F 3 "" H 1900 6700 50  0001 C CNN
+	1    1900 6500
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:R_US R?
+U 1 1 5F77CA62
+P 1500 6300
+AR Path="/5F2A50C6/5F77CA62" Ref="R?"  Part="1" 
+AR Path="/5F2A508D/5F77CA62" Ref="R?"  Part="1" 
+AR Path="/5FD0B99E/5F77CA62" Ref="R?"  Part="1" 
+F 0 "R?" H 1350 6250 50  0000 L CNN
+F 1 "1K" H 1300 6350 50  0000 L CNN
+F 2 "" V 1540 6290 50  0001 C CNN
+F 3 "~" H 1500 6300 50  0001 C CNN
+	1    1500 6300
+	-1   0    0    1   
+$EndComp
+$Comp
+L Device:R_US R?
+U 1 1 5F77CA68
+P 2500 6700
+AR Path="/5F2A50C6/5F77CA68" Ref="R?"  Part="1" 
+AR Path="/5F2A508D/5F77CA68" Ref="R?"  Part="1" 
+AR Path="/5FD0B99E/5F77CA68" Ref="R?"  Part="1" 
+F 0 "R?" H 2600 6650 50  0000 L CNN
+F 1 "100K" H 2600 6750 50  0000 L CNN
+F 2 "" V 2540 6690 50  0001 C CNN
+F 3 "~" H 2500 6700 50  0001 C CNN
+	1    2500 6700
+	1    0    0    1   
+$EndComp
+$Comp
+L Device:C_Small C?
+U 1 1 5F77CA6E
+P 2350 6700
+AR Path="/5F2A50C6/5F77CA6E" Ref="C?"  Part="1" 
+AR Path="/5F2A508D/5F77CA6E" Ref="C?"  Part="1" 
+AR Path="/5FD0B99E/5F77CA6E" Ref="C?"  Part="1" 
+F 0 "C?" H 2442 6746 50  0000 L CNN
+F 1 "0.1uF" H 2442 6655 50  0000 L CNN
+F 2 "" H 2350 6700 50  0001 C CNN
+F 3 "~" H 2350 6700 50  0001 C CNN
+	1    2350 6700
+	-1   0    0    -1  
+$EndComp
+Wire Wire Line
+	1500 6450 1500 6500
+Wire Wire Line
+	1500 6500 1700 6500
+$Comp
+L power:GND #PWR?
+U 1 1 5F77CA76
+P 2500 6950
+AR Path="/5F2A508D/5F77CA76" Ref="#PWR?"  Part="1" 
+AR Path="/5FD0B99E/5F77CA76" Ref="#PWR?"  Part="1" 
+F 0 "#PWR?" H 2500 6700 50  0001 C CNN
+F 1 "GND" H 2505 6777 50  0000 C CNN
+F 2 "" H 2500 6950 50  0001 C CNN
+F 3 "" H 2500 6950 50  0001 C CNN
+	1    2500 6950
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	2500 6850 2500 6900
+Wire Wire Line
+	2500 6500 2500 6550
+Wire Wire Line
+	2100 6500 2350 6500
+Wire Wire Line
+	2350 6600 2350 6500
+Connection ~ 2350 6500
+Wire Wire Line
+	2350 6500 2500 6500
+Wire Wire Line
+	2350 6800 2350 6900
+Wire Wire Line
+	2350 6900 2500 6900
+Connection ~ 2500 6900
+Wire Wire Line
+	2500 6900 2500 6950
+Wire Wire Line
+	1500 6100 1500 6150
+Text Label 3000 6500 2    50   ~ 0
+KEY_ENTER
+Wire Wire Line
+	2500 6500 3000 6500
+Connection ~ 2500 6500
+$Comp
+L FlightComputer_Library:VCC_PERIH #PWR?
+U 1 1 5F77CA8A
+P 1500 6100
+F 0 "#PWR?" H 1500 5950 50  0001 C CNN
+F 1 "VCC_PERIH" H 1517 6273 50  0000 C CNN
+F 2 "" H 1500 6100 50  0001 C CNN
+F 3 "" H 1500 6100 50  0001 C CNN
+	1    1500 6100
+	1    0    0    -1  
+$EndComp
+Text HLabel 3000 6500 2    50   Input ~ 0
+KEY_POWER
 $EndSCHEMATC

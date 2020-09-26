@@ -3,7 +3,7 @@ EELAYER 30 0
 EELAYER END
 $Descr A4 11693 8268
 encoding utf-8
-Sheet 8 11
+Sheet 8 12
 Title ""
 Date ""
 Rev ""
@@ -16,23 +16,23 @@ $EndDescr
 $Comp
 L FlightComputer_Library:STM32H745IIT U?
 U 2 1 5F78B5B6
-P 3250 3850
-F 0 "U?" H 3250 6017 50  0000 C CNN
-F 1 "STM32H745IIT" H 3250 5926 50  0000 C CNN
-F 2 "" H 3250 3850 50  0001 C CNN
-F 3 "" H 3250 3850 50  0001 C CNN
-	2    3250 3850
+P 3850 3400
+F 0 "U?" H 3850 5567 50  0000 C CNN
+F 1 "STM32H745IIT" H 3850 5476 50  0000 C CNN
+F 2 "" H 3850 3400 50  0001 C CNN
+F 3 "" H 3850 3400 50  0001 C CNN
+	2    3850 3400
 	1    0    0    -1  
 $EndComp
 $Comp
 L FlightComputer_Library:STM32H745IIT U?
 U 3 1 5F78E522
-P 7600 3850
-F 0 "U?" H 7600 6017 50  0000 C CNN
-F 1 "STM32H745IIT" H 7600 5926 50  0000 C CNN
-F 2 "" H 7600 3850 50  0001 C CNN
-F 3 "" H 7600 3850 50  0001 C CNN
-	3    7600 3850
+P 8200 3400
+F 0 "U?" H 8200 5567 50  0000 C CNN
+F 1 "STM32H745IIT" H 8200 5476 50  0000 C CNN
+F 2 "" H 8200 3400 50  0001 C CNN
+F 3 "" H 8200 3400 50  0001 C CNN
+	3    8200 3400
 	1    0    0    -1  
 $EndComp
 $Sheet
@@ -143,11 +143,11 @@ Wire Wire Line
 Wire Wire Line
 	2500 7050 2500 7450
 $Comp
-L power:VCC #PWR?
+L FlightComputer_Library:VCC_MCU #PWR?
 U 1 1 5FD0648B
 P 1700 6550
 F 0 "#PWR?" H 1700 6400 50  0001 C CNN
-F 1 "VCC" H 1717 6723 50  0000 C CNN
+F 1 "VCC_MCU" H 1717 6723 50  0000 C CNN
 F 2 "" H 1700 6550 50  0001 C CNN
 F 3 "" H 1700 6550 50  0001 C CNN
 	1    1700 6550
@@ -194,11 +194,11 @@ Wire Wire Line
 Wire Wire Line
 	4400 7050 4400 7000
 $Comp
-L power:VCC #PWR?
+L FlightComputer_Library:VCC_MCU #PWR?
 U 1 1 5FD064A5
 P 4400 6650
 F 0 "#PWR?" H 4400 6500 50  0001 C CNN
-F 1 "VCC" H 4417 6823 50  0000 C CNN
+F 1 "VCC_MCU" H 4417 6823 50  0000 C CNN
 F 2 "" H 4400 6650 50  0001 C CNN
 F 3 "" H 4400 6650 50  0001 C CNN
 	1    4400 6650
@@ -242,144 +242,608 @@ Wire Wire Line
 	3400 7050 3700 7050
 $Comp
 L Device:R_US R?
-U 1 1 5F7329BC
-P 13850 5750
-AR Path="/5F2A50C6/5F7329BC" Ref="R?"  Part="1" 
-AR Path="/5F2A508D/5F7329BC" Ref="R?"  Part="1" 
-AR Path="/5F741CFB/5F7329BC" Ref="R?"  Part="1" 
-F 0 "R?" H 13650 5700 50  0000 L CNN
-F 1 "1M" H 13650 5800 50  0000 L CNN
-F 2 "" V 13890 5740 50  0001 C CNN
-F 3 "~" H 13850 5750 50  0001 C CNN
-	1    13850 5750
-	-1   0    0    1   
-$EndComp
-$Comp
-L Device:R_US R?
-U 1 1 5F7329C2
-P 13500 5500
-AR Path="/5F2A50C6/5F7329C2" Ref="R?"  Part="1" 
-AR Path="/5F2A508D/5F7329C2" Ref="R?"  Part="1" 
-AR Path="/5F741CFB/5F7329C2" Ref="R?"  Part="1" 
-F 0 "R?" V 13550 5650 50  0000 L CNN
-F 1 "0R" V 13550 5300 50  0000 L CNN
-F 2 "" V 13540 5490 50  0001 C CNN
-F 3 "~" H 13500 5500 50  0001 C CNN
-	1    13500 5500
+U 1 1 5F6E167B
+P 2250 5200
+AR Path="/5F2A50C6/5F6E167B" Ref="R?"  Part="1" 
+AR Path="/5F2A508D/5F6E167B" Ref="R?"  Part="1" 
+AR Path="/5F741CFB/5F6E167B" Ref="R?"  Part="1" 
+F 0 "R?" V 2300 5350 50  0000 L CNN
+F 1 "10K" V 2300 4900 50  0000 L CNN
+F 2 "" V 2290 5190 50  0001 C CNN
+F 3 "~" H 2250 5200 50  0001 C CNN
+	1    2250 5200
 	0    -1   -1   0   
 $EndComp
 $Comp
 L Device:R_US R?
-U 1 1 5F7329C8
-P 13850 5250
-AR Path="/5F2A50C6/5F7329C8" Ref="R?"  Part="1" 
-AR Path="/5F2A508D/5F7329C8" Ref="R?"  Part="1" 
-AR Path="/5F741CFB/5F7329C8" Ref="R?"  Part="1" 
-F 0 "R?" H 13950 5300 50  0000 L CNN
-F 1 "560K" H 13950 5200 50  0000 L CNN
-F 2 "" V 13890 5240 50  0001 C CNN
-F 3 "~" H 13850 5250 50  0001 C CNN
-	1    13850 5250
-	1    0    0    -1  
+U 1 1 5F6E2C8F
+P 2250 5300
+AR Path="/5F2A50C6/5F6E2C8F" Ref="R?"  Part="1" 
+AR Path="/5F2A508D/5F6E2C8F" Ref="R?"  Part="1" 
+AR Path="/5F741CFB/5F6E2C8F" Ref="R?"  Part="1" 
+F 0 "R?" V 2300 5450 50  0000 L CNN
+F 1 "N/C" V 2300 5000 50  0000 L CNN
+F 2 "" V 2290 5290 50  0001 C CNN
+F 3 "~" H 2250 5300 50  0001 C CNN
+	1    2250 5300
+	0    -1   -1   0   
 $EndComp
+Wire Wire Line
+	2400 5200 2650 5200
+Wire Wire Line
+	2400 5300 2650 5300
+Wire Wire Line
+	2650 5300 2650 5200
+Connection ~ 2650 5200
+Wire Wire Line
+	2650 5200 3050 5200
+$Comp
+L FlightComputer_Library:VCC_MCU #PWR?
+U 1 1 5F6E41F3
+P 1900 5200
+F 0 "#PWR?" H 1900 5050 50  0001 C CNN
+F 1 "VCC_MCU" V 1900 5550 50  0000 C CNN
+F 2 "" H 1900 5200 50  0001 C CNN
+F 3 "" H 1900 5200 50  0001 C CNN
+	1    1900 5200
+	0    -1   -1   0   
+$EndComp
+Wire Wire Line
+	1900 5200 2100 5200
 $Comp
 L power:GND #PWR?
-U 1 1 5F7329CE
-P 13850 5950
-AR Path="/5F2A508D/5F7329CE" Ref="#PWR?"  Part="1" 
-AR Path="/5F2A50C6/5F7329CE" Ref="#PWR?"  Part="1" 
-AR Path="/5F741CFB/5F7329CE" Ref="#PWR?"  Part="1" 
-F 0 "#PWR?" H 13850 5700 50  0001 C CNN
-F 1 "GND" H 13855 5777 50  0000 C CNN
-F 2 "" H 13850 5950 50  0001 C CNN
-F 3 "" H 13850 5950 50  0001 C CNN
-	1    13850 5950
-	1    0    0    -1  
+U 1 1 5F6E4E63
+P 1900 5300
+F 0 "#PWR?" H 1900 5050 50  0001 C CNN
+F 1 "GND" V 1900 5050 50  0000 C CNN
+F 2 "" H 1900 5300 50  0001 C CNN
+F 3 "" H 1900 5300 50  0001 C CNN
+	1    1900 5300
+	0    1    1    0   
 $EndComp
 Wire Wire Line
-	13350 5500 13050 5500
-Wire Wire Line
-	13650 5500 13850 5500
-Wire Wire Line
-	13850 5900 13850 5950
-Wire Wire Line
-	13850 5600 13850 5500
-Connection ~ 13850 5500
-Wire Wire Line
-	13850 5500 13850 5400
-Wire Wire Line
-	13850 5100 13850 5000
-Text HLabel 13050 5500 0    50   Input ~ 0
-ADC_BATTERY
+	1900 5300 2100 5300
 $Comp
-L FlightComputer_Library:VCC_BAT+ #PWR?
-U 1 1 5F7329DC
-P 13850 5000
-AR Path="/5F2A50C6/5F7329DC" Ref="#PWR?"  Part="1" 
-AR Path="/5F741CFB/5F7329DC" Ref="#PWR?"  Part="1" 
-F 0 "#PWR?" H 13850 4850 50  0001 C CNN
-F 1 "VCC_BAT+" V 13867 5128 50  0000 L CNN
-F 2 "" H 13850 5000 50  0001 C CNN
-F 3 "" H 13850 5000 50  0001 C CNN
-	1    13850 5000
-	1    0    0    -1  
-$EndComp
-$Comp
-L Device:LED D?
-U 1 1 5F7329E2
-P 11900 5750
-AR Path="/5F2A50C6/5F7329E2" Ref="D?"  Part="1" 
-AR Path="/5F741CFB/5F7329E2" Ref="D?"  Part="1" 
-F 0 "D?" V 11938 5633 50  0000 R CNN
-F 1 "LED" V 11847 5633 50  0000 R CNN
-F 2 "" H 11900 5750 50  0001 C CNN
-F 3 "~" H 11900 5750 50  0001 C CNN
-	1    11900 5750
+L Device:R_US R?
+U 1 1 5F6E8378
+P 2250 5000
+AR Path="/5F2A50C6/5F6E8378" Ref="R?"  Part="1" 
+AR Path="/5F2A508D/5F6E8378" Ref="R?"  Part="1" 
+AR Path="/5F741CFB/5F6E8378" Ref="R?"  Part="1" 
+F 0 "R?" V 2300 5150 50  0000 L CNN
+F 1 "10K" V 2300 4700 50  0000 L CNN
+F 2 "" V 2290 4990 50  0001 C CNN
+F 3 "~" H 2250 5000 50  0001 C CNN
+	1    2250 5000
 	0    -1   -1   0   
 $EndComp
 $Comp
 L Device:R_US R?
-U 1 1 5F7329E8
-P 11900 5400
-AR Path="/5F2A50C6/5F7329E8" Ref="R?"  Part="1" 
-AR Path="/5F741CFB/5F7329E8" Ref="R?"  Part="1" 
-F 0 "R?" H 11968 5446 50  0000 L CNN
-F 1 "1K" H 11968 5355 50  0000 L CNN
-F 2 "" V 11940 5390 50  0001 C CNN
-F 3 "~" H 11900 5400 50  0001 C CNN
-	1    11900 5400
-	1    0    0    -1  
+U 1 1 5F6E837E
+P 2250 5100
+AR Path="/5F2A50C6/5F6E837E" Ref="R?"  Part="1" 
+AR Path="/5F2A508D/5F6E837E" Ref="R?"  Part="1" 
+AR Path="/5F741CFB/5F6E837E" Ref="R?"  Part="1" 
+F 0 "R?" V 2300 5250 50  0000 L CNN
+F 1 "N/C" V 2300 4800 50  0000 L CNN
+F 2 "" V 2290 5090 50  0001 C CNN
+F 3 "~" H 2250 5100 50  0001 C CNN
+	1    2250 5100
+	0    -1   -1   0   
 $EndComp
+Wire Wire Line
+	2400 5000 2650 5000
+Wire Wire Line
+	2400 5100 2650 5100
+$Comp
+L FlightComputer_Library:VCC_MCU #PWR?
+U 1 1 5F6E8386
+P 1900 5000
+F 0 "#PWR?" H 1900 4850 50  0001 C CNN
+F 1 "VCC_MCU" V 1900 5350 50  0000 C CNN
+F 2 "" H 1900 5000 50  0001 C CNN
+F 3 "" H 1900 5000 50  0001 C CNN
+	1    1900 5000
+	0    -1   -1   0   
+$EndComp
+Wire Wire Line
+	1900 5000 2100 5000
 $Comp
 L power:GND #PWR?
-U 1 1 5F7329EE
-P 11900 5950
-AR Path="/5F2A50C6/5F7329EE" Ref="#PWR?"  Part="1" 
-AR Path="/5F741CFB/5F7329EE" Ref="#PWR?"  Part="1" 
-F 0 "#PWR?" H 11900 5700 50  0001 C CNN
-F 1 "GND" H 11905 5777 50  0000 C CNN
-F 2 "" H 11900 5950 50  0001 C CNN
-F 3 "" H 11900 5950 50  0001 C CNN
-	1    11900 5950
-	1    0    0    -1  
+U 1 1 5F6E838D
+P 1900 5100
+F 0 "#PWR?" H 1900 4850 50  0001 C CNN
+F 1 "GND" V 1900 4850 50  0000 C CNN
+F 2 "" H 1900 5100 50  0001 C CNN
+F 3 "" H 1900 5100 50  0001 C CNN
+	1    1900 5100
+	0    1    1    0   
 $EndComp
 Wire Wire Line
-	11900 5900 11900 5950
+	1900 5100 2100 5100
 Wire Wire Line
-	11900 5550 11900 5600
+	2650 5100 2650 5000
+Wire Wire Line
+	2650 5000 3050 5000
+Connection ~ 2650 5000
+Wire Wire Line
+	3050 4700 2450 4700
+Text Label 2450 4700 0    50   ~ 0
+~RESET~
 $Comp
-L FlightComputer_Library:VCC_BAT+ #PWR?
-U 1 1 5F7329F6
-P 11900 5050
-AR Path="/5F2A50C6/5F7329F6" Ref="#PWR?"  Part="1" 
-AR Path="/5F741CFB/5F7329F6" Ref="#PWR?"  Part="1" 
-F 0 "#PWR?" H 11900 4900 50  0001 C CNN
-F 1 "VCC_BAT+" V 11917 5178 50  0000 L CNN
-F 2 "" H 11900 5050 50  0001 C CNN
-F 3 "" H 11900 5050 50  0001 C CNN
-	1    11900 5050
+L Oscillator:ASE-xxxMHz X?
+U 1 1 5F824DEC
+P 1300 3500
+F 0 "X?" H 1644 3546 50  0000 L CNN
+F 1 "ASE-25MHz" H 1644 3455 50  0000 L CNN
+F 2 "Oscillator:Oscillator_SMD_Abracon_ASE-4Pin_3.2x2.5mm" H 2000 3150 50  0001 C CNN
+F 3 "http://www.abracon.com/Oscillators/ASV.pdf" H 1200 3500 50  0001 C CNN
+	1    1300 3500
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:R_US R?
+U 1 1 5F8259FF
+P 800 3250
+AR Path="/5F2A50C6/5F8259FF" Ref="R?"  Part="1" 
+AR Path="/5F2A508D/5F8259FF" Ref="R?"  Part="1" 
+AR Path="/5F741CFB/5F8259FF" Ref="R?"  Part="1" 
+F 0 "R?" H 900 3200 50  0000 L CNN
+F 1 "10K" H 900 3300 50  0000 L CNN
+F 2 "" V 840 3240 50  0001 C CNN
+F 3 "~" H 800 3250 50  0001 C CNN
+	1    800  3250
+	1    0    0    1   
+$EndComp
+$Comp
+L FlightComputer_Library:VCC_MCU #PWR?
+U 1 1 5F825D9B
+P 800 2900
+F 0 "#PWR?" H 800 2750 50  0001 C CNN
+F 1 "VCC_MCU" H 817 3073 50  0000 C CNN
+F 2 "" H 800 2900 50  0001 C CNN
+F 3 "" H 800 2900 50  0001 C CNN
+	1    800  2900
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	11900 5050 11900 5250
+	800  2900 800  3000
+Wire Wire Line
+	800  3000 1300 3000
+Wire Wire Line
+	1300 3000 1300 3200
+Connection ~ 800  3000
+Wire Wire Line
+	800  3000 800  3100
+Wire Wire Line
+	800  3400 800  3500
+Wire Wire Line
+	800  3500 1000 3500
+$Comp
+L power:GND #PWR?
+U 1 1 5F82BF15
+P 1300 3900
+F 0 "#PWR?" H 1300 3650 50  0001 C CNN
+F 1 "GND" H 1305 3727 50  0000 C CNN
+F 2 "" H 1300 3900 50  0001 C CNN
+F 3 "" H 1300 3900 50  0001 C CNN
+	1    1300 3900
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	1300 3800 1300 3900
+Wire Wire Line
+	1600 3500 3050 3500
+Wire Wire Line
+	3050 3100 2150 3100
+Wire Wire Line
+	3050 3000 2150 3000
+Wire Wire Line
+	3050 2900 2150 2900
+Wire Wire Line
+	4650 1900 5650 1900
+Wire Wire Line
+	4650 2000 5650 2000
+Text Label 2150 2900 0    50   ~ 0
+DEBUG_JMS_SWDIO
+Text Label 2150 3000 0    50   ~ 0
+DEBUG_JTCK_SWCLK
+Text Label 2150 3100 0    50   ~ 0
+DEBUG_JTDI
+Text Label 5650 1900 2    50   ~ 0
+DEBUG_JTDO_TRACESWO
+Text Label 5650 2000 2    50   ~ 0
+DEBUG_NJTRST
+Wire Wire Line
+	7400 3700 6750 3700
+Wire Wire Line
+	7400 3800 6750 3800
+Wire Wire Line
+	9000 3700 9700 3700
+Wire Wire Line
+	9000 3800 9700 3800
+Wire Wire Line
+	9000 3900 9700 3900
+Wire Wire Line
+	7400 4000 6750 4000
+Wire Wire Line
+	7400 4100 6750 4100
+Wire Wire Line
+	7400 4200 6750 4200
+Wire Wire Line
+	7400 4900 6750 4900
+Wire Wire Line
+	7400 5000 6750 5000
+Wire Wire Line
+	7400 5100 6750 5100
+Wire Wire Line
+	7400 5200 6750 5200
+Wire Wire Line
+	9000 4100 9700 4100
+Text Label 6750 3700 0    50   ~ 0
+FMC_A0
+Text Label 6750 3800 0    50   ~ 0
+FMC_A1
+Wire Wire Line
+	7400 3900 6750 3900
+Text Label 6750 3900 0    50   ~ 0
+FMC_A2
+Text Label 6750 4000 0    50   ~ 0
+FMC_A3
+Text Label 6750 4100 0    50   ~ 0
+FMC_A4
+Text Label 6750 4200 0    50   ~ 0
+FMC_A5
+Text Label 6750 4900 0    50   ~ 0
+FMC_A6
+Text Label 6750 5000 0    50   ~ 0
+FMC_A7
+Text Label 6750 5100 0    50   ~ 0
+FMC_A8
+Text Label 6750 5200 0    50   ~ 0
+FMD_A9
+Text Label 9700 3700 2    50   ~ 0
+FMC_A10
+Text Label 9700 3800 2    50   ~ 0
+FMC_A11
+Text Label 9700 3900 2    50   ~ 0
+FMC_A12
+Wire Wire Line
+	9000 4000 9700 4000
+Text Label 9700 4000 2    50   ~ 0
+FMC_A13
+Wire Wire Line
+	9000 4200 9700 4200
+Text Label 9700 4100 2    50   ~ 0
+FMC_BA0
+Text Label 9700 4200 2    50   ~ 0
+FMC_BA1
+Wire Wire Line
+	7400 3000 6750 3000
+Wire Wire Line
+	7400 3100 6750 3100
+Text Label 6750 3000 0    50   ~ 0
+FMC_D0
+Text Label 6750 3100 0    50   ~ 0
+FMC_D1
+Wire Wire Line
+	9000 2900 9700 2900
+Wire Wire Line
+	9000 3000 9700 3000
+Wire Wire Line
+	9000 3100 9700 3100
+Text Label 9700 2900 2    50   ~ 0
+FMC_D10
+Text Label 9700 3000 2    50   ~ 0
+FMC_D11
+Text Label 9700 3100 2    50   ~ 0
+FMC_D12
+Wire Wire Line
+	7400 1600 6750 1600
+Wire Wire Line
+	7400 1700 6750 1700
+Text Label 6750 1600 0    50   ~ 0
+FMC_D2
+Text Label 6750 1700 0    50   ~ 0
+FMC_D3
+Wire Wire Line
+	9000 2300 9700 2300
+Wire Wire Line
+	9000 2400 9700 2400
+Wire Wire Line
+	9000 2500 9700 2500
+Wire Wire Line
+	9000 2600 9700 2600
+Wire Wire Line
+	9000 2700 9700 2700
+Wire Wire Line
+	9000 2800 9700 2800
+Text Label 9700 2300 2    50   ~ 0
+FMC_D4
+Text Label 9700 2400 2    50   ~ 0
+FMC_D5
+Text Label 9700 2500 2    50   ~ 0
+FMC_D6
+Text Label 9700 2600 2    50   ~ 0
+FMC_D7
+Text Label 9700 2700 2    50   ~ 0
+FMC_D8
+Text Label 9700 2800 2    50   ~ 0
+FMC_D9
+Wire Wire Line
+	9000 1600 9700 1600
+Wire Wire Line
+	9000 1700 9700 1700
+Text Label 9700 1600 2    50   ~ 0
+FMC_NBL0
+Text Label 9700 1700 2    50   ~ 0
+FMC_NBL1
+Wire Wire Line
+	7400 2500 6750 2500
+Wire Wire Line
+	7400 2400 6750 2400
+Wire Wire Line
+	7400 2600 6750 2600
+Text Label 6750 2400 0    50   ~ 0
+FMC_D13
+Text Label 6750 2500 0    50   ~ 0
+FMC_D14
+Text Label 6750 2600 0    50   ~ 0
+FMC_D15
+Wire Wire Line
+	4650 2100 5650 2100
+Text Label 5650 2100 2    50   ~ 0
+FMC_SDCKE1
+Wire Wire Line
+	9000 4500 9700 4500
+Wire Wire Line
+	9000 5200 9700 5200
+Wire Wire Line
+	4650 2200 5650 2200
+Wire Wire Line
+	7400 4800 6750 4800
+Wire Wire Line
+	4650 3700 5650 3700
+Text Label 5650 3700 2    50   ~ 0
+FMC_SDNWE
+Text Label 5650 2200 2    50   ~ 0
+FMC_SDNE1
+Text Label 9700 4500 2    50   ~ 0
+FMC_SDCLK
+Text Label 9700 5200 2    50   ~ 0
+FMC_SDNCAS
+Wire Wire Line
+	4650 2300 5650 2300
+Wire Wire Line
+	4650 2400 5650 2400
+Text Label 5650 2300 2    50   ~ 0
+I2C1_SDA
+Text Label 5650 2400 2    50   ~ 0
+I2C1_SCL
+Wire Wire Line
+	7400 4500 6750 4500
+Wire Wire Line
+	7400 4300 6750 4300
+Wire Wire Line
+	7400 4400 6750 4400
+Wire Wire Line
+	7400 4600 6750 4600
+Text Label 6750 4500 0    50   ~ 0
+QUADSPI_BK1_IO0
+Text Label 6750 4600 0    50   ~ 0
+QUADSPI_BK1_IO1
+Text Label 6750 4400 0    50   ~ 0
+QUADSPI_BK1_IO2
+Text Label 6750 4300 0    50   ~ 0
+QUADSPI_BK1_IO3
+Wire Wire Line
+	7400 4700 6750 4700
+Text Label 6750 4700 0    50   ~ 0
+QUADSPI_CLK
+Text Label 6750 4800 0    50   ~ 0
+FMC_SDNRAS
+Wire Wire Line
+	3050 2200 2150 2200
+Wire Wire Line
+	3050 2300 2150 2300
+Text Label 2150 2200 0    50   ~ 0
+SPI1_MISO
+Text Label 2150 2300 0    50   ~ 0
+SPI1_MOSI
+Wire Wire Line
+	3050 2000 2150 2000
+Wire Wire Line
+	3050 2100 2150 2100
+Text Label 2150 2000 0    50   ~ 0
+SPI1_NSS
+Text Label 2150 2100 0    50   ~ 0
+SPI1_SCK
+Wire Wire Line
+	4650 3800 5650 3800
+Wire Wire Line
+	4650 3900 5650 3900
+Text Label 5650 3800 2    50   ~ 0
+SPI2_MOSI
+Text Label 5650 3900 2    50   ~ 0
+SPI2_MISO
+Wire Wire Line
+	4650 2900 5650 2900
+Text Label 5650 2900 2    50   ~ 0
+USB_OTG_HS_VBUS
+Wire Wire Line
+	3050 2600 2150 2600
+Wire Wire Line
+	3050 2500 2150 2500
+Wire Wire Line
+	3050 1800 2150 1800
+Wire Wire Line
+	3050 1900 2150 1900
+Wire Wire Line
+	4650 2700 5650 2700
+Wire Wire Line
+	4650 4700 5650 4700
+Text Label 5650 4700 2    50   ~ 0
+USART3_TX
+Text Label 5650 2700 2    50   ~ 0
+I2C2_SDA
+Text Label 2150 1800 0    50   ~ 0
+USART2_TX
+Text Label 2150 1900 0    50   ~ 0
+USART2_RX
+Text Label 2150 2500 0    50   ~ 0
+OTG_FS_VBUS
+Wire Wire Line
+	3050 2700 2150 2700
+Wire Wire Line
+	3050 2800 2150 2800
+Text Label 2150 2700 0    50   ~ 0
+USB_OTG_FS_DM
+Text Label 2150 2800 0    50   ~ 0
+USB_OTG_FS_DP
+Wire Wire Line
+	4650 3000 5650 3000
+Wire Wire Line
+	4650 3100 5650 3100
+Text Label 5650 3000 2    50   ~ 0
+USB_OTG_HS_DM
+Text Label 5650 3100 2    50   ~ 0
+USB_OTG_HS_DP
+Wire Wire Line
+	7400 1800 6750 1800
+Wire Wire Line
+	7400 1900 6750 1900
+Wire Wire Line
+	7400 2000 6750 2000
+Wire Wire Line
+	7400 2100 6750 2100
+Wire Wire Line
+	7400 2200 6750 2200
+Wire Wire Line
+	7400 2300 6750 2300
+Wire Wire Line
+	9000 4600 9700 4600
+Wire Wire Line
+	9000 4700 9700 4700
+Wire Wire Line
+	9000 4800 9700 4800
+Wire Wire Line
+	9000 4900 9700 4900
+Wire Wire Line
+	9000 5000 9700 5000
+Wire Wire Line
+	9000 5100 9700 5100
+Text Label 9700 4600 2    50   ~ 0
+EINK_DATA6
+Text Label 9700 4700 2    50   ~ 0
+EINK_DATA7
+Text Label 9700 4800 2    50   ~ 0
+PMIC_PWR_GOOD
+Text Label 9700 4900 2    50   ~ 0
+PMIC_VCOM
+Text Label 9700 5000 2    50   ~ 0
+PMIC_WAKEUP
+Text Label 9700 5100 2    50   ~ 0
+PMIC_PWRUP
+Wire Wire Line
+	9000 1800 9700 1800
+Wire Wire Line
+	9000 1900 9700 1900
+Wire Wire Line
+	9000 2000 9700 2000
+Wire Wire Line
+	9000 2100 9700 2100
+Wire Wire Line
+	9000 2200 9700 2200
+Text Label 9700 1800 2    50   ~ 0
+EPD_CL
+Text Label 9700 1900 2    50   ~ 0
+EPD_OE
+Text Label 9700 2000 2    50   ~ 0
+EPD_LE
+Text Label 9700 2100 2    50   ~ 0
+EPD_SPH
+Text Label 9700 2200 2    50   ~ 0
+EPD_GMODE
+Wire Wire Line
+	7400 2700 6750 2700
+Wire Wire Line
+	7400 2800 6750 2800
+Wire Wire Line
+	7400 2900 6750 2900
+Text Label 6750 2700 0    50   ~ 0
+EPD_CKV
+Text Label 6750 2800 0    50   ~ 0
+EPD_SPV
+Text Label 6750 2900 0    50   ~ 0
+EPD_PIMIC_nINT
+Wire Wire Line
+	3050 3800 2150 3800
+Wire Wire Line
+	3050 3900 2150 3900
+Wire Wire Line
+	3050 4000 2150 4000
+Wire Wire Line
+	3050 4100 2150 4100
+Wire Wire Line
+	3050 4250 2150 4250
+Wire Wire Line
+	3050 4350 2150 4350
+Wire Wire Line
+	3050 4450 2150 4450
+Text Label 2150 3800 0    50   ~ 0
+KEY_LEFT
+Text Label 2150 3900 0    50   ~ 0
+KEY_RIGHT
+Text Label 2150 4000 0    50   ~ 0
+KEY_UP
+Text Label 2150 4100 0    50   ~ 0
+KEY_DOWN
+Text Label 2150 4250 0    50   ~ 0
+KEY_ESCAPE
+Text Label 2150 4350 0    50   ~ 0
+KEY_FUNC1
+Text Label 2150 4450 0    50   ~ 0
+KEY_FUNC2
+Wire Wire Line
+	4650 5000 5650 5000
+Wire Wire Line
+	4650 5100 5650 5100
+Text Label 5650 5000 2    50   ~ 0
+KEY_POWER
+Text Label 5650 5100 2    50   ~ 0
+KEY_ENTER
+Wire Wire Line
+	4650 1600 5650 1600
+Wire Wire Line
+	4650 1700 5650 1700
+Wire Wire Line
+	4650 4100 5650 4100
+Wire Wire Line
+	4650 4200 5650 4200
+Text Label 5650 4100 2    50   ~ 0
+SPI2_nCS1
+Text Label 5650 4200 2    50   ~ 0
+SPI2_nCS2
+Wire Wire Line
+	4650 2600 5650 2600
+Text Label 5650 2600 2    50   ~ 0
+I2C2_SCL
+Wire Wire Line
+	9000 4300 9700 4300
+Text Label 9700 4300 2    50   ~ 0
+QUADSPI_BK1_NCS
+Wire Wire Line
+	4650 4300 5650 4300
+Wire Wire Line
+	4650 4400 5650 4400
+Text Label 5650 4300 2    50   ~ 0
+USART6_TX
+Text Label 5650 4400 2    50   ~ 0
+USART6_RX
+Wire Wire Line
+	4650 4800 5650 4800
+Text Label 5650 4800 2    50   ~ 0
+USART3_RX
+Text Label 6750 1900 0    50   ~ 0
+SPI2_SCK
 $EndSCHEMATC
