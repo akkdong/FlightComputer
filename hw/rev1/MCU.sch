@@ -314,52 +314,52 @@ Text Label 2200 4200 0    50   ~ 0
 $Comp
 L Oscillator:ASE-xxxMHz X2
 U 1 1 5F824DEC
-P 1400 3400
-F 0 "X2" H 1450 2950 50  0000 L CNN
-F 1 "ASE-25MHz" H 1300 2850 50  0000 L CNN
-F 2 "Oscillator:Oscillator_SMD_Abracon_ASE-4Pin_3.2x2.5mm" H 2100 3050 50  0001 C CNN
-F 3 "http://www.abracon.com/Oscillators/ASV.pdf" H 1300 3400 50  0001 C CNN
-	1    1400 3400
+P 1300 3400
+F 0 "X2" H 1250 2950 50  0000 L CNN
+F 1 "ASE-25MHz" H 1050 2850 50  0000 L CNN
+F 2 "Oscillator:Oscillator_SMD_Abracon_ASE-4Pin_3.2x2.5mm" H 2000 3050 50  0001 C CNN
+F 3 "http://www.abracon.com/Oscillators/ASV.pdf" H 1200 3400 50  0001 C CNN
+	1    1300 3400
 	1    0    0    -1  
 $EndComp
 $Comp
 L Device:R_US R?
 U 1 1 5F8259FF
-P 850 3150
+P 750 3150
 AR Path="/5F2A50C6/5F8259FF" Ref="R?"  Part="1" 
 AR Path="/5F2A508D/5F8259FF" Ref="R?"  Part="1" 
 AR Path="/5F741CFB/5F8259FF" Ref="R77"  Part="1" 
-F 0 "R77" H 950 3100 50  0000 L CNN
-F 1 "10K" H 950 3200 50  0000 L CNN
-F 2 "" V 890 3140 50  0001 C CNN
-F 3 "~" H 850 3150 50  0001 C CNN
-	1    850  3150
+F 0 "R77" H 850 3100 50  0000 L CNN
+F 1 "10K" H 850 3200 50  0000 L CNN
+F 2 "" V 790 3140 50  0001 C CNN
+F 3 "~" H 750 3150 50  0001 C CNN
+	1    750  3150
 	1    0    0    1   
 $EndComp
 $Comp
 L FlightComputer_Library:VCC_MCU #PWR0150
 U 1 1 5F825D9B
-P 850 2800
-F 0 "#PWR0150" H 850 2650 50  0001 C CNN
-F 1 "VCC_MCU" H 867 2973 50  0000 C CNN
-F 2 "" H 850 2800 50  0001 C CNN
-F 3 "" H 850 2800 50  0001 C CNN
-	1    850  2800
+P 750 2800
+F 0 "#PWR0150" H 750 2650 50  0001 C CNN
+F 1 "VCC_MCU" H 767 2973 50  0000 C CNN
+F 2 "" H 750 2800 50  0001 C CNN
+F 3 "" H 750 2800 50  0001 C CNN
+	1    750  2800
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	850  2800 850  2900
+	750  2800 750  2900
 Wire Wire Line
-	850  2900 1400 2900
+	750  2900 1300 2900
 Wire Wire Line
-	1400 2900 1400 3100
-Connection ~ 850  2900
+	1300 2900 1300 3100
+Connection ~ 750  2900
 Wire Wire Line
-	850  2900 850  3000
+	750  2900 750  3000
 Wire Wire Line
-	850  3300 850  3400
+	750  3300 750  3400
 Wire Wire Line
-	850  3400 1100 3400
+	750  3400 1000 3400
 Wire Wire Line
 	3100 2600 2150 2600
 Wire Wire Line
@@ -432,8 +432,6 @@ Text Label 10300 3200 2    50   ~ 0
 FMC_A10
 Text Label 10300 3300 2    50   ~ 0
 FMC_A11
-Wire Wire Line
-	9600 3500 10350 3500
 Wire Wire Line
 	9600 3700 10350 3700
 Text Label 10300 3600 2    50   ~ 0
@@ -671,12 +669,6 @@ Wire Wire Line
 Wire Wire Line
 	3100 3600 2200 3600
 Wire Wire Line
-	3100 3750 2200 3750
-Wire Wire Line
-	3100 3850 2200 3850
-Wire Wire Line
-	3100 3950 2200 3950
-Wire Wire Line
 	4700 4500 5600 4500
 Wire Wire Line
 	4700 4600 5600 4600
@@ -725,40 +717,40 @@ Wire Wire Line
 $Comp
 L Device:C_Small C?
 U 1 1 5F728082
-P 850 3600
+P 750 3600
 AR Path="/5F2A50C6/5F728082" Ref="C?"  Part="1" 
 AR Path="/5F2A508D/5F728082" Ref="C?"  Part="1" 
 AR Path="/5F741CFB/5F728082" Ref="C67"  Part="1" 
-F 0 "C67" H 950 3650 50  0000 L CNN
-F 1 "0.1uF" H 950 3550 50  0000 L CNN
-F 2 "" H 850 3600 50  0001 C CNN
-F 3 "~" H 850 3600 50  0001 C CNN
-	1    850  3600
+F 0 "C67" H 850 3650 50  0000 L CNN
+F 1 "0.1uF" H 850 3550 50  0000 L CNN
+F 2 "" H 750 3600 50  0001 C CNN
+F 3 "~" H 750 3600 50  0001 C CNN
+	1    750  3600
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	850  3400 850  3500
-Connection ~ 850  3400
+	750  3400 750  3500
+Connection ~ 750  3400
 Wire Wire Line
-	1400 3800 1400 3700
+	1300 3800 1300 3700
 Wire Wire Line
-	850  3700 850  3800
+	750  3700 750  3800
 $Comp
 L power:GND #PWR0151
 U 1 1 5F82BF15
-P 850 3900
-F 0 "#PWR0151" H 850 3650 50  0001 C CNN
-F 1 "GND" H 855 3727 50  0000 C CNN
-F 2 "" H 850 3900 50  0001 C CNN
-F 3 "" H 850 3900 50  0001 C CNN
-	1    850  3900
+P 750 3900
+F 0 "#PWR0151" H 750 3650 50  0001 C CNN
+F 1 "GND" H 755 3727 50  0000 C CNN
+F 2 "" H 750 3900 50  0001 C CNN
+F 3 "" H 750 3900 50  0001 C CNN
+	1    750  3900
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	1400 3800 850  3800
-Connection ~ 850  3800
+	1300 3800 750  3800
+Connection ~ 750  3800
 Wire Wire Line
-	850  3800 850  3900
+	750  3800 750  3900
 NoConn ~ 3100 3100
 Wire Wire Line
 	3100 4500 2200 4500
@@ -832,8 +824,6 @@ Text Label 10300 4600 2    50   ~ 0
 IMU_DRDY
 Text Label 10300 3400 2    50   ~ 0
 FMC_A12
-Text Label 10300 3500 2    50   ~ 0
-EPD_GMODE
 Wire Wire Line
 	9600 3900 10350 3900
 Text Label 10300 3900 2    50   ~ 0
@@ -846,12 +836,6 @@ Text Label 2200 3400 0    50   ~ 0
 EPD_D1
 Text Label 2200 3500 0    50   ~ 0
 EPD_D2
-Text Label 2200 3750 0    50   ~ 0
-EPD_D4
-Text Label 2200 3850 0    50   ~ 0
-EPD_D5
-Text Label 2200 3950 0    50   ~ 0
-EPD_D6
 Text Label 2200 3600 0    50   ~ 0
 EPD_D3
 $Comp
@@ -866,7 +850,7 @@ F 3 "~" H 800 2000 50  0001 C CNN
 	-1   0    0    -1  
 $EndComp
 Wire Wire Line
-	1700 3400 1950 3400
+	1600 3400 1950 3400
 Wire Wire Line
 	1950 3400 1950 3000
 Wire Wire Line
@@ -1101,8 +1085,6 @@ Text HLabel 10350 3700 2    50   Input ~ 0
 FMC_BA1
 Text HLabel 10350 3600 2    50   Input ~ 0
 FMC_BA0
-Text HLabel 10350 3500 2    50   Input ~ 0
-EPD_GMODE
 Text HLabel 10350 1700 2    50   Input ~ 0
 KEY_ENTER
 Text HLabel 10350 1600 2    50   Input ~ 0
@@ -1454,12 +1436,32 @@ Connection ~ 4300 7150
 Wire Wire Line
 	4300 7150 4300 7250
 NoConn ~ 4700 3500
-NoConn ~ 4700 1300
-NoConn ~ 4700 1200
+Wire Wire Line
+	4700 1200 5550 1200
+Wire Wire Line
+	4700 1300 5550 1300
+Text Label 5550 1200 2    50   ~ 0
+EPD_D6
+Text Label 5550 1300 2    50   ~ 0
+EPD_D7
+Wire Wire Line
+	3100 3750 2200 3750
+Wire Wire Line
+	3100 3850 2200 3850
+Text Label 2200 3750 0    50   ~ 0
+EPD_D4
+Text Label 2200 3850 0    50   ~ 0
+EPD_D5
+Wire Wire Line
+	3100 3950 2150 3950
+Text Label 2200 3950 0    50   ~ 0
+EPD_GMODE
+Text HLabel 2150 3950 0    50   Input ~ 0
+EPD_GMODE
+NoConn ~ 9600 3500
 NoConn ~ 3100 1100
 NoConn ~ 3100 1200
-Wire Wire Line
-	8000 1800 7350 1800
+NoConn ~ 8000 1800
 Wire Bus Line
 	1800 7250 1800 7700
 Wire Bus Line
@@ -1468,6 +1470,4 @@ Wire Bus Line
 	1600 6300 3200 6300
 Wire Bus Line
 	1600 5700 3500 5700
-Text Label 7350 1800 0    50   ~ 0
-EPD_D7
 $EndSCHEMATC
