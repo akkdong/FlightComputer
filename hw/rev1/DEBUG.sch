@@ -3,7 +3,7 @@ EELAYER 30 0
 EELAYER END
 $Descr A4 11693 8268
 encoding utf-8
-Sheet 12 12
+Sheet 9 12
 Title ""
 Date ""
 Rev ""
@@ -94,31 +94,19 @@ Wire Wire Line
 Connection ~ 6000 2800
 Wire Wire Line
 	6000 2800 6000 2900
-Wire Wire Line
-	5000 2000 3950 2000
-Wire Wire Line
-	5000 2100 3550 2100
-Wire Wire Line
-	5000 2200 3250 2200
-Wire Wire Line
-	5000 2300 3550 2300
-Wire Wire Line
-	5000 2500 3250 2500
-Wire Wire Line
-	5000 2600 3250 2600
 NoConn ~ 5000 2700
 NoConn ~ 5000 2800
-Text Label 4150 2600 0    50   ~ 0
+Text Label 4100 2600 0    50   ~ 0
 nRESET
-Text Label 4150 2500 0    50   ~ 0
+Text Label 4100 2500 0    50   ~ 0
 TDO
-Text Label 4150 2300 0    50   ~ 0
+Text Label 4100 2300 0    50   ~ 0
 TCLK
-Text Label 4150 2200 0    50   ~ 0
+Text Label 4100 2200 0    50   ~ 0
 TMS
-Text Label 4150 2100 0    50   ~ 0
+Text Label 4100 2100 0    50   ~ 0
 TDI
-Text Label 4150 2000 0    50   ~ 0
+Text Label 4100 2000 0    50   ~ 0
 TRST
 $Comp
 L FlightComputer_Library:VCC_MCU #PWR0213
@@ -163,7 +151,6 @@ F 3 "~" H 3550 2950 50  0001 C CNN
 $EndComp
 Wire Wire Line
 	3550 2800 3550 2300
-Connection ~ 3550 2300
 Wire Wire Line
 	3550 2300 3250 2300
 $Comp
@@ -194,12 +181,10 @@ F 3 "~" H 3950 1700 50  0001 C CNN
 $EndComp
 Wire Wire Line
 	3550 1850 3550 2100
-Connection ~ 3550 2100
 Wire Wire Line
 	3550 2100 3250 2100
 Wire Wire Line
 	3950 1850 3950 2000
-Connection ~ 3950 2000
 Wire Wire Line
 	3950 2000 3250 2000
 $Comp
@@ -241,4 +226,115 @@ F 3 "" H 3550 3200 50  0001 C CNN
 $EndComp
 Wire Wire Line
 	3550 3100 3550 3200
+$Comp
+L Device:R_US R?
+U 1 1 6021E00C
+P 4700 2000
+AR Path="/5F2A50C6/6021E00C" Ref="R?"  Part="1" 
+AR Path="/5F60AB0F/6021E00C" Ref="R?"  Part="1" 
+AR Path="/5F7BC0DD/6021E00C" Ref="R?"  Part="1" 
+F 0 "R?" V 4750 2150 50  0000 L CNN
+F 1 "33R" V 4750 1750 50  0000 L CNN
+F 2 "" V 4740 1990 50  0001 C CNN
+F 3 "~" H 4700 2000 50  0001 C CNN
+	1    4700 2000
+	0    -1   -1   0   
+$EndComp
+$Comp
+L Device:R_US R?
+U 1 1 6021F8C5
+P 4700 2100
+AR Path="/5F2A50C6/6021F8C5" Ref="R?"  Part="1" 
+AR Path="/5F60AB0F/6021F8C5" Ref="R?"  Part="1" 
+AR Path="/5F7BC0DD/6021F8C5" Ref="R?"  Part="1" 
+F 0 "R?" V 4750 2250 50  0000 L CNN
+F 1 "33R" V 4750 1850 50  0000 L CNN
+F 2 "" V 4740 2090 50  0001 C CNN
+F 3 "~" H 4700 2100 50  0001 C CNN
+	1    4700 2100
+	0    -1   -1   0   
+$EndComp
+$Comp
+L Device:R_US R?
+U 1 1 6021FA89
+P 4700 2200
+AR Path="/5F2A50C6/6021FA89" Ref="R?"  Part="1" 
+AR Path="/5F60AB0F/6021FA89" Ref="R?"  Part="1" 
+AR Path="/5F7BC0DD/6021FA89" Ref="R?"  Part="1" 
+F 0 "R?" V 4750 2350 50  0000 L CNN
+F 1 "33R" V 4750 1950 50  0000 L CNN
+F 2 "" V 4740 2190 50  0001 C CNN
+F 3 "~" H 4700 2200 50  0001 C CNN
+	1    4700 2200
+	0    -1   -1   0   
+$EndComp
+$Comp
+L Device:R_US R?
+U 1 1 6021FB8B
+P 4700 2300
+AR Path="/5F2A50C6/6021FB8B" Ref="R?"  Part="1" 
+AR Path="/5F60AB0F/6021FB8B" Ref="R?"  Part="1" 
+AR Path="/5F7BC0DD/6021FB8B" Ref="R?"  Part="1" 
+F 0 "R?" V 4750 2450 50  0000 L CNN
+F 1 "33R" V 4750 2050 50  0000 L CNN
+F 2 "" V 4740 2290 50  0001 C CNN
+F 3 "~" H 4700 2300 50  0001 C CNN
+	1    4700 2300
+	0    -1   -1   0   
+$EndComp
+$Comp
+L Device:R_US R?
+U 1 1 6021FD1E
+P 4700 2500
+AR Path="/5F2A50C6/6021FD1E" Ref="R?"  Part="1" 
+AR Path="/5F60AB0F/6021FD1E" Ref="R?"  Part="1" 
+AR Path="/5F7BC0DD/6021FD1E" Ref="R?"  Part="1" 
+F 0 "R?" V 4750 2650 50  0000 L CNN
+F 1 "33R" V 4750 2250 50  0000 L CNN
+F 2 "" V 4740 2490 50  0001 C CNN
+F 3 "~" H 4700 2500 50  0001 C CNN
+	1    4700 2500
+	0    -1   -1   0   
+$EndComp
+$Comp
+L Device:R_US R?
+U 1 1 6021FF26
+P 4700 2600
+AR Path="/5F2A50C6/6021FF26" Ref="R?"  Part="1" 
+AR Path="/5F60AB0F/6021FF26" Ref="R?"  Part="1" 
+AR Path="/5F7BC0DD/6021FF26" Ref="R?"  Part="1" 
+F 0 "R?" V 4750 2750 50  0000 L CNN
+F 1 "33R" V 4750 2350 50  0000 L CNN
+F 2 "" V 4740 2590 50  0001 C CNN
+F 3 "~" H 4700 2600 50  0001 C CNN
+	1    4700 2600
+	0    -1   -1   0   
+$EndComp
+Wire Wire Line
+	4850 2600 5000 2600
+Wire Wire Line
+	5000 2500 4850 2500
+Wire Wire Line
+	4850 2300 5000 2300
+Wire Wire Line
+	5000 2200 4850 2200
+Wire Wire Line
+	4850 2100 5000 2100
+Wire Wire Line
+	5000 2000 4850 2000
+Wire Wire Line
+	4550 2000 3950 2000
+Connection ~ 3950 2000
+Wire Wire Line
+	4550 2100 3550 2100
+Connection ~ 3550 2100
+Wire Wire Line
+	4550 2200 3250 2200
+Wire Wire Line
+	4550 2300 3550 2300
+Connection ~ 3550 2300
+Wire Wire Line
+	3250 2500 4550 2500
+Wire Wire Line
+	4550 2600 3250 2600
 $EndSCHEMATC

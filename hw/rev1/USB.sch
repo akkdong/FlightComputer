@@ -3,7 +3,7 @@ EELAYER 30 0
 EELAYER END
 $Descr A4 11693 8268
 encoding utf-8
-Sheet 7 12
+Sheet 12 12
 Title ""
 Date ""
 Rev ""
@@ -199,8 +199,6 @@ Wire Wire Line
 	4500 4550 4700 4550
 Wire Wire Line
 	4700 4550 4700 5400
-Wire Wire Line
-	4700 5400 2800 5400
 Text HLabel 2100 5400 0    50   Input ~ 0
 USB_HS_OVCR
 Wire Wire Line
@@ -209,15 +207,10 @@ Wire Wire Line
 	2800 4250 2800 4350
 Wire Wire Line
 	2800 4350 3600 4350
-Wire Wire Line
-	3600 4550 2100 4550
 Text HLabel 2100 4550 0    50   Input ~ 0
 USB_HS_PWR_EN
 Wire Wire Line
 	2800 4900 2800 5000
-Wire Wire Line
-	2800 5300 2800 5400
-Connection ~ 2800 5400
 Wire Wire Line
 	2800 5400 2100 5400
 $Comp
@@ -398,4 +391,72 @@ Wire Wire Line
 	3300 2450 2050 2450
 Text HLabel 2050 2450 0    50   Input ~ 0
 USB_FS_VBUS
+$Comp
+L Device:R_US R?
+U 1 1 5F91FB36
+P 3200 4550
+AR Path="/5F2A50C6/5F91FB36" Ref="R?"  Part="1" 
+AR Path="/5F742A7D/5F91FB36" Ref="R?"  Part="1" 
+F 0 "R?" V 3250 4750 50  0000 L CNN
+F 1 "33R" V 3250 4250 50  0000 L CNN
+F 2 "" V 3240 4540 50  0001 C CNN
+F 3 "~" H 3200 4550 50  0001 C CNN
+	1    3200 4550
+	0    -1   -1   0   
+$EndComp
+Wire Wire Line
+	3050 4550 2350 4550
+Wire Wire Line
+	3350 4550 3600 4550
+$Comp
+L Device:R_US R?
+U 1 1 5F921D64
+P 3500 5400
+AR Path="/5F2A50C6/5F921D64" Ref="R?"  Part="1" 
+AR Path="/5F742A7D/5F921D64" Ref="R?"  Part="1" 
+F 0 "R?" V 3550 5600 50  0000 L CNN
+F 1 "33R" V 3550 5100 50  0000 L CNN
+F 2 "" V 3540 5390 50  0001 C CNN
+F 3 "~" H 3500 5400 50  0001 C CNN
+	1    3500 5400
+	0    -1   -1   0   
+$EndComp
+Wire Wire Line
+	3350 5400 2800 5400
+Connection ~ 2800 5400
+Wire Wire Line
+	3650 5400 4700 5400
+Wire Wire Line
+	2800 5300 2800 5400
+$Comp
+L Device:R_US R?
+U 1 1 5F92569E
+P 2350 4300
+AR Path="/5F2A50C6/5F92569E" Ref="R?"  Part="1" 
+AR Path="/5F742A7D/5F92569E" Ref="R?"  Part="1" 
+F 0 "R?" H 2150 4250 50  0000 L CNN
+F 1 "47k" H 2150 4350 50  0000 L CNN
+F 2 "" V 2390 4290 50  0001 C CNN
+F 3 "~" H 2350 4300 50  0001 C CNN
+	1    2350 4300
+	-1   0    0    1   
+$EndComp
+$Comp
+L FlightComputer_Library:VCC_MCU #PWR?
+U 1 1 5F9256A4
+P 2350 4050
+F 0 "#PWR?" H 2350 3900 50  0001 C CNN
+F 1 "VCC_MCU" H 2367 4223 50  0000 C CNN
+F 2 "" H 2350 4050 50  0001 C CNN
+F 3 "" H 2350 4050 50  0001 C CNN
+	1    2350 4050
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	2350 4050 2350 4150
+Wire Wire Line
+	2350 4450 2350 4550
+Connection ~ 2350 4550
+Wire Wire Line
+	2350 4550 2100 4550
 $EndSCHEMATC

@@ -3,7 +3,7 @@ EELAYER 30 0
 EELAYER END
 $Descr A4 11693 8268
 encoding utf-8
-Sheet 11 12
+Sheet 10 12
 Title ""
 Date ""
 Rev ""
@@ -923,9 +923,9 @@ USART3_TX
 Text HLabel 5600 4300 2    50   Input ~ 0
 USART3_RX
 Text HLabel 5600 4400 2    50   Input ~ 0
-PMIC_nINT
+USB_FS_VBUS
 Text HLabel 5600 4500 2    50   Input ~ 0
-KEY_POWER
+KEY_ESCAPE
 Text HLabel 7300 2400 0    50   Input ~ 0
 USB_HS_PWR_EN
 Text HLabel 7300 4200 0    50   Input ~ 0
