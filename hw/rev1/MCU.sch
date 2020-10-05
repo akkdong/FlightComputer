@@ -575,13 +575,9 @@ SPI1_NSS
 Text Label 2200 1600 0    50   ~ 0
 SPI1_SCK
 Wire Wire Line
-	4700 3300 5600 3300
+	4700 3300 5500 3300
 Wire Wire Line
-	4700 3400 5600 3400
-Text Label 5550 3300 2    50   ~ 0
-SPI2_MOSI
-Text Label 5550 3400 2    50   ~ 0
-SPI2_MISO
+	4700 3400 5500 3400
 Wire Wire Line
 	4700 2400 5600 2400
 Text Label 5550 2400 2    50   ~ 0
@@ -605,7 +601,7 @@ Wire Wire Line
 Wire Wire Line
 	3100 2300 2150 2300
 Text Label 2200 2200 0    50   ~ 0
-USB_OTG_FS_DN
+USB_OTG_FS_DM
 Text Label 2200 2300 0    50   ~ 0
 USB_OTG_FS_DP
 Wire Wire Line
@@ -613,19 +609,19 @@ Wire Wire Line
 Wire Wire Line
 	4700 2600 5600 2600
 Text Label 5550 2500 2    50   ~ 0
-USB_OTG_HS_DN
+USB_OTG_HS_DM
 Text Label 5550 2600 2    50   ~ 0
 USB_OTG_HS_DP
 Wire Wire Line
-	8000 1300 7300 1300
+	8000 1300 7350 1300
 Wire Wire Line
-	8000 1400 7300 1400
+	8000 1400 7350 1400
 Wire Wire Line
-	8000 1500 7300 1500
+	8000 1500 7350 1500
 Wire Wire Line
-	8000 1600 7300 1600
+	8000 1600 7350 1600
 Wire Wire Line
-	8000 1700 7300 1700
+	8000 1700 7350 1700
 Wire Wire Line
 	9600 4100 10350 4100
 Wire Wire Line
@@ -649,35 +645,35 @@ Wire Wire Line
 Wire Wire Line
 	9600 1700 10350 1700
 Wire Wire Line
-	8000 2200 7300 2200
+	8000 2200 7350 2200
 Wire Wire Line
-	8000 2300 7300 2300
+	8000 2300 7350 2300
 Wire Wire Line
 	8000 2400 7300 2400
 Text Label 7350 2200 0    50   ~ 0
-EPD_SPV
+EPD_D6
 Text Label 7350 2300 0    50   ~ 0
-EPD_CKV
+EPD_D7
 Text Label 7350 2400 0    50   ~ 0
-EPD_SPH
+USB_HS_PWR_EN
 Wire Wire Line
-	3100 3300 2200 3300
+	3100 3300 2150 3300
 Wire Wire Line
-	3100 3400 2200 3400
+	3100 3400 2150 3400
 Wire Wire Line
-	3100 3500 2200 3500
+	3100 3500 2150 3500
 Wire Wire Line
-	3100 3600 2200 3600
+	3100 3600 2150 3600
 Wire Wire Line
 	4700 4500 5600 4500
 Wire Wire Line
-	4700 4600 5600 4600
+	4700 4600 5500 4600
 Wire Wire Line
 	4700 1100 5600 1100
 Text Label 5550 3600 2    50   ~ 0
-SPI2_nCS1
+KEY_LEFT
 Text Label 5550 3700 2    50   ~ 0
-SPI2_nCS2
+KEY_RIGHT
 Text Label 5550 2100 2    50   ~ 0
 I2C2_SCL
 Wire Wire Line
@@ -689,15 +685,15 @@ Wire Wire Line
 Wire Wire Line
 	4700 3900 5600 3900
 Text Label 5550 3800 2    50   ~ 0
-USART6_TX
+KEY_UP
 Text Label 5550 3900 2    50   ~ 0
-USART6_RX
+KEY_DOWN
 Wire Wire Line
 	4700 4300 5600 4300
 Text Label 5550 4300 2    50   ~ 0
 USART3_RX
 Text Label 7350 1400 0    50   ~ 0
-SPI2_SCK
+EPD_D1
 $Comp
 L Device:R_US R?
 U 1 1 5F7151F0
@@ -765,162 +761,85 @@ Wire Wire Line
 Text Label 2200 1900 0    50   ~ 0
 USB_OTG_HS_OVCR
 Text Label 5550 1100 2    50   ~ 0
-PWR_BAT_SENSING
+IMU_DRDY
 Wire Wire Line
 	4700 2000 5600 2000
 Wire Wire Line
 	4700 2300 5600 2300
 Text Label 5550 2300 2    50   ~ 0
-USB_OTG_HS_PWR_EN
+USB_OTG_HS_ID
 Text Label 5550 2000 2    50   ~ 0
-KEY_FUNC2
+PWR_5V_EN
 Wire Wire Line
 	4700 4000 5600 4000
 Wire Wire Line
 	4700 4400 5600 4400
 Wire Wire Line
-	4700 4700 5600 4700
+	4700 4700 5500 4700
 Text Label 5550 4400 2    50   ~ 0
-PMIC_nINT
+USB_OTG_FS_VBUS
 Text Label 5550 4500 2    50   ~ 0
-KEY_POWER
-Text Label 5550 4600 2    50   ~ 0
 KEY_ESCAPE
-Text Label 5550 4700 2    50   ~ 0
-KEY_FUNC1
 Wire Wire Line
 	4700 4100 5600 4100
 Text Label 5550 4000 2    50   ~ 0
-EPD_OE
+KEY_FUNC1
 Text Label 5550 4100 2    50   ~ 0
-EPD_LE
+KEY_FUNC2
 Text Label 7350 1300 0    50   ~ 0
-PMIC_PWR_GOOD
+EPD_D0
 Text Label 7350 1500 0    50   ~ 0
-PMIC_VCOM
+EPD_D2
 Text Label 7350 1600 0    50   ~ 0
-PMIC_WAKEUP
+EPD_D3
 Text Label 7350 1700 0    50   ~ 0
-PMIC_PWRUP
+EPD_D4
 Text Label 10300 1300 2    50   ~ 0
-KEY_LEFT
+SPI4_SCLK
 Text Label 10300 1400 2    50   ~ 0
-KEY_RIGHT
+SPI4_nCS1
 Text Label 10300 1500 2    50   ~ 0
-KEY_UP
+SPI4_nCS2
 Text Label 10300 1600 2    50   ~ 0
-KEY_DOWN
+SPI4_MISO
 Text Label 10300 1700 2    50   ~ 0
-KEY_ENTER
+SPI4_MOSI
 Text Label 10300 4200 2    50   ~ 0
-PWR_PERIPH_EN
+PMIC_WAKEUP
 Text Label 10300 4300 2    50   ~ 0
-PWR_BAT+_EN
+PMIC_PWRUP
 Text Label 10300 4400 2    50   ~ 0
-IMU_FSYNC
+PMIC_PWR_GOOD
 Text Label 10300 4500 2    50   ~ 0
-IMU_nINT
+PMIC_nINT
 Text Label 10300 4600 2    50   ~ 0
-IMU_DRDY
+PWR_EXTRA_EN
 Text Label 10300 3400 2    50   ~ 0
 FMC_A12
 Wire Wire Line
 	9600 3900 10350 3900
 Text Label 10300 3900 2    50   ~ 0
-EPD_CL
+PWR_PERIPH_EN
 Text Label 10300 4100 2    50   ~ 0
-PWR_5V_EN
+PMIC_VCOM
 Text Label 2200 3300 0    50   ~ 0
-EPD_D0
+EPD_CKV
 Text Label 2200 3400 0    50   ~ 0
-EPD_D1
+EPD_CL
 Text Label 2200 3500 0    50   ~ 0
-EPD_D2
+EPD_GMODE
 Text Label 2200 3600 0    50   ~ 0
-EPD_D3
-$Comp
-L Connector_Generic:Conn_01x04 J11
-U 1 1 605CE987
-P 800 2000
-F 0 "J11" H 750 1650 50  0000 L CNN
-F 1 "Conn_01x04" H 550 1550 50  0000 L CNN
-F 2 "" H 800 2000 50  0001 C CNN
-F 3 "~" H 800 2000 50  0001 C CNN
-	1    800  2000
-	-1   0    0    -1  
-$EndComp
+EPD_LE
 Wire Wire Line
-	1600 3400 1950 3400
+	1600 3400 1700 3400
 Wire Wire Line
-	1950 3400 1950 3000
+	1700 3400 1700 3000
 Wire Wire Line
-	1950 3000 2200 3000
-$Comp
-L Device:R_US R?
-U 1 1 605EEB93
-P 1350 2000
-AR Path="/5F2A50C6/605EEB93" Ref="R?"  Part="1" 
-AR Path="/5F2A508D/605EEB93" Ref="R?"  Part="1" 
-AR Path="/5F741CFB/605EEB93" Ref="R78"  Part="1" 
-F 0 "R78" V 1300 2150 50  0000 L CNN
-F 1 "33R" V 1300 1700 50  0000 L CNN
-F 2 "" V 1390 1990 50  0001 C CNN
-F 3 "~" H 1350 2000 50  0001 C CNN
-	1    1350 2000
-	0    -1   -1   0   
-$EndComp
-$Comp
-L Device:R_US R?
-U 1 1 605EEEDC
-P 1350 2100
-AR Path="/5F2A50C6/605EEEDC" Ref="R?"  Part="1" 
-AR Path="/5F2A508D/605EEEDC" Ref="R?"  Part="1" 
-AR Path="/5F741CFB/605EEEDC" Ref="R79"  Part="1" 
-F 0 "R79" V 1300 2250 50  0000 L CNN
-F 1 "33R" V 1300 1800 50  0000 L CNN
-F 2 "" V 1390 2090 50  0001 C CNN
-F 3 "~" H 1350 2100 50  0001 C CNN
-	1    1350 2100
-	0    -1   -1   0   
-$EndComp
+	1700 3000 2200 3000
 Wire Wire Line
-	1500 2000 3100 2000
+	2150 2000 3100 2000
 Wire Wire Line
-	1500 2100 3100 2100
-Wire Wire Line
-	1200 2100 1000 2100
-Wire Wire Line
-	1200 2000 1000 2000
-$Comp
-L FlightComputer_Library:VCC_MCU #PWR0152
-U 1 1 60618F98
-P 1200 1800
-F 0 "#PWR0152" H 1200 1650 50  0001 C CNN
-F 1 "VCC_MCU" H 1217 1973 50  0000 C CNN
-F 2 "" H 1200 1800 50  0001 C CNN
-F 3 "" H 1200 1800 50  0001 C CNN
-	1    1200 1800
-	1    0    0    -1  
-$EndComp
-Wire Wire Line
-	1000 1900 1200 1900
-Wire Wire Line
-	1200 1900 1200 1800
-$Comp
-L power:GND #PWR0153
-U 1 1 6063A270
-P 1200 2300
-F 0 "#PWR0153" H 1200 2050 50  0001 C CNN
-F 1 "GND" H 1205 2127 50  0000 C CNN
-F 2 "" H 1200 2300 50  0001 C CNN
-F 3 "" H 1200 2300 50  0001 C CNN
-	1    1200 2300
-	1    0    0    -1  
-$EndComp
-Wire Wire Line
-	1000 2200 1200 2200
-Wire Wire Line
-	1200 2200 1200 2300
+	2150 2100 3100 2100
 Text HLabel 2150 1300 0    50   Input ~ 0
 USART2_TX
 Text HLabel 2150 1400 0    50   Input ~ 0
@@ -966,7 +885,7 @@ EPD_D[0..7]
 Text HLabel 2150 4200 0    50   Input ~ 0
 nRST
 Text HLabel 5600 1100 2    50   Input ~ 0
-PWR_BAT_SENSING
+IMU_DRDY
 Text HLabel 5600 1400 2    50   Input ~ 0
 DEBUG_JTDO-SWO
 Text HLabel 5600 1500 2    50   Input ~ 0
@@ -976,9 +895,9 @@ FMC_CKE1
 Text HLabel 5600 1700 2    50   Input ~ 0
 FMC_nE1
 Text HLabel 5600 2000 2    50   Input ~ 0
-KEY_FUNC2
+PWR_5V_EN
 Text HLabel 5600 2300 2    50   Input ~ 0
-USB_HS_PWR_EN
+USB_HS_ID
 Text HLabel 5600 2400 2    50   Input ~ 0
 USB_HS_VBUS
 Text HLabel 5600 2500 2    50   Input ~ 0
@@ -987,22 +906,18 @@ Text HLabel 5600 2600 2    50   Input ~ 0
 USB_HS_DP
 Text HLabel 5600 3200 2    50   Input ~ 0
 FMC_nWE
-Text HLabel 5600 3300 2    50   Input ~ 0
-SPI2_MOSI
-Text HLabel 5600 3400 2    50   Input ~ 0
-SPI2_MISO
 Text HLabel 5600 3600 2    50   Input ~ 0
-SPI2_nCS1
+KEY_LEFT
 Text HLabel 5600 3700 2    50   Input ~ 0
-SPI2_nCS2
+KEY_RIGHT
 Text HLabel 5600 3800 2    50   Input ~ 0
-USART6_TX
+KEY_UP
 Text HLabel 5600 3900 2    50   Input ~ 0
-USART6_RX
+KEY_DOWN
 Text HLabel 5600 4000 2    50   Input ~ 0
-EPD_OE
+KEY_FUNC1
 Text HLabel 5600 4100 2    50   Input ~ 0
-EPD_LE
+KEY_FUNC2
 Text HLabel 5600 4200 2    50   Input ~ 0
 USART3_TX
 Text HLabel 5600 4300 2    50   Input ~ 0
@@ -1011,26 +926,8 @@ Text HLabel 5600 4400 2    50   Input ~ 0
 PMIC_nINT
 Text HLabel 5600 4500 2    50   Input ~ 0
 KEY_POWER
-Text HLabel 5600 4600 2    50   Input ~ 0
-KEY_ESCAPE
-Text HLabel 5600 4700 2    50   Input ~ 0
-KEY_FUNC1
-Text HLabel 7300 1300 0    50   Input ~ 0
-PMIC_PWR_GOOD
-Text HLabel 7300 1400 0    50   Input ~ 0
-SPI2_SCLK
-Text HLabel 7300 1500 0    50   Input ~ 0
-PMIC_VCOM
-Text HLabel 7300 1600 0    50   Input ~ 0
-PMIC_WAKEUP
-Text HLabel 7300 1700 0    50   Input ~ 0
-PMIC_PWRUP
-Text HLabel 7300 2200 0    50   Input ~ 0
-EPD_SPV
-Text HLabel 7300 2300 0    50   Input ~ 0
-EPD_CKV
 Text HLabel 7300 2400 0    50   Input ~ 0
-EPD_SPH
+USB_HS_PWR_EN
 Text HLabel 7300 4200 0    50   Input ~ 0
 QUADSPI_CLK
 Text HLabel 7300 4300 0    50   Input ~ 0
@@ -1064,21 +961,21 @@ QUADSPI_BK1_IO4
 Text HLabel 10350 4700 2    50   Input ~ 0
 FMC_nCAS
 Text HLabel 10350 4600 2    50   Input ~ 0
-IMU_DRDY
+PWR_EXTRA_EN
 Text HLabel 10350 4500 2    50   Input ~ 0
-IMU_nINT
+PMIC_nINT
 Text HLabel 10350 4400 2    50   Input ~ 0
-IMU_FSYNC
+PMIC_PWR_GOOD
 Text HLabel 10350 4300 2    50   Input ~ 0
-PWR_BAT+_EN
+PMIC_PWRUP
 Text HLabel 10350 4200 2    50   Input ~ 0
-PWR_PERIPH_EN
+PMIC_WAKEUP
 Text HLabel 10350 4100 2    50   Input ~ 0
-PWR_5V_EN
+PMIC_VCOM
 Text HLabel 10350 4000 2    50   Input ~ 0
 FMC_CLK
 Text HLabel 10350 3900 2    50   Input ~ 0
-EPD_CL
+PWR_PERIPH_EN
 Text HLabel 10350 3800 2    50   Input ~ 0
 QUADSPI_BK1_nCS
 Text HLabel 10350 3700 2    50   Input ~ 0
@@ -1086,15 +983,15 @@ FMC_BA1
 Text HLabel 10350 3600 2    50   Input ~ 0
 FMC_BA0
 Text HLabel 10350 1700 2    50   Input ~ 0
-KEY_ENTER
+SPI4_MOSI
 Text HLabel 10350 1600 2    50   Input ~ 0
-KEY_DOWN
+SPI4_MISO
 Text HLabel 10350 1500 2    50   Input ~ 0
-KEY_UP
+SPI4_nCS2
 Text HLabel 10350 1400 2    50   Input ~ 0
-KEY_RIGHT
+SPI4_nCS1
 Text HLabel 10350 1300 2    50   Input ~ 0
-KEY_LEFT
+SPI4_SCLK
 Text HLabel 10350 1200 2    50   Input ~ 0
 FMC_nBL1
 Text HLabel 10350 1100 2    50   Input ~ 0
@@ -1435,33 +1332,137 @@ Wire Wire Line
 Connection ~ 4300 7150
 Wire Wire Line
 	4300 7150 4300 7250
-NoConn ~ 4700 3500
 Wire Wire Line
-	4700 1200 5550 1200
+	4700 1200 5600 1200
 Wire Wire Line
-	4700 1300 5550 1300
+	4700 1300 5600 1300
 Text Label 5550 1200 2    50   ~ 0
-EPD_D6
+IMU_FSYNC
 Text Label 5550 1300 2    50   ~ 0
-EPD_D7
+IMU_nINT
 Wire Wire Line
-	3100 3750 2200 3750
+	3100 3750 2150 3750
 Wire Wire Line
-	3100 3850 2200 3850
+	3100 3850 2150 3850
 Text Label 2200 3750 0    50   ~ 0
-EPD_D4
+EPD_OE
 Text Label 2200 3850 0    50   ~ 0
-EPD_D5
+EPD_SPH
 Wire Wire Line
 	3100 3950 2150 3950
 Text Label 2200 3950 0    50   ~ 0
-EPD_GMODE
+EPD_SPV
 Text HLabel 2150 3950 0    50   Input ~ 0
+EPD_SPV
+Wire Wire Line
+	3100 1100 2150 1100
+Wire Wire Line
+	3100 1200 2250 1200
+$Comp
+L Connector:TestPoint_Alt TP?
+U 1 1 5F871C4E
+P 2250 1200
+AR Path="/5F5976A1/5F871C4E" Ref="TP?"  Part="1" 
+AR Path="/5F741CFB/5F871C4E" Ref="TP?"  Part="1" 
+F 0 "TP?" V 2250 1400 50  0000 L CNN
+F 1 "PA1" V 2300 1100 50  0000 L CNN
+F 2 "" H 2450 1200 50  0001 C CNN
+F 3 "~" H 2450 1200 50  0001 C CNN
+	1    2250 1200
+	0    -1   -1   0   
+$EndComp
+Text Label 2200 1100 0    50   ~ 0
+KEY_ENTER
+Text HLabel 2150 1100 0    50   Input ~ 0
+KEY_ENTER
+Text HLabel 5600 1200 2    50   Input ~ 0
+IMU_FSYNC
+Text HLabel 5600 1300 2    50   Input ~ 0
+IMU_nINT
+Wire Wire Line
+	4700 3500 5600 3500
+$Comp
+L Connector:TestPoint_Alt TP?
+U 1 1 5F8B7E8C
+P 5500 3300
+AR Path="/5F5976A1/5F8B7E8C" Ref="TP?"  Part="1" 
+AR Path="/5F741CFB/5F8B7E8C" Ref="TP?"  Part="1" 
+F 0 "TP?" V 5500 3500 50  0000 L CNN
+F 1 "PC1" V 5450 3100 50  0000 L CNN
+F 2 "" H 5700 3300 50  0001 C CNN
+F 3 "~" H 5700 3300 50  0001 C CNN
+	1    5500 3300
+	0    1    1    0   
+$EndComp
+$Comp
+L Connector:TestPoint_Alt TP?
+U 1 1 5F8B8AB0
+P 5500 3400
+AR Path="/5F5976A1/5F8B8AB0" Ref="TP?"  Part="1" 
+AR Path="/5F741CFB/5F8B8AB0" Ref="TP?"  Part="1" 
+F 0 "TP?" V 5500 3600 50  0000 L CNN
+F 1 "PC2" V 5450 3200 50  0000 L CNN
+F 2 "" H 5700 3400 50  0001 C CNN
+F 3 "~" H 5700 3400 50  0001 C CNN
+	1    5500 3400
+	0    1    1    0   
+$EndComp
+Text HLabel 5600 3500 2    50   Input ~ 0
+BAT_SENSING
+$Comp
+L Connector:TestPoint_Alt TP?
+U 1 1 5F8B8E3C
+P 5500 4600
+AR Path="/5F5976A1/5F8B8E3C" Ref="TP?"  Part="1" 
+AR Path="/5F741CFB/5F8B8E3C" Ref="TP?"  Part="1" 
+F 0 "TP?" V 5500 4800 50  0000 L CNN
+F 1 "PC14" V 5450 4400 50  0000 L CNN
+F 2 "" H 5700 4600 50  0001 C CNN
+F 3 "~" H 5700 4600 50  0001 C CNN
+	1    5500 4600
+	0    1    1    0   
+$EndComp
+$Comp
+L Connector:TestPoint_Alt TP?
+U 1 1 5F8B9168
+P 5500 4700
+AR Path="/5F5976A1/5F8B9168" Ref="TP?"  Part="1" 
+AR Path="/5F741CFB/5F8B9168" Ref="TP?"  Part="1" 
+F 0 "TP?" V 5500 4900 50  0000 L CNN
+F 1 "PC15" V 5450 4500 50  0000 L CNN
+F 2 "" H 5700 4700 50  0001 C CNN
+F 3 "~" H 5700 4700 50  0001 C CNN
+	1    5500 4700
+	0    1    1    0   
+$EndComp
+Text Label 5550 3500 2    50   ~ 0
+PWR_BAT_SENSING
+Wire Wire Line
+	8000 1800 7350 1800
+Text Label 7350 1800 0    50   ~ 0
+EPD_D5
+Wire Wire Line
+	9600 3500 10350 3500
+Text Label 10300 3500 2    50   ~ 0
+PWR_BAT+_EN
+Text HLabel 10350 3500 2    50   Input ~ 0
+PWR_BAT+_EN
+Text HLabel 2150 3850 0    50   Input ~ 0
+EPD_SPH
+Text HLabel 2150 3750 0    50   Input ~ 0
+EPD_OE
+Text HLabel 2150 3600 0    50   Input ~ 0
+EPD_LE
+Text HLabel 2150 3500 0    50   Input ~ 0
 EPD_GMODE
-NoConn ~ 9600 3500
-NoConn ~ 3100 1100
-NoConn ~ 3100 1200
-NoConn ~ 8000 1800
+Text HLabel 2150 3400 0    50   Input ~ 0
+EPD_CL
+Text HLabel 2150 3300 0    50   Input ~ 0
+EPD_CKV
+Text HLabel 2150 2000 0    50   Input ~ 0
+USART1_TX
+Text HLabel 2150 2100 0    50   Input ~ 0
+USART1_RX
 Wire Bus Line
 	1800 7250 1800 7700
 Wire Bus Line
