@@ -645,20 +645,6 @@ Text Label 5550 4300 2    50   ~ 0
 USART3_RX
 Text Label 7350 1400 0    50   ~ 0
 EPD_D1
-$Comp
-L Device:R_US R?
-U 1 1 5F7151F0
-P -550 3050
-AR Path="/5F2A50C6/5F7151F0" Ref="R?"  Part="1" 
-AR Path="/5F2A508D/5F7151F0" Ref="R?"  Part="1" 
-AR Path="/5F741CFB/5F7151F0" Ref="R82"  Part="1" 
-F 0 "R82" V -500 3200 50  0000 L CNN
-F 1 "33R" V -500 2750 50  0000 L CNN
-F 2 "" V -510 3040 50  0001 C CNN
-F 3 "~" H -550 3050 50  0001 C CNN
-	1    -550 3050
-	0    -1   -1   0   
-$EndComp
 Wire Wire Line
 	3100 4500 2200 4500
 Text Label 2200 4500 0    50   ~ 0
@@ -1379,92 +1365,6 @@ F 3 "~" H 950 3200 50  0001 C CNN
 $EndComp
 Text HLabel 2150 2500 0    50   Input ~ 0
 DEBUG_JTCK-SWCLK
-Wire Wire Line
-	-1500 3800 -1500 3900
-Connection ~ -1500 3800
-Wire Wire Line
-	-950 3800 -1500 3800
-$Comp
-L power:GND #PWR0151
-U 1 1 5F82BF15
-P -1500 3900
-F 0 "#PWR0151" H -1500 3650 50  0001 C CNN
-F 1 "GND" H -1495 3727 50  0000 C CNN
-F 2 "" H -1500 3900 50  0001 C CNN
-F 3 "" H -1500 3900 50  0001 C CNN
-	1    -1500 3900
-	1    0    0    -1  
-$EndComp
-Wire Wire Line
-	-1500 3700 -1500 3800
-Wire Wire Line
-	-950 3800 -950 3700
-Connection ~ -1500 3400
-Wire Wire Line
-	-1500 3400 -1500 3500
-$Comp
-L Device:C_Small C?
-U 1 1 5F728082
-P -1500 3600
-AR Path="/5F2A50C6/5F728082" Ref="C?"  Part="1" 
-AR Path="/5F2A508D/5F728082" Ref="C?"  Part="1" 
-AR Path="/5F741CFB/5F728082" Ref="C67"  Part="1" 
-F 0 "C67" H -1400 3650 50  0000 L CNN
-F 1 "0.1uF" H -1400 3550 50  0000 L CNN
-F 2 "" H -1500 3600 50  0001 C CNN
-F 3 "~" H -1500 3600 50  0001 C CNN
-	1    -1500 3600
-	1    0    0    -1  
-$EndComp
-Wire Wire Line
-	-1500 3400 -1250 3400
-Wire Wire Line
-	-1500 3300 -1500 3400
-Wire Wire Line
-	-1500 2900 -1500 3000
-Connection ~ -1500 2900
-Wire Wire Line
-	-950 2900 -950 3100
-Wire Wire Line
-	-1500 2900 -950 2900
-Wire Wire Line
-	-1500 2800 -1500 2900
-$Comp
-L FlightComputer_Library:VCC_MCU #PWR0150
-U 1 1 5F825D9B
-P -1500 2800
-F 0 "#PWR0150" H -1500 2650 50  0001 C CNN
-F 1 "VCC_MCU" H -1483 2973 50  0000 C CNN
-F 2 "" H -1500 2800 50  0001 C CNN
-F 3 "" H -1500 2800 50  0001 C CNN
-	1    -1500 2800
-	1    0    0    -1  
-$EndComp
-$Comp
-L Device:R_US R?
-U 1 1 5F8259FF
-P -1500 3150
-AR Path="/5F2A50C6/5F8259FF" Ref="R?"  Part="1" 
-AR Path="/5F2A508D/5F8259FF" Ref="R?"  Part="1" 
-AR Path="/5F741CFB/5F8259FF" Ref="R77"  Part="1" 
-F 0 "R77" H -1400 3100 50  0000 L CNN
-F 1 "10K" H -1400 3200 50  0000 L CNN
-F 2 "" V -1460 3140 50  0001 C CNN
-F 3 "~" H -1500 3150 50  0001 C CNN
-	1    -1500 3150
-	1    0    0    1   
-$EndComp
-$Comp
-L Oscillator:ASE-xxxMHz X2
-U 1 1 5F824DEC
-P -950 3400
-F 0 "X2" H -1000 2950 50  0000 L CNN
-F 1 "ASE-25MHz" H -1200 2850 50  0000 L CNN
-F 2 "Oscillator:Oscillator_SMD_Abracon_ASE-4Pin_3.2x2.5mm" H -250 3050 50  0001 C CNN
-F 3 "http://www.abracon.com/Oscillators/ASV.pdf" H -1050 3400 50  0001 C CNN
-	1    -950 3400
-	1    0    0    -1  
-$EndComp
 $Comp
 L Device:C_Small C?
 U 1 1 5F8517AC
@@ -1534,6 +1434,9 @@ Wire Wire Line
 	650  3550 650  3650
 Wire Wire Line
 	850  3200 650  3200
+Connection ~ 650  3200
+Wire Wire Line
+	650  3200 650  3350
 Wire Bus Line
 	1800 7250 1800 7700
 Wire Bus Line
@@ -1542,7 +1445,4 @@ Wire Bus Line
 	1600 6300 3200 6300
 Wire Bus Line
 	1600 5700 3500 5700
-Connection ~ 650  3200
-Wire Wire Line
-	650  3200 650  3350
 $EndSCHEMATC
