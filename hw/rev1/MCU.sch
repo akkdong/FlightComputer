@@ -526,8 +526,6 @@ SPI1_NSS
 Text Label 2200 1600 0    50   ~ 0
 SPI1_SCK
 Wire Wire Line
-	4700 3300 5500 3300
-Wire Wire Line
 	4700 3400 5500 3400
 Wire Wire Line
 	4700 2400 5600 2400
@@ -1272,19 +1270,6 @@ Wire Wire Line
 	4700 3500 5600 3500
 $Comp
 L Connector:TestPoint_Alt TP?
-U 1 1 5F8B7E8C
-P 5500 3300
-AR Path="/5F5976A1/5F8B7E8C" Ref="TP?"  Part="1" 
-AR Path="/5F741CFB/5F8B7E8C" Ref="TP?"  Part="1" 
-F 0 "TP?" V 5500 3500 50  0000 L CNN
-F 1 "PC1" V 5450 3100 50  0000 L CNN
-F 2 "" H 5700 3300 50  0001 C CNN
-F 3 "~" H 5700 3300 50  0001 C CNN
-	1    5500 3300
-	0    1    1    0   
-$EndComp
-$Comp
-L Connector:TestPoint_Alt TP?
 U 1 1 5F8B8AB0
 P 5500 3400
 AR Path="/5F5976A1/5F8B8AB0" Ref="TP?"  Part="1" 
@@ -1437,6 +1422,12 @@ Wire Wire Line
 Connection ~ 650  3200
 Wire Wire Line
 	650  3200 650  3350
+Text Label 5500 3300 2    50   ~ 0
+LOW_BATTERY
+Text HLabel 5600 3300 2    50   Input ~ 0
+LOW_BATTERY
+Wire Wire Line
+	4700 3300 5600 3300
 Wire Bus Line
 	1800 7250 1800 7700
 Wire Bus Line

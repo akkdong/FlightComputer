@@ -53,6 +53,11 @@ D Power flag, VCC_EINK
 K power-flag
 $ENDCMP
 #
+$CMP VCC_EXTRA
+D Power flag, VCC_EXTRA
+K power-flag
+$ENDCMP
+#
 $CMP VCC_IMU
 D Power flag, VCC_IMU
 K power-flag
