@@ -28,6 +28,18 @@ K ARM Cortex-M7 STM32H7 STM32H7x3
 F http://www.st.com/st-web-ui/static/active/en/resource/technical/document/datasheet/DM00387108.pdf
 $ENDCMP
 #
+$CMP USB_B_Micro
+D USB Micro Type B connector
+K connector USB micro
+F ~
+$ENDCMP
+#
+$CMP USB_B_Mini
+D USB Mini Type B connector
+K connector USB mini
+F ~
+$ENDCMP
+#
 $CMP VCC_3V3
 D Power flag, VCC_3V3
 K power-flag
