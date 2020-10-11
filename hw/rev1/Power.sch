@@ -1529,7 +1529,6 @@ Wire Wire Line
 	8150 5700 8150 5600
 Wire Wire Line
 	8150 5600 8550 5600
-NoConn ~ 4050 2350
 NoConn ~ 8750 5500
 Wire Wire Line
 	7700 5400 7700 5750

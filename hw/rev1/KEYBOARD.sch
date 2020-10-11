@@ -798,7 +798,7 @@ Connection ~ 1550 6800
 Wire Wire Line
 	1550 6800 1550 6850
 Text Label 2650 6400 2    50   ~ 0
-KEY_ENTER
+KEY_POWER
 Wire Wire Line
 	2000 6400 2700 6400
 Text HLabel 2700 6400 2    50   Input ~ 0

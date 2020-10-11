@@ -1195,7 +1195,7 @@ AR Path="/5F5976A1/5F9F9D8D" Ref="TP?"  Part="1"
 AR Path="/5F2A50A6/5F9F9D8D" Ref="TP1"  Part="1" 
 F 0 "TP1" V 6200 2900 50  0000 C CNN
 F 1 "OUT3" V 6150 2550 50  0000 C CNN
-F 2 "TestPoint:TestPoint_Pad_D1.5mm" H 6400 2650 50  0001 C CNN
+F 2 "TestPoint:TestPoint_Pad_D1.0mm" H 6400 2650 50  0001 C CNN
 F 3 "~" H 6400 2650 50  0001 C CNN
 	1    6200 2650
 	0    1    1    0   
@@ -1224,7 +1224,7 @@ AR Path="/5F5976A1/5F9E3F61" Ref="TP?"  Part="1"
 AR Path="/5F2A50A6/5F9E3F61" Ref="TP2"  Part="1" 
 F 0 "TP2" V 2450 3800 50  0000 C CNN
 F 1 "RINPUT3" V 2500 3450 50  0000 C CNN
-F 2 "TestPoint:TestPoint_Pad_D1.5mm" H 2650 3550 50  0001 C CNN
+F 2 "TestPoint:TestPoint_Pad_D1.0mm" H 2650 3550 50  0001 C CNN
 F 3 "~" H 2650 3550 50  0001 C CNN
 	1    2450 3550
 	0    -1   -1   0   
