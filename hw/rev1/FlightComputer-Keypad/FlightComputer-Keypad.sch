@@ -1,0 +1,1524 @@
+EESchema Schematic File Version 4
+EELAYER 30 0
+EELAYER END
+$Descr A3 16535 11693
+encoding utf-8
+Sheet 1 1
+Title ""
+Date ""
+Rev ""
+Comp ""
+Comment1 ""
+Comment2 ""
+Comment3 ""
+Comment4 ""
+$EndDescr
+$Comp
+L Switch:SW_Push SW?
+U 1 1 5FD1EA7B
+P 2250 2400
+AR Path="/5F2A508D/5FD1EA7B" Ref="SW?"  Part="1" 
+AR Path="/5FD0B99E/5FD1EA7B" Ref="SW?"  Part="1" 
+AR Path="/5FD1EA7B" Ref="SW1"  Part="1" 
+F 0 "SW1" V 2300 2200 50  0000 C CNN
+F 1 "SW_Push" V 2200 2150 50  0000 C CNN
+F 2 "FlightComputer_Library:SW_SPST_PTS647" H 2250 2600 50  0001 C CNN
+F 3 "" H 2250 2600 50  0001 C CNN
+	1    2250 2400
+	0    -1   -1   0   
+$EndComp
+$Comp
+L Device:R_US R?
+U 1 1 5FD1EA81
+P 2850 2700
+AR Path="/5F2A50C6/5FD1EA81" Ref="R?"  Part="1" 
+AR Path="/5F2A508D/5FD1EA81" Ref="R?"  Part="1" 
+AR Path="/5FD0B99E/5FD1EA81" Ref="R?"  Part="1" 
+AR Path="/5FD1EA81" Ref="R1"  Part="1" 
+F 0 "R1" V 2900 2800 50  0000 L CNN
+F 1 "1K" V 2900 2500 50  0000 L CNN
+F 2 "Resistor_SMD:R_0402_1005Metric" V 2890 2690 50  0001 C CNN
+F 3 "~" H 2850 2700 50  0001 C CNN
+	1    2850 2700
+	0    -1   -1   0   
+$EndComp
+$Comp
+L Device:R_US R?
+U 1 1 5FD1EA87
+P 2500 2900
+AR Path="/5F2A50C6/5FD1EA87" Ref="R?"  Part="1" 
+AR Path="/5F2A508D/5FD1EA87" Ref="R?"  Part="1" 
+AR Path="/5FD0B99E/5FD1EA87" Ref="R?"  Part="1" 
+AR Path="/5FD1EA87" Ref="R6"  Part="1" 
+F 0 "R6" H 2600 2850 50  0000 L CNN
+F 1 "100K" H 2600 2950 50  0000 L CNN
+F 2 "Resistor_SMD:R_0402_1005Metric" V 2540 2890 50  0001 C CNN
+F 3 "~" H 2500 2900 50  0001 C CNN
+	1    2500 2900
+	1    0    0    1   
+$EndComp
+$Comp
+L Device:C_Small C?
+U 1 1 5FD1EA8D
+P 2250 2900
+AR Path="/5F2A50C6/5FD1EA8D" Ref="C?"  Part="1" 
+AR Path="/5F2A508D/5FD1EA8D" Ref="C?"  Part="1" 
+AR Path="/5FD0B99E/5FD1EA8D" Ref="C?"  Part="1" 
+AR Path="/5FD1EA8D" Ref="C1"  Part="1" 
+F 0 "C1" H 2342 2946 50  0000 L CNN
+F 1 "0.1uF" H 2342 2855 50  0000 L CNN
+F 2 "Capacitor_SMD:C_0402_1005Metric" H 2250 2900 50  0001 C CNN
+F 3 "~" H 2250 2900 50  0001 C CNN
+	1    2250 2900
+	-1   0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR?
+U 1 1 5FD1EA9B
+P 2500 3150
+AR Path="/5F2A508D/5FD1EA9B" Ref="#PWR?"  Part="1" 
+AR Path="/5FD0B99E/5FD1EA9B" Ref="#PWR?"  Part="1" 
+AR Path="/5FD1EA9B" Ref="#PWR06"  Part="1" 
+F 0 "#PWR06" H 2500 2900 50  0001 C CNN
+F 1 "GND" H 2505 2977 50  0000 C CNN
+F 2 "" H 2500 3150 50  0001 C CNN
+F 3 "" H 2500 3150 50  0001 C CNN
+	1    2500 3150
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	2500 3050 2500 3100
+Wire Wire Line
+	2500 2700 2500 2750
+Wire Wire Line
+	2250 2600 2250 2700
+Wire Wire Line
+	2250 2800 2250 2700
+Connection ~ 2250 2700
+Wire Wire Line
+	2250 2700 2500 2700
+Wire Wire Line
+	2250 3000 2250 3100
+Wire Wire Line
+	2250 3100 2500 3100
+Connection ~ 2500 3100
+Wire Wire Line
+	2500 3100 2500 3150
+$Comp
+L Switch:SW_Push SW?
+U 1 1 5FD1EAE1
+P 4800 2400
+AR Path="/5F2A508D/5FD1EAE1" Ref="SW?"  Part="1" 
+AR Path="/5FD0B99E/5FD1EAE1" Ref="SW?"  Part="1" 
+AR Path="/5FD1EAE1" Ref="SW2"  Part="1" 
+F 0 "SW2" V 4850 2150 50  0000 C CNN
+F 1 "SW_Push" V 4750 2150 50  0000 C CNN
+F 2 "FlightComputer_Library:SW_SPST_PTS647" H 4800 2600 50  0001 C CNN
+F 3 "" H 4800 2600 50  0001 C CNN
+	1    4800 2400
+	0    -1   -1   0   
+$EndComp
+$Comp
+L Device:R_US R?
+U 1 1 5FD1EAE7
+P 5350 2700
+AR Path="/5F2A50C6/5FD1EAE7" Ref="R?"  Part="1" 
+AR Path="/5F2A508D/5FD1EAE7" Ref="R?"  Part="1" 
+AR Path="/5FD0B99E/5FD1EAE7" Ref="R?"  Part="1" 
+AR Path="/5FD1EAE7" Ref="R2"  Part="1" 
+F 0 "R2" V 5400 2800 50  0000 L CNN
+F 1 "1K" V 5400 2500 50  0000 L CNN
+F 2 "Resistor_SMD:R_0402_1005Metric" V 5390 2690 50  0001 C CNN
+F 3 "~" H 5350 2700 50  0001 C CNN
+	1    5350 2700
+	0    -1   -1   0   
+$EndComp
+$Comp
+L Device:R_US R?
+U 1 1 5FD1EAED
+P 5050 2900
+AR Path="/5F2A50C6/5FD1EAED" Ref="R?"  Part="1" 
+AR Path="/5F2A508D/5FD1EAED" Ref="R?"  Part="1" 
+AR Path="/5FD0B99E/5FD1EAED" Ref="R?"  Part="1" 
+AR Path="/5FD1EAED" Ref="R7"  Part="1" 
+F 0 "R7" H 5150 2850 50  0000 L CNN
+F 1 "100K" H 5150 2950 50  0000 L CNN
+F 2 "Resistor_SMD:R_0402_1005Metric" V 5090 2890 50  0001 C CNN
+F 3 "~" H 5050 2900 50  0001 C CNN
+	1    5050 2900
+	1    0    0    1   
+$EndComp
+$Comp
+L Device:C_Small C?
+U 1 1 5FD1EAF3
+P 4800 2900
+AR Path="/5F2A50C6/5FD1EAF3" Ref="C?"  Part="1" 
+AR Path="/5F2A508D/5FD1EAF3" Ref="C?"  Part="1" 
+AR Path="/5FD0B99E/5FD1EAF3" Ref="C?"  Part="1" 
+AR Path="/5FD1EAF3" Ref="C2"  Part="1" 
+F 0 "C2" H 4892 2946 50  0000 L CNN
+F 1 "0.1uF" H 4892 2855 50  0000 L CNN
+F 2 "Capacitor_SMD:C_0402_1005Metric" H 4800 2900 50  0001 C CNN
+F 3 "~" H 4800 2900 50  0001 C CNN
+	1    4800 2900
+	-1   0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR?
+U 1 1 5FD1EB01
+P 5050 3150
+AR Path="/5F2A508D/5FD1EB01" Ref="#PWR?"  Part="1" 
+AR Path="/5FD0B99E/5FD1EB01" Ref="#PWR?"  Part="1" 
+AR Path="/5FD1EB01" Ref="#PWR07"  Part="1" 
+F 0 "#PWR07" H 5050 2900 50  0001 C CNN
+F 1 "GND" H 5055 2977 50  0000 C CNN
+F 2 "" H 5050 3150 50  0001 C CNN
+F 3 "" H 5050 3150 50  0001 C CNN
+	1    5050 3150
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	5050 3050 5050 3100
+Wire Wire Line
+	5050 2700 5050 2750
+Wire Wire Line
+	4800 2600 4800 2700
+Wire Wire Line
+	4800 2800 4800 2700
+Connection ~ 4800 2700
+Wire Wire Line
+	4800 2700 5050 2700
+Wire Wire Line
+	4800 3000 4800 3100
+Wire Wire Line
+	4800 3100 5050 3100
+Connection ~ 5050 3100
+Wire Wire Line
+	5050 3100 5050 3150
+$Comp
+L Switch:SW_Push SW?
+U 1 1 5FD1EB14
+P 4800 4450
+AR Path="/5F2A508D/5FD1EB14" Ref="SW?"  Part="1" 
+AR Path="/5FD0B99E/5FD1EB14" Ref="SW?"  Part="1" 
+AR Path="/5FD1EB14" Ref="SW7"  Part="1" 
+F 0 "SW7" V 4850 4250 50  0000 C CNN
+F 1 "SW_Push" V 4750 4200 50  0000 C CNN
+F 2 "FlightComputer_Library:SW_SPST_PTS647" H 4800 4650 50  0001 C CNN
+F 3 "" H 4800 4650 50  0001 C CNN
+	1    4800 4450
+	0    -1   -1   0   
+$EndComp
+$Comp
+L Device:R_US R?
+U 1 1 5FD1EB1A
+P 5400 4750
+AR Path="/5F2A50C6/5FD1EB1A" Ref="R?"  Part="1" 
+AR Path="/5F2A508D/5FD1EB1A" Ref="R?"  Part="1" 
+AR Path="/5FD0B99E/5FD1EB1A" Ref="R?"  Part="1" 
+AR Path="/5FD1EB1A" Ref="R12"  Part="1" 
+F 0 "R12" V 5450 4850 50  0000 L CNN
+F 1 "1K" V 5450 4550 50  0000 L CNN
+F 2 "Resistor_SMD:R_0402_1005Metric" V 5440 4740 50  0001 C CNN
+F 3 "~" H 5400 4750 50  0001 C CNN
+	1    5400 4750
+	0    -1   -1   0   
+$EndComp
+$Comp
+L Device:R_US R?
+U 1 1 5FD1EB20
+P 5050 4950
+AR Path="/5F2A50C6/5FD1EB20" Ref="R?"  Part="1" 
+AR Path="/5F2A508D/5FD1EB20" Ref="R?"  Part="1" 
+AR Path="/5FD0B99E/5FD1EB20" Ref="R?"  Part="1" 
+AR Path="/5FD1EB20" Ref="R16"  Part="1" 
+F 0 "R16" H 5150 4900 50  0000 L CNN
+F 1 "100K" H 5150 5000 50  0000 L CNN
+F 2 "Resistor_SMD:R_0402_1005Metric" V 5090 4940 50  0001 C CNN
+F 3 "~" H 5050 4950 50  0001 C CNN
+	1    5050 4950
+	1    0    0    1   
+$EndComp
+$Comp
+L Device:C_Small C?
+U 1 1 5FD1EB26
+P 4800 4950
+AR Path="/5F2A50C6/5FD1EB26" Ref="C?"  Part="1" 
+AR Path="/5F2A508D/5FD1EB26" Ref="C?"  Part="1" 
+AR Path="/5FD0B99E/5FD1EB26" Ref="C?"  Part="1" 
+AR Path="/5FD1EB26" Ref="C7"  Part="1" 
+F 0 "C7" H 4892 4996 50  0000 L CNN
+F 1 "0.1uF" H 4892 4905 50  0000 L CNN
+F 2 "Capacitor_SMD:C_0402_1005Metric" H 4800 4950 50  0001 C CNN
+F 3 "~" H 4800 4950 50  0001 C CNN
+	1    4800 4950
+	-1   0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR?
+U 1 1 5FD1EB34
+P 5050 5200
+AR Path="/5F2A508D/5FD1EB34" Ref="#PWR?"  Part="1" 
+AR Path="/5FD0B99E/5FD1EB34" Ref="#PWR?"  Part="1" 
+AR Path="/5FD1EB34" Ref="#PWR016"  Part="1" 
+F 0 "#PWR016" H 5050 4950 50  0001 C CNN
+F 1 "GND" H 5055 5027 50  0000 C CNN
+F 2 "" H 5050 5200 50  0001 C CNN
+F 3 "" H 5050 5200 50  0001 C CNN
+	1    5050 5200
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	5050 5100 5050 5150
+Wire Wire Line
+	5050 4750 5050 4800
+Wire Wire Line
+	4800 4650 4800 4750
+Wire Wire Line
+	4800 4850 4800 4750
+Connection ~ 4800 4750
+Wire Wire Line
+	4800 4750 5050 4750
+Wire Wire Line
+	4800 5050 4800 5150
+Wire Wire Line
+	4800 5150 5050 5150
+Connection ~ 5050 5150
+Wire Wire Line
+	5050 5150 5050 5200
+$Comp
+L Switch:SW_Push SW?
+U 1 1 5FD1EB47
+P 7500 2400
+AR Path="/5F2A508D/5FD1EB47" Ref="SW?"  Part="1" 
+AR Path="/5FD0B99E/5FD1EB47" Ref="SW?"  Part="1" 
+AR Path="/5FD1EB47" Ref="SW3"  Part="1" 
+F 0 "SW3" V 7550 2150 50  0000 C CNN
+F 1 "SW_Push" V 7450 2150 50  0000 C CNN
+F 2 "FlightComputer_Library:SW_SPST_PTS647" H 7500 2600 50  0001 C CNN
+F 3 "" H 7500 2600 50  0001 C CNN
+	1    7500 2400
+	0    -1   -1   0   
+$EndComp
+$Comp
+L Device:R_US R?
+U 1 1 5FD1EB4D
+P 8050 2700
+AR Path="/5F2A50C6/5FD1EB4D" Ref="R?"  Part="1" 
+AR Path="/5F2A508D/5FD1EB4D" Ref="R?"  Part="1" 
+AR Path="/5FD0B99E/5FD1EB4D" Ref="R?"  Part="1" 
+AR Path="/5FD1EB4D" Ref="R3"  Part="1" 
+F 0 "R3" V 8100 2800 50  0000 L CNN
+F 1 "1K" V 8100 2500 50  0000 L CNN
+F 2 "Resistor_SMD:R_0402_1005Metric" V 8090 2690 50  0001 C CNN
+F 3 "~" H 8050 2700 50  0001 C CNN
+	1    8050 2700
+	0    -1   -1   0   
+$EndComp
+$Comp
+L Device:R_US R?
+U 1 1 5FD1EB53
+P 7750 2900
+AR Path="/5F2A50C6/5FD1EB53" Ref="R?"  Part="1" 
+AR Path="/5F2A508D/5FD1EB53" Ref="R?"  Part="1" 
+AR Path="/5FD0B99E/5FD1EB53" Ref="R?"  Part="1" 
+AR Path="/5FD1EB53" Ref="R8"  Part="1" 
+F 0 "R8" H 7850 2850 50  0000 L CNN
+F 1 "100K" H 7850 2950 50  0000 L CNN
+F 2 "Resistor_SMD:R_0402_1005Metric" V 7790 2890 50  0001 C CNN
+F 3 "~" H 7750 2900 50  0001 C CNN
+	1    7750 2900
+	1    0    0    1   
+$EndComp
+$Comp
+L Device:C_Small C?
+U 1 1 5FD1EB59
+P 7500 2900
+AR Path="/5F2A50C6/5FD1EB59" Ref="C?"  Part="1" 
+AR Path="/5F2A508D/5FD1EB59" Ref="C?"  Part="1" 
+AR Path="/5FD0B99E/5FD1EB59" Ref="C?"  Part="1" 
+AR Path="/5FD1EB59" Ref="C3"  Part="1" 
+F 0 "C3" H 7592 2946 50  0000 L CNN
+F 1 "0.1uF" H 7592 2855 50  0000 L CNN
+F 2 "Capacitor_SMD:C_0402_1005Metric" H 7500 2900 50  0001 C CNN
+F 3 "~" H 7500 2900 50  0001 C CNN
+	1    7500 2900
+	-1   0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR?
+U 1 1 5FD1EB67
+P 7750 3150
+AR Path="/5F2A508D/5FD1EB67" Ref="#PWR?"  Part="1" 
+AR Path="/5FD0B99E/5FD1EB67" Ref="#PWR?"  Part="1" 
+AR Path="/5FD1EB67" Ref="#PWR08"  Part="1" 
+F 0 "#PWR08" H 7750 2900 50  0001 C CNN
+F 1 "GND" H 7755 2977 50  0000 C CNN
+F 2 "" H 7750 3150 50  0001 C CNN
+F 3 "" H 7750 3150 50  0001 C CNN
+	1    7750 3150
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	7750 3050 7750 3100
+Wire Wire Line
+	7750 2700 7750 2750
+Wire Wire Line
+	7500 2600 7500 2700
+Wire Wire Line
+	7500 2800 7500 2700
+Connection ~ 7500 2700
+Wire Wire Line
+	7500 2700 7750 2700
+Wire Wire Line
+	7500 3000 7500 3100
+Wire Wire Line
+	7500 3100 7750 3100
+Connection ~ 7750 3100
+Wire Wire Line
+	7750 3100 7750 3150
+$Comp
+L Switch:SW_Push SW?
+U 1 1 5FD1EB7A
+P 7500 4450
+AR Path="/5F2A508D/5FD1EB7A" Ref="SW?"  Part="1" 
+AR Path="/5FD0B99E/5FD1EB7A" Ref="SW?"  Part="1" 
+AR Path="/5FD1EB7A" Ref="SW8"  Part="1" 
+F 0 "SW8" V 7550 4250 50  0000 C CNN
+F 1 "SW_Push" V 7450 4200 50  0000 C CNN
+F 2 "FlightComputer_Library:SW_SPST_PTS647" H 7500 4650 50  0001 C CNN
+F 3 "" H 7500 4650 50  0001 C CNN
+	1    7500 4450
+	0    -1   -1   0   
+$EndComp
+$Comp
+L Device:R_US R?
+U 1 1 5FD1EB80
+P 8100 4750
+AR Path="/5F2A50C6/5FD1EB80" Ref="R?"  Part="1" 
+AR Path="/5F2A508D/5FD1EB80" Ref="R?"  Part="1" 
+AR Path="/5FD0B99E/5FD1EB80" Ref="R?"  Part="1" 
+AR Path="/5FD1EB80" Ref="R13"  Part="1" 
+F 0 "R13" V 8150 4850 50  0000 L CNN
+F 1 "1K" V 8150 4550 50  0000 L CNN
+F 2 "Resistor_SMD:R_0402_1005Metric" V 8140 4740 50  0001 C CNN
+F 3 "~" H 8100 4750 50  0001 C CNN
+	1    8100 4750
+	0    -1   -1   0   
+$EndComp
+$Comp
+L Device:R_US R?
+U 1 1 5FD1EB86
+P 7750 4950
+AR Path="/5F2A50C6/5FD1EB86" Ref="R?"  Part="1" 
+AR Path="/5F2A508D/5FD1EB86" Ref="R?"  Part="1" 
+AR Path="/5FD0B99E/5FD1EB86" Ref="R?"  Part="1" 
+AR Path="/5FD1EB86" Ref="R17"  Part="1" 
+F 0 "R17" H 7850 4900 50  0000 L CNN
+F 1 "100K" H 7850 5000 50  0000 L CNN
+F 2 "Resistor_SMD:R_0402_1005Metric" V 7790 4940 50  0001 C CNN
+F 3 "~" H 7750 4950 50  0001 C CNN
+	1    7750 4950
+	1    0    0    1   
+$EndComp
+$Comp
+L Device:C_Small C?
+U 1 1 5FD1EB8C
+P 7500 4950
+AR Path="/5F2A50C6/5FD1EB8C" Ref="C?"  Part="1" 
+AR Path="/5F2A508D/5FD1EB8C" Ref="C?"  Part="1" 
+AR Path="/5FD0B99E/5FD1EB8C" Ref="C?"  Part="1" 
+AR Path="/5FD1EB8C" Ref="C8"  Part="1" 
+F 0 "C8" H 7592 4996 50  0000 L CNN
+F 1 "0.1uF" H 7592 4905 50  0000 L CNN
+F 2 "Capacitor_SMD:C_0402_1005Metric" H 7500 4950 50  0001 C CNN
+F 3 "~" H 7500 4950 50  0001 C CNN
+	1    7500 4950
+	-1   0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR?
+U 1 1 5FD1EB9A
+P 7750 5200
+AR Path="/5F2A508D/5FD1EB9A" Ref="#PWR?"  Part="1" 
+AR Path="/5FD0B99E/5FD1EB9A" Ref="#PWR?"  Part="1" 
+AR Path="/5FD1EB9A" Ref="#PWR017"  Part="1" 
+F 0 "#PWR017" H 7750 4950 50  0001 C CNN
+F 1 "GND" H 7755 5027 50  0000 C CNN
+F 2 "" H 7750 5200 50  0001 C CNN
+F 3 "" H 7750 5200 50  0001 C CNN
+	1    7750 5200
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	7750 5100 7750 5150
+Wire Wire Line
+	7750 4750 7750 4800
+Wire Wire Line
+	7500 4650 7500 4750
+Wire Wire Line
+	7500 4850 7500 4750
+Connection ~ 7500 4750
+Wire Wire Line
+	7500 4750 7750 4750
+Wire Wire Line
+	7500 5050 7500 5150
+Wire Wire Line
+	7500 5150 7750 5150
+Connection ~ 7750 5150
+Wire Wire Line
+	7750 5150 7750 5200
+$Comp
+L Switch:SW_Push SW?
+U 1 1 5FD1EBAD
+P 9950 2400
+AR Path="/5F2A508D/5FD1EBAD" Ref="SW?"  Part="1" 
+AR Path="/5FD0B99E/5FD1EBAD" Ref="SW?"  Part="1" 
+AR Path="/5FD1EBAD" Ref="SW4"  Part="1" 
+F 0 "SW4" V 10000 2150 50  0000 C CNN
+F 1 "SW_Push" V 9900 2150 50  0000 C CNN
+F 2 "FlightComputer_Library:SW_SPST_PTS647" H 9950 2600 50  0001 C CNN
+F 3 "" H 9950 2600 50  0001 C CNN
+	1    9950 2400
+	0    -1   -1   0   
+$EndComp
+$Comp
+L Device:R_US R?
+U 1 1 5FD1EBB3
+P 10500 2700
+AR Path="/5F2A50C6/5FD1EBB3" Ref="R?"  Part="1" 
+AR Path="/5F2A508D/5FD1EBB3" Ref="R?"  Part="1" 
+AR Path="/5FD0B99E/5FD1EBB3" Ref="R?"  Part="1" 
+AR Path="/5FD1EBB3" Ref="R4"  Part="1" 
+F 0 "R4" V 10550 2800 50  0000 L CNN
+F 1 "1K" V 10550 2500 50  0000 L CNN
+F 2 "Resistor_SMD:R_0402_1005Metric" V 10540 2690 50  0001 C CNN
+F 3 "~" H 10500 2700 50  0001 C CNN
+	1    10500 2700
+	0    -1   -1   0   
+$EndComp
+$Comp
+L Device:R_US R?
+U 1 1 5FD1EBB9
+P 10200 2900
+AR Path="/5F2A50C6/5FD1EBB9" Ref="R?"  Part="1" 
+AR Path="/5F2A508D/5FD1EBB9" Ref="R?"  Part="1" 
+AR Path="/5FD0B99E/5FD1EBB9" Ref="R?"  Part="1" 
+AR Path="/5FD1EBB9" Ref="R9"  Part="1" 
+F 0 "R9" H 10300 2850 50  0000 L CNN
+F 1 "100K" H 10300 2950 50  0000 L CNN
+F 2 "Resistor_SMD:R_0402_1005Metric" V 10240 2890 50  0001 C CNN
+F 3 "~" H 10200 2900 50  0001 C CNN
+	1    10200 2900
+	1    0    0    1   
+$EndComp
+$Comp
+L Device:C_Small C?
+U 1 1 5FD1EBBF
+P 9950 2900
+AR Path="/5F2A50C6/5FD1EBBF" Ref="C?"  Part="1" 
+AR Path="/5F2A508D/5FD1EBBF" Ref="C?"  Part="1" 
+AR Path="/5FD0B99E/5FD1EBBF" Ref="C?"  Part="1" 
+AR Path="/5FD1EBBF" Ref="C4"  Part="1" 
+F 0 "C4" H 10042 2946 50  0000 L CNN
+F 1 "0.1uF" H 10042 2855 50  0000 L CNN
+F 2 "Capacitor_SMD:C_0402_1005Metric" H 9950 2900 50  0001 C CNN
+F 3 "~" H 9950 2900 50  0001 C CNN
+	1    9950 2900
+	-1   0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR?
+U 1 1 5FD1EBCD
+P 10200 3150
+AR Path="/5F2A508D/5FD1EBCD" Ref="#PWR?"  Part="1" 
+AR Path="/5FD0B99E/5FD1EBCD" Ref="#PWR?"  Part="1" 
+AR Path="/5FD1EBCD" Ref="#PWR09"  Part="1" 
+F 0 "#PWR09" H 10200 2900 50  0001 C CNN
+F 1 "GND" H 10205 2977 50  0000 C CNN
+F 2 "" H 10200 3150 50  0001 C CNN
+F 3 "" H 10200 3150 50  0001 C CNN
+	1    10200 3150
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	10200 3050 10200 3100
+Wire Wire Line
+	10200 2700 10200 2750
+Wire Wire Line
+	9950 2600 9950 2700
+Wire Wire Line
+	9950 2800 9950 2700
+Connection ~ 9950 2700
+Wire Wire Line
+	9950 2700 10200 2700
+Wire Wire Line
+	9950 3000 9950 3100
+Wire Wire Line
+	9950 3100 10200 3100
+Connection ~ 10200 3100
+Wire Wire Line
+	10200 3100 10200 3150
+$Comp
+L Switch:SW_Push SW?
+U 1 1 5FD1EBE0
+P 9950 4450
+AR Path="/5F2A508D/5FD1EBE0" Ref="SW?"  Part="1" 
+AR Path="/5FD0B99E/5FD1EBE0" Ref="SW?"  Part="1" 
+AR Path="/5FD1EBE0" Ref="SW9"  Part="1" 
+F 0 "SW9" V 10000 4200 50  0000 C CNN
+F 1 "SW_Push" V 9900 4200 50  0000 C CNN
+F 2 "FlightComputer_Library:SW_SPST_PTS647" H 9950 4650 50  0001 C CNN
+F 3 "" H 9950 4650 50  0001 C CNN
+	1    9950 4450
+	0    -1   -1   0   
+$EndComp
+$Comp
+L Device:R_US R?
+U 1 1 5FD1EBE6
+P 10500 4750
+AR Path="/5F2A50C6/5FD1EBE6" Ref="R?"  Part="1" 
+AR Path="/5F2A508D/5FD1EBE6" Ref="R?"  Part="1" 
+AR Path="/5FD0B99E/5FD1EBE6" Ref="R?"  Part="1" 
+AR Path="/5FD1EBE6" Ref="R14"  Part="1" 
+F 0 "R14" V 10550 4850 50  0000 L CNN
+F 1 "1K" V 10550 4550 50  0000 L CNN
+F 2 "Resistor_SMD:R_0402_1005Metric" V 10540 4740 50  0001 C CNN
+F 3 "~" H 10500 4750 50  0001 C CNN
+	1    10500 4750
+	0    -1   -1   0   
+$EndComp
+$Comp
+L Device:R_US R?
+U 1 1 5FD1EBEC
+P 10200 4950
+AR Path="/5F2A50C6/5FD1EBEC" Ref="R?"  Part="1" 
+AR Path="/5F2A508D/5FD1EBEC" Ref="R?"  Part="1" 
+AR Path="/5FD0B99E/5FD1EBEC" Ref="R?"  Part="1" 
+AR Path="/5FD1EBEC" Ref="R18"  Part="1" 
+F 0 "R18" H 10300 4900 50  0000 L CNN
+F 1 "100K" H 10300 5000 50  0000 L CNN
+F 2 "Resistor_SMD:R_0402_1005Metric" V 10240 4940 50  0001 C CNN
+F 3 "~" H 10200 4950 50  0001 C CNN
+	1    10200 4950
+	1    0    0    1   
+$EndComp
+$Comp
+L Device:C_Small C?
+U 1 1 5FD1EBF2
+P 9950 4950
+AR Path="/5F2A50C6/5FD1EBF2" Ref="C?"  Part="1" 
+AR Path="/5F2A508D/5FD1EBF2" Ref="C?"  Part="1" 
+AR Path="/5FD0B99E/5FD1EBF2" Ref="C?"  Part="1" 
+AR Path="/5FD1EBF2" Ref="C9"  Part="1" 
+F 0 "C9" H 10042 4996 50  0000 L CNN
+F 1 "0.1uF" H 10042 4905 50  0000 L CNN
+F 2 "Capacitor_SMD:C_0402_1005Metric" H 9950 4950 50  0001 C CNN
+F 3 "~" H 9950 4950 50  0001 C CNN
+	1    9950 4950
+	-1   0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR?
+U 1 1 5FD1EC00
+P 10200 5200
+AR Path="/5F2A508D/5FD1EC00" Ref="#PWR?"  Part="1" 
+AR Path="/5FD0B99E/5FD1EC00" Ref="#PWR?"  Part="1" 
+AR Path="/5FD1EC00" Ref="#PWR018"  Part="1" 
+F 0 "#PWR018" H 10200 4950 50  0001 C CNN
+F 1 "GND" H 10205 5027 50  0000 C CNN
+F 2 "" H 10200 5200 50  0001 C CNN
+F 3 "" H 10200 5200 50  0001 C CNN
+	1    10200 5200
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	10200 5100 10200 5150
+Wire Wire Line
+	10200 4750 10200 4800
+Wire Wire Line
+	9950 4650 9950 4750
+Wire Wire Line
+	9950 4850 9950 4750
+Connection ~ 9950 4750
+Wire Wire Line
+	9950 4750 10200 4750
+Wire Wire Line
+	9950 5050 9950 5150
+Wire Wire Line
+	9950 5150 10200 5150
+Connection ~ 10200 5150
+Wire Wire Line
+	10200 5150 10200 5200
+Wire Wire Line
+	9950 2150 9950 2200
+Wire Wire Line
+	9950 4200 9950 4250
+Wire Wire Line
+	7500 4200 7500 4250
+Wire Wire Line
+	7500 2150 7500 2200
+Wire Wire Line
+	4800 2150 4800 2200
+Wire Wire Line
+	2250 2150 2250 2200
+Text Label 3550 2700 2    50   ~ 0
+KEY_UP
+Text Label 6100 2700 2    50   ~ 0
+KEY_DOWN
+Text Label 8750 2700 2    50   ~ 0
+KEY_LEFT
+Text Label 11200 2700 2    50   ~ 0
+KEY_RIGHT
+Text Label 11200 4750 2    50   ~ 0
+KEY_FUNC2
+Text Label 8850 4750 2    50   ~ 0
+KEY_FUNC1
+Text Label 6150 4750 2    50   ~ 0
+KEY_ESCAPE
+Wire Wire Line
+	5500 2700 6100 2700
+Wire Wire Line
+	5550 4750 6150 4750
+Wire Wire Line
+	8250 4750 8850 4750
+Wire Wire Line
+	8200 2700 8750 2700
+Wire Wire Line
+	10650 2700 11200 2700
+Wire Wire Line
+	10650 4750 11200 4750
+$Comp
+L FlightComputer_Library:VCC_MCU #PWR01
+U 1 1 5FF9A6A7
+P 2250 2150
+F 0 "#PWR01" H 2250 2000 50  0001 C CNN
+F 1 "VCC_MCU" H 2267 2323 50  0000 C CNN
+F 2 "" H 2250 2150 50  0001 C CNN
+F 3 "" H 2250 2150 50  0001 C CNN
+	1    2250 2150
+	1    0    0    -1  
+$EndComp
+$Comp
+L FlightComputer_Library:VCC_MCU #PWR02
+U 1 1 5FF9AE92
+P 4800 2150
+F 0 "#PWR02" H 4800 2000 50  0001 C CNN
+F 1 "VCC_MCU" H 4817 2323 50  0000 C CNN
+F 2 "" H 4800 2150 50  0001 C CNN
+F 3 "" H 4800 2150 50  0001 C CNN
+	1    4800 2150
+	1    0    0    -1  
+$EndComp
+$Comp
+L FlightComputer_Library:VCC_MCU #PWR03
+U 1 1 5FF9B18B
+P 7500 2150
+F 0 "#PWR03" H 7500 2000 50  0001 C CNN
+F 1 "VCC_MCU" H 7517 2323 50  0000 C CNN
+F 2 "" H 7500 2150 50  0001 C CNN
+F 3 "" H 7500 2150 50  0001 C CNN
+	1    7500 2150
+	1    0    0    -1  
+$EndComp
+$Comp
+L FlightComputer_Library:VCC_MCU #PWR013
+U 1 1 5FF9B5A2
+P 7500 4200
+F 0 "#PWR013" H 7500 4050 50  0001 C CNN
+F 1 "VCC_MCU" H 7517 4373 50  0000 C CNN
+F 2 "" H 7500 4200 50  0001 C CNN
+F 3 "" H 7500 4200 50  0001 C CNN
+	1    7500 4200
+	1    0    0    -1  
+$EndComp
+$Comp
+L FlightComputer_Library:VCC_MCU #PWR04
+U 1 1 5FF9C01E
+P 9950 2150
+F 0 "#PWR04" H 9950 2000 50  0001 C CNN
+F 1 "VCC_MCU" H 9967 2323 50  0000 C CNN
+F 2 "" H 9950 2150 50  0001 C CNN
+F 3 "" H 9950 2150 50  0001 C CNN
+	1    9950 2150
+	1    0    0    -1  
+$EndComp
+$Comp
+L FlightComputer_Library:VCC_MCU #PWR014
+U 1 1 5FF9C2F8
+P 9950 4200
+F 0 "#PWR014" H 9950 4050 50  0001 C CNN
+F 1 "VCC_MCU" H 9967 4373 50  0000 C CNN
+F 2 "" H 9950 4200 50  0001 C CNN
+F 3 "" H 9950 4200 50  0001 C CNN
+	1    9950 4200
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:R_US R?
+U 1 1 5F77CA62
+P 13000 2700
+AR Path="/5F2A50C6/5F77CA62" Ref="R?"  Part="1" 
+AR Path="/5F2A508D/5F77CA62" Ref="R?"  Part="1" 
+AR Path="/5FD0B99E/5F77CA62" Ref="R?"  Part="1" 
+AR Path="/5F77CA62" Ref="R5"  Part="1" 
+F 0 "R5" V 13050 2800 50  0000 L CNN
+F 1 "1K" V 13050 2500 50  0000 L CNN
+F 2 "Resistor_SMD:R_0402_1005Metric" V 13040 2690 50  0001 C CNN
+F 3 "~" H 13000 2700 50  0001 C CNN
+	1    13000 2700
+	0    -1   -1   0   
+$EndComp
+$Comp
+L Device:R_US R?
+U 1 1 5F77CA68
+P 12700 2900
+AR Path="/5F2A50C6/5F77CA68" Ref="R?"  Part="1" 
+AR Path="/5F2A508D/5F77CA68" Ref="R?"  Part="1" 
+AR Path="/5FD0B99E/5F77CA68" Ref="R?"  Part="1" 
+AR Path="/5F77CA68" Ref="R10"  Part="1" 
+F 0 "R10" H 12800 2850 50  0000 L CNN
+F 1 "100K" H 12800 2950 50  0000 L CNN
+F 2 "Resistor_SMD:R_0402_1005Metric" V 12740 2890 50  0001 C CNN
+F 3 "~" H 12700 2900 50  0001 C CNN
+	1    12700 2900
+	1    0    0    1   
+$EndComp
+$Comp
+L Device:C_Small C?
+U 1 1 5F77CA6E
+P 12450 2900
+AR Path="/5F2A50C6/5F77CA6E" Ref="C?"  Part="1" 
+AR Path="/5F2A508D/5F77CA6E" Ref="C?"  Part="1" 
+AR Path="/5FD0B99E/5F77CA6E" Ref="C?"  Part="1" 
+AR Path="/5F77CA6E" Ref="C5"  Part="1" 
+F 0 "C5" H 12542 2946 50  0000 L CNN
+F 1 "0.1uF" H 12542 2855 50  0000 L CNN
+F 2 "Capacitor_SMD:C_0402_1005Metric" H 12450 2900 50  0001 C CNN
+F 3 "~" H 12450 2900 50  0001 C CNN
+	1    12450 2900
+	-1   0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR?
+U 1 1 5F77CA76
+P 12700 3150
+AR Path="/5F2A508D/5F77CA76" Ref="#PWR?"  Part="1" 
+AR Path="/5FD0B99E/5F77CA76" Ref="#PWR?"  Part="1" 
+AR Path="/5F77CA76" Ref="#PWR010"  Part="1" 
+F 0 "#PWR010" H 12700 2900 50  0001 C CNN
+F 1 "GND" H 12705 2977 50  0000 C CNN
+F 2 "" H 12700 3150 50  0001 C CNN
+F 3 "" H 12700 3150 50  0001 C CNN
+	1    12700 3150
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	12700 3050 12700 3100
+Wire Wire Line
+	12450 3000 12450 3100
+Wire Wire Line
+	12450 3100 12700 3100
+Connection ~ 12700 3100
+Wire Wire Line
+	12700 3100 12700 3150
+Text Label 13850 2700 2    50   ~ 0
+KEY_POWER
+Wire Wire Line
+	13150 2700 13850 2700
+Wire Wire Line
+	12850 2700 12700 2700
+$Comp
+L FlightComputer_Library:VCC_MCU #PWR05
+U 1 1 5F77CA8A
+P 12450 2150
+F 0 "#PWR05" H 12450 2000 50  0001 C CNN
+F 1 "VCC_MCU" H 12467 2323 50  0000 C CNN
+F 2 "" H 12450 2150 50  0001 C CNN
+F 3 "" H 12450 2150 50  0001 C CNN
+	1    12450 2150
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	12450 2150 12450 2200
+Wire Wire Line
+	12700 2700 12700 2750
+$Comp
+L Switch:SW_Push SW?
+U 1 1 5F77CA5C
+P 12450 2400
+AR Path="/5F2A508D/5F77CA5C" Ref="SW?"  Part="1" 
+AR Path="/5FD0B99E/5F77CA5C" Ref="SW?"  Part="1" 
+AR Path="/5F77CA5C" Ref="SW5"  Part="1" 
+F 0 "SW5" V 12400 2150 50  0000 C CNN
+F 1 "SW_Push" V 12500 2150 50  0000 C CNN
+F 2 "FlightComputer_Library:SW_SPST_PTS647" H 12450 2600 50  0001 C CNN
+F 3 "" H 12450 2600 50  0001 C CNN
+	1    12450 2400
+	0    -1   1    0   
+$EndComp
+Wire Wire Line
+	12450 2600 12450 2700
+Wire Wire Line
+	12450 2700 12700 2700
+Connection ~ 12450 2700
+Wire Wire Line
+	12450 2700 12450 2800
+Connection ~ 12700 2700
+$Comp
+L FlightComputer_Library:VCC_MCU #PWR012
+U 1 1 5FF9B9D8
+P 4800 4200
+F 0 "#PWR012" H 4800 4050 50  0001 C CNN
+F 1 "VCC_MCU" H 4817 4373 50  0000 C CNN
+F 2 "" H 4800 4200 50  0001 C CNN
+F 3 "" H 4800 4200 50  0001 C CNN
+	1    4800 4200
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	4800 4200 4800 4250
+$Comp
+L FlightComputer_Library:VCC_MCU #PWR011
+U 1 1 5FF9BD38
+P 2250 4200
+F 0 "#PWR011" H 2250 4050 50  0001 C CNN
+F 1 "VCC_MCU" H 2267 4373 50  0000 C CNN
+F 2 "" H 2250 4200 50  0001 C CNN
+F 3 "" H 2250 4200 50  0001 C CNN
+	1    2250 4200
+	1    0    0    -1  
+$EndComp
+Text Label 3650 4750 2    50   ~ 0
+KEY_ENTER
+Wire Wire Line
+	2250 4200 2250 4250
+Wire Wire Line
+	2500 5150 2500 5200
+Connection ~ 2500 5150
+Wire Wire Line
+	2250 5150 2500 5150
+Wire Wire Line
+	2250 5050 2250 5150
+Wire Wire Line
+	2250 4750 2500 4750
+Connection ~ 2250 4750
+Wire Wire Line
+	2250 4850 2250 4750
+Wire Wire Line
+	2250 4650 2250 4750
+Wire Wire Line
+	2500 4750 2500 4800
+Wire Wire Line
+	2500 5100 2500 5150
+$Comp
+L power:GND #PWR?
+U 1 1 5FD1EACE
+P 2500 5200
+AR Path="/5F2A508D/5FD1EACE" Ref="#PWR?"  Part="1" 
+AR Path="/5FD0B99E/5FD1EACE" Ref="#PWR?"  Part="1" 
+AR Path="/5FD1EACE" Ref="#PWR015"  Part="1" 
+F 0 "#PWR015" H 2500 4950 50  0001 C CNN
+F 1 "GND" H 2505 5027 50  0000 C CNN
+F 2 "" H 2500 5200 50  0001 C CNN
+F 3 "" H 2500 5200 50  0001 C CNN
+	1    2500 5200
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:C_Small C?
+U 1 1 5FD1EAC0
+P 2250 4950
+AR Path="/5F2A50C6/5FD1EAC0" Ref="C?"  Part="1" 
+AR Path="/5F2A508D/5FD1EAC0" Ref="C?"  Part="1" 
+AR Path="/5FD0B99E/5FD1EAC0" Ref="C?"  Part="1" 
+AR Path="/5FD1EAC0" Ref="C6"  Part="1" 
+F 0 "C6" H 2342 4996 50  0000 L CNN
+F 1 "0.1uF" H 2342 4905 50  0000 L CNN
+F 2 "Capacitor_SMD:C_0402_1005Metric" H 2250 4950 50  0001 C CNN
+F 3 "~" H 2250 4950 50  0001 C CNN
+	1    2250 4950
+	-1   0    0    -1  
+$EndComp
+$Comp
+L Device:R_US R?
+U 1 1 5FD1EABA
+P 2500 4950
+AR Path="/5F2A50C6/5FD1EABA" Ref="R?"  Part="1" 
+AR Path="/5F2A508D/5FD1EABA" Ref="R?"  Part="1" 
+AR Path="/5FD0B99E/5FD1EABA" Ref="R?"  Part="1" 
+AR Path="/5FD1EABA" Ref="R15"  Part="1" 
+F 0 "R15" H 2600 4900 50  0000 L CNN
+F 1 "100K" H 2600 5000 50  0000 L CNN
+F 2 "Resistor_SMD:R_0402_1005Metric" V 2540 4940 50  0001 C CNN
+F 3 "~" H 2500 4950 50  0001 C CNN
+	1    2500 4950
+	1    0    0    1   
+$EndComp
+$Comp
+L Device:R_US R?
+U 1 1 5FD1EAB4
+P 2850 4750
+AR Path="/5F2A50C6/5FD1EAB4" Ref="R?"  Part="1" 
+AR Path="/5F2A508D/5FD1EAB4" Ref="R?"  Part="1" 
+AR Path="/5FD0B99E/5FD1EAB4" Ref="R?"  Part="1" 
+AR Path="/5FD1EAB4" Ref="R11"  Part="1" 
+F 0 "R11" V 2900 4850 50  0000 L CNN
+F 1 "1K" V 2900 4550 50  0000 L CNN
+F 2 "Resistor_SMD:R_0402_1005Metric" V 2890 4740 50  0001 C CNN
+F 3 "~" H 2850 4750 50  0001 C CNN
+	1    2850 4750
+	0    -1   -1   0   
+$EndComp
+$Comp
+L Switch:SW_Push SW?
+U 1 1 5FD1EAAE
+P 2250 4450
+AR Path="/5F2A508D/5FD1EAAE" Ref="SW?"  Part="1" 
+AR Path="/5FD0B99E/5FD1EAAE" Ref="SW?"  Part="1" 
+AR Path="/5FD1EAAE" Ref="SW6"  Part="1" 
+F 0 "SW6" V 2300 4250 50  0000 C CNN
+F 1 "SW_Push" V 2200 4200 50  0000 C CNN
+F 2 "FlightComputer_Library:SW_SPST_PTS647" H 2250 4650 50  0001 C CNN
+F 3 "" H 2250 4650 50  0001 C CNN
+	1    2250 4450
+	0    -1   -1   0   
+$EndComp
+Wire Wire Line
+	2500 4750 2700 4750
+Connection ~ 2500 4750
+Wire Wire Line
+	3000 4750 3650 4750
+Wire Wire Line
+	3000 2700 3550 2700
+Wire Wire Line
+	2500 2700 2700 2700
+Connection ~ 2500 2700
+Wire Wire Line
+	5250 4750 5050 4750
+Connection ~ 5050 4750
+Wire Wire Line
+	7950 4750 7750 4750
+Connection ~ 7750 4750
+Wire Wire Line
+	5200 2700 5050 2700
+Connection ~ 5050 2700
+Wire Wire Line
+	7750 2700 7900 2700
+Connection ~ 7750 2700
+Wire Wire Line
+	10200 4750 10350 4750
+Connection ~ 10200 4750
+Wire Wire Line
+	10200 2700 10350 2700
+Connection ~ 10200 2700
+Wire Wire Line
+	2400 7800 3700 7800
+Wire Wire Line
+	2400 7900 3700 7900
+Wire Wire Line
+	2400 8000 3700 8000
+Wire Wire Line
+	2400 8100 3700 8100
+Wire Wire Line
+	2400 8200 3700 8200
+Wire Wire Line
+	2400 8300 3700 8300
+Wire Wire Line
+	2400 8400 3700 8400
+Wire Wire Line
+	2400 8500 3700 8500
+Wire Wire Line
+	2400 8600 3700 8600
+Text Label 3700 7800 2    50   ~ 0
+KEY_LEFT
+Text Label 3700 7900 2    50   ~ 0
+KEY_RIGHT
+Text Label 3700 8000 2    50   ~ 0
+KEY_UP
+Text Label 3700 8100 2    50   ~ 0
+KEY_DOWN
+Text Label 3700 8200 2    50   ~ 0
+KEY_POWER
+Text Label 3700 8300 2    50   ~ 0
+KEY_ENTER
+Text Label 3700 8400 2    50   ~ 0
+KEY_ESCAPE
+Text Label 3700 8500 2    50   ~ 0
+KEY_FUNC1
+Text Label 3700 8600 2    50   ~ 0
+KEY_FUNC2
+Wire Wire Line
+	2400 7600 2950 7600
+Wire Wire Line
+	2950 7600 2950 7300
+$Comp
+L FlightComputer_Library:VCC_MCU #PWR019
+U 1 1 5F84D555
+P 2950 7300
+F 0 "#PWR019" H 2950 7150 50  0001 C CNN
+F 1 "VCC_MCU" H 2967 7473 50  0000 C CNN
+F 2 "" H 2950 7300 50  0001 C CNN
+F 3 "" H 2950 7300 50  0001 C CNN
+	1    2950 7300
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	2400 9500 2950 9500
+Wire Wire Line
+	2950 9500 2950 9650
+$Comp
+L power:GND #PWR?
+U 1 1 5F851386
+P 2950 9650
+AR Path="/5F2A508D/5F851386" Ref="#PWR?"  Part="1" 
+AR Path="/5FD0B99E/5F851386" Ref="#PWR?"  Part="1" 
+AR Path="/5F851386" Ref="#PWR026"  Part="1" 
+F 0 "#PWR026" H 2950 9400 50  0001 C CNN
+F 1 "GND" H 2955 9477 50  0000 C CNN
+F 2 "" H 2950 9650 50  0001 C CNN
+F 3 "" H 2950 9650 50  0001 C CNN
+	1    2950 9650
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:PWR_FLAG #FLG01
+U 1 1 5F854F93
+P 3400 7300
+F 0 "#FLG01" H 3400 7375 50  0001 C CNN
+F 1 "PWR_FLAG" H 3400 7473 50  0000 C CNN
+F 2 "" H 3400 7300 50  0001 C CNN
+F 3 "~" H 3400 7300 50  0001 C CNN
+	1    3400 7300
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:PWR_FLAG #FLG02
+U 1 1 5F8553ED
+P 3400 9650
+F 0 "#FLG02" H 3400 9725 50  0001 C CNN
+F 1 "PWR_FLAG" H 3400 9823 50  0000 C CNN
+F 2 "" H 3400 9650 50  0001 C CNN
+F 3 "~" H 3400 9650 50  0001 C CNN
+	1    3400 9650
+	-1   0    0    1   
+$EndComp
+Wire Wire Line
+	2950 9500 3400 9500
+Wire Wire Line
+	3400 9500 3400 9650
+Connection ~ 2950 9500
+Wire Wire Line
+	2950 7600 3400 7600
+Wire Wire Line
+	3400 7600 3400 7300
+Connection ~ 2950 7600
+$Comp
+L Connector_Generic:Conn_02x10_Odd_Even J2
+U 1 1 5FAE6220
+P 7350 8600
+F 0 "J2" H 7400 9217 50  0000 C CNN
+F 1 "Conn_02x10_Odd_Even" H 7400 9126 50  0000 C CNN
+F 2 "Connector_PinHeader_2.54mm:PinHeader_2x10_P2.54mm_Vertical" H 7350 8600 50  0001 C CNN
+F 3 "~" H 7350 8600 50  0001 C CNN
+	1    7350 8600
+	1    0    0    -1  
+$EndComp
+$Comp
+L FlightComputer_Library:VCC_MCU #PWR023
+U 1 1 5FAE6C5A
+P 8150 7750
+F 0 "#PWR023" H 8150 7600 50  0001 C CNN
+F 1 "VCC_MCU" H 8167 7923 50  0000 C CNN
+F 2 "" H 8150 7750 50  0001 C CNN
+F 3 "" H 8150 7750 50  0001 C CNN
+	1    8150 7750
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	7650 8200 8150 8200
+Wire Wire Line
+	8150 8200 8150 7750
+$Comp
+L power:GND #PWR024
+U 1 1 5FAE727B
+P 8150 9200
+F 0 "#PWR024" H 8150 8950 50  0001 C CNN
+F 1 "GND" H 8155 9027 50  0000 C CNN
+F 2 "" H 8150 9200 50  0001 C CNN
+F 3 "" H 8150 9200 50  0001 C CNN
+	1    8150 9200
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	7650 8300 8150 8300
+Wire Wire Line
+	8150 8300 8150 8400
+Wire Wire Line
+	7650 8400 8150 8400
+Connection ~ 8150 8400
+Wire Wire Line
+	8150 8400 8150 8500
+Wire Wire Line
+	7650 8500 8150 8500
+Connection ~ 8150 8500
+Wire Wire Line
+	8150 8500 8150 8600
+Wire Wire Line
+	7650 8600 8150 8600
+Connection ~ 8150 8600
+Wire Wire Line
+	8150 8600 8150 8700
+Wire Wire Line
+	7650 8700 8150 8700
+Connection ~ 8150 8700
+Wire Wire Line
+	8150 8700 8150 8800
+Wire Wire Line
+	7650 8800 8150 8800
+Connection ~ 8150 8800
+Wire Wire Line
+	8150 8800 8150 8900
+Wire Wire Line
+	7650 8900 8150 8900
+Connection ~ 8150 8900
+Wire Wire Line
+	8150 8900 8150 9000
+Wire Wire Line
+	7650 9000 8150 9000
+Connection ~ 8150 9000
+Wire Wire Line
+	8150 9000 8150 9100
+Wire Wire Line
+	7650 9100 8150 9100
+Connection ~ 8150 9100
+Wire Wire Line
+	8150 9100 8150 9200
+NoConn ~ 7150 9000
+NoConn ~ 7150 9100
+Text Label 5200 8900 0    50   ~ 0
+nRESET
+Text Label 5200 8800 0    50   ~ 0
+TDO
+Text Label 5200 8600 0    50   ~ 0
+TCLK
+Text Label 5200 8500 0    50   ~ 0
+TMS
+Text Label 5200 8400 0    50   ~ 0
+TDI
+Text Label 5200 8300 0    50   ~ 0
+TRST
+$Comp
+L FlightComputer_Library:VCC_MCU #PWR022
+U 1 1 5FAEA3A4
+P 6650 7750
+F 0 "#PWR022" H 6650 7600 50  0001 C CNN
+F 1 "VCC_MCU" H 6667 7923 50  0000 C CNN
+F 2 "" H 6650 7750 50  0001 C CNN
+F 3 "" H 6650 7750 50  0001 C CNN
+	1    6650 7750
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	6650 7750 6650 8200
+Wire Wire Line
+	6650 8200 7150 8200
+NoConn ~ 7150 8700
+$Comp
+L Device:R_US R?
+U 1 1 5FAF8AFB
+P 5700 9250
+AR Path="/5F2A50C6/5FAF8AFB" Ref="R?"  Part="1" 
+AR Path="/5F7BC0DD/5FAF8AFB" Ref="R?"  Part="1" 
+AR Path="/5FAF8AFB" Ref="R27"  Part="1" 
+F 0 "R27" H 5768 9296 50  0000 L CNN
+F 1 "100K" H 5768 9205 50  0000 L CNN
+F 2 "Resistor_SMD:R_0402_1005Metric" V 5740 9240 50  0001 C CNN
+F 3 "~" H 5700 9250 50  0001 C CNN
+	1    5700 9250
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	5700 9100 5700 8600
+Wire Wire Line
+	5700 8600 5200 8600
+$Comp
+L Device:R_US R?
+U 1 1 5FAF930C
+P 5700 8000
+AR Path="/5F2A50C6/5FAF930C" Ref="R?"  Part="1" 
+AR Path="/5F7BC0DD/5FAF930C" Ref="R?"  Part="1" 
+AR Path="/5FAF930C" Ref="R19"  Part="1" 
+F 0 "R19" H 5768 8046 50  0000 L CNN
+F 1 "100K" H 5768 7955 50  0000 L CNN
+F 2 "Resistor_SMD:R_0402_1005Metric" V 5740 7990 50  0001 C CNN
+F 3 "~" H 5700 8000 50  0001 C CNN
+	1    5700 8000
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:R_US R?
+U 1 1 5FAF95E4
+P 6100 8000
+AR Path="/5F2A50C6/5FAF95E4" Ref="R?"  Part="1" 
+AR Path="/5F7BC0DD/5FAF95E4" Ref="R?"  Part="1" 
+AR Path="/5FAF95E4" Ref="R20"  Part="1" 
+F 0 "R20" H 6168 8046 50  0000 L CNN
+F 1 "100K" H 6168 7955 50  0000 L CNN
+F 2 "Resistor_SMD:R_0402_1005Metric" V 6140 7990 50  0001 C CNN
+F 3 "~" H 6100 8000 50  0001 C CNN
+	1    6100 8000
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	5700 8150 5700 8400
+Wire Wire Line
+	5700 8400 5200 8400
+Wire Wire Line
+	6100 8150 6100 8300
+Wire Wire Line
+	6100 8300 5200 8300
+$Comp
+L FlightComputer_Library:VCC_MCU #PWR021
+U 1 1 5FAFB12A
+P 6100 7750
+F 0 "#PWR021" H 6100 7600 50  0001 C CNN
+F 1 "VCC_MCU" H 6117 7923 50  0000 C CNN
+F 2 "" H 6100 7750 50  0001 C CNN
+F 3 "" H 6100 7750 50  0001 C CNN
+	1    6100 7750
+	1    0    0    -1  
+$EndComp
+$Comp
+L FlightComputer_Library:VCC_MCU #PWR020
+U 1 1 5FAFB33E
+P 5700 7750
+F 0 "#PWR020" H 5700 7600 50  0001 C CNN
+F 1 "VCC_MCU" H 5717 7923 50  0000 C CNN
+F 2 "" H 5700 7750 50  0001 C CNN
+F 3 "" H 5700 7750 50  0001 C CNN
+	1    5700 7750
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	5700 7750 5700 7850
+Wire Wire Line
+	6100 7750 6100 7850
+$Comp
+L power:GND #PWR025
+U 1 1 5FAFC51E
+P 5700 9500
+F 0 "#PWR025" H 5700 9250 50  0001 C CNN
+F 1 "GND" H 5705 9327 50  0000 C CNN
+F 2 "" H 5700 9500 50  0001 C CNN
+F 3 "" H 5700 9500 50  0001 C CNN
+	1    5700 9500
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	5700 9400 5700 9500
+$Comp
+L Device:R_US R?
+U 1 1 6021E00C
+P 6850 8300
+AR Path="/5F2A50C6/6021E00C" Ref="R?"  Part="1" 
+AR Path="/5F60AB0F/6021E00C" Ref="R?"  Part="1" 
+AR Path="/5F7BC0DD/6021E00C" Ref="R?"  Part="1" 
+AR Path="/6021E00C" Ref="R21"  Part="1" 
+F 0 "R21" V 6900 8450 50  0000 L CNN
+F 1 "33R" V 6900 8050 50  0000 L CNN
+F 2 "Resistor_SMD:R_0402_1005Metric" V 6890 8290 50  0001 C CNN
+F 3 "~" H 6850 8300 50  0001 C CNN
+	1    6850 8300
+	0    -1   -1   0   
+$EndComp
+$Comp
+L Device:R_US R?
+U 1 1 6021F8C5
+P 6850 8400
+AR Path="/5F2A50C6/6021F8C5" Ref="R?"  Part="1" 
+AR Path="/5F60AB0F/6021F8C5" Ref="R?"  Part="1" 
+AR Path="/5F7BC0DD/6021F8C5" Ref="R?"  Part="1" 
+AR Path="/6021F8C5" Ref="R22"  Part="1" 
+F 0 "R22" V 6900 8550 50  0000 L CNN
+F 1 "33R" V 6900 8150 50  0000 L CNN
+F 2 "Resistor_SMD:R_0402_1005Metric" V 6890 8390 50  0001 C CNN
+F 3 "~" H 6850 8400 50  0001 C CNN
+	1    6850 8400
+	0    -1   -1   0   
+$EndComp
+$Comp
+L Device:R_US R?
+U 1 1 6021FA89
+P 6850 8500
+AR Path="/5F2A50C6/6021FA89" Ref="R?"  Part="1" 
+AR Path="/5F60AB0F/6021FA89" Ref="R?"  Part="1" 
+AR Path="/5F7BC0DD/6021FA89" Ref="R?"  Part="1" 
+AR Path="/6021FA89" Ref="R23"  Part="1" 
+F 0 "R23" V 6900 8650 50  0000 L CNN
+F 1 "33R" V 6900 8250 50  0000 L CNN
+F 2 "Resistor_SMD:R_0402_1005Metric" V 6890 8490 50  0001 C CNN
+F 3 "~" H 6850 8500 50  0001 C CNN
+	1    6850 8500
+	0    -1   -1   0   
+$EndComp
+$Comp
+L Device:R_US R?
+U 1 1 6021FB8B
+P 6850 8600
+AR Path="/5F2A50C6/6021FB8B" Ref="R?"  Part="1" 
+AR Path="/5F60AB0F/6021FB8B" Ref="R?"  Part="1" 
+AR Path="/5F7BC0DD/6021FB8B" Ref="R?"  Part="1" 
+AR Path="/6021FB8B" Ref="R24"  Part="1" 
+F 0 "R24" V 6900 8750 50  0000 L CNN
+F 1 "33R" V 6900 8350 50  0000 L CNN
+F 2 "Resistor_SMD:R_0402_1005Metric" V 6890 8590 50  0001 C CNN
+F 3 "~" H 6850 8600 50  0001 C CNN
+	1    6850 8600
+	0    -1   -1   0   
+$EndComp
+$Comp
+L Device:R_US R?
+U 1 1 6021FD1E
+P 6850 8800
+AR Path="/5F2A50C6/6021FD1E" Ref="R?"  Part="1" 
+AR Path="/5F60AB0F/6021FD1E" Ref="R?"  Part="1" 
+AR Path="/5F7BC0DD/6021FD1E" Ref="R?"  Part="1" 
+AR Path="/6021FD1E" Ref="R25"  Part="1" 
+F 0 "R25" V 6900 8950 50  0000 L CNN
+F 1 "33R" V 6900 8550 50  0000 L CNN
+F 2 "Resistor_SMD:R_0402_1005Metric" V 6890 8790 50  0001 C CNN
+F 3 "~" H 6850 8800 50  0001 C CNN
+	1    6850 8800
+	0    -1   -1   0   
+$EndComp
+$Comp
+L Device:R_US R?
+U 1 1 6021FF26
+P 6850 8900
+AR Path="/5F2A50C6/6021FF26" Ref="R?"  Part="1" 
+AR Path="/5F60AB0F/6021FF26" Ref="R?"  Part="1" 
+AR Path="/5F7BC0DD/6021FF26" Ref="R?"  Part="1" 
+AR Path="/6021FF26" Ref="R26"  Part="1" 
+F 0 "R26" V 6900 9050 50  0000 L CNN
+F 1 "33R" V 6900 8650 50  0000 L CNN
+F 2 "Resistor_SMD:R_0402_1005Metric" V 6890 8890 50  0001 C CNN
+F 3 "~" H 6850 8900 50  0001 C CNN
+	1    6850 8900
+	0    -1   -1   0   
+$EndComp
+Wire Wire Line
+	7000 8900 7150 8900
+Wire Wire Line
+	7150 8800 7000 8800
+Wire Wire Line
+	7000 8600 7150 8600
+Wire Wire Line
+	7150 8500 7000 8500
+Wire Wire Line
+	7000 8400 7150 8400
+Wire Wire Line
+	7150 8300 7000 8300
+Wire Wire Line
+	6700 8300 6100 8300
+Connection ~ 6100 8300
+Wire Wire Line
+	6700 8400 5700 8400
+Connection ~ 5700 8400
+Wire Wire Line
+	6700 8500 5200 8500
+Wire Wire Line
+	6700 8600 5700 8600
+Connection ~ 5700 8600
+Wire Wire Line
+	5200 8800 6700 8800
+Wire Wire Line
+	6700 8900 5200 8900
+$Comp
+L Connector_Generic:Conn_02x20_Odd_Even J1
+U 1 1 5F826D21
+P 2100 8500
+F 0 "J1" H 2150 9617 50  0000 C CNN
+F 1 "Conn_02x20_Odd_Even" H 2150 9526 50  0000 C CNN
+F 2 "Connector_PinSocket_2.54mm:PinSocket_2x20_P2.54mm_Vertical" H 2100 8500 50  0001 C CNN
+F 3 "~" H 2100 8500 50  0001 C CNN
+	1    2100 8500
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	2400 7600 1900 7600
+Connection ~ 2400 7600
+Wire Wire Line
+	2400 7700 1900 7700
+Wire Wire Line
+	1900 7800 2400 7800
+Connection ~ 2400 7800
+Wire Wire Line
+	1900 7900 2400 7900
+Connection ~ 2400 7900
+Wire Wire Line
+	1900 8000 2400 8000
+Connection ~ 2400 8000
+Wire Wire Line
+	1900 8100 2400 8100
+Connection ~ 2400 8100
+Wire Wire Line
+	1900 8200 2400 8200
+Connection ~ 2400 8200
+Wire Wire Line
+	1900 8300 2400 8300
+Connection ~ 2400 8300
+Wire Wire Line
+	1900 8400 2400 8400
+Connection ~ 2400 8400
+Wire Wire Line
+	1900 8500 2400 8500
+Connection ~ 2400 8500
+Wire Wire Line
+	2400 9300 3700 9300
+Wire Wire Line
+	2400 9200 3700 9200
+Wire Wire Line
+	2400 9100 3700 9100
+Wire Wire Line
+	2400 9000 3700 9000
+Wire Wire Line
+	2400 8900 3700 8900
+Wire Wire Line
+	2400 8800 3700 8800
+Wire Wire Line
+	1900 8900 2400 8900
+Connection ~ 2400 8900
+Wire Wire Line
+	1900 9000 2400 9000
+Connection ~ 2400 9000
+Wire Wire Line
+	1900 9100 2400 9100
+Connection ~ 2400 9100
+Wire Wire Line
+	1900 9200 2400 9200
+Connection ~ 2400 9200
+Wire Wire Line
+	1900 9300 2400 9300
+Connection ~ 2400 9300
+Wire Wire Line
+	1900 9400 2400 9400
+Wire Wire Line
+	1900 9500 2400 9500
+Connection ~ 2400 9500
+Text Label 3700 8800 2    50   ~ 0
+TRST
+Text Label 3700 8900 2    50   ~ 0
+TDI
+Text Label 3700 9000 2    50   ~ 0
+TMS
+Text Label 3700 9100 2    50   ~ 0
+TCLK
+Text Label 3700 9200 2    50   ~ 0
+TDO
+Text Label 3700 9300 2    50   ~ 0
+nRESET
+NoConn ~ 2400 7700
+NoConn ~ 2400 8700
+NoConn ~ 2400 9400
+$EndSCHEMATC
