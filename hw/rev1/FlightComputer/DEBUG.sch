@@ -3,7 +3,7 @@ EELAYER 30 0
 EELAYER END
 $Descr A4 11693 8268
 encoding utf-8
-Sheet 9 12
+Sheet 8 12
 Title ""
 Date ""
 Rev ""
@@ -205,9 +205,9 @@ KEY_UP
 Text GLabel 4000 2100 0    50   Input ~ 0
 KEY_DOWN
 Text GLabel 4000 2200 0    50   Input ~ 0
-KEY_POWER
-Text GLabel 4000 2300 0    50   Input ~ 0
 KEY_ENTER
+Text GLabel 4000 2300 0    50   Input ~ 0
+KEY_MENU
 Text GLabel 4000 2400 0    50   Input ~ 0
 KEY_ESCAPE
 Text GLabel 4000 2500 0    50   Input ~ 0

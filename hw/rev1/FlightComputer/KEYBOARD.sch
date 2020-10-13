@@ -3,7 +3,7 @@ EELAYER 30 0
 EELAYER END
 $Descr A4 11693 8268
 encoding utf-8
-Sheet 8 12
+Sheet 12 12
 Title ""
 Date ""
 Rev ""
@@ -77,7 +77,7 @@ AR Path="/5F2A50C6/5FD1EBB3" Ref="R?"  Part="1"
 AR Path="/5F2A508D/5FD1EBB3" Ref="R?"  Part="1" 
 AR Path="/5FD0B99E/5FD1EBB3" Ref="R160"  Part="1" 
 F 0 "R160" V 3450 2050 50  0000 L CNN
-F 1 "1K" V 3450 1750 50  0000 L CNN
+F 1 "0R" V 3450 1750 50  0000 L CNN
 F 2 "Resistor_SMD:R_0402_1005Metric" V 3440 1940 50  0001 C CNN
 F 3 "~" H 3400 1950 50  0001 C CNN
 	1    3400 1950
@@ -122,31 +122,11 @@ KEY_FUNC2
 $Comp
 L Device:R_US R?
 U 1 1 5F77CA62
-P 3400 2100
+P 3400 2300
 AR Path="/5F2A50C6/5F77CA62" Ref="R?"  Part="1" 
 AR Path="/5F2A508D/5F77CA62" Ref="R?"  Part="1" 
 AR Path="/5FD0B99E/5F77CA62" Ref="R173"  Part="1" 
-F 0 "R173" V 3450 2200 50  0000 L CNN
-F 1 "0R" V 3450 1900 50  0000 L CNN
-F 2 "Resistor_SMD:R_0402_1005Metric" V 3440 2090 50  0001 C CNN
-F 3 "~" H 3400 2100 50  0001 C CNN
-	1    3400 2100
-	0    -1   -1   0   
-$EndComp
-Wire Wire Line
-	3550 2100 4100 2100
-Text HLabel 4100 2100 2    50   Input ~ 0
-KEY_POWER
-Text HLabel 4100 2300 2    50   Input ~ 0
-KEY_ENTER
-$Comp
-L Device:R_US R?
-U 1 1 5FD1EAB4
-P 3400 2300
-AR Path="/5F2A50C6/5FD1EAB4" Ref="R?"  Part="1" 
-AR Path="/5F2A508D/5FD1EAB4" Ref="R?"  Part="1" 
-AR Path="/5FD0B99E/5FD1EAB4" Ref="R165"  Part="1" 
-F 0 "R165" V 3450 2400 50  0000 L CNN
+F 0 "R173" V 3450 2400 50  0000 L CNN
 F 1 "0R" V 3450 2100 50  0000 L CNN
 F 2 "Resistor_SMD:R_0402_1005Metric" V 3440 2290 50  0001 C CNN
 F 3 "~" H 3400 2300 50  0001 C CNN
@@ -155,6 +135,24 @@ F 3 "~" H 3400 2300 50  0001 C CNN
 $EndComp
 Wire Wire Line
 	3550 2300 4100 2300
+Text HLabel 4100 2300 2    50   Input ~ 0
+KEY_MENU
+$Comp
+L Device:R_US R?
+U 1 1 5FD1EAB4
+P 3400 2100
+AR Path="/5F2A50C6/5FD1EAB4" Ref="R?"  Part="1" 
+AR Path="/5F2A508D/5FD1EAB4" Ref="R?"  Part="1" 
+AR Path="/5FD0B99E/5FD1EAB4" Ref="R165"  Part="1" 
+F 0 "R165" V 3450 2200 50  0000 L CNN
+F 1 "0R" V 3450 1900 50  0000 L CNN
+F 2 "Resistor_SMD:R_0402_1005Metric" V 3440 2090 50  0001 C CNN
+F 3 "~" H 3400 2100 50  0001 C CNN
+	1    3400 2100
+	0    -1   -1   0   
+$EndComp
+Wire Wire Line
+	3550 2100 4100 2100
 Wire Wire Line
 	3550 1650 4100 1650
 Text HLabel 4100 2500 2    50   Input ~ 0
@@ -184,7 +182,7 @@ Wire Wire Line
 Wire Wire Line
 	3250 1950 2550 1950
 Wire Wire Line
-	3250 2300 2550 2300
+	3250 2100 2550 2100
 Wire Wire Line
 	3250 2400 2550 2400
 Wire Wire Line
@@ -192,7 +190,7 @@ Wire Wire Line
 Wire Wire Line
 	3250 2600 2550 2600
 Wire Wire Line
-	3250 2100 2550 2100
+	3250 2300 2550 2300
 Text GLabel 2550 1650 0    50   Input ~ 0
 KEY_UP
 Text GLabel 2550 1750 0    50   Input ~ 0
@@ -201,14 +199,16 @@ Text GLabel 2550 1850 0    50   Input ~ 0
 KEY_LEFT
 Text GLabel 2550 1950 0    50   Input ~ 0
 KEY_RIGHT
-Text GLabel 2550 2300 0    50   Input ~ 0
-KEY_ENTER
 Text GLabel 2550 2400 0    50   Input ~ 0
 KEY_ESCAPE
 Text GLabel 2550 2500 0    50   Input ~ 0
 KEY_FUNC1
 Text GLabel 2550 2600 0    50   Input ~ 0
 KEY_FUNC2
+Text GLabel 2550 2300 0    50   Input ~ 0
+KEY_MENU
 Text GLabel 2550 2100 0    50   Input ~ 0
-KEY_POWER
+KEY_ENTER
+Text HLabel 4100 2100 2    50   Input ~ 0
+KEY_ENTER
 $EndSCHEMATC

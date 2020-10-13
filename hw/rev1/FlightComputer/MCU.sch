@@ -1244,20 +1244,7 @@ EPD_SPV
 Wire Wire Line
 	3100 1100 2150 1100
 Wire Wire Line
-	3100 1200 2250 1200
-$Comp
-L Connector:TestPoint_Alt TP?
-U 1 1 5F871C4E
-P 2250 1200
-AR Path="/5F5976A1/5F871C4E" Ref="TP?"  Part="1" 
-AR Path="/5F741CFB/5F871C4E" Ref="TP12"  Part="1" 
-F 0 "TP12" V 2250 1400 50  0000 L CNN
-F 1 "PA1" V 2300 1100 50  0000 L CNN
-F 2 "TestPoint:TestPoint_Pad_D1.0mm" H 2450 1200 50  0001 C CNN
-F 3 "~" H 2450 1200 50  0001 C CNN
-	1    2250 1200
-	0    -1   -1   0   
-$EndComp
+	3100 1200 2150 1200
 Text Label 2200 1100 0    50   ~ 0
 KEY_ENTER
 Text HLabel 2150 1100 0    50   Input ~ 0
@@ -1438,4 +1425,8 @@ Wire Bus Line
 	1600 6300 3200 6300
 Wire Bus Line
 	1600 5700 3500 5700
+Text Label 2200 1200 0    50   ~ 0
+KEY_MENU
+Text HLabel 2150 1200 0    50   Input ~ 0
+KEY_MENU
 $EndSCHEMATC

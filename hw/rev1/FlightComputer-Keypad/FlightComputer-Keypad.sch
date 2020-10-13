@@ -1039,9 +1039,9 @@ KEY_UP
 Text Label 3700 8100 2    50   ~ 0
 KEY_DOWN
 Text Label 3700 8200 2    50   ~ 0
-KEY_POWER
-Text Label 3700 8300 2    50   ~ 0
 KEY_ENTER
+Text Label 3700 8300 2    50   ~ 0
+KEY_MENU
 Text Label 3700 8400 2    50   ~ 0
 KEY_ESCAPE
 Text Label 3700 8500 2    50   ~ 0
