@@ -14,17 +14,6 @@ Comment3 ""
 Comment4 ""
 $EndDescr
 $Comp
-L Connector_Generic:Conn_01x04 J5
-U 1 1 5F4D197A
-P 3150 6800
-F 0 "J5" H 3230 6792 50  0000 L CNN
-F 1 "Conn_DEBUG" H 3230 6701 50  0000 L CNN
-F 2 "Connector_Molex:Molex_SPOX_5268-04A_1x04_P2.50mm_Horizontal" H 3150 6800 50  0001 C CNN
-F 3 "~" H 3150 6800 50  0001 C CNN
-	1    3150 6800
-	-1   0    0    -1  
-$EndComp
-$Comp
 L power:GND #PWR012
 U 1 1 5F4D748C
 P 3650 7100
@@ -39,80 +28,6 @@ Wire Wire Line
 	3350 7000 3650 7000
 Wire Wire Line
 	3650 7000 3650 7100
-$Comp
-L power:GND #PWR010
-U 1 1 5F4DA344
-P 1950 5900
-F 0 "#PWR010" H 1950 5650 50  0001 C CNN
-F 1 "GND" H 1955 5727 50  0000 C CNN
-F 2 "" H 1950 5900 50  0001 C CNN
-F 3 "" H 1950 5900 50  0001 C CNN
-	1    1950 5900
-	1    0    0    -1  
-$EndComp
-$Comp
-L FlightComputer_Library:VCC_PERIH #PWR07
-U 1 1 5FFA5986
-P 1950 4200
-F 0 "#PWR07" H 1950 4050 50  0001 C CNN
-F 1 "VCC_PERIH" H 1967 4373 50  0000 C CNN
-F 2 "" H 1950 4200 50  0001 C CNN
-F 3 "" H 1950 4200 50  0001 C CNN
-	1    1950 4200
-	1    0    0    -1  
-$EndComp
-$Comp
-L FlightComputer_Library:VCC_PERIH #PWR011
-U 1 1 5FFA6026
-P 3650 6600
-F 0 "#PWR011" H 3650 6450 50  0001 C CNN
-F 1 "VCC_PERIH" H 3667 6773 50  0000 C CNN
-F 2 "" H 3650 6600 50  0001 C CNN
-F 3 "" H 3650 6600 50  0001 C CNN
-	1    3650 6600
-	-1   0    0    -1  
-$EndComp
-$Comp
-L FlightComputer_Library:Teseo-LIV3F U1
-U 1 1 60164E3E
-P 3700 5050
-AR Path="/60164E3E" Ref="U1"  Part="1" 
-AR Path="/5F2A508D/60164E3E" Ref="U?"  Part="1" 
-F 0 "U1" H 3700 6065 50  0000 C CNN
-F 1 "Teseo-LIV3F" H 3700 5974 50  0000 C CNN
-F 2 "FlightComputer_Library:Teseo-LIV3F" H 3700 5050 50  0001 C CNN
-F 3 "" H 3700 5050 50  0001 C CNN
-	1    3700 5050
-	1    0    0    -1  
-$EndComp
-Wire Wire Line
-	1950 4200 1950 4350
-Wire Wire Line
-	3100 4600 1950 4600
-Wire Wire Line
-	3100 4500 1950 4500
-Connection ~ 1950 4500
-Wire Wire Line
-	1950 4500 1950 4600
-Wire Wire Line
-	3100 4350 1950 4350
-Connection ~ 1950 4350
-Wire Wire Line
-	1950 4350 1950 4500
-Wire Wire Line
-	1950 5900 1950 5800
-Wire Wire Line
-	1950 5550 3100 5550
-Wire Wire Line
-	3100 5700 1950 5700
-Connection ~ 1950 5700
-Wire Wire Line
-	1950 5700 1950 5550
-Wire Wire Line
-	3100 5800 1950 5800
-Connection ~ 1950 5800
-Wire Wire Line
-	1950 5800 1950 5700
 Wire Wire Line
 	3500 6800 3350 6800
 Wire Wire Line
@@ -157,232 +72,6 @@ Text Label 4550 6900 2    50   ~ 0
 DEBUG_TX
 Wire Wire Line
 	3650 6700 3350 6700
-Wire Wire Line
-	3650 6600 3650 6700
-$Comp
-L Device:R_US R?
-U 1 1 6019B350
-P 4650 5400
-AR Path="/5F2A50C6/6019B350" Ref="R?"  Part="1" 
-AR Path="/5F2A50D8/6019B350" Ref="R?"  Part="1" 
-AR Path="/5F2A508D/6019B350" Ref="R?"  Part="1" 
-AR Path="/6019B350" Ref="R3"  Part="1" 
-F 0 "R3" V 4600 5100 50  0000 L CNN
-F 1 "33R" V 4600 5500 50  0000 L CNN
-F 2 "Resistor_SMD:R_0402_1005Metric" V 4690 5390 50  0001 C CNN
-F 3 "~" H 4650 5400 50  0001 C CNN
-	1    4650 5400
-	0    1    1    0   
-$EndComp
-$Comp
-L Device:R_US R?
-U 1 1 6019B356
-P 4650 5300
-AR Path="/5F2A50C6/6019B356" Ref="R?"  Part="1" 
-AR Path="/5F2A50D8/6019B356" Ref="R?"  Part="1" 
-AR Path="/5F2A508D/6019B356" Ref="R?"  Part="1" 
-AR Path="/6019B356" Ref="R2"  Part="1" 
-F 0 "R2" V 4600 5000 50  0000 L CNN
-F 1 "33R" V 4600 5400 50  0000 L CNN
-F 2 "Resistor_SMD:R_0402_1005Metric" V 4690 5290 50  0001 C CNN
-F 3 "~" H 4650 5300 50  0001 C CNN
-	1    4650 5300
-	0    1    1    0   
-$EndComp
-Wire Wire Line
-	4300 5300 4500 5300
-Wire Wire Line
-	4300 5400 4500 5400
-Text Label 5350 5400 2    50   ~ 0
-GPS_RX
-Text Label 5350 5300 2    50   ~ 0
-GPS_TX
-Wire Wire Line
-	4800 5400 5350 5400
-Wire Wire Line
-	5350 5300 4800 5300
-$Comp
-L Device:L L1
-U 1 1 601CE65C
-P 4950 4300
-F 0 "L1" V 5000 4500 50  0000 C CNN
-F 1 "33nH" V 5000 4050 50  0000 C CNN
-F 2 "Inductor_SMD:L_0402_1005Metric" H 4950 4300 50  0001 C CNN
-F 3 "~" H 4950 4300 50  0001 C CNN
-	1    4950 4300
-	0    -1   -1   0   
-$EndComp
-$Comp
-L Device:C_Small C1
-U 1 1 601D02A1
-P 4950 4150
-F 0 "C1" V 4900 4000 50  0000 C CNN
-F 1 "22pF" V 4900 4350 50  0000 C CNN
-F 2 "Capacitor_SMD:C_0402_1005Metric" H 4950 4150 50  0001 C CNN
-F 3 "~" H 4950 4150 50  0001 C CNN
-	1    4950 4150
-	0    1    1    0   
-$EndComp
-Wire Wire Line
-	5100 4300 5550 4300
-Wire Wire Line
-	5550 4300 5550 4450
-Connection ~ 5550 4450
-Wire Wire Line
-	4800 4300 4500 4300
-Wire Wire Line
-	4500 4300 4500 4150
-Wire Wire Line
-	4500 4150 4850 4150
-Connection ~ 4500 4300
-Wire Wire Line
-	4500 4300 4300 4300
-$Comp
-L power:GND #PWR06
-U 1 1 601DCE57
-P 5450 4150
-F 0 "#PWR06" H 5450 3900 50  0001 C CNN
-F 1 "GND" H 5455 3977 50  0000 C CNN
-F 2 "" H 5450 4150 50  0001 C CNN
-F 3 "" H 5450 4150 50  0001 C CNN
-	1    5450 4150
-	0    -1   -1   0   
-$EndComp
-Wire Wire Line
-	5050 4150 5450 4150
-Wire Wire Line
-	5550 4450 4300 4450
-Wire Wire Line
-	5650 4450 5550 4450
-Connection ~ 5550 4650
-Wire Wire Line
-	5550 4550 5550 4650
-Wire Wire Line
-	5650 4550 5550 4550
-Wire Wire Line
-	5550 4650 5550 4750
-Wire Wire Line
-	5650 4650 5550 4650
-$Comp
-L power:GND #PWR08
-U 1 1 601D2BAC
-P 5550 4750
-F 0 "#PWR08" H 5550 4500 50  0001 C CNN
-F 1 "GND" H 5555 4577 50  0000 C CNN
-F 2 "" H 5550 4750 50  0001 C CNN
-F 3 "" H 5550 4750 50  0001 C CNN
-	1    5550 4750
-	1    0    0    -1  
-$EndComp
-$Comp
-L Connector_Generic:Conn_01x03 J4
-U 1 1 601C9A85
-P 5850 4550
-F 0 "J4" H 5930 4592 50  0000 L CNN
-F 1 "IPEX_IPX" H 5930 4501 50  0000 L CNN
-F 2 "FlightComputer_Library:IPEX-IPX" H 5850 4550 50  0001 C CNN
-F 3 "~" H 5850 4550 50  0001 C CNN
-	1    5850 4550
-	1    0    0    -1  
-$EndComp
-$Comp
-L Device:C_Small C2
-U 1 1 601FCF35
-P 1950 5050
-F 0 "C2" H 2150 5000 50  0000 C CNN
-F 1 "0.1uF" H 2150 5100 50  0000 C CNN
-F 2 "Capacitor_SMD:C_0402_1005Metric" H 1950 5050 50  0001 C CNN
-F 3 "~" H 1950 5050 50  0001 C CNN
-	1    1950 5050
-	-1   0    0    1   
-$EndComp
-Wire Wire Line
-	1950 5150 1950 5550
-Connection ~ 1950 5550
-Wire Wire Line
-	1950 4950 1950 4600
-Connection ~ 1950 4600
-NoConn ~ 4300 4550
-$Comp
-L Connector:TestPoint_Alt TP?
-U 1 1 6007C088
-P 3000 4950
-AR Path="/5F5976A1/6007C088" Ref="TP?"  Part="1" 
-AR Path="/5F2A508D/6007C088" Ref="TP?"  Part="1" 
-AR Path="/6007C088" Ref="TP3"  Part="1" 
-F 0 "TP3" V 3000 5150 50  0000 L CNN
-F 1 "nRST" V 3000 5350 50  0000 L CNN
-F 2 "TestPoint:TestPoint_Pad_D1.0mm" H 3200 4950 50  0001 C CNN
-F 3 "~" H 3200 4950 50  0001 C CNN
-	1    3000 4950
-	0    -1   -1   0   
-$EndComp
-$Comp
-L Connector:TestPoint_Alt TP?
-U 1 1 6007C55B
-P 3000 5100
-AR Path="/5F5976A1/6007C55B" Ref="TP?"  Part="1" 
-AR Path="/5F2A508D/6007C55B" Ref="TP?"  Part="1" 
-AR Path="/6007C55B" Ref="TP4"  Part="1" 
-F 0 "TP4" V 3000 5300 50  0000 L CNN
-F 1 "WAKEUP" V 3000 5500 50  0000 L CNN
-F 2 "TestPoint:TestPoint_Pad_D1.0mm" H 3200 5100 50  0001 C CNN
-F 3 "~" H 3200 5100 50  0001 C CNN
-	1    3000 5100
-	0    -1   -1   0   
-$EndComp
-$Comp
-L Connector:TestPoint_Alt TP?
-U 1 1 6007C6B4
-P 3000 5200
-AR Path="/5F5976A1/6007C6B4" Ref="TP?"  Part="1" 
-AR Path="/5F2A508D/6007C6B4" Ref="TP?"  Part="1" 
-AR Path="/6007C6B4" Ref="TP5"  Part="1" 
-F 0 "TP5" V 3000 5400 50  0000 L CNN
-F 1 "1PPS" V 3000 5600 50  0000 L CNN
-F 2 "TestPoint:TestPoint_Pad_D1.0mm" H 3200 5200 50  0001 C CNN
-F 3 "~" H 3200 5200 50  0001 C CNN
-	1    3000 5200
-	0    -1   -1   0   
-$EndComp
-Wire Wire Line
-	3000 5200 3100 5200
-Wire Wire Line
-	3100 5100 3000 5100
-Wire Wire Line
-	3000 4950 3100 4950
-NoConn ~ 4300 5700
-NoConn ~ 4300 5800
-$Comp
-L Connector:TestPoint_Alt TP1
-U 1 1 5F903577
-P 4500 4800
-F 0 "TP1" H 4558 4918 50  0000 L CNN
-F 1 "SCL" H 4550 4850 50  0000 L CNN
-F 2 "TestPoint:TestPoint_Pad_D1.0mm" H 4700 4800 50  0001 C CNN
-F 3 "~" H 4700 4800 50  0001 C CNN
-	1    4500 4800
-	1    0    0    -1  
-$EndComp
-Wire Wire Line
-	4300 4900 4500 4900
-Wire Wire Line
-	4500 4900 4500 4800
-Wire Wire Line
-	4300 5000 4900 5000
-Wire Wire Line
-	4900 5000 4900 4800
-$Comp
-L Connector:TestPoint_Alt TP2
-U 1 1 5F905F86
-P 4900 4800
-F 0 "TP2" H 4958 4918 50  0000 L CNN
-F 1 "SDA" H 4950 4850 50  0000 L CNN
-F 2 "TestPoint:TestPoint_Pad_D1.0mm" H 5100 4800 50  0001 C CNN
-F 3 "~" H 5100 4800 50  0001 C CNN
-	1    4900 4800
-	1    0    0    -1  
-$EndComp
 Text Label 5700 2150 2    50   ~ 0
 HP_DETECT
 $Comp
@@ -675,5 +364,315 @@ Wire Wire Line
 Connection ~ 8850 2550
 NoConn ~ 9100 2050
 NoConn ~ 10350 3400
-NoConn ~ 6400 3950
+$Comp
+L Connector:TestPoint_Alt TP2
+U 1 1 5F905F86
+P 4900 4800
+F 0 "TP2" H 4958 4918 50  0000 L CNN
+F 1 "SDA" H 4950 4850 50  0000 L CNN
+F 2 "TestPoint:TestPoint_Pad_D1.0mm" H 5100 4800 50  0001 C CNN
+F 3 "~" H 5100 4800 50  0001 C CNN
+	1    4900 4800
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	4900 5000 4900 4800
+Wire Wire Line
+	4300 5000 4900 5000
+Wire Wire Line
+	4500 4900 4500 4800
+Wire Wire Line
+	4300 4900 4500 4900
+$Comp
+L Connector:TestPoint_Alt TP1
+U 1 1 5F903577
+P 4500 4800
+F 0 "TP1" H 4558 4918 50  0000 L CNN
+F 1 "SCL" H 4550 4850 50  0000 L CNN
+F 2 "TestPoint:TestPoint_Pad_D1.0mm" H 4700 4800 50  0001 C CNN
+F 3 "~" H 4700 4800 50  0001 C CNN
+	1    4500 4800
+	1    0    0    -1  
+$EndComp
+NoConn ~ 4300 5800
+NoConn ~ 4300 5700
+Wire Wire Line
+	3000 4950 3100 4950
+Wire Wire Line
+	3100 5100 3000 5100
+Wire Wire Line
+	3000 5200 3100 5200
+$Comp
+L Connector:TestPoint_Alt TP?
+U 1 1 6007C6B4
+P 3000 5200
+AR Path="/5F5976A1/6007C6B4" Ref="TP?"  Part="1" 
+AR Path="/5F2A508D/6007C6B4" Ref="TP?"  Part="1" 
+AR Path="/6007C6B4" Ref="TP5"  Part="1" 
+F 0 "TP5" V 3000 5400 50  0000 L CNN
+F 1 "1PPS" V 3000 5600 50  0000 L CNN
+F 2 "TestPoint:TestPoint_Pad_D1.0mm" H 3200 5200 50  0001 C CNN
+F 3 "~" H 3200 5200 50  0001 C CNN
+	1    3000 5200
+	0    -1   -1   0   
+$EndComp
+$Comp
+L Connector:TestPoint_Alt TP?
+U 1 1 6007C55B
+P 3000 5100
+AR Path="/5F5976A1/6007C55B" Ref="TP?"  Part="1" 
+AR Path="/5F2A508D/6007C55B" Ref="TP?"  Part="1" 
+AR Path="/6007C55B" Ref="TP4"  Part="1" 
+F 0 "TP4" V 3000 5300 50  0000 L CNN
+F 1 "WAKEUP" V 3000 5500 50  0000 L CNN
+F 2 "TestPoint:TestPoint_Pad_D1.0mm" H 3200 5100 50  0001 C CNN
+F 3 "~" H 3200 5100 50  0001 C CNN
+	1    3000 5100
+	0    -1   -1   0   
+$EndComp
+$Comp
+L Connector:TestPoint_Alt TP?
+U 1 1 6007C088
+P 3000 4950
+AR Path="/5F5976A1/6007C088" Ref="TP?"  Part="1" 
+AR Path="/5F2A508D/6007C088" Ref="TP?"  Part="1" 
+AR Path="/6007C088" Ref="TP3"  Part="1" 
+F 0 "TP3" V 3000 5150 50  0000 L CNN
+F 1 "nRST" V 3000 5350 50  0000 L CNN
+F 2 "TestPoint:TestPoint_Pad_D1.0mm" H 3200 4950 50  0001 C CNN
+F 3 "~" H 3200 4950 50  0001 C CNN
+	1    3000 4950
+	0    -1   -1   0   
+$EndComp
+NoConn ~ 4300 4550
+Connection ~ 1950 4600
+Wire Wire Line
+	1950 4950 1950 4600
+Connection ~ 1950 5550
+Wire Wire Line
+	1950 5150 1950 5550
+$Comp
+L Device:C_Small C2
+U 1 1 601FCF35
+P 1950 5050
+F 0 "C2" H 2150 5000 50  0000 C CNN
+F 1 "0.1uF" H 2150 5100 50  0000 C CNN
+F 2 "Capacitor_SMD:C_0402_1005Metric" H 1950 5050 50  0001 C CNN
+F 3 "~" H 1950 5050 50  0001 C CNN
+	1    1950 5050
+	-1   0    0    1   
+$EndComp
+$Comp
+L Connector_Generic:Conn_01x03 J4
+U 1 1 601C9A85
+P 5850 4550
+F 0 "J4" H 5930 4592 50  0000 L CNN
+F 1 "IPEX_IPX" H 5930 4501 50  0000 L CNN
+F 2 "FlightComputer_Library:IPEX-IPX" H 5850 4550 50  0001 C CNN
+F 3 "~" H 5850 4550 50  0001 C CNN
+	1    5850 4550
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR08
+U 1 1 601D2BAC
+P 5550 4750
+F 0 "#PWR08" H 5550 4500 50  0001 C CNN
+F 1 "GND" H 5555 4577 50  0000 C CNN
+F 2 "" H 5550 4750 50  0001 C CNN
+F 3 "" H 5550 4750 50  0001 C CNN
+	1    5550 4750
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	5650 4650 5550 4650
+Wire Wire Line
+	5550 4650 5550 4750
+Wire Wire Line
+	5650 4550 5550 4550
+Wire Wire Line
+	5550 4550 5550 4650
+Connection ~ 5550 4650
+Wire Wire Line
+	5650 4450 5550 4450
+Wire Wire Line
+	5550 4450 4300 4450
+Wire Wire Line
+	5050 4150 5450 4150
+$Comp
+L power:GND #PWR06
+U 1 1 601DCE57
+P 5450 4150
+F 0 "#PWR06" H 5450 3900 50  0001 C CNN
+F 1 "GND" H 5455 3977 50  0000 C CNN
+F 2 "" H 5450 4150 50  0001 C CNN
+F 3 "" H 5450 4150 50  0001 C CNN
+	1    5450 4150
+	0    -1   -1   0   
+$EndComp
+Wire Wire Line
+	4500 4300 4300 4300
+Connection ~ 4500 4300
+Wire Wire Line
+	4500 4150 4850 4150
+Wire Wire Line
+	4500 4300 4500 4150
+Wire Wire Line
+	4800 4300 4500 4300
+Connection ~ 5550 4450
+Wire Wire Line
+	5550 4300 5550 4450
+Wire Wire Line
+	5100 4300 5550 4300
+$Comp
+L Device:C_Small C1
+U 1 1 601D02A1
+P 4950 4150
+F 0 "C1" V 4900 4000 50  0000 C CNN
+F 1 "22pF" V 4900 4350 50  0000 C CNN
+F 2 "Capacitor_SMD:C_0402_1005Metric" H 4950 4150 50  0001 C CNN
+F 3 "~" H 4950 4150 50  0001 C CNN
+	1    4950 4150
+	0    1    1    0   
+$EndComp
+$Comp
+L Device:L L1
+U 1 1 601CE65C
+P 4950 4300
+F 0 "L1" V 5000 4500 50  0000 C CNN
+F 1 "33nH" V 5000 4050 50  0000 C CNN
+F 2 "Inductor_SMD:L_0402_1005Metric" H 4950 4300 50  0001 C CNN
+F 3 "~" H 4950 4300 50  0001 C CNN
+	1    4950 4300
+	0    -1   -1   0   
+$EndComp
+Wire Wire Line
+	5350 5300 4800 5300
+Wire Wire Line
+	4800 5400 5350 5400
+Text Label 5350 5300 2    50   ~ 0
+GPS_TX
+Text Label 5350 5400 2    50   ~ 0
+GPS_RX
+Wire Wire Line
+	4300 5400 4500 5400
+Wire Wire Line
+	4300 5300 4500 5300
+$Comp
+L Device:R_US R?
+U 1 1 6019B356
+P 4650 5300
+AR Path="/5F2A50C6/6019B356" Ref="R?"  Part="1" 
+AR Path="/5F2A50D8/6019B356" Ref="R?"  Part="1" 
+AR Path="/5F2A508D/6019B356" Ref="R?"  Part="1" 
+AR Path="/6019B356" Ref="R2"  Part="1" 
+F 0 "R2" V 4600 5000 50  0000 L CNN
+F 1 "33R" V 4600 5400 50  0000 L CNN
+F 2 "Resistor_SMD:R_0402_1005Metric" V 4690 5290 50  0001 C CNN
+F 3 "~" H 4650 5300 50  0001 C CNN
+	1    4650 5300
+	0    1    1    0   
+$EndComp
+$Comp
+L Device:R_US R?
+U 1 1 6019B350
+P 4650 5400
+AR Path="/5F2A50C6/6019B350" Ref="R?"  Part="1" 
+AR Path="/5F2A50D8/6019B350" Ref="R?"  Part="1" 
+AR Path="/5F2A508D/6019B350" Ref="R?"  Part="1" 
+AR Path="/6019B350" Ref="R3"  Part="1" 
+F 0 "R3" V 4600 5100 50  0000 L CNN
+F 1 "33R" V 4600 5500 50  0000 L CNN
+F 2 "Resistor_SMD:R_0402_1005Metric" V 4690 5390 50  0001 C CNN
+F 3 "~" H 4650 5400 50  0001 C CNN
+	1    4650 5400
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	3650 6600 3650 6700
+Wire Wire Line
+	1950 5800 1950 5700
+Connection ~ 1950 5800
+Wire Wire Line
+	3100 5800 1950 5800
+Wire Wire Line
+	1950 5700 1950 5550
+Connection ~ 1950 5700
+Wire Wire Line
+	3100 5700 1950 5700
+Wire Wire Line
+	1950 5550 3100 5550
+Wire Wire Line
+	1950 5900 1950 5800
+Wire Wire Line
+	1950 4350 1950 4500
+Connection ~ 1950 4350
+Wire Wire Line
+	3100 4350 1950 4350
+Wire Wire Line
+	1950 4500 1950 4600
+Connection ~ 1950 4500
+Wire Wire Line
+	3100 4500 1950 4500
+Wire Wire Line
+	3100 4600 1950 4600
+Wire Wire Line
+	1950 4200 1950 4350
+$Comp
+L FlightComputer_Library:Teseo-LIV3F U1
+U 1 1 60164E3E
+P 3700 5050
+AR Path="/60164E3E" Ref="U1"  Part="1" 
+AR Path="/5F2A508D/60164E3E" Ref="U?"  Part="1" 
+F 0 "U1" H 3700 6065 50  0000 C CNN
+F 1 "Teseo-LIV3F" H 3700 5974 50  0000 C CNN
+F 2 "FlightComputer_Library:Teseo-LIV3F" H 3700 5050 50  0001 C CNN
+F 3 "" H 3700 5050 50  0001 C CNN
+	1    3700 5050
+	1    0    0    -1  
+$EndComp
+$Comp
+L FlightComputer_Library:VCC_PERIH #PWR011
+U 1 1 5FFA6026
+P 3650 6600
+F 0 "#PWR011" H 3650 6450 50  0001 C CNN
+F 1 "VCC_PERIH" H 3667 6773 50  0000 C CNN
+F 2 "" H 3650 6600 50  0001 C CNN
+F 3 "" H 3650 6600 50  0001 C CNN
+	1    3650 6600
+	-1   0    0    -1  
+$EndComp
+$Comp
+L FlightComputer_Library:VCC_PERIH #PWR07
+U 1 1 5FFA5986
+P 1950 4200
+F 0 "#PWR07" H 1950 4050 50  0001 C CNN
+F 1 "VCC_PERIH" H 1967 4373 50  0000 C CNN
+F 2 "" H 1950 4200 50  0001 C CNN
+F 3 "" H 1950 4200 50  0001 C CNN
+	1    1950 4200
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR010
+U 1 1 5F4DA344
+P 1950 5900
+F 0 "#PWR010" H 1950 5650 50  0001 C CNN
+F 1 "GND" H 1955 5727 50  0000 C CNN
+F 2 "" H 1950 5900 50  0001 C CNN
+F 3 "" H 1950 5900 50  0001 C CNN
+	1    1950 5900
+	1    0    0    -1  
+$EndComp
+$Comp
+L Connector_Generic:Conn_01x04 J5
+U 1 1 5F4D197A
+P 3150 6800
+F 0 "J5" H 3230 6792 50  0000 L CNN
+F 1 "Conn_DEBUG" H 3230 6701 50  0000 L CNN
+F 2 "Connector_Molex:Molex_SPOX_5268-04A_1x04_P2.50mm_Horizontal" H 3150 6800 50  0001 C CNN
+F 3 "~" H 3150 6800 50  0001 C CNN
+	1    3150 6800
+	-1   0    0    -1  
+$EndComp
 $EndSCHEMATC
