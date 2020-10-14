@@ -3,7 +3,7 @@ EELAYER 30 0
 EELAYER END
 $Descr A4 11693 8268
 encoding utf-8
-Sheet 10 12
+Sheet 9 12
 Title ""
 Date ""
 Rev ""
@@ -51,7 +51,7 @@ U 1 1 5FD06459
 P 4900 5850
 F 0 "SW10" H 4900 6135 50  0000 C CNN
 F 1 "SW_Push" H 4900 6044 50  0000 C CNN
-F 2 "Button_Switch_SMD:SW_Push_SPST_NO_Alps_SKRK" H 4900 6050 50  0001 C CNN
+F 2 "FlightComputer_Library:SW-TACT-436351045816" H 4900 6050 50  0001 C CNN
 F 3 "" H 4900 6050 50  0001 C CNN
 	1    4900 5850
 	1    0    0    -1  
@@ -62,7 +62,7 @@ U 1 1 5FD0645F
 P 6950 5850
 F 0 "SW11" H 6950 6135 50  0000 C CNN
 F 1 "SW_Push" H 6950 6044 50  0000 C CNN
-F 2 "Button_Switch_SMD:SW_Push_SPST_NO_Alps_SKRK" H 6950 6050 50  0001 C CNN
+F 2 "FlightComputer_Library:SW-TACT-436351045816" H 6950 6050 50  0001 C CNN
 F 3 "" H 6950 6050 50  0001 C CNN
 	1    6950 5850
 	1    0    0    -1  
@@ -1417,6 +1417,10 @@ Wire Wire Line
 	4700 3300 5600 3300
 NoConn ~ 950  3100
 NoConn ~ 950  3300
+Text Label 2200 1200 0    50   ~ 0
+KEY_MENU
+Text HLabel 2150 1200 0    50   Input ~ 0
+KEY_MENU
 Wire Bus Line
 	1800 7250 1800 7700
 Wire Bus Line
@@ -1425,8 +1429,4 @@ Wire Bus Line
 	1600 6300 3200 6300
 Wire Bus Line
 	1600 5700 3500 5700
-Text Label 2200 1200 0    50   ~ 0
-KEY_MENU
-Text HLabel 2150 1200 0    50   Input ~ 0
-KEY_MENU
 $EndSCHEMATC

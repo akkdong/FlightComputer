@@ -14,17 +14,6 @@ Comment3 ""
 Comment4 ""
 $EndDescr
 $Comp
-L FlightComputer_Library:RPI_Connector J6
-U 1 1 5F3373BE
-P 5650 2950
-F 0 "J6" H 5650 4515 50  0000 C CNN
-F 1 "RPI_Connector" H 5650 4424 50  0000 C CNN
-F 2 "Connector_PinSocket_2.54mm:PinSocket_2x20_P2.54mm_Vertical_SMD" H 5650 2950 50  0001 C CNN
-F 3 "" H 5650 2950 50  0001 C CNN
-	1    5650 2950
-	1    0    0    -1  
-$EndComp
-$Comp
 L Connector:Micro_SD_Card J7
 U 1 1 5F348E74
 P 5150 6000
@@ -707,4 +696,15 @@ Wire Wire Line
 	6800 1950 7500 1950
 Wire Wire Line
 	6800 2050 7500 2050
+$Comp
+L FlightComputer_Library:RPI_Connector J6
+U 1 1 5F3373BE
+P 5650 2950
+F 0 "J6" H 5650 4515 50  0000 C CNN
+F 1 "RPI_Connector" H 5650 4424 50  0000 C CNN
+F 2 "Connector_PinSocket_2.54mm:PinSocket_2x20_P2.54mm_Vertical" H 5650 2950 50  0001 C CNN
+F 3 "" H 5650 2950 50  0001 C CNN
+	1    5650 2950
+	1    0    0    -1  
+$EndComp
 $EndSCHEMATC

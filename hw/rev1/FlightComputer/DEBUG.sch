@@ -49,7 +49,7 @@ U 1 1 5F9B5887
 P 5050 2500
 F 0 "J11" H 5100 3617 50  0000 C CNN
 F 1 "Conn_02x20_Odd_Even" H 5100 3526 50  0000 C CNN
-F 2 "" H 5050 2500 50  0001 C CNN
+F 2 "Connector_PinSocket_2.54mm:PinSocket_2x20_P2.54mm_Vertical" H 5050 2500 50  0001 C CNN
 F 3 "~" H 5050 2500 50  0001 C CNN
 	1    5050 2500
 	1    0    0    -1  

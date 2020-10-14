@@ -22,7 +22,7 @@ AR Path="/5FD0B99E/5FD1EA7B" Ref="SW?"  Part="1"
 AR Path="/5FD1EA7B" Ref="SW1"  Part="1" 
 F 0 "SW1" V 2300 2200 50  0000 C CNN
 F 1 "SW_Push" V 2200 2150 50  0000 C CNN
-F 2 "FlightComputer_Library:SW_SPST_PTS647" H 2250 2600 50  0001 C CNN
+F 2 "FlightComputer_Library:SW-SPST-PTS647" H 2250 2600 50  0001 C CNN
 F 3 "" H 2250 2600 50  0001 C CNN
 	1    2250 2400
 	0    -1   -1   0   
@@ -113,7 +113,7 @@ AR Path="/5FD0B99E/5FD1EAE1" Ref="SW?"  Part="1"
 AR Path="/5FD1EAE1" Ref="SW2"  Part="1" 
 F 0 "SW2" V 4850 2150 50  0000 C CNN
 F 1 "SW_Push" V 4750 2150 50  0000 C CNN
-F 2 "FlightComputer_Library:SW_SPST_PTS647" H 4800 2600 50  0001 C CNN
+F 2 "FlightComputer_Library:SW-SPST-PTS647" H 4800 2600 50  0001 C CNN
 F 3 "" H 4800 2600 50  0001 C CNN
 	1    4800 2400
 	0    -1   -1   0   
@@ -204,7 +204,7 @@ AR Path="/5FD0B99E/5FD1EB14" Ref="SW?"  Part="1"
 AR Path="/5FD1EB14" Ref="SW7"  Part="1" 
 F 0 "SW7" V 4850 4250 50  0000 C CNN
 F 1 "SW_Push" V 4750 4200 50  0000 C CNN
-F 2 "FlightComputer_Library:SW_SPST_PTS647" H 4800 4650 50  0001 C CNN
+F 2 "FlightComputer_Library:SW-SPST-PTS647" H 4800 4650 50  0001 C CNN
 F 3 "" H 4800 4650 50  0001 C CNN
 	1    4800 4450
 	0    -1   -1   0   
@@ -295,7 +295,7 @@ AR Path="/5FD0B99E/5FD1EB47" Ref="SW?"  Part="1"
 AR Path="/5FD1EB47" Ref="SW3"  Part="1" 
 F 0 "SW3" V 7550 2150 50  0000 C CNN
 F 1 "SW_Push" V 7450 2150 50  0000 C CNN
-F 2 "FlightComputer_Library:SW_SPST_PTS647" H 7500 2600 50  0001 C CNN
+F 2 "FlightComputer_Library:SW-SPST-PTS647" H 7500 2600 50  0001 C CNN
 F 3 "" H 7500 2600 50  0001 C CNN
 	1    7500 2400
 	0    -1   -1   0   
@@ -386,7 +386,7 @@ AR Path="/5FD0B99E/5FD1EB7A" Ref="SW?"  Part="1"
 AR Path="/5FD1EB7A" Ref="SW8"  Part="1" 
 F 0 "SW8" V 7550 4250 50  0000 C CNN
 F 1 "SW_Push" V 7450 4200 50  0000 C CNN
-F 2 "FlightComputer_Library:SW_SPST_PTS647" H 7500 4650 50  0001 C CNN
+F 2 "FlightComputer_Library:SW-SPST-PTS647" H 7500 4650 50  0001 C CNN
 F 3 "" H 7500 4650 50  0001 C CNN
 	1    7500 4450
 	0    -1   -1   0   
@@ -477,7 +477,7 @@ AR Path="/5FD0B99E/5FD1EBAD" Ref="SW?"  Part="1"
 AR Path="/5FD1EBAD" Ref="SW4"  Part="1" 
 F 0 "SW4" V 10000 2150 50  0000 C CNN
 F 1 "SW_Push" V 9900 2150 50  0000 C CNN
-F 2 "FlightComputer_Library:SW_SPST_PTS647" H 9950 2600 50  0001 C CNN
+F 2 "FlightComputer_Library:SW-SPST-PTS647" H 9950 2600 50  0001 C CNN
 F 3 "" H 9950 2600 50  0001 C CNN
 	1    9950 2400
 	0    -1   -1   0   
@@ -568,7 +568,7 @@ AR Path="/5FD0B99E/5FD1EBE0" Ref="SW?"  Part="1"
 AR Path="/5FD1EBE0" Ref="SW9"  Part="1" 
 F 0 "SW9" V 10000 4200 50  0000 C CNN
 F 1 "SW_Push" V 9900 4200 50  0000 C CNN
-F 2 "FlightComputer_Library:SW_SPST_PTS647" H 9950 4650 50  0001 C CNN
+F 2 "FlightComputer_Library:SW-SPST-PTS647" H 9950 4650 50  0001 C CNN
 F 3 "" H 9950 4650 50  0001 C CNN
 	1    9950 4450
 	0    -1   -1   0   
@@ -852,7 +852,7 @@ AR Path="/5FD0B99E/5F77CA5C" Ref="SW?"  Part="1"
 AR Path="/5F77CA5C" Ref="SW5"  Part="1" 
 F 0 "SW5" V 12400 2150 50  0000 C CNN
 F 1 "SW_Push" V 12500 2150 50  0000 C CNN
-F 2 "FlightComputer_Library:SW_SPST_PTS647" H 12450 2600 50  0001 C CNN
+F 2 "FlightComputer_Library:SW-SPST-PTS647" H 12450 2600 50  0001 C CNN
 F 3 "" H 12450 2600 50  0001 C CNN
 	1    12450 2400
 	0    -1   1    0   
@@ -979,7 +979,7 @@ AR Path="/5FD0B99E/5FD1EAAE" Ref="SW?"  Part="1"
 AR Path="/5FD1EAAE" Ref="SW6"  Part="1" 
 F 0 "SW6" V 2300 4250 50  0000 C CNN
 F 1 "SW_Push" V 2200 4200 50  0000 C CNN
-F 2 "FlightComputer_Library:SW_SPST_PTS647" H 2250 4650 50  0001 C CNN
+F 2 "FlightComputer_Library:SW-SPST-PTS647" H 2250 4650 50  0001 C CNN
 F 3 "" H 2250 4650 50  0001 C CNN
 	1    2250 4450
 	0    -1   -1   0   
@@ -1440,7 +1440,7 @@ U 1 1 5F826D21
 P 2100 8500
 F 0 "J1" H 2150 9617 50  0000 C CNN
 F 1 "Conn_02x20_Odd_Even" H 2150 9526 50  0000 C CNN
-F 2 "Connector_PinSocket_2.54mm:PinSocket_2x20_P2.54mm_Vertical" H 2100 8500 50  0001 C CNN
+F 2 "Connector_PinHeader_2.54mm:PinHeader_2x20_P2.54mm_Vertical" H 2100 8500 50  0001 C CNN
 F 3 "~" H 2100 8500 50  0001 C CNN
 	1    2100 8500
 	1    0    0    -1  
