@@ -855,7 +855,7 @@ F 1 "SW_Push" V 12500 2150 50  0000 C CNN
 F 2 "FlightComputer_Library:SW-SPST-PTS647" H 12450 2600 50  0001 C CNN
 F 3 "" H 12450 2600 50  0001 C CNN
 	1    12450 2400
-	0    -1   1    0   
+	0    -1   -1   0   
 $EndComp
 Wire Wire Line
 	12450 2600 12450 2700
@@ -1449,8 +1449,6 @@ Wire Wire Line
 	2400 7600 1900 7600
 Connection ~ 2400 7600
 Wire Wire Line
-	2400 7700 1900 7700
-Wire Wire Line
 	1900 7800 2400 7800
 Connection ~ 2400 7800
 Wire Wire Line
@@ -1502,8 +1500,6 @@ Wire Wire Line
 	1900 9300 2400 9300
 Connection ~ 2400 9300
 Wire Wire Line
-	1900 9400 2400 9400
-Wire Wire Line
 	1900 9500 2400 9500
 Connection ~ 2400 9500
 Text Label 3700 8800 2    50   ~ 0
@@ -1521,4 +1517,13 @@ nRESET
 NoConn ~ 2400 7700
 NoConn ~ 2400 8700
 NoConn ~ 2400 9400
+NoConn ~ 1900 9400
+NoConn ~ 1900 8700
+NoConn ~ 1900 7700
+Wire Wire Line
+	1900 8800 2400 8800
+Connection ~ 2400 8800
+Wire Wire Line
+	1900 8600 2400 8600
+Connection ~ 2400 8600
 $EndSCHEMATC
