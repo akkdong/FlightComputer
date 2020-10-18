@@ -32,7 +32,7 @@ U 1 1 5F349789
 P 8350 5350
 F 0 "X1" H 8650 5200 50  0000 L CNN
 F 1 "24MHz" H 8600 5100 50  0000 L CNN
-F 2 "Oscillator:Oscillator_SMD_Abracon_ASE-4Pin_3.2x2.5mm_HandSoldering" H 9050 5000 50  0001 C CNN
+F 2 "Oscillator:Oscillator_SMD_Abracon_ASE-4Pin_3.2x2.5mm" H 9050 5000 50  0001 C CNN
 F 3 "http://www.abracon.com/Oscillators/ASV.pdf" H 8250 5350 50  0001 C CNN
 	1    8350 5350
 	1    0    0    -1  
@@ -496,9 +496,7 @@ F 3 "" H 7750 5850 50  0001 C CNN
 	1    7750 5850
 	1    0    0    -1  
 $EndComp
-Wire Wire Line
-	9050 5350 9800 5350
-Text Label 9800 5350 2    50   ~ 0
+Text Label 9300 5350 2    50   ~ 0
 I2S_MCLK
 Wire Wire Line
 	8350 5650 8350 5750
@@ -1113,29 +1111,12 @@ Wire Wire Line
 	3650 3150 3400 3150
 Wire Wire Line
 	3300 4050 3300 4150
-$Comp
-L Device:R_US R?
-U 1 1 5F9D854B
-P 8900 5350
-AR Path="/5F2A50C6/5F9D854B" Ref="R?"  Part="1" 
-AR Path="/5F2A508D/5F9D854B" Ref="R?"  Part="1" 
-AR Path="/5F741CFB/5F9D854B" Ref="R?"  Part="1" 
-AR Path="/5F2A50A6/5F9D854B" Ref="R15"  Part="1" 
-F 0 "R15" V 8950 5500 50  0000 L CNN
-F 1 "33R" V 8950 5050 50  0000 L CNN
-F 2 "Resistor_SMD:R_0402_1005Metric" V 8940 5340 50  0001 C CNN
-F 3 "~" H 8900 5350 50  0001 C CNN
-	1    8900 5350
-	0    -1   -1   0   
-$EndComp
 Connection ~ 7750 4900
 Wire Wire Line
 	8350 5750 7750 5750
 Connection ~ 7750 5750
 Wire Wire Line
 	7750 5750 7750 5850
-Wire Wire Line
-	8650 5350 8750 5350
 $Comp
 L Connector:TestPoint_Alt TP?
 U 1 1 5F9F9D8D
@@ -1314,8 +1295,6 @@ Wire Wire Line
 Wire Wire Line
 	8850 2500 8850 2300
 Wire Wire Line
-	8850 2300 9600 2300
-Wire Wire Line
 	7550 2500 8850 2500
 Wire Wire Line
 	9250 3350 9250 2800
@@ -1342,4 +1321,8 @@ Wire Wire Line
 Wire Wire Line
 	7400 2950 8950 2950
 NoConn ~ 9600 2400
+Wire Wire Line
+	8650 5350 9300 5350
+Wire Wire Line
+	8850 2300 9600 2300
 $EndSCHEMATC
