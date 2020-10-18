@@ -76,8 +76,6 @@ Entry Wire Line
 Entry Wire Line
 	5550 2050 5650 2150
 Entry Wire Line
-	5550 2150 5650 2250
-Entry Wire Line
 	5550 2250 5650 2350
 Entry Wire Line
 	5550 2350 5650 2450
@@ -1331,4 +1329,6 @@ Wire Bus Line
 	5650 1400 5650 3400
 Wire Bus Line
 	1950 1600 1950 3400
+Entry Wire Line
+	5550 2150 5650 2250
 $EndSCHEMATC
