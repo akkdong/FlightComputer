@@ -1,10 +1,13 @@
 Debug/
 .settings/
 /Test
-
+/bin
 
 *.bak
 *.o
 *.swp
 *.sch-bak
 *.bck
+*.kicad_pcb-bak
+
+fp-info-cache
