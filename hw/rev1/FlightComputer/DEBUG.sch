@@ -197,25 +197,25 @@ Wire Wire Line
 Wire Wire Line
 	4850 2500 4000 2500
 Text GLabel 4000 1800 0    50   Input ~ 0
-KEY_LEFT
+G_KEY_LEFT
 Text GLabel 4000 1900 0    50   Input ~ 0
-KEY_RIGHT
+G_KEY_RIGHT
 Text GLabel 4000 2000 0    50   Input ~ 0
-KEY_UP
+G_KEY_UP
 Text GLabel 4000 2100 0    50   Input ~ 0
-KEY_DOWN
+G_KEY_DOWN
 Text GLabel 4000 2200 0    50   Input ~ 0
-KEY_ENTER
+G_KEY_ENTER
 Text GLabel 4000 2300 0    50   Input ~ 0
-KEY_MENU
+G_KEY_MENU
 Text GLabel 4000 2400 0    50   Input ~ 0
-KEY_ESCAPE
+G_KEY_ESCAPE
 Text GLabel 4000 2500 0    50   Input ~ 0
-KEY_FUNC1
+G_KEY_FUNC1
 Wire Wire Line
 	4850 2600 4000 2600
 Text GLabel 4000 2600 0    50   Input ~ 0
-KEY_FUNC2
+G_KEY_FUNC2
 NoConn ~ 4850 1700
 NoConn ~ 4850 2700
 NoConn ~ 4850 3400

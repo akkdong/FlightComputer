@@ -192,23 +192,23 @@ Wire Wire Line
 Wire Wire Line
 	3250 2300 2550 2300
 Text GLabel 2550 1650 0    50   Input ~ 0
-KEY_UP
+G_KEY_UP
 Text GLabel 2550 1750 0    50   Input ~ 0
-KEY_DOWN
+G_KEY_DOWN
 Text GLabel 2550 1850 0    50   Input ~ 0
-KEY_LEFT
+G_KEY_LEFT
 Text GLabel 2550 1950 0    50   Input ~ 0
-KEY_RIGHT
+G_KEY_RIGHT
 Text GLabel 2550 2400 0    50   Input ~ 0
-KEY_ESCAPE
+G_KEY_ESCAPE
 Text GLabel 2550 2500 0    50   Input ~ 0
-KEY_FUNC1
+G_KEY_FUNC1
 Text GLabel 2550 2600 0    50   Input ~ 0
-KEY_FUNC2
+G_KEY_FUNC2
 Text GLabel 2550 2300 0    50   Input ~ 0
-KEY_MENU
+G_KEY_MENU
 Text GLabel 2550 2100 0    50   Input ~ 0
-KEY_ENTER
+G_KEY_ENTER
 Text HLabel 4100 2100 2    50   Input ~ 0
 KEY_ENTER
 $EndSCHEMATC
