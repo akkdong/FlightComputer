@@ -1370,14 +1370,10 @@ Wire Wire Line
 Wire Wire Line
 	1050 3200 1200 3200
 Wire Wire Line
-	650  3000 3100 3000
-Wire Wire Line
 	1200 3350 1200 3200
 Connection ~ 1200 3200
 Wire Wire Line
 	1200 3200 1200 3100
-Wire Wire Line
-	1200 3100 3100 3100
 $Comp
 L power:GND #PWR0190
 U 1 1 5F8A6EF9
@@ -1421,6 +1417,42 @@ Text Label 2200 1200 0    50   ~ 0
 KEY_MENU
 Text HLabel 2150 1200 0    50   Input ~ 0
 KEY_MENU
+$Comp
+L Device:R_US R?
+U 1 1 5FA3ACF5
+P 2000 3000
+AR Path="/5F2A50C6/5FA3ACF5" Ref="R?"  Part="1" 
+AR Path="/5F2A508D/5FA3ACF5" Ref="R?"  Part="1" 
+AR Path="/5F741CFB/5FA3ACF5" Ref="R174"  Part="1" 
+F 0 "R174" V 2050 3150 50  0000 L CNN
+F 1 "0R" V 2050 2700 50  0000 L CNN
+F 2 "Resistor_SMD:R_0402_1005Metric" V 2040 2990 50  0001 C CNN
+F 3 "~" H 2000 3000 50  0001 C CNN
+	1    2000 3000
+	0    -1   -1   0   
+$EndComp
+$Comp
+L Device:R_US R?
+U 1 1 5FA3B77C
+P 2000 3100
+AR Path="/5F2A50C6/5FA3B77C" Ref="R?"  Part="1" 
+AR Path="/5F2A508D/5FA3B77C" Ref="R?"  Part="1" 
+AR Path="/5F741CFB/5FA3B77C" Ref="R175"  Part="1" 
+F 0 "R175" V 2050 3250 50  0000 L CNN
+F 1 "0R" V 2050 2800 50  0000 L CNN
+F 2 "Resistor_SMD:R_0402_1005Metric" V 2040 3090 50  0001 C CNN
+F 3 "~" H 2000 3100 50  0001 C CNN
+	1    2000 3100
+	0    -1   -1   0   
+$EndComp
+Wire Wire Line
+	2150 3100 3100 3100
+Wire Wire Line
+	3100 3000 2150 3000
+Wire Wire Line
+	650  3000 1850 3000
+Wire Wire Line
+	1200 3100 1850 3100
 Wire Bus Line
 	1800 7250 1800 7700
 Wire Bus Line
