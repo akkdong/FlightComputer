@@ -823,7 +823,7 @@ Connection ~ 12700 3100
 Wire Wire Line
 	12700 3100 12700 3150
 Text Label 13850 2700 2    50   ~ 0
-KEY_POWER
+KEY_ENTER
 Wire Wire Line
 	13150 2700 13850 2700
 Wire Wire Line
@@ -890,7 +890,7 @@ F 3 "" H 2250 4200 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 Text Label 3650 4750 2    50   ~ 0
-KEY_ENTER
+KEY_MENU
 Wire Wire Line
 	2250 4200 2250 4250
 Wire Wire Line
@@ -1012,24 +1012,6 @@ Connection ~ 10200 4750
 Wire Wire Line
 	10200 2700 10350 2700
 Connection ~ 10200 2700
-Wire Wire Line
-	2400 7800 3700 7800
-Wire Wire Line
-	2400 7900 3700 7900
-Wire Wire Line
-	2400 8000 3700 8000
-Wire Wire Line
-	2400 8100 3700 8100
-Wire Wire Line
-	2400 8200 3700 8200
-Wire Wire Line
-	2400 8300 3700 8300
-Wire Wire Line
-	2400 8400 3700 8400
-Wire Wire Line
-	2400 8500 3700 8500
-Wire Wire Line
-	2400 8600 3700 8600
 Text Label 3700 7800 2    50   ~ 0
 KEY_LEFT
 Text Label 3700 7900 2    50   ~ 0
@@ -1049,8 +1031,6 @@ KEY_FUNC1
 Text Label 3700 8600 2    50   ~ 0
 KEY_FUNC2
 Wire Wire Line
-	2400 7600 2950 7600
-Wire Wire Line
 	2950 7600 2950 7300
 $Comp
 L FlightComputer_Library:VCC_MCU #PWR019
@@ -1063,8 +1043,6 @@ F 3 "" H 2950 7300 50  0001 C CNN
 	1    2950 7300
 	1    0    0    -1  
 $EndComp
-Wire Wire Line
-	2400 9500 2950 9500
 Wire Wire Line
 	2950 9500 2950 9650
 $Comp
@@ -1434,74 +1412,6 @@ Wire Wire Line
 	5200 8800 6700 8800
 Wire Wire Line
 	6700 8900 5200 8900
-$Comp
-L Connector_Generic:Conn_02x20_Odd_Even J1
-U 1 1 5F826D21
-P 2100 8500
-F 0 "J1" H 2150 9617 50  0000 C CNN
-F 1 "Conn_02x20_Odd_Even" H 2150 9526 50  0000 C CNN
-F 2 "Connector_PinHeader_2.54mm:PinHeader_2x20_P2.54mm_Vertical" H 2100 8500 50  0001 C CNN
-F 3 "~" H 2100 8500 50  0001 C CNN
-	1    2100 8500
-	1    0    0    -1  
-$EndComp
-Wire Wire Line
-	2400 7600 1900 7600
-Connection ~ 2400 7600
-Wire Wire Line
-	1900 7800 2400 7800
-Connection ~ 2400 7800
-Wire Wire Line
-	1900 7900 2400 7900
-Connection ~ 2400 7900
-Wire Wire Line
-	1900 8000 2400 8000
-Connection ~ 2400 8000
-Wire Wire Line
-	1900 8100 2400 8100
-Connection ~ 2400 8100
-Wire Wire Line
-	1900 8200 2400 8200
-Connection ~ 2400 8200
-Wire Wire Line
-	1900 8300 2400 8300
-Connection ~ 2400 8300
-Wire Wire Line
-	1900 8400 2400 8400
-Connection ~ 2400 8400
-Wire Wire Line
-	1900 8500 2400 8500
-Connection ~ 2400 8500
-Wire Wire Line
-	2400 9300 3700 9300
-Wire Wire Line
-	2400 9200 3700 9200
-Wire Wire Line
-	2400 9100 3700 9100
-Wire Wire Line
-	2400 9000 3700 9000
-Wire Wire Line
-	2400 8900 3700 8900
-Wire Wire Line
-	2400 8800 3700 8800
-Wire Wire Line
-	1900 8900 2400 8900
-Connection ~ 2400 8900
-Wire Wire Line
-	1900 9000 2400 9000
-Connection ~ 2400 9000
-Wire Wire Line
-	1900 9100 2400 9100
-Connection ~ 2400 9100
-Wire Wire Line
-	1900 9200 2400 9200
-Connection ~ 2400 9200
-Wire Wire Line
-	1900 9300 2400 9300
-Connection ~ 2400 9300
-Wire Wire Line
-	1900 9500 2400 9500
-Connection ~ 2400 9500
 Text Label 3700 8800 2    50   ~ 0
 TRST
 Text Label 3700 8900 2    50   ~ 0
@@ -1515,15 +1425,105 @@ TDO
 Text Label 3700 9300 2    50   ~ 0
 nRESET
 NoConn ~ 2400 7700
-NoConn ~ 2400 8700
 NoConn ~ 2400 9400
 NoConn ~ 1900 9400
-NoConn ~ 1900 8700
 NoConn ~ 1900 7700
 Wire Wire Line
+	1900 7900 2400 7900
+Wire Wire Line
+	2400 7900 3700 7900
+Connection ~ 2400 7900
+Wire Wire Line
+	1900 7800 2400 7800
+Wire Wire Line
+	2400 7800 3700 7800
+Connection ~ 2400 7800
+Wire Wire Line
+	1900 9500 2400 9500
+Wire Wire Line
+	2400 9500 2950 9500
+Connection ~ 2400 9500
+Wire Wire Line
+	1900 9300 2400 9300
+Wire Wire Line
+	2400 9300 3700 9300
+Connection ~ 2400 9300
+Wire Wire Line
+	1900 9200 2400 9200
+Wire Wire Line
+	2400 9200 3700 9200
+Connection ~ 2400 9200
+Wire Wire Line
+	1900 9100 2400 9100
+Wire Wire Line
+	2400 9100 3700 9100
+Connection ~ 2400 9100
+Wire Wire Line
+	1900 9000 2400 9000
+Wire Wire Line
+	2400 9000 3700 9000
+Connection ~ 2400 9000
+Wire Wire Line
+	1900 8900 2400 8900
+Wire Wire Line
+	2400 8900 3700 8900
+Connection ~ 2400 8900
+Wire Wire Line
 	1900 8800 2400 8800
+Wire Wire Line
+	2400 8800 3700 8800
 Connection ~ 2400 8800
 Wire Wire Line
 	1900 8600 2400 8600
+Wire Wire Line
+	2400 8600 3700 8600
 Connection ~ 2400 8600
+Wire Wire Line
+	1900 8500 2400 8500
+Wire Wire Line
+	2400 8500 3700 8500
+Connection ~ 2400 8500
+Wire Wire Line
+	2400 7600 1900 7600
+Wire Wire Line
+	2400 7600 2950 7600
+Connection ~ 2400 7600
+Wire Wire Line
+	1900 8400 2400 8400
+Wire Wire Line
+	2400 8400 3700 8400
+Connection ~ 2400 8400
+Wire Wire Line
+	1900 8300 2400 8300
+Wire Wire Line
+	2400 8300 3700 8300
+Connection ~ 2400 8300
+Wire Wire Line
+	1900 8200 2400 8200
+Wire Wire Line
+	2400 8200 3700 8200
+Connection ~ 2400 8200
+Wire Wire Line
+	1900 8100 2400 8100
+Wire Wire Line
+	2400 8100 3700 8100
+Connection ~ 2400 8100
+Wire Wire Line
+	1900 8000 2400 8000
+Wire Wire Line
+	2400 8000 3700 8000
+Connection ~ 2400 8000
+$Comp
+L Connector_Generic:Conn_02x20_Odd_Even J1
+U 1 1 5F826D21
+P 2100 8500
+F 0 "J1" H 2150 9617 50  0000 C CNN
+F 1 "Conn_02x20_Odd_Even" H 2150 9526 50  0000 C CNN
+F 2 "Connector_PinHeader_2.54mm:PinHeader_2x20_P2.54mm_Vertical" H 2100 8500 50  0001 C CNN
+F 3 "~" H 2100 8500 50  0001 C CNN
+	1    2100 8500
+	1    0    0    -1  
+$EndComp
+NoConn ~ 2400 8700
+NoConn ~ 1900 8700
 $EndSCHEMATC
