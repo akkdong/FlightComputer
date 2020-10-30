@@ -441,18 +441,9 @@ Wire Wire Line
 Wire Wire Line
 	3400 2250 3650 2250
 Wire Wire Line
-	3650 2150 3600 2150
-Wire Wire Line
 	3650 2050 3400 2050
 Wire Wire Line
 	3650 1950 3400 1950
-Wire Wire Line
-	3600 2150 3600 2350
-Connection ~ 3600 2150
-Wire Wire Line
-	3600 2150 3400 2150
-Wire Wire Line
-	3600 2350 3650 2350
 $Comp
 L Device:R_US R?
 U 1 1 5F38B1D7
@@ -659,17 +650,6 @@ Wire Wire Line
 Wire Wire Line
 	2200 6150 2900 6150
 $Comp
-L power:GND #PWR017
-U 1 1 5F454319
-P 4500 6250
-F 0 "#PWR017" H 4500 6000 50  0001 C CNN
-F 1 "GND" V 4505 6122 50  0000 R CNN
-F 2 "" H 4500 6250 50  0001 C CNN
-F 3 "" H 4500 6250 50  0001 C CNN
-	1    4500 6250
-	0    -1   -1   0   
-$EndComp
-$Comp
 L power:GND #PWR020
 U 1 1 5F4543C0
 P 4500 6550
@@ -682,8 +662,6 @@ F 3 "" H 4500 6550 50  0001 C CNN
 $EndComp
 Wire Wire Line
 	4400 6550 4500 6550
-Wire Wire Line
-	4400 6250 4500 6250
 $Comp
 L power:GND #PWR021
 U 1 1 5F45D6AC
@@ -749,9 +727,9 @@ Wire Wire Line
 Wire Wire Line
 	5300 6450 5850 6450
 Text Label 5850 6200 2    50   ~ 0
-RADIO_R
-Text Label 5850 6450 2    50   ~ 0
 RADIO_L
+Text Label 5850 6450 2    50   ~ 0
+RADIO_R
 NoConn ~ 3500 6450
 $Comp
 L Connector_Generic:Conn_01x01 J4
@@ -1175,8 +1153,6 @@ Wire Wire Line
 	3100 3150 2850 3150
 Wire Wire Line
 	2350 2450 3100 2450
-Wire Wire Line
-	3100 2250 2350 2250
 Text Label 2400 3350 0    50   ~ 0
 RADIO_R
 Text Label 2400 3250 0    50   ~ 0
@@ -1208,7 +1184,7 @@ I2S_LRCK
 Text HLabel 2350 2050 0    50   Input ~ 0
 I2S_SCLK
 Wire Wire Line
-	3100 2150 2350 2150
+	3100 2150 2900 2150
 Wire Wire Line
 	3100 2050 2350 2050
 Wire Wire Line
@@ -1325,4 +1301,31 @@ Wire Wire Line
 	8650 5350 9300 5350
 Wire Wire Line
 	8850 2300 9600 2300
+NoConn ~ 4400 6250
+$Comp
+L Device:R_US R?
+U 1 1 5F9F4925
+P 3250 2350
+AR Path="/5F2A50C6/5F9F4925" Ref="R?"  Part="1" 
+AR Path="/5F2A50A6/5F9F4925" Ref="R1"  Part="1" 
+F 0 "R1" V 3200 2100 50  0000 L CNN
+F 1 "33R" V 3200 2450 50  0000 L CNN
+F 2 "Resistor_SMD:R_0402_1005Metric" V 3290 2340 50  0001 C CNN
+F 3 "~" H 3250 2350 50  0001 C CNN
+	1    3250 2350
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	3100 2350 2900 2350
+Wire Wire Line
+	3400 2150 3650 2150
+Wire Wire Line
+	3400 2350 3650 2350
+Wire Wire Line
+	2350 2250 3100 2250
+Wire Wire Line
+	2900 2350 2900 2150
+Connection ~ 2900 2150
+Wire Wire Line
+	2900 2150 2350 2150
 $EndSCHEMATC
