@@ -28,6 +28,24 @@ K ARM Cortex-M7 STM32H7 STM32H7x3
 F http://www.st.com/st-web-ui/static/active/en/resource/technical/document/datasheet/DM00387108.pdf
 $ENDCMP
 #
+$CMP TPS61030PWR
+D 96% EFFICIENT SYNCHRONOUS BOOST CONVERTER WITH 4A SWITCH, TSSOP-16
+K Adjustable 2A battery boost converter
+F http://www.ti.com/lit/ds/symlink/tps61030.pdf
+$ENDCMP
+#
+$CMP TPS61031PWR
+D 96% EFFICIENT SYNCHRONOUS BOOST CONVERTER WITH 4A SWITCH, TSSOP-16
+K Fixed 3.3V 2A battery boost converter
+F http://www.ti.com/lit/ds/symlink/tps61030.pdf
+$ENDCMP
+#
+$CMP TPS61032PWR
+D 96% EFFICIENT SYNCHRONOUS BOOST CONVERTER WITH 4A SWITCH, TSSOP-16
+K Fixed 5V 2A battery boost converter
+F http://www.ti.com/lit/ds/symlink/tps61030.pdf
+$ENDCMP
+#
 $CMP USB_B_Micro
 D USB Micro Type B connector
 K connector USB micro
