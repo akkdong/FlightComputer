@@ -25,13 +25,13 @@ F 3 "http://www.mouser.com/ds/2/268/22090a-52174.pdf" H 3200 2700 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L Regulator_Switching:TPS61090 U10
+L FlightComputer_Library:TPS61032PWR U10
 U 1 1 5F31CEAF
 P 3550 4600
 F 0 "U10" H 3550 5325 50  0000 C CNN
-F 1 "TPS61090" H 3550 5234 50  0000 C CNN
-F 2 "Package_DFN_QFN:QFN-16-1EP_4x4mm_P0.65mm_EP2.5x2.5mm" H 2600 3550 50  0001 L CNN
-F 3 "http://www.ti.com/lit/ds/symlink/tps61090.pdf" H 3700 3450 50  0001 L CNN
+F 1 "TPS61032PWR" H 3550 5234 50  0000 C CNN
+F 2 "Package_SO:TSSOP-16-1EP_4.4x5mm_P0.65mm" H 2600 3550 50  0001 L CNN
+F 3 "http://www.ti.com/lit/ds/symlink/tps61030.pdf" H 3700 3450 50  0001 L CNN
 	1    3550 4600
 	1    0    0    -1  
 $EndComp
