@@ -412,7 +412,7 @@ Wire Wire Line
 	4600 1950 4600 1850
 Connection ~ 4600 1850
 Wire Wire Line
-	4600 1850 5050 1850
+	4600 1850 4900 1850
 $Comp
 L power:GND #PWR0113
 U 1 1 5F359C26
@@ -1835,4 +1835,114 @@ F 3 "~" H 5700 7000 50  0001 C CNN
 	1    5500 7000
 	0    1    1    0   
 $EndComp
+$Comp
+L Connector:TestPoint_Alt TP?
+U 1 1 5FBCBC88
+P 6400 3950
+AR Path="/5F5976A1/5FBCBC88" Ref="TP?"  Part="1" 
+AR Path="/5F2A50C6/5FBCBC88" Ref="TP21"  Part="1" 
+AR Path="/5F742A7D/5FBCBC88" Ref="TP?"  Part="1" 
+F 0 "TP21" H 6400 4300 50  0000 C CNN
+F 1 "VCC_5V" H 6400 4200 50  0000 C CNN
+F 2 "TestPoint:TestPoint_Pad_D1.0mm" H 6600 3950 50  0001 C CNN
+F 3 "~" H 6600 3950 50  0001 C CNN
+	1    6400 3950
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	6400 3950 6400 4100
+Wire Wire Line
+	6400 4100 6050 4100
+Connection ~ 6050 4100
+$Comp
+L Connector:TestPoint_Alt TP?
+U 1 1 5FBE3C0C
+P 7150 3450
+AR Path="/5F5976A1/5FBE3C0C" Ref="TP?"  Part="1" 
+AR Path="/5F2A50C6/5FBE3C0C" Ref="TP19"  Part="1" 
+AR Path="/5F742A7D/5FBE3C0C" Ref="TP?"  Part="1" 
+F 0 "TP19" H 7150 3800 50  0000 C CNN
+F 1 "VCC_BAT" H 7150 3700 50  0000 C CNN
+F 2 "TestPoint:TestPoint_Pad_D1.0mm" H 7350 3450 50  0001 C CNN
+F 3 "~" H 7350 3450 50  0001 C CNN
+	1    7150 3450
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	7150 3450 7150 3550
+Wire Wire Line
+	7150 3550 7500 3550
+$Comp
+L Connector:TestPoint_Alt TP?
+U 1 1 5FBF038F
+P 10950 3450
+AR Path="/5F5976A1/5FBF038F" Ref="TP?"  Part="1" 
+AR Path="/5F2A50C6/5FBF038F" Ref="TP20"  Part="1" 
+AR Path="/5F742A7D/5FBF038F" Ref="TP?"  Part="1" 
+F 0 "TP20" H 10950 3800 50  0000 C CNN
+F 1 "VCC_PERIH" H 10950 3700 50  0000 C CNN
+F 2 "TestPoint:TestPoint_Pad_D1.0mm" H 11150 3450 50  0001 C CNN
+F 3 "~" H 11150 3450 50  0001 C CNN
+	1    10950 3450
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	10950 3450 10950 3550
+Wire Wire Line
+	10950 3550 10550 3550
+$Comp
+L Connector:TestPoint_Alt TP?
+U 1 1 5FBFD57B
+P 10950 5050
+AR Path="/5F5976A1/5FBFD57B" Ref="TP?"  Part="1" 
+AR Path="/5F2A50C6/5FBFD57B" Ref="TP22"  Part="1" 
+AR Path="/5F742A7D/5FBFD57B" Ref="TP?"  Part="1" 
+F 0 "TP22" H 10950 5400 50  0000 C CNN
+F 1 "VCC_BAT+" H 10950 5300 50  0000 C CNN
+F 2 "TestPoint:TestPoint_Pad_D1.0mm" H 11150 5050 50  0001 C CNN
+F 3 "~" H 11150 5050 50  0001 C CNN
+	1    10950 5050
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	10950 5050 10950 5200
+Wire Wire Line
+	10950 5200 10550 5200
+$Comp
+L Connector:TestPoint_Alt TP?
+U 1 1 5FC0A9C6
+P 10950 1900
+AR Path="/5F5976A1/5FC0A9C6" Ref="TP?"  Part="1" 
+AR Path="/5F2A50C6/5FC0A9C6" Ref="TP18"  Part="1" 
+AR Path="/5F742A7D/5FC0A9C6" Ref="TP?"  Part="1" 
+F 0 "TP18" H 10950 2250 50  0000 C CNN
+F 1 "VCC_MCU" H 10950 2150 50  0000 C CNN
+F 2 "TestPoint:TestPoint_Pad_D1.0mm" H 11150 1900 50  0001 C CNN
+F 3 "~" H 11150 1900 50  0001 C CNN
+	1    10950 1900
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	10950 1900 10950 2050
+Wire Wire Line
+	10950 2050 10550 2050
+$Comp
+L Connector:TestPoint_Alt TP?
+U 1 1 5FC17FEC
+P 4900 1700
+AR Path="/5F5976A1/5FC17FEC" Ref="TP?"  Part="1" 
+AR Path="/5F2A50C6/5FC17FEC" Ref="TP17"  Part="1" 
+AR Path="/5F742A7D/5FC17FEC" Ref="TP?"  Part="1" 
+F 0 "TP17" H 4900 2050 50  0000 C CNN
+F 1 "+BATT" H 4900 1950 50  0000 C CNN
+F 2 "TestPoint:TestPoint_Pad_D1.0mm" H 5100 1700 50  0001 C CNN
+F 3 "~" H 5100 1700 50  0001 C CNN
+	1    4900 1700
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	4900 1700 4900 1850
+Connection ~ 4900 1850
+Wire Wire Line
+	4900 1850 5050 1850
 $EndSCHEMATC

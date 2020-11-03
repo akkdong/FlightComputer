@@ -586,4 +586,22 @@ Wire Wire Line
 Wire Wire Line
 	3300 800  3300 850 
 Connection ~ 3300 850 
+$Comp
+L Connector:TestPoint_Alt TP?
+U 1 1 5FBC33D1
+P 3700 4850
+AR Path="/5F5976A1/5FBC33D1" Ref="TP?"  Part="1" 
+AR Path="/5F2A50C6/5FBC33D1" Ref="TP?"  Part="1" 
+AR Path="/5F742A7D/5FBC33D1" Ref="TP23"  Part="1" 
+F 0 "TP23" H 3700 5200 50  0000 C CNN
+F 1 "VCC_USB" H 3700 5100 50  0000 C CNN
+F 2 "TestPoint:TestPoint_Pad_D1.0mm" H 3900 4850 50  0001 C CNN
+F 3 "~" H 3900 4850 50  0001 C CNN
+	1    3700 4850
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	3700 4850 3700 4900
+Wire Wire Line
+	3700 4900 4100 4900
 $EndSCHEMATC
