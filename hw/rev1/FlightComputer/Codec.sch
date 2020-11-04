@@ -1115,9 +1115,9 @@ I2C_SDA
 Text Label 2400 2650 0    50   ~ 0
 I2C_SCL
 Text Label 2400 2450 0    50   ~ 0
-I2S_DOUT
-Text Label 2400 2250 0    50   ~ 0
 I2S_DIN
+Text Label 2400 2250 0    50   ~ 0
+I2S_DOUT
 Text Label 2400 2150 0    50   ~ 0
 I2S_LRCK
 Text Label 2400 2050 0    50   ~ 0
@@ -1175,9 +1175,9 @@ Wire Wire Line
 	3100 2650 2350 2650
 Text Label 2400 1950 0    50   ~ 0
 I2S_MCLK
-Text HLabel 2350 2250 0    50   Input ~ 0
-I2S_DIN
 Text HLabel 2350 2450 0    50   Input ~ 0
+I2S_DIN
+Text HLabel 2350 2250 0    50   Input ~ 0
 I2S_DOUT
 Text HLabel 2350 2150 0    50   Input ~ 0
 I2S_LRCK
