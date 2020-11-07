@@ -84,7 +84,7 @@ AR Path="/5F2A50C6/5F729A83" Ref="R?"  Part="1"
 AR Path="/5F742A7D/5F729A83" Ref="R216"  Part="1" 
 F 0 "R216" V 2750 6000 50  0000 L CNN
 F 1 "33R" V 2750 5500 50  0000 L CNN
-F 2 "Resistor_SMD:R_0402_1005Metric" V 2740 5790 50  0001 C CNN
+F 2 "FlightComputer_Library:R_0402_1005Metric_Pad0.72x0.64mm_HandSolder" V 2740 5790 50  0001 C CNN
 F 3 "~" H 2700 5800 50  0001 C CNN
 	1    2700 5800
 	0    -1   -1   0   
@@ -97,7 +97,7 @@ AR Path="/5F2A50C6/5F728EBC" Ref="R?"  Part="1"
 AR Path="/5F742A7D/5F728EBC" Ref="R215"  Part="1" 
 F 0 "R215" V 2750 5900 50  0000 L CNN
 F 1 "33R" V 2750 5400 50  0000 L CNN
-F 2 "Resistor_SMD:R_0402_1005Metric" V 2740 5690 50  0001 C CNN
+F 2 "FlightComputer_Library:R_0402_1005Metric_Pad0.72x0.64mm_HandSolder" V 2740 5690 50  0001 C CNN
 F 3 "~" H 2700 5700 50  0001 C CNN
 	1    2700 5700
 	0    -1   -1   0   
@@ -145,7 +145,7 @@ AR Path="/5F2A50C6/5F73EA23" Ref="R?"  Part="1"
 AR Path="/5F742A7D/5F73EA23" Ref="R208"  Part="1" 
 F 0 "R208" H 3850 2100 50  0000 L CNN
 F 1 "47k" H 3850 2200 50  0000 L CNN
-F 2 "Resistor_SMD:R_0402_1005Metric" V 4090 2140 50  0001 C CNN
+F 2 "FlightComputer_Library:R_0402_1005Metric_Pad0.72x0.64mm_HandSolder" V 4090 2140 50  0001 C CNN
 F 3 "~" H 4050 2150 50  0001 C CNN
 	1    4050 2150
 	-1   0    0    1   
@@ -239,7 +239,7 @@ AR Path="/5F2A50C6/5F73EA5B" Ref="R?"  Part="1"
 AR Path="/5F742A7D/5F73EA5B" Ref="R210"  Part="1" 
 F 0 "R210" V 3200 2700 50  0000 L CNN
 F 1 "33R" V 3200 2200 50  0000 L CNN
-F 2 "Resistor_SMD:R_0402_1005Metric" V 3190 2490 50  0001 C CNN
+F 2 "FlightComputer_Library:R_0402_1005Metric_Pad0.72x0.64mm_HandSolder" V 3190 2490 50  0001 C CNN
 F 3 "~" H 3150 2500 50  0001 C CNN
 	1    3150 2500
 	0    -1   -1   0   
@@ -252,7 +252,7 @@ AR Path="/5F2A50C6/5F73EA67" Ref="R?"  Part="1"
 AR Path="/5F742A7D/5F73EA67" Ref="R212"  Part="1" 
 F 0 "R212" V 3200 2900 50  0000 L CNN
 F 1 "33R" V 3200 2400 50  0000 L CNN
-F 2 "Resistor_SMD:R_0402_1005Metric" V 3190 2690 50  0001 C CNN
+F 2 "FlightComputer_Library:R_0402_1005Metric_Pad0.72x0.64mm_HandSolder" V 3190 2690 50  0001 C CNN
 F 3 "~" H 3150 2700 50  0001 C CNN
 	1    3150 2700
 	0    -1   -1   0   
@@ -265,7 +265,7 @@ AR Path="/5F2A50C6/5F73EA6D" Ref="R?"  Part="1"
 AR Path="/5F742A7D/5F73EA6D" Ref="R211"  Part="1" 
 F 0 "R211" V 3200 2800 50  0000 L CNN
 F 1 "33R" V 3200 2300 50  0000 L CNN
-F 2 "Resistor_SMD:R_0402_1005Metric" V 3190 2590 50  0001 C CNN
+F 2 "FlightComputer_Library:R_0402_1005Metric_Pad0.72x0.64mm_HandSolder" V 3190 2590 50  0001 C CNN
 F 3 "~" H 3150 2600 50  0001 C CNN
 	1    3150 2600
 	0    -1   -1   0   
@@ -323,7 +323,7 @@ AR Path="/5F2A50C6/5F8091E5" Ref="R?"  Part="1"
 AR Path="/5F742A7D/5F8091E5" Ref="R213"  Part="1" 
 F 0 "R213" V 3200 4000 50  0000 L CNN
 F 1 "33R" V 3200 3500 50  0000 L CNN
-F 2 "Resistor_SMD:R_0402_1005Metric" V 3190 3790 50  0001 C CNN
+F 2 "FlightComputer_Library:R_0402_1005Metric_Pad0.72x0.64mm_HandSolder" V 3190 3790 50  0001 C CNN
 F 3 "~" H 3150 3800 50  0001 C CNN
 	1    3150 3800
 	0    -1   -1   0   
@@ -344,7 +344,7 @@ AR Path="/5F2A50C6/5F80AD29" Ref="R?"  Part="1"
 AR Path="/5F742A7D/5F80AD29" Ref="R214"  Part="1" 
 F 0 "R214" V 2750 5800 50  0000 L CNN
 F 1 "33R" V 2750 5300 50  0000 L CNN
-F 2 "Resistor_SMD:R_0402_1005Metric" V 2740 5590 50  0001 C CNN
+F 2 "FlightComputer_Library:R_0402_1005Metric_Pad0.72x0.64mm_HandSolder" V 2740 5590 50  0001 C CNN
 F 3 "~" H 2700 5600 50  0001 C CNN
 	1    2700 5600
 	0    -1   -1   0   
@@ -365,7 +365,7 @@ AR Path="/5F2A50C6/5F91FB36" Ref="R?"  Part="1"
 AR Path="/5F742A7D/5F91FB36" Ref="R206"  Part="1" 
 F 0 "R206" V 3200 1650 50  0000 L CNN
 F 1 "33R" V 3200 1150 50  0000 L CNN
-F 2 "Resistor_SMD:R_0402_1005Metric" V 3190 1440 50  0001 C CNN
+F 2 "FlightComputer_Library:R_0402_1005Metric_Pad0.72x0.64mm_HandSolder" V 3190 1440 50  0001 C CNN
 F 3 "~" H 3150 1450 50  0001 C CNN
 	1    3150 1450
 	0    -1   -1   0   
@@ -380,7 +380,7 @@ AR Path="/5F2A50C6/5F921D64" Ref="R?"  Part="1"
 AR Path="/5F742A7D/5F921D64" Ref="R209"  Part="1" 
 F 0 "R209" V 3200 2600 50  0000 L CNN
 F 1 "33R" V 3200 2100 50  0000 L CNN
-F 2 "Resistor_SMD:R_0402_1005Metric" V 3190 2390 50  0001 C CNN
+F 2 "FlightComputer_Library:R_0402_1005Metric_Pad0.72x0.64mm_HandSolder" V 3190 2390 50  0001 C CNN
 F 3 "~" H 3150 2400 50  0001 C CNN
 	1    3150 2400
 	0    -1   -1   0   
@@ -395,7 +395,7 @@ AR Path="/5F2A50C6/5F92569E" Ref="R?"  Part="1"
 AR Path="/5F742A7D/5F92569E" Ref="R207"  Part="1" 
 F 0 "R207" H 3700 1750 50  0000 L CNN
 F 1 "10K" H 3650 1650 50  0000 L CNN
-F 2 "Resistor_SMD:R_0402_1005Metric" V 3640 1690 50  0001 C CNN
+F 2 "FlightComputer_Library:R_0402_1005Metric_Pad0.72x0.64mm_HandSolder" V 3640 1690 50  0001 C CNN
 F 3 "~" H 3600 1700 50  0001 C CNN
 	1    3600 1700
 	1    0    0    -1  
@@ -403,12 +403,12 @@ $EndComp
 $Comp
 L power:GND #PWR0230
 U 1 1 5F7D742A
-P 4650 6200
-F 0 "#PWR0230" H 4650 5950 50  0001 C CNN
-F 1 "GND" V 4650 6000 50  0000 C CNN
-F 2 "" H 4650 6200 50  0001 C CNN
-F 3 "" H 4650 6200 50  0001 C CNN
-	1    4650 6200
+P 4900 6200
+F 0 "#PWR0230" H 4900 5950 50  0001 C CNN
+F 1 "GND" V 4900 6000 50  0000 C CNN
+F 2 "" H 4900 6200 50  0001 C CNN
+F 3 "" H 4900 6200 50  0001 C CNN
+	1    4900 6200
 	0    -1   -1   0   
 $EndComp
 $Comp
@@ -425,12 +425,12 @@ $EndComp
 $Comp
 L Power_Protection:USBLC6-2SC6 U15
 U 1 1 5F7E7388
-P 5900 3150
-F 0 "U15" V 5600 2600 50  0000 C CNN
-F 1 "USBLC6-2SC6" V 5500 2600 50  0000 C CNN
-F 2 "Package_TO_SOT_SMD:SOT-23-6_Handsoldering" H 5900 2650 50  0001 C CNN
-F 3 "https://www.st.com/resource/en/datasheet/usblc6-2.pdf" H 6100 3500 50  0001 C CNN
-	1    5900 3150
+P 6450 3150
+F 0 "U15" V 6150 2600 50  0000 C CNN
+F 1 "USBLC6-2SC6" V 6050 2600 50  0000 C CNN
+F 2 "Package_TO_SOT_SMD:SOT-23-6_Handsoldering" H 6450 2650 50  0001 C CNN
+F 3 "https://www.st.com/resource/en/datasheet/usblc6-2.pdf" H 6650 3500 50  0001 C CNN
+	1    6450 3150
 	0    -1   -1   0   
 $EndComp
 Wire Wire Line
@@ -438,53 +438,49 @@ Wire Wire Line
 $Comp
 L Power_Protection:USBLC6-2SC6 U16
 U 1 1 5F7E5FE0
-P 4050 6200
-F 0 "U16" V 3750 5650 50  0000 C CNN
-F 1 "USBLC6-2SC6" V 3650 5650 50  0000 C CNN
-F 2 "Package_TO_SOT_SMD:SOT-23-6_Handsoldering" H 4050 5700 50  0001 C CNN
-F 3 "https://www.st.com/resource/en/datasheet/usblc6-2.pdf" H 4250 6550 50  0001 C CNN
-	1    4050 6200
+P 4350 6200
+F 0 "U16" V 4050 5650 50  0000 C CNN
+F 1 "USBLC6-2SC6" V 3950 5650 50  0000 C CNN
+F 2 "Package_TO_SOT_SMD:SOT-23-6_Handsoldering" H 4350 5700 50  0001 C CNN
+F 3 "https://www.st.com/resource/en/datasheet/usblc6-2.pdf" H 4550 6550 50  0001 C CNN
+	1    4350 6200
 	0    -1   -1   0   
 $EndComp
 Wire Wire Line
-	4150 5700 5050 5700
+	4450 5700 5050 5700
 Wire Wire Line
 	3300 3800 7500 3800
 Wire Wire Line
-	6000 2600 7200 2600
+	6550 2600 7200 2600
 Wire Wire Line
 	2850 5600 3450 5600
 Wire Wire Line
-	4150 5700 4150 5800
+	4450 5700 4450 5800
 Wire Wire Line
-	3950 5800 3950 5700
+	4250 5800 4250 5700
 Wire Wire Line
-	2850 5700 3950 5700
+	2850 5700 4250 5700
 Wire Wire Line
 	3300 5800 3300 6700
 Wire Wire Line
-	3300 6700 3950 6700
+	3300 6700 4250 6700
 Wire Wire Line
-	3950 6700 3950 6600
+	4250 6700 4250 6600
 Wire Wire Line
-	4150 6600 4150 6700
+	4450 6600 4450 6700
 Wire Wire Line
-	4450 6200 4650 6200
-Wire Wire Line
-	3650 6200 3450 6200
+	4700 6200 4750 6200
 Wire Wire Line
 	3450 6200 3450 5600
 Connection ~ 3450 5600
 Wire Wire Line
 	3450 5600 4900 5600
 Wire Wire Line
-	6000 2600 6000 2750
+	6550 2600 6550 2750
 Wire Wire Line
-	5800 2750 5800 2600
+	6350 2750 6350 2600
 Wire Wire Line
-	3300 2600 5800 2600
-Wire Wire Line
-	5500 3150 5350 3150
+	3300 2600 6350 2600
 Wire Wire Line
 	5350 3150 5350 2500
 Wire Wire Line
@@ -493,13 +489,11 @@ Connection ~ 5350 2500
 Wire Wire Line
 	6300 3150 6450 3150
 Wire Wire Line
-	7350 3650 6000 3650
+	6550 3650 6550 3550
 Wire Wire Line
-	6000 3650 6000 3550
+	6350 3550 6350 3650
 Wire Wire Line
-	5800 3550 5800 3650
-Wire Wire Line
-	5800 3650 5200 3650
+	6350 3650 5200 3650
 Wire Wire Line
 	5200 3650 5200 2700
 Wire Wire Line
@@ -545,7 +539,7 @@ Connection ~ 4050 2400
 Wire Wire Line
 	4050 2400 5200 2400
 Wire Wire Line
-	4150 6700 5200 6700
+	4450 6700 5200 6700
 Wire Wire Line
 	5200 5500 5550 5500
 Wire Wire Line
@@ -604,4 +598,43 @@ Wire Wire Line
 	3700 4850 3700 4900
 Wire Wire Line
 	3700 4900 4100 4900
+Wire Wire Line
+	7350 3650 6550 3650
+$Comp
+L Device:R_US R?
+U 1 1 5FAC6066
+P 5700 3150
+AR Path="/5F2A50C6/5FAC6066" Ref="R?"  Part="1" 
+AR Path="/5F742A7D/5FAC6066" Ref="R15"  Part="1" 
+F 0 "R15" V 5800 3200 50  0000 L CNN
+F 1 "0R" V 5800 3000 50  0000 L CNN
+F 2 "FlightComputer_Library:R_0402_1005Metric_Pad0.72x0.64mm_HandSolder" V 5740 3140 50  0001 C CNN
+F 3 "~" H 5700 3150 50  0001 C CNN
+	1    5700 3150
+	0    -1   -1   0   
+$EndComp
+Wire Wire Line
+	5350 3150 5550 3150
+Wire Wire Line
+	5850 3150 6050 3150
+Connection ~ 4750 6200
+Wire Wire Line
+	4750 6200 4900 6200
+$Comp
+L Device:R_US R?
+U 1 1 5FAE2826
+P 3700 6200
+AR Path="/5F2A50C6/5FAE2826" Ref="R?"  Part="1" 
+AR Path="/5F742A7D/5FAE2826" Ref="R127"  Part="1" 
+F 0 "R127" V 3800 6200 50  0000 L CNN
+F 1 "0R" V 3800 6050 50  0000 L CNN
+F 2 "FlightComputer_Library:R_0402_1005Metric_Pad0.72x0.64mm_HandSolder" V 3740 6190 50  0001 C CNN
+F 3 "~" H 3700 6200 50  0001 C CNN
+	1    3700 6200
+	0    -1   -1   0   
+$EndComp
+Wire Wire Line
+	3550 6200 3450 6200
+Wire Wire Line
+	3850 6200 3950 6200
 $EndSCHEMATC

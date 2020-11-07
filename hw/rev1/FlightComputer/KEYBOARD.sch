@@ -22,7 +22,7 @@ AR Path="/5F2A508D/5FD1EA81" Ref="R?"  Part="1"
 AR Path="/5FD0B99E/5FD1EA81" Ref="R157"  Part="1" 
 F 0 "R157" V 3450 1750 50  0000 L CNN
 F 1 "0R" V 3450 1450 50  0000 L CNN
-F 2 "Resistor_SMD:R_0402_1005Metric" V 3440 1640 50  0001 C CNN
+F 2 "FlightComputer_Library:R_0402_1005Metric_Pad0.72x0.64mm_HandSolder" V 3440 1640 50  0001 C CNN
 F 3 "~" H 3400 1650 50  0001 C CNN
 	1    3400 1650
 	0    -1   -1   0   
@@ -36,7 +36,7 @@ AR Path="/5F2A508D/5FD1EAE7" Ref="R?"  Part="1"
 AR Path="/5FD0B99E/5FD1EAE7" Ref="R158"  Part="1" 
 F 0 "R158" V 3450 1850 50  0000 L CNN
 F 1 "0R" V 3450 1550 50  0000 L CNN
-F 2 "Resistor_SMD:R_0402_1005Metric" V 3440 1740 50  0001 C CNN
+F 2 "FlightComputer_Library:R_0402_1005Metric_Pad0.72x0.64mm_HandSolder" V 3440 1740 50  0001 C CNN
 F 3 "~" H 3400 1750 50  0001 C CNN
 	1    3400 1750
 	0    -1   -1   0   
@@ -50,7 +50,7 @@ AR Path="/5F2A508D/5FD1EB1A" Ref="R?"  Part="1"
 AR Path="/5FD0B99E/5FD1EB1A" Ref="R166"  Part="1" 
 F 0 "R166" V 3450 2500 50  0000 L CNN
 F 1 "0R" V 3450 2200 50  0000 L CNN
-F 2 "Resistor_SMD:R_0402_1005Metric" V 3440 2390 50  0001 C CNN
+F 2 "FlightComputer_Library:R_0402_1005Metric_Pad0.72x0.64mm_HandSolder" V 3440 2390 50  0001 C CNN
 F 3 "~" H 3400 2400 50  0001 C CNN
 	1    3400 2400
 	0    -1   -1   0   
@@ -64,7 +64,7 @@ AR Path="/5F2A508D/5FD1EB4D" Ref="R?"  Part="1"
 AR Path="/5FD0B99E/5FD1EB4D" Ref="R159"  Part="1" 
 F 0 "R159" V 3450 1950 50  0000 L CNN
 F 1 "0R" V 3450 1650 50  0000 L CNN
-F 2 "Resistor_SMD:R_0402_1005Metric" V 3440 1840 50  0001 C CNN
+F 2 "FlightComputer_Library:R_0402_1005Metric_Pad0.72x0.64mm_HandSolder" V 3440 1840 50  0001 C CNN
 F 3 "~" H 3400 1850 50  0001 C CNN
 	1    3400 1850
 	0    -1   -1   0   
@@ -78,7 +78,7 @@ AR Path="/5F2A508D/5FD1EBB3" Ref="R?"  Part="1"
 AR Path="/5FD0B99E/5FD1EBB3" Ref="R160"  Part="1" 
 F 0 "R160" V 3450 2050 50  0000 L CNN
 F 1 "0R" V 3450 1750 50  0000 L CNN
-F 2 "Resistor_SMD:R_0402_1005Metric" V 3440 1940 50  0001 C CNN
+F 2 "FlightComputer_Library:R_0402_1005Metric_Pad0.72x0.64mm_HandSolder" V 3440 1940 50  0001 C CNN
 F 3 "~" H 3400 1950 50  0001 C CNN
 	1    3400 1950
 	0    -1   -1   0   
@@ -92,7 +92,7 @@ AR Path="/5F2A508D/5FD1EBE6" Ref="R?"  Part="1"
 AR Path="/5FD0B99E/5FD1EBE6" Ref="R168"  Part="1" 
 F 0 "R168" V 3450 2700 50  0000 L CNN
 F 1 "0R" V 3450 2400 50  0000 L CNN
-F 2 "Resistor_SMD:R_0402_1005Metric" V 3440 2590 50  0001 C CNN
+F 2 "FlightComputer_Library:R_0402_1005Metric_Pad0.72x0.64mm_HandSolder" V 3440 2590 50  0001 C CNN
 F 3 "~" H 3400 2600 50  0001 C CNN
 	1    3400 2600
 	0    -1   -1   0   
@@ -128,7 +128,7 @@ AR Path="/5F2A508D/5F77CA62" Ref="R?"  Part="1"
 AR Path="/5FD0B99E/5F77CA62" Ref="R173"  Part="1" 
 F 0 "R173" V 3450 2400 50  0000 L CNN
 F 1 "0R" V 3450 2100 50  0000 L CNN
-F 2 "Resistor_SMD:R_0402_1005Metric" V 3440 2290 50  0001 C CNN
+F 2 "FlightComputer_Library:R_0402_1005Metric_Pad0.72x0.64mm_HandSolder" V 3440 2290 50  0001 C CNN
 F 3 "~" H 3400 2300 50  0001 C CNN
 	1    3400 2300
 	0    -1   -1   0   
@@ -146,7 +146,7 @@ AR Path="/5F2A508D/5FD1EAB4" Ref="R?"  Part="1"
 AR Path="/5FD0B99E/5FD1EAB4" Ref="R165"  Part="1" 
 F 0 "R165" V 3450 2200 50  0000 L CNN
 F 1 "0R" V 3450 1900 50  0000 L CNN
-F 2 "Resistor_SMD:R_0402_1005Metric" V 3440 2090 50  0001 C CNN
+F 2 "FlightComputer_Library:R_0402_1005Metric_Pad0.72x0.64mm_HandSolder" V 3440 2090 50  0001 C CNN
 F 3 "~" H 3400 2100 50  0001 C CNN
 	1    3400 2100
 	0    -1   -1   0   
@@ -168,7 +168,7 @@ AR Path="/5F2A508D/5FD1EB80" Ref="R?"  Part="1"
 AR Path="/5FD0B99E/5FD1EB80" Ref="R167"  Part="1" 
 F 0 "R167" V 3450 2600 50  0000 L CNN
 F 1 "0R" V 3450 2300 50  0000 L CNN
-F 2 "Resistor_SMD:R_0402_1005Metric" V 3440 2490 50  0001 C CNN
+F 2 "FlightComputer_Library:R_0402_1005Metric_Pad0.72x0.64mm_HandSolder" V 3440 2490 50  0001 C CNN
 F 3 "~" H 3400 2500 50  0001 C CNN
 	1    3400 2500
 	0    -1   -1   0   
