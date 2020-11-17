@@ -2,6 +2,7 @@ Debug/
 .settings/
 /Test
 /bin
+/workspace
 
 *.bak
 *.o
