@@ -22,6 +22,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include <stdio.h>
 
 /* USER CODE END Includes */
 
@@ -73,7 +74,21 @@ static void MX_I2C2_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+int __io_putchar(int ch)
+{
+	ITM_SendChar(ch);
+	return(ch);
+}
 
+int _write(int file, char *ptr, int len)
+{
+	int DataIdx;
+	for (DataIdx = 0; DataIdx < len; DataIdx++)
+	{
+		__io_putchar( *ptr++ );
+	}
+	return len;
+}
 /* USER CODE END 0 */
 
 /**
@@ -124,6 +139,16 @@ int main(void)
   MX_I2C2_Init();
   /* USER CODE BEGIN 2 */
 
+  HAL_GPIO_WritePin(GPIOG, PWR_LED_Pin, GPIO_PIN_RESET);
+
+  HAL_Delay(100);
+  HAL_GPIO_WritePin(IMU1_nCS1_GPIO_Port, IMU1_nCS1_Pin, GPIO_PIN_RESET);
+  HAL_Delay(10);
+  uint8_t txd[2] = { 0xD0, 0x00 };
+  uint8_t rxd[2] = { 0x00, 0x00 };
+  HAL_SPI_TransmitReceive(&hspi4, txd, rxd, 2, 1000);
+  printf("%02X %02X", rxd[0], rxd[1]);
+  HAL_GPIO_WritePin(IMU1_nCS1_GPIO_Port, IMU1_nCS1_Pin, GPIO_PIN_SET);
   /* USER CODE END 2 */
 
   /* Infinite loop */

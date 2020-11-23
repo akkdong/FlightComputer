@@ -24,6 +24,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include <stdio.h>
 
 /* USER CODE END Includes */
 
@@ -97,7 +98,21 @@ static void SDRAM_Initialization_Sequence(SDRAM_HandleTypeDef *hsdram, FMC_SDRAM
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+int __io_putchar(int ch)
+{
+	ITM_SendChar(ch);
+	return(ch);
+}
 
+int _write(int file, char *ptr, int len)
+{
+	int DataIdx;
+	for (DataIdx = 0; DataIdx < len; DataIdx++)
+	{
+		__io_putchar( *ptr++ );
+	}
+	return len;
+}
 /* USER CODE END 0 */
 
 /**
@@ -153,11 +168,16 @@ Error_Handler();
 /* USER CODE END Boot_Mode_Sequence_2 */
 
   /* USER CODE BEGIN SysInit */
-
+  printf("Hello\n");
   /* USER CODE END SysInit */
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
+
+  HAL_GPIO_WritePin(PWR_EN_PERIPH_GPIO_Port, PWR_EN_PERIPH_Pin, GPIO_PIN_SET);
+  HAL_GPIO_WritePin(PWR_EN_BAT_GPIO_Port, PWR_EN_BAT_Pin, GPIO_PIN_SET);
+  HAL_Delay(100);
+
   MX_FMC_Init();
   MX_QUADSPI_Init();
   MX_SPI1_Init();
@@ -169,6 +189,13 @@ Error_Handler();
 
   /* Program the SDRAM external device */
   SDRAM_Initialization_Sequence(&hsdram1, &command);
+  HAL_Delay(100);
+
+  //volatile uint8_t* memPtr = (volatile uint8_t *)0xD0000000;
+  //volatile uint8_t* norPtr = (volatile uint8_t *)0x90000000;
+  //memPtr[0] = 0x01;
+  //printf("mem: %02X\n", memPtr[0]);
+  //printf("nor: %02X\n", norPtr[0]);
 
   /* USER CODE END 2 */
 
@@ -535,7 +562,8 @@ static void MX_GPIO_Init(void)
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOG, PWR_EN_BAT_Pin|PWR_EN_PERIPH_Pin|PMIC_VCOM_Pin|PMIC_WAKEUP_Pin
-                          |PMIC_PWRUP_Pin|PWR_LED_Pin, GPIO_PIN_RESET);
+                          |PMIC_PWRUP_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOG, PWR_LED_Pin, GPIO_PIN_SET);
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(PWR_EN_5V_GPIO_Port, PWR_EN_5V_Pin, GPIO_PIN_RESET);
