@@ -79,6 +79,14 @@ void Error_Handler(void);
 #define VARIO_RX_Pin GPIO_PIN_11
 #define VARIO_RX_GPIO_Port GPIOC
 /* USER CODE BEGIN Private defines */
+#define PWR_EN_5V_PORT GPIOB
+#define PWR_EN_5V_PIN GPIO_PIN_9
+#define PWR_EN_BAT_PORT GPIOG
+#define PWR_EN_BAT_PIN GPIO_PIN_3
+#define PWR_EN_PERIPH_PORT GPIOG
+#define PWR_EN_PERIPH_PIN GPIO_PIN_7
+#define PWR_LED_PORT GPIOG
+#define PWR_LED_PIN GPIO_PIN_14
 
 /* USER CODE END Private defines */
 

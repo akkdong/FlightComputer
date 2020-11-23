@@ -1,7 +1,7 @@
 /* USER CODE BEGIN Header */
 /**
   ******************************************************************************
-  * @file           : main.h
+  * @file           : main-cm7.h
   * @brief          : Header for main.c file.
   *                   This file contains the common defines of the application.
   ******************************************************************************
@@ -73,7 +73,14 @@ void Error_Handler(void);
 #define DEBUG_RX_Pin GPIO_PIN_10
 #define DEBUG_RX_GPIO_Port GPIOA
 /* USER CODE BEGIN Private defines */
-
+#define PWR_EN_5V_PORT GPIOB
+#define PWR_EN_5V_PIN GPIO_PIN_9
+#define PWR_EN_BAT_PORT GPIOG
+#define PWR_EN_BAT_PIN GPIO_PIN_3
+#define PWR_EN_PERIPH_PORT GPIOG
+#define PWR_EN_PERIPH_PIN GPIO_PIN_7
+#define PWR_LED_PORT GPIOG
+#define PWR_LED_PIN GPIO_PIN_14
 /* USER CODE END Private defines */
 
 #ifdef __cplusplus
