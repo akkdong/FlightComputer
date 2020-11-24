@@ -192,7 +192,8 @@ void HAL_QSPI_MspInit(QSPI_HandleTypeDef* hqspi)
     HAL_GPIO_Init(GPIOG, &GPIO_InitStruct);
 
   /* USER CODE BEGIN QUADSPI_MspInit 1 */
-
+    HAL_NVIC_SetPriority(QUADSPI_IRQn, 0x0F, 0);
+    HAL_NVIC_EnableIRQ(QUADSPI_IRQn);
   /* USER CODE END QUADSPI_MspInit 1 */
   }
 
@@ -209,7 +210,7 @@ void HAL_QSPI_MspDeInit(QSPI_HandleTypeDef* hqspi)
   if(hqspi->Instance==QUADSPI)
   {
   /* USER CODE BEGIN QUADSPI_MspDeInit 0 */
-
+	  HAL_NVIC_DisableIRQ(QUADSPI_IRQn);
   /* USER CODE END QUADSPI_MspDeInit 0 */
     /* Peripheral clock disable */
     __HAL_RCC_QSPI_CLK_DISABLE();

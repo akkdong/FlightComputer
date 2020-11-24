@@ -47,8 +47,8 @@
 
 #define BUFFER_SIZE         ((uint32_t)0x0100)
 #define WRITE_READ_ADDR     ((uint32_t)0x0800)
-#define REFRESH_COUNT       ((uint32_t)0x056A)   /* SDRAM refresh counter (90MHz SDRAM clock) */
-
+//#define REFRESH_COUNT       ((uint32_t)0x056A)   /* SDRAM refresh counter (90MHz SDRAM clock) */
+#define REFRESH_COUNT ((uint32_t)0x0603)/* SDRAM refresh counter (100Mhz SD clock) */
 
 #define SDRAM_MODEREG_BURST_LENGTH_1             ((uint16_t)0x0000)
 #define SDRAM_MODEREG_BURST_LENGTH_2             ((uint16_t)0x0001)
@@ -61,6 +61,11 @@
 #define SDRAM_MODEREG_OPERATING_MODE_STANDARD    ((uint16_t)0x0000)
 #define SDRAM_MODEREG_WRITEBURST_MODE_PROGRAMMED ((uint16_t)0x0000)
 #define SDRAM_MODEREG_WRITEBURST_MODE_SINGLE     ((uint16_t)0x0200)
+
+
+#define TEST_SDRAM 0
+#define TEST_QSPI 1
+
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -72,7 +77,7 @@
 
 I2C_HandleTypeDef hi2c1;
 
-QSPI_HandleTypeDef hqspi;
+QSPI_HandleTypeDef hqspi1;
 
 SPI_HandleTypeDef hspi1;
 
@@ -82,6 +87,9 @@ SDRAM_HandleTypeDef hsdram1;
 
 /* USER CODE BEGIN PV */
 FMC_SDRAM_CommandTypeDef command;
+
+__IO uint8_t CmdCplt, RxCplt, TxCplt, StatusMatch;
+uint8_t aTxBuffer[] = " ****Memory-mapped QSPI communication****  ****Memory-mapped QSPI communication****  ****Memory-mapped QSPI communication****  ****Memory-mapped QSPI communication****  ****Memory-mapped QSPI communication****  ****Memory-mapped QSPI communication**** ";
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -94,13 +102,21 @@ static void MX_USART1_UART_Init(void);
 static void MX_I2C1_Init(void);
 /* USER CODE BEGIN PFP */
 static void SDRAM_Initialization_Sequence(SDRAM_HandleTypeDef *hsdram, FMC_SDRAM_CommandTypeDef *Command);
+
+static void QSPI_WriteEnable(QSPI_HandleTypeDef *hqspi);
+static void QSPI_AutoPollingMemReady(QSPI_HandleTypeDef *hqspi);
+static void QSPI_DummyCyclesCfg(QSPI_HandleTypeDef *hqspi);
+static void QSPI_EnterFourBytesAddress(QSPI_HandleTypeDef *hqspi);
+
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
 int __io_putchar(int ch)
 {
-	ITM_SendChar(ch);
+	//ITM_SendChar(ch);
+	uint8_t data = (uint8_t)ch;
+	HAL_UART_Transmit(&huart1, &data, 1, 1000);
 	return(ch);
 }
 
@@ -168,7 +184,6 @@ Error_Handler();
 /* USER CODE END Boot_Mode_Sequence_2 */
 
   /* USER CODE BEGIN SysInit */
-  printf("Hello\n");
   /* USER CODE END SysInit */
 
   /* Initialize all configured peripherals */
@@ -186,26 +201,248 @@ Error_Handler();
   MX_I2C1_Init();
   MX_FATFS_Init();
   /* USER CODE BEGIN 2 */
+  printf("FC_HwTest...\n");
 
   /* Program the SDRAM external device */
   SDRAM_Initialization_Sequence(&hsdram1, &command);
   HAL_Delay(100);
 
-  //volatile uint8_t* memPtr = (volatile uint8_t *)0xD0000000;
+#if TEST_SDRAM
+  volatile uint8_t* memPtr = (volatile uint8_t *)0xD0000000;
+  printf("Test SDRAM ====\n");
+  volatile uint8_t* tmpPtr = memPtr;
+  uint32_t data = 0x55;
+  {
+	  uint32_t tickStart = HAL_GetTick();
+	  for(uint32_t i = 0; i < 32 * 1024 * 1024; i++)
+		  *tmpPtr++ = data;
+	  printf("Clear All: elapsed %d msec\n", HAL_GetTick() - tickStart);
+  }
+
+  printf("Write Data ");
+  tmpPtr = memPtr;
+  data = 0x55;
+  for(uint32_t i = 0; i < 32 * 1024 * 1024; i++)
+  {
+	  if ((i % (1024 * 1024)) == 0)
+		  printf(".");
+	  *tmpPtr++ = data++;
+  }
+
+  printf("\nCompare Data ");
+  tmpPtr = memPtr;
+  data = 0x55;
+  uint8_t memOk = 1;
+  for(uint32_t i = 0; i < 32 * 1024 * 1024; i++)
+  {
+	  if ((i % (1024 * 1024)) == 0)
+		  printf(".");
+
+	  uint8_t a = *tmpPtr;
+	  uint8_t b = data;
+	  if (a != b)
+	  {
+		  printf("\nMemory corrupt at %08X: %02X, %02X\n", (unsigned int)i, a, b);
+		  memOk = 0;
+		  break;
+	  }
+	  tmpPtr++;
+	  data++;
+  }
+  if (memOk)
+	  printf("\nMemory compare passed!!\n");
+#endif
+
+
   //volatile uint8_t* norPtr = (volatile uint8_t *)0x90000000;
-  //memPtr[0] = 0x01;
-  //printf("mem: %02X\n", memPtr[0]);
   //printf("nor: %02X\n", norPtr[0]);
 
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
+  uint32_t lastTick = HAL_GetTick();
+
+#if TEST_QSPI
+  QSPI_CommandTypeDef sCommand;
+  QSPI_MemoryMappedTypeDef sMemMappedCfg;
+  uint32_t address = 0;
+  uint16_t index;
+  volatile uint8_t* qspi_addr = (volatile uint8_t*)(0x9000000);
+  volatile uint8_t step = 0;
+
+  sCommand.InstructionMode   = QSPI_INSTRUCTION_1_LINE;
+  sCommand.AddressSize       = QSPI_ADDRESS_32_BITS;
+  sCommand.AlternateByteMode = QSPI_ALTERNATE_BYTES_NONE;
+  sCommand.DdrMode           = QSPI_DDR_MODE_DISABLE;
+  sCommand.DdrHoldHalfCycle  = QSPI_DDR_HHC_ANALOG_DELAY;
+  sCommand.SIOOMode          = QSPI_SIOO_INST_EVERY_CMD;
+#endif
+
   while (1)
   {
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
+	if (HAL_GetTick() - lastTick > 1000)
+	{
+		  HAL_GPIO_TogglePin(PWR_LED_GPIO_Port, PWR_LED_Pin);
+		  lastTick = HAL_GetTick();
+	}
+
+	//
+	switch(step)
+	{
+	  case 0:
+		  if (HAL_GPIO_ReadPin(KEY_FUNC1_GPIO_Port, KEY_FUNC1_Pin) == GPIO_PIN_RESET)
+			  break;
+
+		CmdCplt = 0;
+
+		/* Initialize QuadSPI ------------------------------------------------ */
+		printf("Initialize QuadSPI\n");
+		HAL_QSPI_DeInit(&hqspi1);
+		if (HAL_QSPI_Init(&hqspi1) != HAL_OK)
+		{
+		  Error_Handler();
+		}
+
+		/* Enable 4 bytes Address mode */
+		printf("Enable 4 bytes Address mode\n");
+		QSPI_EnterFourBytesAddress(&hqspi1);
+
+		HAL_Delay(10);
+		/* Enable write operations ------------------------------------------- */
+		printf("Enable write operations\n");
+		QSPI_WriteEnable(&hqspi1);
+
+		/* Erasing Sequence -------------------------------------------------- */
+		sCommand.Instruction = SECTOR_ERASE_CMD;
+		sCommand.AddressMode = QSPI_ADDRESS_1_LINE;
+		sCommand.Address     = address;
+		sCommand.DataMode    = QSPI_DATA_NONE;
+		sCommand.DummyCycles = 0;
+
+		printf("Erasing Sequence : %u\n", address);
+		if (HAL_QSPI_Command_IT(&hqspi1, &sCommand) != HAL_OK)
+		{
+		  Error_Handler();
+		}
+
+		step++;
+		break;
+
+	  case 1:
+		if(CmdCplt != 0)
+		{
+		  CmdCplt = 0;
+		  StatusMatch = 0;
+
+		  /* Configure automatic polling mode to wait for end of erase ------- */
+		  printf("Configure automatic polling mode to wait for end of erase\n");
+		  QSPI_AutoPollingMemReady(&hqspi1);
+
+		  step++;
+		}
+		break;
+
+	  case 2:
+		if(StatusMatch != 0)
+		{
+		  StatusMatch = 0;
+		  TxCplt = 0;
+
+		  /* Enable write operations ----------------------------------------- */
+		  printf("Enable write operations\n");
+		  QSPI_WriteEnable(&hqspi1);
+
+		  /* Writing Sequence ------------------------------------------------ */
+		  sCommand.Instruction = QUAD_IN_FAST_PROG_CMD;
+		  sCommand.AddressMode = QSPI_ADDRESS_1_LINE;
+		  sCommand.DataMode    = QSPI_DATA_4_LINES;
+		  sCommand.NbData      = BUFFERSIZE;
+
+		  printf("Writing Sequence\n");
+		  if (HAL_QSPI_Command(&hqspi1, &sCommand, HAL_QPSI_TIMEOUT_DEFAULT_VALUE) != HAL_OK)
+		  {
+			Error_Handler();
+		  }
+
+		  printf(" --> Transmit\n");
+		  if (HAL_QSPI_Transmit_IT(&hqspi1, aTxBuffer) != HAL_OK)
+		  {
+			Error_Handler();
+		  }
+
+		  step++;
+		}
+		break;
+
+	  case 3:
+		if(TxCplt != 0)
+		{
+		  TxCplt = 0;
+		  StatusMatch = 0;
+
+		  /* Configure automatic polling mode to wait for end of program ----- */
+		  printf("Configure automatic polling mode to wait for end of program\n");
+		  QSPI_AutoPollingMemReady(&hqspi1);
+
+		  step++;
+		}
+		break;
+
+	  case 4:
+		if(StatusMatch != 0)
+		{
+		  StatusMatch = 0;
+		  RxCplt = 0;
+
+		  /* Configure Volatile Configuration register (with new dummy cycles) */
+		  printf("Configure Volatile Configuration register (with new dummy cycles)\n");
+		  QSPI_DummyCyclesCfg(&hqspi1);
+
+		  /* Reading Sequence ------------------------------------------------ */
+		  sCommand.Instruction = QUAD_OUT_FAST_READ_CMD;
+		  sCommand.DummyCycles = DUMMY_CLOCK_CYCLES_READ_QUAD;
+
+		  sMemMappedCfg.TimeOutActivation = QSPI_TIMEOUT_COUNTER_DISABLE;
+
+		  printf("Configure memory mapped\n");
+		  if (HAL_QSPI_MemoryMapped(&hqspi1, &sCommand, &sMemMappedCfg) != HAL_OK)
+		  {
+			Error_Handler();
+		  }
+
+		  printf("Reading Sequence\n");
+		  for (index = 0; index < BUFFERSIZE; index++)
+		  {
+			if (*qspi_addr != aTxBuffer[index])
+			{
+			  printf(" --> Mismatch at %d\n", index);
+			  Error_Handler();
+			}
+			qspi_addr++;
+		  }
+		  printf(" --> OK\n");
+
+		  address += QSPI_PAGE_SIZE;
+		  if(address >= QSPI_END_ADDR)
+		  {
+			address = 0;
+		  }
+		  qspi_addr = (__IO uint8_t *)(0x90000000 + address);
+
+		  step = 0;
+		}
+		break;
+
+	  default :
+		Error_Handler();
+	}
+
+#if TEST_QSPI
+#endif
   }
   /* USER CODE END 3 */
 }
@@ -364,16 +601,16 @@ static void MX_QUADSPI_Init(void)
 
   /* USER CODE END QUADSPI_Init 1 */
   /* QUADSPI parameter configuration*/
-  hqspi.Instance = QUADSPI;
-  hqspi.Init.ClockPrescaler = 255;
-  hqspi.Init.FifoThreshold = 1;
-  hqspi.Init.SampleShifting = QSPI_SAMPLE_SHIFTING_NONE;
-  hqspi.Init.FlashSize = 1;
-  hqspi.Init.ChipSelectHighTime = QSPI_CS_HIGH_TIME_1_CYCLE;
-  hqspi.Init.ClockMode = QSPI_CLOCK_MODE_0;
-  hqspi.Init.FlashID = QSPI_FLASH_ID_1;
-  hqspi.Init.DualFlash = QSPI_DUALFLASH_DISABLE;
-  if (HAL_QSPI_Init(&hqspi) != HAL_OK)
+  hqspi1.Instance = QUADSPI;
+  hqspi1.Init.ClockPrescaler = 5; // 240MHz / (prescaler + 1) = 40
+  hqspi1.Init.FifoThreshold = 4;
+  hqspi1.Init.SampleShifting = QSPI_SAMPLE_SHIFTING_HALFCYCLE; // QSPI_SAMPLE_SHIFTING_NONE, QSPI_SAMPLE_SHIFTING_HALFCYCLE
+  hqspi1.Init.FlashSize = 25; // 64MB = 2 ^ 26 = 2 ^ (FlashSize + 1)
+  hqspi1.Init.ChipSelectHighTime = QSPI_CS_HIGH_TIME_2_CYCLE; //
+  hqspi1.Init.ClockMode = QSPI_CLOCK_MODE_0;
+  hqspi1.Init.FlashID = QSPI_FLASH_ID_1;
+  hqspi1.Init.DualFlash = QSPI_DUALFLASH_DISABLE;
+  if (HAL_QSPI_Init(&hqspi1) != HAL_OK)
   {
     Error_Handler();
   }
@@ -497,23 +734,23 @@ void MX_FMC_Init(void)
   hsdram1.Instance = FMC_SDRAM_DEVICE;
   /* hsdram1.Init */
   hsdram1.Init.SDBank = FMC_SDRAM_BANK2;
-  hsdram1.Init.ColumnBitsNumber = FMC_SDRAM_COLUMN_BITS_NUM_8;
+  hsdram1.Init.ColumnBitsNumber = FMC_SDRAM_COLUMN_BITS_NUM_9; // FMC_SDRAM_COLUMN_BITS_NUM_8;
   hsdram1.Init.RowBitsNumber = FMC_SDRAM_ROW_BITS_NUM_13;
   hsdram1.Init.MemoryDataWidth = FMC_SDRAM_MEM_BUS_WIDTH_16;
   hsdram1.Init.InternalBankNumber = FMC_SDRAM_INTERN_BANKS_NUM_4;
-  hsdram1.Init.CASLatency = FMC_SDRAM_CAS_LATENCY_3; // FMC_SDRAM_CAS_LATENCY_1: 240MHz / 1, 2, 3
+  hsdram1.Init.CASLatency = FMC_SDRAM_CAS_LATENCY_3; // FMC_SDRAM_CAS_LATENCY_1, FMC_SDRAM_CAS_LATENCY_2, FMC_SDRAM_CAS_LATENCY_3
   hsdram1.Init.WriteProtection = FMC_SDRAM_WRITE_PROTECTION_DISABLE;
-  hsdram1.Init.SDClockPeriod = FMC_SDRAM_CLOCK_PERIOD_2; // FMC_SDRAM_CLOCK_DISABLE;
-  hsdram1.Init.ReadBurst = FMC_SDRAM_RBURST_DISABLE;
-  hsdram1.Init.ReadPipeDelay = FMC_SDRAM_RPIPE_DELAY_2; // FMC_SDRAM_RPIPE_DELAY_0;
+  hsdram1.Init.SDClockPeriod = FMC_SDRAM_CLOCK_PERIOD_2; // FMC_SDRAM_CLOCK_DISABLE, FMC_SDRAM_CLOCK_PERIOD_2, FMC_SDRAM_CLOCK_PERIOD_3
+  hsdram1.Init.ReadBurst = FMC_SDRAM_RBURST_ENABLE; // FMC_SDRAM_RBURST_DISABLE, FMC_SDRAM_RBURST_ENABLE
+  hsdram1.Init.ReadPipeDelay = FMC_SDRAM_RPIPE_DELAY_1; // FMC_SDRAM_RPIPE_DELAY_0, FMC_SDRAM_RPIPE_DELAY_1, FMC_SDRAM_RPIPE_DELAY_2
   /* SdramTiming */
-  SdramTiming.LoadToActiveDelay = 16;
-  SdramTiming.ExitSelfRefreshDelay = 16;
-  SdramTiming.SelfRefreshTime = 16;
-  SdramTiming.RowCycleDelay = 16;
-  SdramTiming.WriteRecoveryTime = 16;
-  SdramTiming.RPDelay = 16;
-  SdramTiming.RCDDelay = 16;
+  SdramTiming.LoadToActiveDelay = 2; // 2
+  SdramTiming.ExitSelfRefreshDelay = 7; // 7
+  SdramTiming.SelfRefreshTime = 4; // 4
+  SdramTiming.RowCycleDelay = 7; // 7
+  SdramTiming.WriteRecoveryTime = 4; // 2
+  SdramTiming.RPDelay = 2; // 2
+  SdramTiming.RCDDelay = 2; // 2
 
   if (HAL_SDRAM_Init(&hsdram1, &SdramTiming) != HAL_OK)
   {
@@ -700,6 +937,219 @@ static void SDRAM_Initialization_Sequence(SDRAM_HandleTypeDef *hsdram, FMC_SDRAM
   /* Set the device refresh counter */
   HAL_SDRAM_ProgramRefreshRate(hsdram, REFRESH_COUNT);
 }
+
+
+
+/**
+  * @brief  Command completed callbacks.
+  * @param  hqspi: QSPI handle
+  * @retval None
+  */
+void HAL_QSPI_CmdCpltCallback(QSPI_HandleTypeDef *hqspi)
+{
+  CmdCplt++;
+}
+
+/**
+  * @brief  Rx Transfer completed callbacks.
+  * @param  hqspi: QSPI handle
+  * @retval None
+  */
+void HAL_QSPI_RxCpltCallback(QSPI_HandleTypeDef *hqspi)
+{
+  RxCplt++;
+}
+
+/**
+  * @brief  Tx Transfer completed callbacks.
+  * @param  hqspi: QSPI handle
+  * @retval None
+  */
+void HAL_QSPI_TxCpltCallback(QSPI_HandleTypeDef *hqspi)
+{
+  TxCplt++;
+}
+
+/**
+  * @brief  Status Match callbacks
+  * @param  hqspi: QSPI handle
+  * @retval None
+  */
+void HAL_QSPI_StatusMatchCallback(QSPI_HandleTypeDef *hqspi)
+{
+  StatusMatch++;
+}
+
+
+/**
+  * @brief  This function send a Write Enable and wait it is effective.
+  * @param  hqspi: QSPI handle
+  * @retval None
+  */
+static void QSPI_WriteEnable(QSPI_HandleTypeDef *hqspi)
+{
+  QSPI_CommandTypeDef     s_command;
+  QSPI_AutoPollingTypeDef s_config;
+
+  /* Enable write operations */
+  s_command.InstructionMode   = QSPI_INSTRUCTION_1_LINE;
+  s_command.Instruction       = WRITE_ENABLE_CMD;
+  s_command.AddressMode       = QSPI_ADDRESS_NONE;
+  s_command.AlternateByteMode = QSPI_ALTERNATE_BYTES_NONE;
+  s_command.DataMode          = QSPI_DATA_NONE;
+  s_command.DummyCycles       = 0;
+  s_command.DdrMode           = QSPI_DDR_MODE_DISABLE;
+  s_command.DdrHoldHalfCycle  = QSPI_DDR_HHC_ANALOG_DELAY;
+  s_command.SIOOMode          = QSPI_SIOO_INST_EVERY_CMD;
+
+  if (HAL_QSPI_Command(hqspi, &s_command, HAL_QPSI_TIMEOUT_DEFAULT_VALUE) != HAL_OK)
+  {
+    Error_Handler();
+  }
+
+  /* Configure automatic polling mode to wait for write enabling */
+  s_config.Match           = 0x0202;
+  s_config.Mask            = 0x0202;
+  s_config.MatchMode       = QSPI_MATCH_MODE_AND;
+  s_config.StatusBytesSize = 2;
+  s_config.Interval        = 0x10;
+  s_config.AutomaticStop   = QSPI_AUTOMATIC_STOP_ENABLE;
+
+  s_command.Instruction    = READ_STATUS_REG_CMD;
+  s_command.DataMode       = QSPI_DATA_1_LINE;
+
+  if (HAL_QSPI_AutoPolling(hqspi, &s_command, &s_config, HAL_QPSI_TIMEOUT_DEFAULT_VALUE) != HAL_OK)
+  {
+    Error_Handler();
+  }
+
+}
+
+/**
+  * @brief  This function read the SR of the memory and wait the EOP.
+  * @param  hqspi: QSPI handle
+  * @retval None
+  */
+static void QSPI_AutoPollingMemReady(QSPI_HandleTypeDef *hqspi)
+{
+  QSPI_CommandTypeDef     sCommand;
+  QSPI_AutoPollingTypeDef sConfig;
+
+  /* Configure automatic polling mode to wait for memory ready ------ */
+  sCommand.InstructionMode   = QSPI_INSTRUCTION_1_LINE;
+  sCommand.Instruction       = READ_STATUS_REG_CMD;
+  sCommand.AddressMode       = QSPI_ADDRESS_NONE;
+  sCommand.AlternateByteMode = QSPI_ALTERNATE_BYTES_NONE;
+  sCommand.DataMode          = QSPI_DATA_1_LINE;
+  sCommand.DummyCycles       = 0;
+  sCommand.DdrMode           = QSPI_DDR_MODE_DISABLE;
+  sCommand.DdrHoldHalfCycle  = QSPI_DDR_HHC_ANALOG_DELAY;
+  sCommand.SIOOMode          = QSPI_SIOO_INST_EVERY_CMD;
+
+  sConfig.Match           = 0x00;
+  sConfig.Mask            = 0x0101;
+  sConfig.MatchMode       = QSPI_MATCH_MODE_AND;
+  sConfig.StatusBytesSize = 2;
+  sConfig.Interval        = 0x10;
+  sConfig.AutomaticStop   = QSPI_AUTOMATIC_STOP_ENABLE;
+
+  if (HAL_QSPI_AutoPolling_IT(hqspi, &sCommand, &sConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+}
+
+/**
+  * @brief  This function configure the dummy cycles on memory side.
+  * @param  hqspi: QSPI handle
+  * @retval None
+  */
+static void QSPI_DummyCyclesCfg(QSPI_HandleTypeDef *hqspi)
+{
+  QSPI_CommandTypeDef s_command;
+  uint16_t reg=0;
+
+  /* Initialize the read volatile configuration register command */
+  s_command.InstructionMode   = QSPI_INSTRUCTION_1_LINE;
+  s_command.Instruction       = READ_VOL_CFG_REG_CMD;
+  s_command.AddressMode       = QSPI_ADDRESS_NONE;
+  s_command.AlternateByteMode = QSPI_ALTERNATE_BYTES_NONE;
+  s_command.DataMode          = QSPI_DATA_1_LINE;
+  s_command.DummyCycles       = 0;
+  s_command.NbData            = 2;
+  s_command.DdrMode           = QSPI_DDR_MODE_DISABLE;
+  s_command.DdrHoldHalfCycle  = QSPI_DDR_HHC_ANALOG_DELAY;
+  s_command.SIOOMode          = QSPI_SIOO_INST_EVERY_CMD;
+
+  /* Configure the command */
+  if (HAL_QSPI_Command(hqspi, &s_command, HAL_QPSI_TIMEOUT_DEFAULT_VALUE) != HAL_OK)
+  {
+    Error_Handler();
+  }
+
+  /* Reception of the data */
+  if (HAL_QSPI_Receive(hqspi, (uint8_t *)(&reg), HAL_QPSI_TIMEOUT_DEFAULT_VALUE) != HAL_OK)
+  {
+    Error_Handler();
+  }
+
+  /* Enable write operations */
+  QSPI_WriteEnable(hqspi);
+
+  /* Update volatile configuration register (with new dummy cycles) */
+  s_command.Instruction = WRITE_VOL_CFG_REG_CMD;
+  MODIFY_REG(reg, 0xF0F0, ((DUMMY_CLOCK_CYCLES_READ_QUAD << 4) |
+                           (DUMMY_CLOCK_CYCLES_READ_QUAD << 12)));
+
+  /* Configure the write volatile configuration register command */
+  if (HAL_QSPI_Command(hqspi, &s_command, HAL_QPSI_TIMEOUT_DEFAULT_VALUE) != HAL_OK)
+  {
+    Error_Handler();
+  }
+
+  /* Transmission of the data */
+  if (HAL_QSPI_Transmit(hqspi, (uint8_t *)(&reg), HAL_QPSI_TIMEOUT_DEFAULT_VALUE) != HAL_OK)
+  {
+    Error_Handler();
+  }
+
+}
+
+/**
+  * @brief  This function set the QSPI memory in 4-byte address mode
+  * @param  hqspi: QSPI handle
+  * @retval None
+  */
+static void QSPI_EnterFourBytesAddress(QSPI_HandleTypeDef *hqspi)
+{
+  QSPI_CommandTypeDef s_command;
+
+  /* Initialize the command */
+  s_command.InstructionMode   = QSPI_INSTRUCTION_1_LINE;
+  s_command.Instruction       = ENTER_4_BYTE_ADDR_MODE_CMD;
+  s_command.AddressMode       = QSPI_ADDRESS_NONE;
+  s_command.AlternateByteMode = QSPI_ALTERNATE_BYTES_NONE;
+  s_command.DataMode          = QSPI_DATA_NONE;
+  s_command.DummyCycles       = 0;
+  s_command.DdrMode           = QSPI_DDR_MODE_DISABLE;
+  s_command.DdrHoldHalfCycle  = QSPI_DDR_HHC_ANALOG_DELAY;
+  s_command.SIOOMode          = QSPI_SIOO_INST_EVERY_CMD;
+
+  /* Enable write operations */
+  QSPI_WriteEnable(hqspi);
+
+  /* Send the command */
+  if (HAL_QSPI_Command(hqspi, &s_command, HAL_QPSI_TIMEOUT_DEFAULT_VALUE) != HAL_OK)
+  {
+    Error_Handler();
+  }
+
+  /* Configure automatic polling mode to wait the memory is ready */
+  QSPI_AutoPollingMemReady(hqspi);
+
+}
+
+
 /* USER CODE END 4 */
 
 /**
@@ -710,7 +1160,8 @@ void Error_Handler(void)
 {
   /* USER CODE BEGIN Error_Handler_Debug */
   /* User can add his own implementation to report the HAL error return state */
-
+	printf("!!!! ERROR !!!!\n");
+	//while(1);
   /* USER CODE END Error_Handler_Debug */
 }
 

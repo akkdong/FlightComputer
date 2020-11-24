@@ -60,7 +60,7 @@ extern PCD_HandleTypeDef hpcd_USB_OTG_FS;
 extern PCD_HandleTypeDef hpcd_USB_OTG_HS;
 extern SPI_HandleTypeDef hspi1;
 /* USER CODE BEGIN EV */
-
+extern QSPI_HandleTypeDef hqspi1;
 /* USER CODE END EV */
 
 /******************************************************************************/
@@ -242,6 +242,17 @@ void OTG_FS_IRQHandler(void)
 }
 
 /* USER CODE BEGIN 1 */
+
+/**
+  * @brief  This function handles QUADSPI interrupt request.
+  * @param  None
+  * @retval None
+  */
+void QUADSPI_IRQHandler(void)
+{
+  HAL_QSPI_IRQHandler(&hqspi1);
+}
+
 
 /* USER CODE END 1 */
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
