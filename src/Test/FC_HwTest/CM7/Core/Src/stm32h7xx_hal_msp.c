@@ -159,6 +159,8 @@ void HAL_QSPI_MspInit(QSPI_HandleTypeDef* hqspi)
   /* USER CODE END QUADSPI_MspInit 0 */
     /* Peripheral clock enable */
     __HAL_RCC_QSPI_CLK_ENABLE();
+	__HAL_RCC_QSPI_FORCE_RESET();
+	__HAL_RCC_QSPI_RELEASE_RESET();
 
     __HAL_RCC_GPIOF_CLK_ENABLE();
     __HAL_RCC_GPIOG_CLK_ENABLE();
@@ -173,21 +175,21 @@ void HAL_QSPI_MspInit(QSPI_HandleTypeDef* hqspi)
     GPIO_InitStruct.Pin = GPIO_PIN_6|GPIO_PIN_7|GPIO_PIN_10;
     GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
     GPIO_InitStruct.Pull = GPIO_NOPULL;
-    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
     GPIO_InitStruct.Alternate = GPIO_AF9_QUADSPI;
     HAL_GPIO_Init(GPIOF, &GPIO_InitStruct);
 
     GPIO_InitStruct.Pin = GPIO_PIN_8|GPIO_PIN_9;
     GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
     GPIO_InitStruct.Pull = GPIO_NOPULL;
-    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
     GPIO_InitStruct.Alternate = GPIO_AF10_QUADSPI;
     HAL_GPIO_Init(GPIOF, &GPIO_InitStruct);
 
     GPIO_InitStruct.Pin = GPIO_PIN_6;
     GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
     GPIO_InitStruct.Pull = GPIO_NOPULL;
-    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
     GPIO_InitStruct.Alternate = GPIO_AF10_QUADSPI;
     HAL_GPIO_Init(GPIOG, &GPIO_InitStruct);
 
@@ -229,7 +231,6 @@ void HAL_QSPI_MspDeInit(QSPI_HandleTypeDef* hqspi)
     HAL_GPIO_DeInit(GPIOG, GPIO_PIN_6);
 
   /* USER CODE BEGIN QUADSPI_MspDeInit 1 */
-
   /* USER CODE END QUADSPI_MspDeInit 1 */
   }
 
@@ -273,7 +274,31 @@ void HAL_SPI_MspInit(SPI_HandleTypeDef* hspi)
 
   /* USER CODE END SPI1_MspInit 1 */
   }
+  else if(hspi->Instance==SPI4)
+  {
+  /* USER CODE BEGIN SPI4_MspInit 0 */
 
+  /* USER CODE END SPI4_MspInit 0 */
+    /* Peripheral clock enable */
+    __HAL_RCC_SPI4_CLK_ENABLE();
+
+    __HAL_RCC_GPIOE_CLK_ENABLE();
+    /**SPI4 GPIO Configuration
+    PE2     ------> SPI4_SCK
+    PE5     ------> SPI4_MISO
+    PE6     ------> SPI4_MOSI
+    */
+    GPIO_InitStruct.Pin = IMU1_SCLK_Pin|IMU1_MISO_Pin|IMU1_MOSI_Pin;
+    GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+    GPIO_InitStruct.Pull = GPIO_NOPULL;
+    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+    GPIO_InitStruct.Alternate = GPIO_AF5_SPI4;
+    HAL_GPIO_Init(GPIOE, &GPIO_InitStruct);
+
+  /* USER CODE BEGIN SPI4_MspInit 1 */
+
+  /* USER CODE END SPI4_MspInit 1 */
+  }
 }
 
 /**
@@ -342,7 +367,54 @@ void HAL_UART_MspInit(UART_HandleTypeDef* huart)
 
   /* USER CODE END USART1_MspInit 1 */
   }
+  else if(huart->Instance==USART2)
+    {
+    /* USER CODE BEGIN USART2_MspInit 0 */
 
+    /* USER CODE END USART2_MspInit 0 */
+      /* Peripheral clock enable */
+      __HAL_RCC_USART2_CLK_ENABLE();
+
+      __HAL_RCC_GPIOA_CLK_ENABLE();
+      /**USART2 GPIO Configuration
+      PA2     ------> USART2_TX
+      PA3     ------> USART2_RX
+      */
+      GPIO_InitStruct.Pin = GPS_TX_Pin|GPS_RX_Pin;
+      GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+      GPIO_InitStruct.Pull = GPIO_NOPULL;
+      GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+      GPIO_InitStruct.Alternate = GPIO_AF7_USART2;
+      HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+
+    /* USER CODE BEGIN USART2_MspInit 1 */
+
+    /* USER CODE END USART2_MspInit 1 */
+    }
+    else if(huart->Instance==USART3)
+    {
+    /* USER CODE BEGIN USART3_MspInit 0 */
+
+    /* USER CODE END USART3_MspInit 0 */
+      /* Peripheral clock enable */
+      __HAL_RCC_USART3_CLK_ENABLE();
+
+      __HAL_RCC_GPIOC_CLK_ENABLE();
+      /**USART3 GPIO Configuration
+      PC10     ------> USART3_TX
+      PC11     ------> USART3_RX
+      */
+      GPIO_InitStruct.Pin = VARIO_TX_Pin|VARIO_RX_Pin;
+      GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+      GPIO_InitStruct.Pull = GPIO_NOPULL;
+      GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+      GPIO_InitStruct.Alternate = GPIO_AF7_USART3;
+      HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
+
+    /* USER CODE BEGIN USART3_MspInit 1 */
+
+    /* USER CODE END USART3_MspInit 1 */
+    }
 }
 
 /**

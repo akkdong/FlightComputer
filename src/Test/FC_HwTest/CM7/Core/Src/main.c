@@ -25,7 +25,9 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include <stdio.h>
-
+#include "TPS65186.h"
+#include "MPU9250.h"
+#include "bmp280_port.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -63,8 +65,12 @@
 #define SDRAM_MODEREG_WRITEBURST_MODE_SINGLE     ((uint16_t)0x0200)
 
 
-#define TEST_SDRAM 0
-#define TEST_QSPI 1
+#define TEST_SDRAM 		0
+#define TEST_QSPI 		1
+#define TEST_PMIC 		0
+#define TEST_MPU9250 	0
+#define TEST_BMP280 	0
+#define TEST_GPS		0
 
 /* USER CODE END PD */
 
@@ -80,8 +86,11 @@ I2C_HandleTypeDef hi2c1;
 QSPI_HandleTypeDef hqspi1;
 
 SPI_HandleTypeDef hspi1;
+SPI_HandleTypeDef hspi4;
 
 UART_HandleTypeDef huart1;
+UART_HandleTypeDef huart2;
+UART_HandleTypeDef huart3;
 
 SDRAM_HandleTypeDef hsdram1;
 
@@ -90,6 +99,15 @@ FMC_SDRAM_CommandTypeDef command;
 
 __IO uint8_t CmdCplt, RxCplt, TxCplt, StatusMatch;
 uint8_t aTxBuffer[] = " ****Memory-mapped QSPI communication****  ****Memory-mapped QSPI communication****  ****Memory-mapped QSPI communication****  ****Memory-mapped QSPI communication****  ****Memory-mapped QSPI communication****  ****Memory-mapped QSPI communication**** ";
+uint8_t aRxBuffer[256];
+
+PMIC_HandleTypeDef hpmic;
+
+MPU9250_CONFIG_t mpu9250_conf;
+MPU9250_DATA_t	 mpu9250_data;
+
+BMP280_HandleTypeDef bmp280;
+
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -98,7 +116,10 @@ static void MX_GPIO_Init(void);
 static void MX_FMC_Init(void);
 static void MX_QUADSPI_Init(void);
 static void MX_SPI1_Init(void);
+static void MX_SPI4_Init(void);
 static void MX_USART1_UART_Init(void);
+static void MX_USART2_UART_Init(void);
+static void MX_USART3_UART_Init(void);
 static void MX_I2C1_Init(void);
 /* USER CODE BEGIN PFP */
 static void SDRAM_Initialization_Sequence(SDRAM_HandleTypeDef *hsdram, FMC_SDRAM_CommandTypeDef *Command);
@@ -107,6 +128,9 @@ static void QSPI_WriteEnable(QSPI_HandleTypeDef *hqspi);
 static void QSPI_AutoPollingMemReady(QSPI_HandleTypeDef *hqspi);
 static void QSPI_DummyCyclesCfg(QSPI_HandleTypeDef *hqspi);
 static void QSPI_EnterFourBytesAddress(QSPI_HandleTypeDef *hqspi);
+
+
+static void Error_HandlerQSPI(const char* msg);
 
 /* USER CODE END PFP */
 
@@ -139,6 +163,12 @@ int main(void)
 {
   /* USER CODE BEGIN 1 */
 
+  /* Enable the CPU Cache */
+  /* Enable I-Cache */
+  SCB_EnableICache();
+  /* Enable D-Cache */
+  SCB_EnableDCache();
+
   /* USER CODE END 1 */
 
 /* USER CODE BEGIN Boot_Mode_Sequence_0 */
@@ -165,23 +195,25 @@ int main(void)
 
   /* Configure the system clock */
   SystemClock_Config();
-/* USER CODE BEGIN Boot_Mode_Sequence_2 */
-/* When system initialization is finished, Cortex-M7 will release Cortex-M4 by means of
-HSEM notification */
-/*HW semaphore Clock enable*/
-__HAL_RCC_HSEM_CLK_ENABLE();
-/*Take HSEM */
-HAL_HSEM_FastTake(HSEM_ID_0);
-/*Release HSEM in order to notify the CPU2(CM4)*/
-HAL_HSEM_Release(HSEM_ID_0,0);
-/* wait until CPU2 wakes up from stop mode */
-timeout = 0xFFFF;
-while((__HAL_RCC_GET_FLAG(RCC_FLAG_D2CKRDY) == RESET) && (timeout-- > 0));
-if ( timeout < 0 )
-{
-Error_Handler();
-}
-/* USER CODE END Boot_Mode_Sequence_2 */
+  /* USER CODE BEGIN Boot_Mode_Sequence_2 */
+#if 1
+  /* When system initialization is finished, Cortex-M7 will release Cortex-M4 by means of
+  HSEM notification */
+  /*HW semaphore Clock enable*/
+  __HAL_RCC_HSEM_CLK_ENABLE();
+  /*Take HSEM */
+  HAL_HSEM_FastTake(HSEM_ID_0);
+  /*Release HSEM in order to notify the CPU2(CM4)*/
+  HAL_HSEM_Release(HSEM_ID_0,0);
+  /* wait until CPU2 wakes up from stop mode */
+  timeout = 0xFFFF;
+  while((__HAL_RCC_GET_FLAG(RCC_FLAG_D2CKRDY) == RESET) && (timeout-- > 0));
+  if ( timeout < 0 )
+  {
+	Error_Handler();
+  }
+#endif
+  /* USER CODE END Boot_Mode_Sequence_2 */
 
   /* USER CODE BEGIN SysInit */
   /* USER CODE END SysInit */
@@ -196,7 +228,10 @@ Error_Handler();
   MX_FMC_Init();
   MX_QUADSPI_Init();
   MX_SPI1_Init();
+  MX_SPI4_Init();
   MX_USART1_UART_Init();
+  MX_USART2_UART_Init();
+  MX_USART3_UART_Init();
   MX_USB_DEVICE_Init();
   MX_I2C1_Init();
   MX_FATFS_Init();
@@ -206,6 +241,69 @@ Error_Handler();
   /* Program the SDRAM external device */
   SDRAM_Initialization_Sequence(&hsdram1, &command);
   HAL_Delay(100);
+
+#if 0 // READ MPU9520 DEVICE ID
+  {
+	  uint8_t data[2] = { 0x75 | 0x80, 0x00 };
+
+	  HAL_GPIO_WritePin(GPIOE, GPIO_PIN_4, GPIO_PIN_RESET);
+	  HAL_Delay(1);
+	  uint8_t addr = 0x75 | 0x80;
+	  uint8_t id = 0x00;
+	  HAL_SPI_TransmitReceive(&hspi4, &addr, &id, 2, 1000);
+	  HAL_GPIO_WritePin(GPIOE, GPIO_PIN_4, GPIO_PIN_SET);
+  }
+#endif
+
+#if TEST_PMIC
+  hpmic.i2c = &hi2c1;
+  //hpmic.wakeup_port = PMIC_WAKEUP_GPIO_Port;
+  //hpmic.wakeup_pin = PMIC_WAKEUP_Pin;
+  //hpmic.pwrup_port = PMIC_PWRUP_GPIO_Port;
+  //hpmic.pwrup_pin = PMIC_PWRUP_Pin;
+  //hpmic.vcom_port = PMIC_VCOM_GPIO_Port;
+  //hpmic.vcom_pin = PMIC_VCOM_Pin;
+  //hpmic.pwrgood_port = PMIC_PWR_GOOD_GPIO_Port;
+  //hpmic.pwrgood_pin = PMIC_PWR_GOOD_Pin;
+  //hpmic.int_port = PMIC_nINT_GPIO_Port;
+  //hpmic.int_pin = PMIC_nINT_Pin;
+
+  {
+	  // READ Registers
+	  HAL_GPIO_WritePin(GPIOG, GPIO_PIN_10, GPIO_PIN_SET); // WAKEUP
+	  HAL_Delay(100);
+
+		uint8_t i2c_addr = (0x48 << 1);
+		uint8_t reg_addr = 0x00;
+		uint8_t data[17];
+		uint8_t done = 1;
+
+		HAL_I2C_Master_Transmit(&hi2c1, i2c_addr, &reg_addr, 1, 1000);
+		HAL_I2C_Master_Receive(&hi2c1, i2c_addr, &data[0], 17, 1000);
+
+		printf("READ PMIC Registers:\n");
+		for (int i = 0; i < sizeof(data) / sizeof(data[0]); i++)
+		 printf("  REG #%02d: %02X\n", i, data[i]);
+
+		HAL_GPIO_WritePin(GPIOG, GPIO_PIN_10, GPIO_PIN_RESET); // SLEEP
+		HAL_Delay(100);
+  }
+#endif
+
+#if TEST_BMP280
+  BMP280_SPI_Init(&bmp280, &hspi4, GPIOE, GPIO_PIN_3); // IMU1_nCS1
+#endif
+#if TEST_MPU9250
+  mpu9250_conf.hspi = &hspi4;
+  mpu9250_conf.GPIOx = GPIOE; // IMU1_nCS2
+  mpu9250_conf.GPIO_PIN = GPIO_PIN_4;
+  mpu9250_conf.ACCEL_SCALE = ACCEL_SCALE_2G;
+  mpu9250_conf.GYRO_SCALE = GYRO_SCALE_1000dps;
+
+  MPU9250_Initialize(&mpu9250_conf);
+  MPU9250_Config(&mpu9250_conf);
+  MPU9250_Calibrate(&mpu9250_conf);
+#endif
 
 #if TEST_SDRAM
   volatile uint8_t* memPtr = (volatile uint8_t *)0xD0000000;
@@ -263,6 +361,11 @@ Error_Handler();
   /* USER CODE BEGIN WHILE */
   uint32_t lastTick = HAL_GetTick();
 
+#if TEST_PMIC
+  uint8_t pmicStatus = 0;
+  printf("Press F2 to start PMIC Test!\n");
+#endif
+
 #if TEST_QSPI
   QSPI_CommandTypeDef sCommand;
   QSPI_MemoryMappedTypeDef sMemMappedCfg;
@@ -277,6 +380,8 @@ Error_Handler();
   sCommand.DdrMode           = QSPI_DDR_MODE_DISABLE;
   sCommand.DdrHoldHalfCycle  = QSPI_DDR_HHC_ANALOG_DELAY;
   sCommand.SIOOMode          = QSPI_SIOO_INST_EVERY_CMD;
+
+  printf("Press F1 to start QSPI Test!\n");
 #endif
 
   while (1)
@@ -286,11 +391,84 @@ Error_Handler();
     /* USER CODE BEGIN 3 */
 	if (HAL_GetTick() - lastTick > 1000)
 	{
-		  HAL_GPIO_TogglePin(PWR_LED_GPIO_Port, PWR_LED_Pin);
-		  lastTick = HAL_GetTick();
+		HAL_GPIO_TogglePin(PWR_LED_GPIO_Port, PWR_LED_Pin);
+		lastTick = HAL_GetTick();
+
+
+#if TEST_PMIC
+		if (pmicStatus)
+		{
+			uint8_t status = PMIC_ReadPowerStatus(&hpmic);
+			printf("PMIC Power status: %02X\n", status);
+		}
+#endif
+
+#if TEST_BMP280
+			BMP280_Update(&bmp280);
+
+			printf("BMP: %d\n", bmp280.pres32);
+#endif
+
+#if TEST_MPU9250
+			MPU9250_Update7DOF(&mpu9250_conf, &mpu9250_data);
+			MPU9250_UpdateMAG(&mpu9250_conf, &mpu9250_data);
+
+			printf("MPU: %x,%x,%x,%x,%x,%x\n",
+					mpu9250_data.accel[0], mpu9250_data.accel[1], mpu9250_data.accel[2],
+					mpu9250_data.gyro[0], mpu9250_data.gyro[1], mpu9250_data.gyro[2]);
+#endif
 	}
 
+#if TEST_PMIC
+	if (HAL_GPIO_ReadPin(KEY_FUNC2_GPIO_Port, KEY_FUNC2_Pin) != GPIO_PIN_RESET)
+	{
+		HAL_Delay(100); // prevent debounce
+
+		if (pmicStatus == 0)
+		{
+			HAL_GPIO_WritePin(PMIC_WAKEUP_GPIO_Port, PMIC_WAKEUP_Pin, GPIO_PIN_SET); // wake-up --> standby
+			HAL_Delay(100);
+
+			PMIC_Init(&hpmic);
+			HAL_Delay(100);
+
+			PMIC_EnableRegulators(&hpmic, 0b00111111);
+			HAL_Delay(100);
+
+			HAL_GPIO_WritePin(PMIC_PWRUP_GPIO_Port, PMIC_PWRUP_Pin, GPIO_PIN_SET); // power-up --> active
+			pmicStatus = 1;
+
+			printf("TURN ON EINK-PMIC\n");
+
+			  {
+				// READ Registers
+				uint8_t i2c_addr = (0x48 << 1);
+				uint8_t reg_addr = 0x00;
+				uint8_t data[17];
+				uint8_t done = 1;
+
+				HAL_I2C_Master_Transmit(&hi2c1, i2c_addr, &reg_addr, 1, 1000);
+				HAL_I2C_Master_Receive(&hi2c1, i2c_addr, &data[0], 17, 1000);
+
+				printf("READ PMIC Registers:\n");
+				for (int i = 0; i < sizeof(data) / sizeof(data[0]); i++)
+					printf("  REG #%02d: %02X\n", i, data[i]);
+			  }
+		}
+		else
+		{
+			HAL_GPIO_WritePin(PMIC_PWRUP_GPIO_Port, PMIC_PWRUP_Pin, GPIO_PIN_RESET); // power-down --> standby
+			HAL_Delay(100);
+			HAL_GPIO_WritePin(PMIC_WAKEUP_GPIO_Port, PMIC_WAKEUP_Pin, GPIO_PIN_RESET); // go to sleep
+			pmicStatus = 0;
+
+			printf("TURN OFF EINK-PMIC\n");
+		}
+	}
+#endif
+
 	//
+#if TEST_QSPI
 	switch(step)
 	{
 	  case 0:
@@ -304,7 +482,7 @@ Error_Handler();
 		HAL_QSPI_DeInit(&hqspi1);
 		if (HAL_QSPI_Init(&hqspi1) != HAL_OK)
 		{
-		  Error_Handler();
+		  Error_HandlerQSPI("HAL_QSPI_Init");
 		}
 
 		/* Enable 4 bytes Address mode */
@@ -326,7 +504,7 @@ Error_Handler();
 		printf("Erasing Sequence : %u\n", address);
 		if (HAL_QSPI_Command_IT(&hqspi1, &sCommand) != HAL_OK)
 		{
-		  Error_Handler();
+			Error_HandlerQSPI("SECTOR_ERASE_CMD");
 		}
 
 		step++;
@@ -365,13 +543,13 @@ Error_Handler();
 		  printf("Writing Sequence\n");
 		  if (HAL_QSPI_Command(&hqspi1, &sCommand, HAL_QPSI_TIMEOUT_DEFAULT_VALUE) != HAL_OK)
 		  {
-			Error_Handler();
+			  Error_HandlerQSPI("QUAD_IN_FAST_PROG_CMD");
 		  }
 
 		  printf(" --> Transmit\n");
 		  if (HAL_QSPI_Transmit_IT(&hqspi1, aTxBuffer) != HAL_OK)
 		  {
-			Error_Handler();
+			  Error_HandlerQSPI("Transmit data");
 		  }
 
 		  step++;
@@ -398,6 +576,7 @@ Error_Handler();
 		  StatusMatch = 0;
 		  RxCplt = 0;
 
+#if TEST_MEMORY_MAPPED
 		  /* Configure Volatile Configuration register (with new dummy cycles) */
 		  printf("Configure Volatile Configuration register (with new dummy cycles)\n");
 		  QSPI_DummyCyclesCfg(&hqspi1);
@@ -411,37 +590,92 @@ Error_Handler();
 		  printf("Configure memory mapped\n");
 		  if (HAL_QSPI_MemoryMapped(&hqspi1, &sCommand, &sMemMappedCfg) != HAL_OK)
 		  {
-			Error_Handler();
+			  Error_HandlerQSPI("MemoryMapped");
 		  }
 
-		  printf("Reading Sequence\n");
-		  for (index = 0; index < BUFFERSIZE; index++)
-		  {
-			if (*qspi_addr != aTxBuffer[index])
+		  RxCplt = 1;
+#else
+		    // Reading sequence
+		    printf("Reading Sequence: Direct\n");
+		    sCommand.Instruction = QUAD_INOUT_FAST_READ_CMD;
+		    sCommand.AddressMode = QSPI_ADDRESS_4_LINES;
+		    sCommand.DataMode    = QSPI_DATA_4_LINES;
+		    sCommand.NbData      = BUFFERSIZE;
+			sCommand.DummyCycles = DUMMY_CLOCK_CYCLES_READ_QUAD;
+
+			if (HAL_QSPI_Command(&hqspi1, &sCommand, HAL_QSPI_TIMEOUT_DEFAULT_VALUE) != HAL_OK)
 			{
-			  printf(" --> Mismatch at %d\n", index);
-			  Error_Handler();
+				Error_HandlerQSPI("QUAD_INOUT_FAST_READ_CMD");
 			}
-			qspi_addr++;
-		  }
-		  printf(" --> OK\n");
 
-		  address += QSPI_PAGE_SIZE;
-		  if(address >= QSPI_END_ADDR)
-		  {
-			address = 0;
-		  }
-		  qspi_addr = (__IO uint8_t *)(0x90000000 + address);
-
-		  step = 0;
+			if (HAL_QSPI_Receive_IT(&hqspi1, aRxBuffer) != HAL_OK)
+			{
+				Error_HandlerQSPI("Receive_IT");
+			}
+#endif
+			step++;
 		}
 		break;
+
+	  case 5:
+		  if (RxCplt != 0)
+		  {
+			RxCplt = 0;
+
+			/* Result comparison ----------------------------------------------- */
+#if TEST_MEMORY_MAPPED
+			  printf("Reading Sequence: Memory mapped\n");
+			  for (index = 0; index < BUFFERSIZE; index++)
+			  {
+				if (*qspi_addr != aTxBuffer[index])
+				{
+				  printf(" --> Mismatch at %d\n", index);
+				  Error_HandlerQSPI("");
+				}
+				else
+				{
+
+					  HAL_UART_Transmit(&huart1, &aTxBuffer[index], 1, 1000);
+				}
+				qspi_addr++;
+			  }
+			  printf(" --> OK\n");
+#else
+			for (index = 0; index < BUFFERSIZE; index++)
+			{
+			  if (aRxBuffer[index] != aTxBuffer[index])
+			  {
+				  printf(" --> Mismatch at %d\n", index);
+				  Error_HandlerQSPI("");
+			  }
+			  else
+			  {
+				  HAL_UART_Transmit(&huart1, &aRxBuffer[index], 1, 1000);
+			  }
+			}
+			printf(" --> OK\n");
+#endif
+
+			address += QSPI_PAGE_SIZE;
+			if(address >= QSPI_END_ADDR)
+			{
+			  address = 0;
+			}
+			step = 0;
+		  }
+		  break;
 
 	  default :
 		Error_Handler();
 	}
+#endif
 
-#if TEST_QSPI
+#if TEST_GPS
+	while ((huart2.Instance->ISR & UART_FLAG_RXNE) /*&& (huart2.Instance->CR1 & USART_CR1_RXNEIE)*/)
+	{
+		uint8_t data = (uint8_t)huart2.Instance->RDR;
+		HAL_UART_Transmit(&huart1, &data, 1, 1000);
+	}
 #endif
   }
   /* USER CODE END 3 */
@@ -555,7 +789,7 @@ static void MX_I2C1_Init(void)
 
   /* USER CODE END I2C1_Init 1 */
   hi2c1.Instance = I2C1;
-  hi2c1.Init.Timing = 0x00B03FDB;
+  hi2c1.Init.Timing = 0x307075B1; // 0x00B03FDB(400KHz), 0x307075B1(100KHz)
   hi2c1.Init.OwnAddress1 = 0;
   hi2c1.Init.AddressingMode = I2C_ADDRESSINGMODE_7BIT;
   hi2c1.Init.DualAddressMode = I2C_DUALADDRESS_DISABLE;
@@ -603,10 +837,10 @@ static void MX_QUADSPI_Init(void)
   /* QUADSPI parameter configuration*/
   hqspi1.Instance = QUADSPI;
   hqspi1.Init.ClockPrescaler = 5; // 240MHz / (prescaler + 1) = 40
-  hqspi1.Init.FifoThreshold = 4;
-  hqspi1.Init.SampleShifting = QSPI_SAMPLE_SHIFTING_HALFCYCLE; // QSPI_SAMPLE_SHIFTING_NONE, QSPI_SAMPLE_SHIFTING_HALFCYCLE
+  hqspi1.Init.FifoThreshold = 1;
+  hqspi1.Init.SampleShifting = QSPI_SAMPLE_SHIFTING_NONE; // QSPI_SAMPLE_SHIFTING_NONE, QSPI_SAMPLE_SHIFTING_HALFCYCLE
   hqspi1.Init.FlashSize = 25; // 64MB = 2 ^ 26 = 2 ^ (FlashSize + 1)
-  hqspi1.Init.ChipSelectHighTime = QSPI_CS_HIGH_TIME_2_CYCLE; //
+  hqspi1.Init.ChipSelectHighTime = QSPI_CS_HIGH_TIME_3_CYCLE; //
   hqspi1.Init.ClockMode = QSPI_CLOCK_MODE_0;
   hqspi1.Init.FlashID = QSPI_FLASH_ID_1;
   hqspi1.Init.DualFlash = QSPI_DUALFLASH_DISABLE;
@@ -668,6 +902,54 @@ static void MX_SPI1_Init(void)
 }
 
 /**
+  * @brief SPI4 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_SPI4_Init(void)
+{
+
+  /* USER CODE BEGIN SPI4_Init 0 */
+
+  /* USER CODE END SPI4_Init 0 */
+
+  /* USER CODE BEGIN SPI4_Init 1 */
+
+  /* USER CODE END SPI4_Init 1 */
+  /* SPI4 parameter configuration*/
+  hspi4.Instance = SPI4;
+  hspi4.Init.Mode = SPI_MODE_MASTER;
+  hspi4.Init.Direction = SPI_DIRECTION_2LINES;
+  hspi4.Init.DataSize = SPI_DATASIZE_8BIT;
+  hspi4.Init.CLKPolarity = SPI_POLARITY_LOW;
+  hspi4.Init.CLKPhase = SPI_PHASE_1EDGE;
+  hspi4.Init.NSS = SPI_NSS_SOFT;
+  hspi4.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_32; // SPI_BAUDRATEPRESCALER_2;
+  hspi4.Init.FirstBit = SPI_FIRSTBIT_MSB;
+  hspi4.Init.TIMode = SPI_TIMODE_DISABLE;
+  hspi4.Init.CRCCalculation = SPI_CRCCALCULATION_DISABLE;
+  hspi4.Init.CRCPolynomial = 0x0;
+  hspi4.Init.NSSPMode = SPI_NSS_PULSE_ENABLE;
+  hspi4.Init.NSSPolarity = SPI_NSS_POLARITY_LOW;
+  hspi4.Init.FifoThreshold = SPI_FIFO_THRESHOLD_01DATA;
+  hspi4.Init.TxCRCInitializationPattern = SPI_CRC_INITIALIZATION_ALL_ZERO_PATTERN;
+  hspi4.Init.RxCRCInitializationPattern = SPI_CRC_INITIALIZATION_ALL_ZERO_PATTERN;
+  hspi4.Init.MasterSSIdleness = SPI_MASTER_SS_IDLENESS_00CYCLE;
+  hspi4.Init.MasterInterDataIdleness = SPI_MASTER_INTERDATA_IDLENESS_00CYCLE;
+  hspi4.Init.MasterReceiverAutoSusp = SPI_MASTER_RX_AUTOSUSP_DISABLE;
+  hspi4.Init.MasterKeepIOState = SPI_MASTER_KEEP_IO_STATE_DISABLE;
+  hspi4.Init.IOSwap = SPI_IO_SWAP_DISABLE;
+  if (HAL_SPI_Init(&hspi4) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN SPI4_Init 2 */
+
+  /* USER CODE END SPI4_Init 2 */
+
+}
+
+/**
   * @brief USART1 Initialization Function
   * @param None
   * @retval None
@@ -712,6 +994,102 @@ static void MX_USART1_UART_Init(void)
   /* USER CODE BEGIN USART1_Init 2 */
 
   /* USER CODE END USART1_Init 2 */
+
+}
+
+/**
+  * @brief USART2 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_USART2_UART_Init(void)
+{
+
+  /* USER CODE BEGIN USART2_Init 0 */
+
+  /* USER CODE END USART2_Init 0 */
+
+  /* USER CODE BEGIN USART2_Init 1 */
+
+  /* USER CODE END USART2_Init 1 */
+  huart2.Instance = USART2;
+  huart2.Init.BaudRate = 9600;
+  huart2.Init.WordLength = UART_WORDLENGTH_8B;
+  huart2.Init.StopBits = UART_STOPBITS_1;
+  huart2.Init.Parity = UART_PARITY_NONE;
+  huart2.Init.Mode = UART_MODE_TX_RX;
+  huart2.Init.HwFlowCtl = UART_HWCONTROL_NONE;
+  huart2.Init.OverSampling = UART_OVERSAMPLING_16;
+  huart2.Init.OneBitSampling = UART_ONE_BIT_SAMPLE_DISABLE;
+  huart2.Init.ClockPrescaler = UART_PRESCALER_DIV1;
+  huart2.AdvancedInit.AdvFeatureInit = UART_ADVFEATURE_NO_INIT;
+  if (HAL_UART_Init(&huart2) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  if (HAL_UARTEx_SetTxFifoThreshold(&huart2, UART_TXFIFO_THRESHOLD_1_8) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  if (HAL_UARTEx_SetRxFifoThreshold(&huart2, UART_RXFIFO_THRESHOLD_1_8) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  if (HAL_UARTEx_DisableFifoMode(&huart2) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN USART2_Init 2 */
+
+  /* USER CODE END USART2_Init 2 */
+
+}
+
+/**
+  * @brief USART3 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_USART3_UART_Init(void)
+{
+
+  /* USER CODE BEGIN USART3_Init 0 */
+
+  /* USER CODE END USART3_Init 0 */
+
+  /* USER CODE BEGIN USART3_Init 1 */
+
+  /* USER CODE END USART3_Init 1 */
+  huart3.Instance = USART3;
+  huart3.Init.BaudRate = 115200;
+  huart3.Init.WordLength = UART_WORDLENGTH_8B;
+  huart3.Init.StopBits = UART_STOPBITS_1;
+  huart3.Init.Parity = UART_PARITY_NONE;
+  huart3.Init.Mode = UART_MODE_TX_RX;
+  huart3.Init.HwFlowCtl = UART_HWCONTROL_NONE;
+  huart3.Init.OverSampling = UART_OVERSAMPLING_16;
+  huart3.Init.OneBitSampling = UART_ONE_BIT_SAMPLE_DISABLE;
+  huart3.Init.ClockPrescaler = UART_PRESCALER_DIV1;
+  huart3.AdvancedInit.AdvFeatureInit = UART_ADVFEATURE_NO_INIT;
+  if (HAL_UART_Init(&huart3) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  if (HAL_UARTEx_SetTxFifoThreshold(&huart3, UART_TXFIFO_THRESHOLD_1_8) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  if (HAL_UARTEx_SetRxFifoThreshold(&huart3, UART_RXFIFO_THRESHOLD_1_8) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  if (HAL_UARTEx_DisableFifoMode(&huart3) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN USART3_Init 2 */
+
+  /* USER CODE END USART3_Init 2 */
 
 }
 
@@ -875,6 +1253,25 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(PWR_EN_5V_GPIO_Port, &GPIO_InitStruct);
 
+
+
+  /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(GPIOE, IMU1_nCS1_Pin|IMU1_nCS2_Pin, GPIO_PIN_SET);
+
+  /*Configure GPIO pins : IMU1_nCS1_Pin IMU1_nCS2_Pin */
+  GPIO_InitStruct.Pin = IMU1_nCS1_Pin|IMU1_nCS2_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(GPIOE, &GPIO_InitStruct);
+
+  /*Configure GPIO pins : IMU_DRDY_Pin IMU_FSYNC_Pin IMU_nINT_Pin */
+  GPIO_InitStruct.Pin = IMU_DRDY_Pin|IMU_FSYNC_Pin|IMU_nINT_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+
+
 }
 
 /* USER CODE BEGIN 4 */
@@ -948,6 +1345,7 @@ static void SDRAM_Initialization_Sequence(SDRAM_HandleTypeDef *hsdram, FMC_SDRAM
 void HAL_QSPI_CmdCpltCallback(QSPI_HandleTypeDef *hqspi)
 {
   CmdCplt++;
+  printf("HAL_QSPI_CmdCpltCallback: %d\n", CmdCplt);
 }
 
 /**
@@ -958,6 +1356,7 @@ void HAL_QSPI_CmdCpltCallback(QSPI_HandleTypeDef *hqspi)
 void HAL_QSPI_RxCpltCallback(QSPI_HandleTypeDef *hqspi)
 {
   RxCplt++;
+  printf("HAL_QSPI_RxCpltCallback: %d\n", RxCplt);
 }
 
 /**
@@ -968,6 +1367,7 @@ void HAL_QSPI_RxCpltCallback(QSPI_HandleTypeDef *hqspi)
 void HAL_QSPI_TxCpltCallback(QSPI_HandleTypeDef *hqspi)
 {
   TxCplt++;
+  printf("HAL_QSPI_TxCpltCallback: %d\n", TxCplt);
 }
 
 /**
@@ -978,6 +1378,7 @@ void HAL_QSPI_TxCpltCallback(QSPI_HandleTypeDef *hqspi)
 void HAL_QSPI_StatusMatchCallback(QSPI_HandleTypeDef *hqspi)
 {
   StatusMatch++;
+  printf("HAL_QSPI_StatusMatchCallback: %d\n", StatusMatch);
 }
 
 
@@ -1004,7 +1405,7 @@ static void QSPI_WriteEnable(QSPI_HandleTypeDef *hqspi)
 
   if (HAL_QSPI_Command(hqspi, &s_command, HAL_QPSI_TIMEOUT_DEFAULT_VALUE) != HAL_OK)
   {
-    Error_Handler();
+	  Error_HandlerQSPI("QSPI_INSTRUCTION_1_LINE");
   }
 
   /* Configure automatic polling mode to wait for write enabling */
@@ -1020,7 +1421,7 @@ static void QSPI_WriteEnable(QSPI_HandleTypeDef *hqspi)
 
   if (HAL_QSPI_AutoPolling(hqspi, &s_command, &s_config, HAL_QPSI_TIMEOUT_DEFAULT_VALUE) != HAL_OK)
   {
-    Error_Handler();
+	  Error_HandlerQSPI("AutoPolling");
   }
 
 }
@@ -1055,7 +1456,7 @@ static void QSPI_AutoPollingMemReady(QSPI_HandleTypeDef *hqspi)
 
   if (HAL_QSPI_AutoPolling_IT(hqspi, &sCommand, &sConfig) != HAL_OK)
   {
-    Error_Handler();
+	  Error_HandlerQSPI("AutoPolling_IT");
   }
 }
 
@@ -1084,13 +1485,13 @@ static void QSPI_DummyCyclesCfg(QSPI_HandleTypeDef *hqspi)
   /* Configure the command */
   if (HAL_QSPI_Command(hqspi, &s_command, HAL_QPSI_TIMEOUT_DEFAULT_VALUE) != HAL_OK)
   {
-    Error_Handler();
+	  Error_HandlerQSPI("READ_VOL_CFG_REG_CMD");
   }
 
   /* Reception of the data */
   if (HAL_QSPI_Receive(hqspi, (uint8_t *)(&reg), HAL_QPSI_TIMEOUT_DEFAULT_VALUE) != HAL_OK)
   {
-    Error_Handler();
+	  Error_HandlerQSPI("ReceiveData");
   }
 
   /* Enable write operations */
@@ -1104,13 +1505,13 @@ static void QSPI_DummyCyclesCfg(QSPI_HandleTypeDef *hqspi)
   /* Configure the write volatile configuration register command */
   if (HAL_QSPI_Command(hqspi, &s_command, HAL_QPSI_TIMEOUT_DEFAULT_VALUE) != HAL_OK)
   {
-    Error_Handler();
+	  Error_HandlerQSPI("WRITE_VOL_CFG_REG_CMD");
   }
 
   /* Transmission of the data */
   if (HAL_QSPI_Transmit(hqspi, (uint8_t *)(&reg), HAL_QPSI_TIMEOUT_DEFAULT_VALUE) != HAL_OK)
   {
-    Error_Handler();
+	  Error_HandlerQSPI("Transmit data");
   }
 
 }
@@ -1141,7 +1542,7 @@ static void QSPI_EnterFourBytesAddress(QSPI_HandleTypeDef *hqspi)
   /* Send the command */
   if (HAL_QSPI_Command(hqspi, &s_command, HAL_QPSI_TIMEOUT_DEFAULT_VALUE) != HAL_OK)
   {
-    Error_Handler();
+	  Error_HandlerQSPI("EnterFourBytesAddress");
   }
 
   /* Configure automatic polling mode to wait the memory is ready */
@@ -1163,6 +1564,12 @@ void Error_Handler(void)
 	printf("!!!! ERROR !!!!\n");
 	//while(1);
   /* USER CODE END Error_Handler_Debug */
+}
+
+void Error_HandlerQSPI(const char* msg)
+{
+	printf("QSPI ERROR: %s\n", msg);
+	while(1);
 }
 
 #ifdef  USE_FULL_ASSERT
