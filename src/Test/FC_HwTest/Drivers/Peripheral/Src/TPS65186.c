@@ -32,6 +32,7 @@
 
 void PMIC_Init(PMIC_HandleTypeDef* pmic)
 {
+#if 0
 	uint8_t data[] = {
 		REG_UPSEQ0,
 		0b00011011, // Power up sequence.
@@ -41,12 +42,18 @@ void PMIC_Init(PMIC_HandleTypeDef* pmic)
 	};
 
 	/*HAL_StatusTypeDef status =*/ HAL_I2C_Master_Transmit(pmic->i2c, PMIC_ADDR, &data[0], sizeof(data) / sizeof(data[0]), 1000);
+#else
+	uint8_t data[] = { 0b11001001, 0b11100100, 0b00110110, 0b10010011 };
+	HAL_I2C_Mem_Write(pmic->i2c, PMIC_ADDR, REG_UPSEQ0, I2C_MEMADD_SIZE_8BIT, data, 4, 1000);
+#endif
 }
 
 void PMIC_EnableRegulators(PMIC_HandleTypeDef* pmic, uint8_t value)
 {
-	uint8_t data[] = { REG_ENABLE, value };
-	HAL_I2C_Master_Transmit(pmic->i2c, PMIC_ADDR, &data[0], sizeof(data) / sizeof(data[0]), 1000);
+	uint8_t data[] = {  value, 0b00000101 };
+	HAL_I2C_Mem_Write(pmic->i2c, PMIC_ADDR, REG_ENABLE, I2C_MEMADD_SIZE_8BIT, data, 2, 1000);
+	//uint8_t data[] = { REG_ENABLE, value };
+	//HAL_I2C_Master_Transmit(pmic->i2c, PMIC_ADDR, &data[0], 2, 1000);
 }
 
 uint8_t PMIC_ReadPowerStatus(PMIC_HandleTypeDef* pmic)
@@ -54,8 +61,10 @@ uint8_t PMIC_ReadPowerStatus(PMIC_HandleTypeDef* pmic)
 	uint8_t addr = REG_PG;
 	uint8_t data = 0;
 
-	HAL_I2C_Master_Transmit(pmic->i2c, PMIC_ADDR, &addr, 1, 1000);
-	HAL_I2C_Master_Receive(pmic->i2c, PMIC_ADDR, &data, 1, 1000);
+	//HAL_I2C_Master_Transmit(pmic->i2c, PMIC_ADDR, &addr, 1, 1000);
+	//HAL_I2C_Master_Receive(pmic->i2c, PMIC_ADDR, &data, 1, 1000);
+
+	HAL_I2C_Mem_Read(pmic->i2c, PMIC_ADDR, addr, I2C_MEMADD_SIZE_8BIT, &data, 1, 1000);
 
 	return data;
 }

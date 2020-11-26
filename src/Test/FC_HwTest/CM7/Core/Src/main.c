@@ -66,11 +66,14 @@
 
 
 #define TEST_SDRAM 		0
-#define TEST_QSPI 		1
+#define TEST_QSPI 		0
 #define TEST_PMIC 		0
 #define TEST_MPU9250 	0
 #define TEST_BMP280 	0
 #define TEST_GPS		0
+#define TEST_MSC		0
+#define TEST_SPISLAVE	0
+#define TEST_UART3		1
 
 /* USER CODE END PD */
 
@@ -107,6 +110,9 @@ MPU9250_CONFIG_t mpu9250_conf;
 MPU9250_DATA_t	 mpu9250_data;
 
 BMP280_HandleTypeDef bmp280;
+
+uint8_t rx_buf[64];
+volatile int rx_done;
 
 /* USER CODE END PV */
 
@@ -165,9 +171,9 @@ int main(void)
 
   /* Enable the CPU Cache */
   /* Enable I-Cache */
-  SCB_EnableICache();
+  //SCB_EnableICache();
   /* Enable D-Cache */
-  SCB_EnableDCache();
+  //SCB_EnableDCache();
 
   /* USER CODE END 1 */
 
@@ -224,6 +230,7 @@ int main(void)
   HAL_GPIO_WritePin(PWR_EN_PERIPH_GPIO_Port, PWR_EN_PERIPH_Pin, GPIO_PIN_SET);
   HAL_GPIO_WritePin(PWR_EN_BAT_GPIO_Port, PWR_EN_BAT_Pin, GPIO_PIN_SET);
   HAL_Delay(100);
+  HAL_GPIO_WritePin(GPIOE ,GPIO_PIN_4, GPIO_PIN_SET);
 
   MX_FMC_Init();
   MX_QUADSPI_Init();
@@ -267,6 +274,11 @@ int main(void)
   //hpmic.pwrgood_pin = PMIC_PWR_GOOD_Pin;
   //hpmic.int_port = PMIC_nINT_GPIO_Port;
   //hpmic.int_pin = PMIC_nINT_Pin;
+
+  HAL_GPIO_WritePin(PMIC_WAKEUP_GPIO_Port, PMIC_WAKEUP_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(PMIC_PWRUP_GPIO_Port, PMIC_PWRUP_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(PMIC_VCOM_GPIO_Port, PMIC_VCOM_Pin, GPIO_PIN_RESET);
+  HAL_Delay(2);
 
   {
 	  // READ Registers
@@ -384,6 +396,36 @@ int main(void)
   printf("Press F1 to start QSPI Test!\n");
 #endif
 
+#if TEST_MSC
+#endif
+
+#if TEST_SPISLAVE
+  while(1)
+  {
+	  printf("SPI receiving...\n");
+	  rx_done = 0;
+	  HAL_StatusTypeDef res = HAL_SPI_Receive_IT(&hspi1, rx_buf, 5);
+	  while (!rx_done);
+  }
+#endif
+
+#if TEST_UART3
+  while (1)
+  {
+	  if ((huart2.Instance->ISR & UART_FLAG_RXNE) /*&& (huart2.Instance->CR1 & USART_CR1_RXNEIE)*/)
+	  {
+		  uint8_t data = (uint8_t)huart2.Instance->RDR;
+		  HAL_UART_Transmit(&huart3, &data, 1, 1000);
+	  }
+
+	  if ((huart3.Instance->ISR & UART_FLAG_RXNE))
+	  {
+		  uint8_t data = (uint8_t)huart3.Instance->RDR;
+		  HAL_UART_Transmit(&huart1, &data, 1, 1000);
+	  }
+  }
+#endif
+
   while (1)
   {
     /* USER CODE END WHILE */
@@ -406,7 +448,7 @@ int main(void)
 #if TEST_BMP280
 			BMP280_Update(&bmp280);
 
-			printf("BMP: %d\n", bmp280.pres32);
+			printf("BMP: %d(P) %d(T)\n", bmp280.pres32, bmp280.temp32);
 #endif
 
 #if TEST_MPU9250
@@ -427,15 +469,17 @@ int main(void)
 		if (pmicStatus == 0)
 		{
 			HAL_GPIO_WritePin(PMIC_WAKEUP_GPIO_Port, PMIC_WAKEUP_Pin, GPIO_PIN_SET); // wake-up --> standby
-			HAL_Delay(100);
+			HAL_Delay(300);
 
-			PMIC_Init(&hpmic);
-			HAL_Delay(100);
+			//PMIC_Init(&hpmic);
+			//HAL_Delay(100);
 
-			PMIC_EnableRegulators(&hpmic, 0b00111111);
+			PMIC_EnableRegulators(&hpmic, 0b10111111);
 			HAL_Delay(100);
 
 			HAL_GPIO_WritePin(PMIC_PWRUP_GPIO_Port, PMIC_PWRUP_Pin, GPIO_PIN_SET); // power-up --> active
+			//HAL_GPIO_WritePin(PMIC_VCOM_GPIO_Port, PMIC_VCOM_Pin, GPIO_PIN_SET);
+			HAL_Delay(100);
 			pmicStatus = 1;
 
 			printf("TURN ON EINK-PMIC\n");
@@ -457,6 +501,28 @@ int main(void)
 		}
 		else
 		{
+			HAL_GPIO_WritePin(PMIC_VCOM_GPIO_Port, PMIC_VCOM_Pin, GPIO_PIN_RESET);
+			HAL_Delay(100);
+
+			PMIC_EnableRegulators(&hpmic, 0x00); //0b00111111);
+			HAL_Delay(100);
+
+
+			  {
+				// READ Registers
+				uint8_t i2c_addr = (0x48 << 1);
+				uint8_t reg_addr = 0x00;
+				uint8_t data[17];
+				uint8_t done = 1;
+
+				HAL_I2C_Master_Transmit(&hi2c1, i2c_addr, &reg_addr, 1, 1000);
+				HAL_I2C_Master_Receive(&hi2c1, i2c_addr, &data[0], 17, 1000);
+
+				printf("READ PMIC Registers:\n");
+				for (int i = 0; i < sizeof(data) / sizeof(data[0]); i++)
+					printf("  REG #%02d: %02X\n", i, data[i]);
+			  }
+
 			HAL_GPIO_WritePin(PMIC_PWRUP_GPIO_Port, PMIC_PWRUP_Pin, GPIO_PIN_RESET); // power-down --> standby
 			HAL_Delay(100);
 			HAL_GPIO_WritePin(PMIC_WAKEUP_GPIO_Port, PMIC_WAKEUP_Pin, GPIO_PIN_RESET); // go to sleep
@@ -789,7 +855,7 @@ static void MX_I2C1_Init(void)
 
   /* USER CODE END I2C1_Init 1 */
   hi2c1.Instance = I2C1;
-  hi2c1.Init.Timing = 0x307075B1; // 0x00B03FDB(400KHz), 0x307075B1(100KHz)
+  hi2c1.Init.Timing = 0x00B03FDB; // 0x00B03FDB(400KHz), 0x307075B1(100KHz)
   hi2c1.Init.OwnAddress1 = 0;
   hi2c1.Init.AddressingMode = I2C_ADDRESSINGMODE_7BIT;
   hi2c1.Init.DualAddressMode = I2C_DUALADDRESS_DISABLE;
@@ -883,7 +949,7 @@ static void MX_SPI1_Init(void)
   hspi1.Init.CRCPolynomial = 0x0;
   hspi1.Init.NSSPMode = SPI_NSS_PULSE_DISABLE;
   hspi1.Init.NSSPolarity = SPI_NSS_POLARITY_LOW;
-  hspi1.Init.FifoThreshold = SPI_FIFO_THRESHOLD_16DATA;
+  hspi1.Init.FifoThreshold = SPI_FIFO_THRESHOLD_01DATA; // SPI_FIFO_THRESHOLD_16DATA;
   hspi1.Init.TxCRCInitializationPattern = SPI_CRC_INITIALIZATION_ALL_ZERO_PATTERN;
   hspi1.Init.RxCRCInitializationPattern = SPI_CRC_INITIALIZATION_ALL_ZERO_PATTERN;
   hspi1.Init.MasterSSIdleness = SPI_MASTER_SS_IDLENESS_00CYCLE;
@@ -921,10 +987,10 @@ static void MX_SPI4_Init(void)
   hspi4.Init.Mode = SPI_MODE_MASTER;
   hspi4.Init.Direction = SPI_DIRECTION_2LINES;
   hspi4.Init.DataSize = SPI_DATASIZE_8BIT;
-  hspi4.Init.CLKPolarity = SPI_POLARITY_LOW;
-  hspi4.Init.CLKPhase = SPI_PHASE_1EDGE;
+  hspi4.Init.CLKPolarity = SPI_POLARITY_HIGH; // SPI_POLARITY_HIGH, SPI_POLARITY_LOW
+  hspi4.Init.CLKPhase = SPI_PHASE_2EDGE; // SPI_PHASE_2EDGE, SPI_PHASE_1EDGE
   hspi4.Init.NSS = SPI_NSS_SOFT;
-  hspi4.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_32; // SPI_BAUDRATEPRESCALER_2;
+  hspi4.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_256; // SPI_BAUDRATEPRESCALER_2;
   hspi4.Init.FirstBit = SPI_FIRSTBIT_MSB;
   hspi4.Init.TIMode = SPI_TIMODE_DISABLE;
   hspi4.Init.CRCCalculation = SPI_CRCCALCULATION_DISABLE;
@@ -1256,13 +1322,14 @@ static void MX_GPIO_Init(void)
 
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOE, IMU1_nCS1_Pin|IMU1_nCS2_Pin, GPIO_PIN_SET);
+  HAL_GPIO_WritePin(GPIOE, IMU1_nCS1_Pin, GPIO_PIN_RESET); // pull-down on power-up --> caused i2c disable
+  HAL_GPIO_WritePin(GPIOE, IMU1_nCS2_Pin, GPIO_PIN_SET);
 
   /*Configure GPIO pins : IMU1_nCS1_Pin IMU1_nCS2_Pin */
   GPIO_InitStruct.Pin = IMU1_nCS1_Pin|IMU1_nCS2_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
   HAL_GPIO_Init(GPIOE, &GPIO_InitStruct);
 
   /*Configure GPIO pins : IMU_DRDY_Pin IMU_FSYNC_Pin IMU_nINT_Pin */
@@ -1270,8 +1337,6 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
-
-
 }
 
 /* USER CODE BEGIN 4 */
@@ -1550,6 +1615,15 @@ static void QSPI_EnterFourBytesAddress(QSPI_HandleTypeDef *hqspi)
 
 }
 
+
+void HAL_SPI_RxCpltCallback(SPI_HandleTypeDef *hspi)
+{
+	rx_done = 1;
+
+	HAL_UART_Transmit(&huart1, (uint8_t *)"RECV\n", 5, HAL_MAX_DELAY);
+	HAL_UART_Transmit(&huart1, rx_buf, sizeof(rx_buf) / sizeof(rx_buf[0]), HAL_MAX_DELAY);
+	HAL_UART_Transmit(&huart1, (uint8_t *)"\n", 1, HAL_MAX_DELAY);
+}
 
 /* USER CODE END 4 */
 

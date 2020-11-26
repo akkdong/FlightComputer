@@ -10,12 +10,28 @@ MPU9250_Result_t MPU9250_Initialize(MPU9250_CONFIG_t *MPU9250_CONFIG)
     uint8_t cmdbuf[8];
 	HAL_StatusTypeDef res;
 
-    /* MPU9250_WHO_AM_I ---------------------------------------------------------*/
-    cmdbuf[0] = MPU9250_WHO_AM_I|0x80;
+	{
+		cmdbuf[0] = MPU9250_USER_CTRL;
+		cmdbuf[1] = 0x10;
 
-    HAL_GPIO_WritePin(MPU9250_CONFIG->GPIOx,MPU9250_CONFIG->GPIO_PIN , 0);
-    res = HAL_SPI_TransmitReceive(MPU9250_CONFIG->hspi,cmdbuf,cmdbuf,2,0xFFFF);
-    HAL_GPIO_WritePin(MPU9250_CONFIG->GPIOx,MPU9250_CONFIG->GPIO_PIN , 1);
+		HAL_GPIO_WritePin(MPU9250_CONFIG->GPIOx,MPU9250_CONFIG->GPIO_PIN , 0);
+		res = HAL_SPI_TransmitReceive(MPU9250_CONFIG->hspi,cmdbuf,cmdbuf,2,0xFFFF);
+		HAL_GPIO_WritePin(MPU9250_CONFIG->GPIOx,MPU9250_CONFIG->GPIO_PIN , 1);
+	}
+
+    /* MPU9250_WHO_AM_I ---------------------------------------------------------*/
+	do
+	{
+		printf("MPU9250: who am i ?");
+		cmdbuf[0] = MPU9250_WHO_AM_I|0x80;
+
+		HAL_GPIO_WritePin(MPU9250_CONFIG->GPIOx,MPU9250_CONFIG->GPIO_PIN , 0);
+		res = HAL_SPI_TransmitReceive(MPU9250_CONFIG->hspi,cmdbuf,cmdbuf,2,0xFFFF);
+		HAL_GPIO_WritePin(MPU9250_CONFIG->GPIOx,MPU9250_CONFIG->GPIO_PIN , 1);
+		printf("  -> %02X\n", cmdbuf[1]);
+		HAL_Delay(1000);
+
+	} while (cmdbuf[1] != 0x71);
 
     //WHO_AM_I Check 
     if (cmdbuf[1] != 0x71) {

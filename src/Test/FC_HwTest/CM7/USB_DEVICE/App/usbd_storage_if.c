@@ -193,8 +193,8 @@ int8_t STORAGE_Init_HS(uint8_t lun)
 int8_t STORAGE_GetCapacity_HS(uint8_t lun, uint32_t *block_num, uint16_t *block_size)
 {
   /* USER CODE BEGIN 10 */
-  *block_num  = STORAGE_BLK_NBR;
-  *block_size = STORAGE_BLK_SIZ;
+  *block_num  = (64 * 1024 * 1024); // STORAGE_BLK_NBR;
+  *block_size = (512); // STORAGE_BLK_SIZ;
   return (USBD_OK);
   /* USER CODE END 10 */
 }

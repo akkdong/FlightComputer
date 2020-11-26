@@ -256,6 +256,8 @@ int8_t bmp280_init(struct bmp280_dev *dev)
                 break;
             }
 
+            bmp280_soft_reset(dev);
+
             /* Wait for 10 ms */
             dev->delay_ms(10);
             --try_count;
@@ -265,6 +267,13 @@ int8_t bmp280_init(struct bmp280_dev *dev)
         if (!try_count)
         {
             rslt = BMP280_E_DEV_NOT_FOUND;
+
+            printf("BMP280: not found!\n");
+            rslt = bmp280_soft_reset(dev);
+			if (rslt == BMP280_OK)
+			{
+				rslt = get_calib_param(dev);
+			}
         }
         if (rslt == BMP280_OK)
         {
