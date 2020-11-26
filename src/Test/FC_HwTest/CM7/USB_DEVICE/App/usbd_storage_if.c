@@ -64,8 +64,9 @@
   */
 
 #define STORAGE_LUN_NBR                  1
-#define STORAGE_BLK_NBR                  0x10000
+#define STORAGE_TOTAL_SIZE				(32 * 1024 * 1024)
 #define STORAGE_BLK_SIZ                  0x200
+#define STORAGE_BLK_NBR                  ((STORAGE_TOTAL_SIZE) / (STORAGE_BLK_SIZ))
 
 /* USER CODE BEGIN PRIVATE_DEFINES */
 
@@ -114,7 +115,7 @@ const int8_t STORAGE_Inquirydata_HS[] = {/* 36 */
 /* USER CODE END INQUIRY_DATA_HS */
 
 /* USER CODE BEGIN PRIVATE_VARIABLES */
-
+extern QSPI_HandleTypeDef hqspi1;
 /* USER CODE END PRIVATE_VARIABLES */
 
 /**
@@ -193,8 +194,8 @@ int8_t STORAGE_Init_HS(uint8_t lun)
 int8_t STORAGE_GetCapacity_HS(uint8_t lun, uint32_t *block_num, uint16_t *block_size)
 {
   /* USER CODE BEGIN 10 */
-  *block_num  = (64 * 1024 * 1024); // STORAGE_BLK_NBR;
-  *block_size = (512); // STORAGE_BLK_SIZ;
+  *block_num  = STORAGE_BLK_NBR;
+  *block_size =  STORAGE_BLK_SIZ;
   return (USBD_OK);
   /* USER CODE END 10 */
 }
@@ -234,6 +235,8 @@ int8_t STORAGE_IsWriteProtected_HS(uint8_t lun)
 int8_t STORAGE_Read_HS(uint8_t lun, uint8_t *buf, uint32_t blk_addr, uint16_t blk_len)
 {
   /* USER CODE BEGIN 13 */
+  volatile uint8_t* mem = (volatile uint8_t*)(0xD0000000);
+  memcpy(buf, mem + blk_addr * STORAGE_BLK_SIZ, blk_len * STORAGE_BLK_SIZ);
   return (USBD_OK);
   /* USER CODE END 13 */
 }
@@ -249,6 +252,8 @@ int8_t STORAGE_Read_HS(uint8_t lun, uint8_t *buf, uint32_t blk_addr, uint16_t bl
 int8_t STORAGE_Write_HS(uint8_t lun, uint8_t *buf, uint32_t blk_addr, uint16_t blk_len)
 {
   /* USER CODE BEGIN 14 */
+  volatile uint8_t* mem = (volatile uint8_t*)(0xD0000000);
+  memcpy(mem + blk_addr * STORAGE_BLK_SIZ, buf, blk_len * STORAGE_BLK_SIZ);
   return (USBD_OK);
   /* USER CODE END 14 */
 }

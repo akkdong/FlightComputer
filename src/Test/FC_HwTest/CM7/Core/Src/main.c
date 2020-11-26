@@ -71,9 +71,9 @@
 #define TEST_MPU9250 	0
 #define TEST_BMP280 	0
 #define TEST_GPS		0
-#define TEST_MSC		0
+#define TEST_MSC		1
 #define TEST_SPISLAVE	0
-#define TEST_UART3		1
+#define TEST_UART3		0
 
 /* USER CODE END PD */
 
@@ -396,9 +396,6 @@ int main(void)
   printf("Press F1 to start QSPI Test!\n");
 #endif
 
-#if TEST_MSC
-#endif
-
 #if TEST_SPISLAVE
   while(1)
   {
@@ -428,7 +425,10 @@ int main(void)
 
   while (1)
   {
-    /* USER CODE END WHILE */
+#if TEST_MSC
+	  // nop ...
+#endif
+
 
     /* USER CODE BEGIN 3 */
 	if (HAL_GetTick() - lastTick > 1000)
