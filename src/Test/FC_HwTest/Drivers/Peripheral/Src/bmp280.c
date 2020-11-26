@@ -123,7 +123,7 @@ int8_t bmp280_get_regs(uint8_t reg_addr, uint8_t *reg_data, uint8_t len, const s
         {
             reg_addr = reg_addr | 0x80;
         }
-        rslt = dev->read(dev->dev_id, reg_addr, reg_data, len);
+        rslt = dev->read(dev->dev_param, reg_addr, reg_data, len);
 
         /* Check for communication error and mask with an internal error code */
         if (rslt != BMP280_OK)
@@ -184,7 +184,7 @@ int8_t bmp280_set_regs(uint8_t *reg_addr, const uint8_t *reg_data, uint8_t len, 
             {
                 temp_len = len;
             }
-            rslt = dev->write(dev->dev_id, reg_addr[0], temp_buff, temp_len);
+            rslt = dev->write(dev->dev_param, reg_addr[0], temp_buff, temp_len);
 
             /* Check for communication error and mask with an internal error code */
             if (rslt != BMP280_OK)

@@ -7,15 +7,20 @@
 #include "stm32h7xx_hal.h"
 #include "bmp280.h"
 
+#define USE_SPI		(0)
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
 
 typedef struct _BMP280_HandleTypeDef
 {
+#if USE_SPI
 	SPI_HandleTypeDef*	spi;
 	GPIO_TypeDef *		cs_port;
 	uint16_t			cs_pin;
+#else
+	I2C_HandleTypeDef* i2c;
+#endif
 
 	struct bmp280_dev bmp;
 	struct bmp280_config conf;
@@ -31,7 +36,7 @@ typedef struct _BMP280_HandleTypeDef
 
 
 
-void BMP280_SPI_Init(BMP280_HandleTypeDef* bmp, SPI_HandleTypeDef* spi, GPIO_TypeDef* port, uint16_t pin);
+void BMP280_Init(BMP280_HandleTypeDef* dev);
 void BMP280_Update(BMP280_HandleTypeDef* dev);
 
 

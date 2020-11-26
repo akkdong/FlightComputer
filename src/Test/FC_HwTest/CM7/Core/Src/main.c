@@ -67,9 +67,11 @@
 
 #define TEST_SDRAM 		0
 #define TEST_QSPI 		0
-#define TEST_PMIC 		0
+#define TEST_PMIC 		1
 #define TEST_MPU9250 	0
 #define TEST_BMP280 	0
+#define TEST_MPU9250_I2C 	0
+#define TEST_BMP280_I2C 	0
 #define TEST_GPS		0
 #define TEST_MSC		1
 #define TEST_SPISLAVE	0
@@ -85,6 +87,7 @@
 /* Private variables ---------------------------------------------------------*/
 
 I2C_HandleTypeDef hi2c1;
+I2C_HandleTypeDef hi2c2;
 
 QSPI_HandleTypeDef hqspi1;
 
@@ -127,6 +130,7 @@ static void MX_USART1_UART_Init(void);
 static void MX_USART2_UART_Init(void);
 static void MX_USART3_UART_Init(void);
 static void MX_I2C1_Init(void);
+static void MX_I2C2_Init(void);
 /* USER CODE BEGIN PFP */
 static void SDRAM_Initialization_Sequence(SDRAM_HandleTypeDef *hsdram, FMC_SDRAM_CommandTypeDef *Command);
 
@@ -230,17 +234,17 @@ int main(void)
   HAL_GPIO_WritePin(PWR_EN_PERIPH_GPIO_Port, PWR_EN_PERIPH_Pin, GPIO_PIN_SET);
   HAL_GPIO_WritePin(PWR_EN_BAT_GPIO_Port, PWR_EN_BAT_Pin, GPIO_PIN_SET);
   HAL_Delay(100);
-  HAL_GPIO_WritePin(GPIOE ,GPIO_PIN_4, GPIO_PIN_SET);
 
   MX_FMC_Init();
   MX_QUADSPI_Init();
   MX_SPI1_Init();
-  MX_SPI4_Init();
+  //MX_SPI4_Init();
   MX_USART1_UART_Init();
   MX_USART2_UART_Init();
   MX_USART3_UART_Init();
   MX_USB_DEVICE_Init();
   MX_I2C1_Init();
+  MX_I2C2_Init();
   MX_FATFS_Init();
   /* USER CODE BEGIN 2 */
   printf("FC_HwTest...\n");
@@ -303,8 +307,17 @@ int main(void)
 #endif
 
 #if TEST_BMP280
-  BMP280_SPI_Init(&bmp280, &hspi4, GPIOE, GPIO_PIN_3); // IMU1_nCS1
+#if USE_SPI
+  bmp280.spi = &hspi4;
+  bmp280.cs_port = GPIOE;
+  bmp280.cs_pin = GPIO_PIN_3;
+#else
+  bmp280.i2c = &hi2c2;
 #endif
+
+  BMP280_Init(&bmp280);
+#endif
+
 #if TEST_MPU9250
   mpu9250_conf.hspi = &hspi4;
   mpu9250_conf.GPIOx = GPIOE; // IMU1_nCS2
@@ -315,6 +328,28 @@ int main(void)
   MPU9250_Initialize(&mpu9250_conf);
   MPU9250_Config(&mpu9250_conf);
   MPU9250_Calibrate(&mpu9250_conf);
+#endif
+
+#if TEST_MPU9250_I2C
+  {
+	  uint8_t i2c_addr = (0b1101000 << 1);
+	  uint8_t reg_addr = 0x75;
+	  uint8_t data = 0xFF;
+	  HAL_I2C_Master_Transmit(&hi2c2, i2c_addr, &reg_addr, 1, 1000);
+	  HAL_I2C_Master_Receive(&hi2c2, i2c_addr, &data, 1, 1000);
+	  printf("MPU9650:WHO_AM_I: %d\n", data);
+  }
+#endif
+
+#if TEST_BMP280_I2C
+  {
+	  uint8_t i2c_addr = (0x76 << 1);
+	  uint8_t reg_addr = 0xD0;
+	  uint8_t data = 0xFF;
+	  HAL_I2C_Master_Transmit(&hi2c2, i2c_addr, &reg_addr, 1, 1000);
+	  HAL_I2C_Master_Receive(&hi2c2, i2c_addr, &data, 1, 1000);
+	  printf("BMP280:WHO_AM_I: %d\n", data);
+  }
 #endif
 
 #if TEST_SDRAM
@@ -446,9 +481,9 @@ int main(void)
 #endif
 
 #if TEST_BMP280
-			BMP280_Update(&bmp280);
+		BMP280_Update(&bmp280);
 
-			printf("BMP: %d(P) %d(T)\n", bmp280.pres32, bmp280.temp32);
+		printf("BMP: %d(P) %d(T)\n", bmp280.pres32, bmp280.temp32);
 #endif
 
 #if TEST_MPU9250
@@ -882,6 +917,52 @@ static void MX_I2C1_Init(void)
   /* USER CODE BEGIN I2C1_Init 2 */
 
   /* USER CODE END I2C1_Init 2 */
+
+}
+
+/**
+  * @brief I2C2 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_I2C2_Init(void)
+{
+
+  /* USER CODE BEGIN I2C2_Init 0 */
+
+  /* USER CODE END I2C2_Init 0 */
+
+  /* USER CODE BEGIN I2C2_Init 1 */
+
+  /* USER CODE END I2C2_Init 1 */
+  hi2c2.Instance = I2C2;
+  hi2c2.Init.Timing = 0x00B03FDB;
+  hi2c2.Init.OwnAddress1 = 0;
+  hi2c2.Init.AddressingMode = I2C_ADDRESSINGMODE_7BIT;
+  hi2c2.Init.DualAddressMode = I2C_DUALADDRESS_DISABLE;
+  hi2c2.Init.OwnAddress2 = 0;
+  hi2c2.Init.OwnAddress2Masks = I2C_OA2_NOMASK;
+  hi2c2.Init.GeneralCallMode = I2C_GENERALCALL_DISABLE;
+  hi2c2.Init.NoStretchMode = I2C_NOSTRETCH_DISABLE;
+  if (HAL_I2C_Init(&hi2c2) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /** Configure Analogue filter
+  */
+  if (HAL_I2CEx_ConfigAnalogFilter(&hi2c2, I2C_ANALOGFILTER_ENABLE) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /** Configure Digital filter
+  */
+  if (HAL_I2CEx_ConfigDigitalFilter(&hi2c2, 0) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN I2C2_Init 2 */
+
+  /* USER CODE END I2C2_Init 2 */
 
 }
 
@@ -1322,8 +1403,7 @@ static void MX_GPIO_Init(void)
 
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOE, IMU1_nCS1_Pin, GPIO_PIN_RESET); // pull-down on power-up --> caused i2c disable
-  HAL_GPIO_WritePin(GPIOE, IMU1_nCS2_Pin, GPIO_PIN_SET);
+  HAL_GPIO_WritePin(GPIOE, IMU1_nCS1_Pin|IMU1_nCS2_Pin, GPIO_PIN_SET);
 
   /*Configure GPIO pins : IMU1_nCS1_Pin IMU1_nCS2_Pin */
   GPIO_InitStruct.Pin = IMU1_nCS1_Pin|IMU1_nCS2_Pin;

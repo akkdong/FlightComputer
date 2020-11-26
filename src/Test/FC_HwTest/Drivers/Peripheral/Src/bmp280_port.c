@@ -19,7 +19,7 @@
 #define	BME280_INVALID_DATA				(0)
 
 
-
+#if USE_SPI
 static int8_t SPI_RegRead(uint32_t dev_param, uint8_t reg_addr, uint8_t *data, uint16_t len)
 {
 	BMP280_HandleTypeDef* dev = (BMP280_HandleTypeDef *)dev_param;
@@ -117,24 +117,44 @@ static int8_t SPI_RegWrite(uint32_t dev_param, uint8_t reg_addr, uint8_t *data, 
 #endif
 }
 
+#else
 
+static int8_t I2C_RegRead(uint32_t dev_param, uint8_t reg_addr, uint8_t *data, uint16_t len)
+{
+	BMP280_HandleTypeDef* dev = (BMP280_HandleTypeDef *)dev_param;
+	HAL_I2C_Mem_Read(dev->i2c, dev->bmp.dev_id, reg_addr, I2C_MEMADD_SIZE_8BIT, data, len, 1000);
+
+	return 0;
+}
+
+static int8_t I2C_RegWrite(uint32_t dev_param, uint8_t reg_addr, uint8_t *data, uint16_t len)
+{
+	BMP280_HandleTypeDef* dev = (BMP280_HandleTypeDef *)dev_param;
+	HAL_I2C_Mem_Write(dev->i2c, dev->bmp.dev_id, reg_addr, I2C_MEMADD_SIZE_8BIT, data, len, 1000);
+
+	return 0;
+}
+
+#endif
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //
 
-void BMP280_SPI_Init(BMP280_HandleTypeDef* dev, SPI_HandleTypeDef* spi, GPIO_TypeDef* port, uint16_t pin)
+void BMP280_Init(BMP280_HandleTypeDef* dev)
 {
-	//
-	dev->spi = spi;
-	dev->cs_port = port;
-	dev->cs_pin = pin;
-
-	//
+#if USE_SPI
 	dev->bmp.intf = BMP280_SPI_INTF;
-	dev->bmp.dev_id = (uint32_t)dev;
 	dev->bmp.delay_ms = HAL_Delay;
 	dev->bmp.read = SPI_RegRead;
 	dev->bmp.write = SPI_RegWrite;
+#else
+	dev->bmp.intf = BMP280_I2C_INTF;
+	dev->bmp.delay_ms = HAL_Delay;
+	dev->bmp.read = I2C_RegRead;
+	dev->bmp.write = I2C_RegWrite;
+#endif
+	dev->bmp.dev_id = (0x76 << 1);
+	dev->bmp.dev_param = (uint32_t)dev;
 
 	int8_t result = bmp280_init(&dev->bmp);
 	result = bmp280_get_config(&dev->conf, &dev->bmp);
@@ -150,12 +170,6 @@ void BMP280_SPI_Init(BMP280_HandleTypeDef* dev, SPI_HandleTypeDef* spi, GPIO_Typ
 
 	// Always set the power mode after setting the configuration
 	result =bmp280_set_power_mode(BMP280_NORMAL_MODE, &dev->bmp);
-
-	{
-		uint8_t id = 0xFF;
-		int8_t rslt = bmp280_get_regs(BMP280_CHIP_ID_ADDR, &id, 1, &dev->bmp);
-		printf("READ CHIP-ID: %d(%d)\n", id, rslt);
-	}
 }
 
 

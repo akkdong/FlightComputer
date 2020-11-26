@@ -387,7 +387,8 @@ struct bmp280_uncomp_data
 /*! @name API device structure */
 struct bmp280_dev
 {
-    uint32_t dev_id;
+    uint32_t dev_param;
+    uint8_t dev_id;
     uint8_t chip_id;
     uint8_t intf;
     bmp280_com_fptr_t read;
