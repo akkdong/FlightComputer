@@ -86,6 +86,8 @@
 /* USER CODE END PM */
 
 /* Private variables ---------------------------------------------------------*/
+ADC_HandleTypeDef hadc3;
+DMA_HandleTypeDef hdma_adc3;
 
 I2C_HandleTypeDef hi2c1;
 I2C_HandleTypeDef hi2c2;
@@ -95,6 +97,8 @@ MDMA_HandleTypeDef hmdma_quadspi_fifo_th;
 
 SPI_HandleTypeDef hspi1;
 SPI_HandleTypeDef hspi4;
+
+TIM_HandleTypeDef htim2;
 
 UART_HandleTypeDef huart1;
 UART_HandleTypeDef huart2;
@@ -126,6 +130,7 @@ void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
 static void MX_FMC_Init(void);
 static void MX_QUADSPI_Init(void);
+static void MX_DMA_Init(void);
 static void MX_MDMA_Init(void);
 static void MX_SPI1_Init(void);
 static void MX_SPI4_Init(void);
@@ -134,6 +139,8 @@ static void MX_USART2_UART_Init(void);
 static void MX_USART3_UART_Init(void);
 static void MX_I2C1_Init(void);
 static void MX_I2C2_Init(void);
+static void MX_ADC3_Init(void);
+static void MX_TIM2_Init(void);
 /* USER CODE BEGIN PFP */
 static void SDRAM_Initialization_Sequence(SDRAM_HandleTypeDef *hsdram, FMC_SDRAM_CommandTypeDef *Command);
 
@@ -167,6 +174,19 @@ int _write(int file, char *ptr, int len)
 		__io_putchar( *ptr++ );
 	}
 	return len;
+}
+
+#define NO_SAMPLE 100
+uint16_t adc_buff[NO_SAMPLE];
+uint16_t user_buff[NO_SAMPLE];
+
+void HAL_ADC_ConvHalfCpltCallback(ADC_HandleTypeDef* hadc)
+{
+ memcpy(&user_buff[0], & adc_buff[0], NO_SAMPLE/2);
+}
+void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc)
+{
+ memcpy(&user_buff[NO_SAMPLE/2], & adc_buff[NO_SAMPLE/2], NO_SAMPLE/2);
 }
 /* USER CODE END 0 */
 
@@ -237,9 +257,11 @@ int main(void)
   MX_GPIO_Init();
   //
   HAL_GPIO_WritePin(PWR_EN_PERIPH_GPIO_Port, PWR_EN_PERIPH_Pin, GPIO_PIN_SET);
-  //HAL_GPIO_WritePin(PWR_EN_BAT_GPIO_Port, PWR_EN_BAT_Pin, GPIO_PIN_SET);
+  HAL_GPIO_WritePin(PWR_EN_BAT_GPIO_Port, PWR_EN_BAT_Pin, GPIO_PIN_SET);
+  HAL_GPIO_WritePin(PWR_EN_5V_GPIO_Port, PWR_EN_5V_Pin, GPIO_PIN_SET);
   HAL_Delay(20);
   //
+  MX_DMA_Init();
   MX_MDMA_Init();
   MX_FMC_Init();
   MX_QUADSPI_Init();
@@ -252,6 +274,8 @@ int main(void)
   MX_I2C1_Init();
   MX_I2C2_Init();
   MX_FATFS_Init();
+  MX_ADC3_Init();
+  MX_TIM2_Init();
   /* USER CODE BEGIN 2 */
   printf("FC_HwTest...\n");
 
@@ -464,7 +488,10 @@ int main(void)
   }
 #endif
 
-  // TEST qspi_drv
+  {
+	  HAL_ADC_Start_DMA(&hadc3, (uint32_t*)adc_buff, NO_SAMPLE);
+	  HAL_TIM_Base_Start(&htim2);
+  }
 
 
   while (1)
@@ -491,6 +518,53 @@ int main(void)
 	{
 		HAL_GPIO_TogglePin(PWR_LED_GPIO_Port, PWR_LED_Pin);
 		lastTick = HAL_GetTick();
+
+
+
+		// ADC
+		if (0)
+		{
+
+			  /* Run the ADC calibration in single-ended mode */
+			  if (HAL_ADCEx_Calibration_Start(&hadc3, ADC_CALIB_OFFSET, ADC_SINGLE_ENDED) != HAL_OK)
+			  {
+				/* Calibration Error */
+				Error_Handler();
+			  }
+
+			  /*##-3- Start the conversion process #######################################*/
+			  if (HAL_ADC_Start(&hadc3) != HAL_OK)
+			  {
+				/* Start Conversation Error */
+				Error_Handler();
+			  }
+
+			  /*##-4- Wait for the end of conversion #####################################*/
+			  /*  For simplicity reasons, this example is just waiting till the end of the
+				  conversion, but application may perform other tasks while conversion
+				  operation is ongoing. */
+			  if (HAL_ADC_PollForConversion(&hadc3, 10) != HAL_OK)
+			  {
+				/* End Of Conversion flag not set on time */
+				Error_Handler();
+			  }
+			  else
+			  {
+				/* ADC conversion completed */
+				/*##-5- Get the converted value of regular channel  ########################*/
+				uint32_t uhADCxConvertedValue = HAL_ADC_GetValue(&hadc3);
+
+				// 0xFFFF : 3.3v = measured-value : voltage
+				float voltage_m = 3.3 * uhADCxConvertedValue / 0xFFFF;
+				// voltage_i * 1000 / (560 + 1000) = voltage_m
+				float voltage_i = voltage_m * 1.56;
+
+				printf("VOL: %d, %d.%d --> %d.%d\n",
+						uhADCxConvertedValue,
+						(int)voltage_m, ((int)(voltage_m * 10)) % 10,
+						(int)voltage_i, ((int)(voltage_i * 10)) % 10);
+			  }
+		}
 
 
 #if TEST_PMIC
@@ -799,6 +873,7 @@ int main(void)
 		HAL_UART_Transmit(&huart1, &data, 1, 1000);
 	}
 #endif
+
   }
   /* USER CODE END 3 */
 }
@@ -1018,6 +1093,22 @@ static void MX_QUADSPI_Init(void)
   }
   /* USER CODE BEGIN QUADSPI_Init 2 */
   /* USER CODE END QUADSPI_Init 2 */
+
+}
+
+/**
+  * Enable DMA controller clock
+  */
+static void MX_DMA_Init(void)
+{
+
+  /* DMA controller clock enable */
+  __HAL_RCC_DMA1_CLK_ENABLE();
+
+  /* DMA interrupt init */
+  /* DMA1_Stream0_IRQn interrupt configuration */
+  HAL_NVIC_SetPriority(DMA1_Stream0_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(DMA1_Stream0_IRQn);
 
 }
 
@@ -1269,6 +1360,220 @@ static void MX_USART3_UART_Init(void)
   /* USER CODE BEGIN USART3_Init 2 */
 
   /* USER CODE END USART3_Init 2 */
+
+}
+
+/**
+  * @brief ADC3 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_ADC3_Init(void)
+{
+
+  /* USER CODE BEGIN ADC3_Init 0 */
+
+  /* USER CODE END ADC3_Init 0 */
+
+  ADC_ChannelConfTypeDef sConfig = {0};
+
+  /* USER CODE BEGIN ADC3_Init 1 */
+
+  /* USER CODE END ADC3_Init 1 */
+  /** Common config
+  */
+  hadc3.Instance = ADC3;
+  hadc3.Init.ClockPrescaler = ADC_CLOCK_ASYNC_DIV2;
+  hadc3.Init.Resolution = ADC_RESOLUTION_16B;
+  hadc3.Init.ScanConvMode = ADC_SCAN_DISABLE;
+  hadc3.Init.EOCSelection = ADC_EOC_SINGLE_CONV;
+  hadc3.Init.LowPowerAutoWait = DISABLE;
+  hadc3.Init.ContinuousConvMode = DISABLE;
+  hadc3.Init.NbrOfConversion = 1;
+  hadc3.Init.DiscontinuousConvMode = DISABLE;
+  hadc3.Init.ExternalTrigConv = ADC_SOFTWARE_START;
+  hadc3.Init.ExternalTrigConvEdge = ADC_EXTERNALTRIGCONVEDGE_NONE;
+  hadc3.Init.ConversionDataManagement = ADC_CONVERSIONDATA_DR;
+  hadc3.Init.Overrun = ADC_OVR_DATA_OVERWRITTEN; // ADC_OVR_DATA_PRESERVED;
+  hadc3.Init.LeftBitShift = ADC_LEFTBITSHIFT_NONE;
+  hadc3.Init.OversamplingMode = DISABLE;
+  if (HAL_ADC_Init(&hadc3) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /** Configure Regular Channel
+  */
+  sConfig.Channel = ADC_CHANNEL_1;
+  sConfig.Rank = ADC_REGULAR_RANK_1;
+  sConfig.SamplingTime = ADC_SAMPLETIME_8CYCLES_5;
+  sConfig.SingleDiff = ADC_SINGLE_ENDED;
+  sConfig.OffsetNumber = ADC_OFFSET_NONE;
+  sConfig.Offset = 0;
+  sConfig.OffsetSignedSaturation = DISABLE;
+  if (HAL_ADC_ConfigChannel(&hadc3, &sConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /** Configure Regular Channel
+    */
+    sConfig.Rank = ADC_REGULAR_RANK_2;
+    if (HAL_ADC_ConfigChannel(&hadc3, &sConfig) != HAL_OK)
+    {
+      Error_Handler();
+    }
+    /** Configure Regular Channel
+    */
+    sConfig.Rank = ADC_REGULAR_RANK_3;
+    if (HAL_ADC_ConfigChannel(&hadc3, &sConfig) != HAL_OK)
+    {
+      Error_Handler();
+    }
+    /** Configure Regular Channel
+    */
+    sConfig.Rank = ADC_REGULAR_RANK_4;
+    if (HAL_ADC_ConfigChannel(&hadc3, &sConfig) != HAL_OK)
+    {
+      Error_Handler();
+    }
+    /** Configure Regular Channel
+    */
+    sConfig.Rank = ADC_REGULAR_RANK_5;
+    if (HAL_ADC_ConfigChannel(&hadc3, &sConfig) != HAL_OK)
+    {
+      Error_Handler();
+    }
+    /** Configure Regular Channel
+    */
+    sConfig.Rank = ADC_REGULAR_RANK_6;
+    if (HAL_ADC_ConfigChannel(&hadc3, &sConfig) != HAL_OK)
+    {
+      Error_Handler();
+    }
+    /** Configure Regular Channel
+    */
+    sConfig.Rank = ADC_REGULAR_RANK_7;
+    if (HAL_ADC_ConfigChannel(&hadc3, &sConfig) != HAL_OK)
+    {
+      Error_Handler();
+    }
+    /** Configure Regular Channel
+    */
+    sConfig.Rank = ADC_REGULAR_RANK_8;
+    if (HAL_ADC_ConfigChannel(&hadc3, &sConfig) != HAL_OK)
+    {
+      Error_Handler();
+    }
+    /** Configure Regular Channel
+    */
+    sConfig.Rank = ADC_REGULAR_RANK_9;
+    if (HAL_ADC_ConfigChannel(&hadc3, &sConfig) != HAL_OK)
+    {
+      Error_Handler();
+    }
+    /** Configure Regular Channel
+    */
+    sConfig.Rank = ADC_REGULAR_RANK_10;
+    if (HAL_ADC_ConfigChannel(&hadc3, &sConfig) != HAL_OK)
+    {
+      Error_Handler();
+    }
+    /** Configure Regular Channel
+    */
+    sConfig.Rank = ADC_REGULAR_RANK_11;
+    if (HAL_ADC_ConfigChannel(&hadc3, &sConfig) != HAL_OK)
+    {
+      Error_Handler();
+    }
+    /** Configure Regular Channel
+    */
+    sConfig.Rank = ADC_REGULAR_RANK_12;
+    if (HAL_ADC_ConfigChannel(&hadc3, &sConfig) != HAL_OK)
+    {
+      Error_Handler();
+    }
+    /** Configure Regular Channel
+    */
+    sConfig.Rank = ADC_REGULAR_RANK_13;
+    if (HAL_ADC_ConfigChannel(&hadc3, &sConfig) != HAL_OK)
+    {
+      Error_Handler();
+    }
+    /** Configure Regular Channel
+    */
+    sConfig.Rank = ADC_REGULAR_RANK_14;
+    if (HAL_ADC_ConfigChannel(&hadc3, &sConfig) != HAL_OK)
+    {
+      Error_Handler();
+    }
+    /** Configure Regular Channel
+    */
+    sConfig.Rank = ADC_REGULAR_RANK_15;
+    if (HAL_ADC_ConfigChannel(&hadc3, &sConfig) != HAL_OK)
+    {
+      Error_Handler();
+    }
+    /** Configure Regular Channel
+    */
+    sConfig.Rank = ADC_REGULAR_RANK_16;
+    if (HAL_ADC_ConfigChannel(&hadc3, &sConfig) != HAL_OK)
+    {
+      Error_Handler();
+    }
+  /* USER CODE BEGIN ADC3_Init 2 */
+
+  /* USER CODE END ADC3_Init 2 */
+
+}
+
+/**
+  * @brief TIM2 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_TIM2_Init(void)
+{
+
+  /* USER CODE BEGIN TIM2_Init 0 */
+
+  /* USER CODE END TIM2_Init 0 */
+  TIM_MasterConfigTypeDef sMasterConfig = {0};
+  TIM_OC_InitTypeDef sConfigOC = {0};
+
+  /* USER CODE BEGIN TIM2_Init 1 */
+
+  /* USER CODE END TIM2_Init 1 */
+  htim2.Instance = TIM2;
+  htim2.Init.Prescaler = 239; // 240000000 / 240 = 1000000 (1MHz)
+  htim2.Init.CounterMode = TIM_COUNTERMODE_UP;
+  htim2.Init.Period = 10000 - 1; // 1us * 10000 = 10ms -> 100Hz
+  htim2.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
+  htim2.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_ENABLE;
+  if (HAL_TIM_OC_Init(&htim2) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sMasterConfig.MasterOutputTrigger = TIM_TRGO_UPDATE;
+  sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
+  if (HAL_TIMEx_MasterConfigSynchronization(&htim2, &sMasterConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sConfigOC.OCMode = TIM_OCMODE_TIMING;
+  sConfigOC.Pulse = 0;
+  sConfigOC.OCPolarity = TIM_OCPOLARITY_HIGH;
+  sConfigOC.OCFastMode = TIM_OCFAST_DISABLE;
+  if (HAL_TIM_OC_ConfigChannel(&htim2, &sConfigOC, TIM_CHANNEL_1) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  if (HAL_TIM_OC_ConfigChannel(&htim2, &sConfigOC, TIM_CHANNEL_2) != HAL_OK)
+  {
+    Error_Handler();
+  }
+
+  /* USER CODE BEGIN TIM2_Init 2 */
+
+  /* USER CODE END TIM2_Init 2 */
 
 }
 

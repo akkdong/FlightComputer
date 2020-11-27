@@ -130,15 +130,16 @@ int main(void)
   /* USER CODE END SysInit */
 
   /* Initialize all configured peripherals */
-  MX_GPIO_Init();
-  MX_USART3_UART_Init();
-  MX_USART2_UART_Init();
-  MX_ADC3_Init();
-  MX_SPI4_Init();
+  //MX_GPIO_Init();
+  //MX_USART3_UART_Init();
+  //MX_USART2_UART_Init();
+  //MX_ADC3_Init();
+  //MX_SPI4_Init();
   MX_TIM2_Init();
-  MX_I2C2_Init();
+  //MX_I2C2_Init();
   /* USER CODE BEGIN 2 */
 
+#if 0
   HAL_GPIO_WritePin(GPIOG, PWR_LED_Pin, GPIO_PIN_RESET);
 
   HAL_Delay(100);
@@ -149,6 +150,7 @@ int main(void)
   HAL_SPI_TransmitReceive(&hspi4, txd, rxd, 2, 1000);
   printf("%02X %02X", rxd[0], rxd[1]);
   HAL_GPIO_WritePin(IMU1_nCS1_GPIO_Port, IMU1_nCS1_Pin, GPIO_PIN_SET);
+#endif
   /* USER CODE END 2 */
 
   /* Infinite loop */
