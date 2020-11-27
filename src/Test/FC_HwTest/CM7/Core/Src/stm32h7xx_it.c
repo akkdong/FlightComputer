@@ -60,7 +60,7 @@ extern PCD_HandleTypeDef hpcd_USB_OTG_FS;
 extern PCD_HandleTypeDef hpcd_USB_OTG_HS;
 extern SPI_HandleTypeDef hspi1;
 /* USER CODE BEGIN EV */
-extern QSPI_HandleTypeDef hqspi1;
+extern QSPI_HandleTypeDef hqspi;
 /* USER CODE END EV */
 
 /******************************************************************************/
@@ -250,9 +250,8 @@ void OTG_FS_IRQHandler(void)
   */
 void QUADSPI_IRQHandler(void)
 {
-  HAL_QSPI_IRQHandler(&hqspi1);
+  HAL_QSPI_IRQHandler(&hqspi);
 }
-
 
 /* USER CODE END 1 */
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

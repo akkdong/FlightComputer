@@ -42,6 +42,7 @@
 
 /* Private variables ---------------------------------------------------------*/
 /* USER CODE BEGIN PV */
+extern MDMA_HandleTypeDef hmdma_quadspi_fifo_th;
 
 /* USER CODE END PV */
 
@@ -237,8 +238,40 @@ void HAL_QSPI_MspInit(QSPI_HandleTypeDef* hqspi)
     HAL_GPIO_Init(GPIOG, &GPIO_InitStruct);
 
   /* USER CODE BEGIN QUADSPI_MspInit 1 */
+
+    /* QUADSPI MDMA Init */
+    /* QUADSPI_FIFO_TH Init */
+    hmdma_quadspi_fifo_th.Instance = MDMA_Channel5;
+    hmdma_quadspi_fifo_th.Init.Request = MDMA_REQUEST_QUADSPI_FIFO_TH;
+    hmdma_quadspi_fifo_th.Init.TransferTriggerMode = MDMA_BUFFER_TRANSFER;
+    hmdma_quadspi_fifo_th.Init.Priority = MDMA_PRIORITY_HIGH;
+    hmdma_quadspi_fifo_th.Init.Endianness = MDMA_LITTLE_ENDIANNESS_PRESERVE;
+    hmdma_quadspi_fifo_th.Init.SourceInc = MDMA_SRC_INC_BYTE;
+    hmdma_quadspi_fifo_th.Init.DestinationInc = MDMA_DEST_INC_DISABLE;
+    hmdma_quadspi_fifo_th.Init.SourceDataSize = MDMA_SRC_DATASIZE_BYTE;
+    hmdma_quadspi_fifo_th.Init.DestDataSize = MDMA_DEST_DATASIZE_BYTE;
+    hmdma_quadspi_fifo_th.Init.DataAlignment = MDMA_DATAALIGN_PACKENABLE;
+    hmdma_quadspi_fifo_th.Init.BufferTransferLength = 1;
+    hmdma_quadspi_fifo_th.Init.SourceBurst = MDMA_SOURCE_BURST_SINGLE;
+    hmdma_quadspi_fifo_th.Init.DestBurst = MDMA_DEST_BURST_SINGLE;
+    hmdma_quadspi_fifo_th.Init.SourceBlockAddressOffset = 0;
+    hmdma_quadspi_fifo_th.Init.DestBlockAddressOffset = 0;
+    if (HAL_MDMA_Init(&hmdma_quadspi_fifo_th) != HAL_OK)
+    {
+      Error_Handler();
+    }
+
+    if (HAL_MDMA_ConfigPostRequestMask(&hmdma_quadspi_fifo_th, 0, 0) != HAL_OK)
+    {
+      Error_Handler();
+    }
+
+    __HAL_LINKDMA(hqspi,hmdma,hmdma_quadspi_fifo_th);
+
+    //
     HAL_NVIC_SetPriority(QUADSPI_IRQn, 0x0F, 0);
     HAL_NVIC_EnableIRQ(QUADSPI_IRQn);
+
   /* USER CODE END QUADSPI_MspInit 1 */
   }
 

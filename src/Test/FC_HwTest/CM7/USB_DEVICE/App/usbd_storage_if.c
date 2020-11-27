@@ -21,6 +21,7 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "usbd_storage_if.h"
+#include "qspi_drv.h"
 
 /* USER CODE BEGIN INCLUDE */
 
@@ -63,10 +64,19 @@
   * @{
   */
 
+#define USE_SDRAM 0
+
+#if USE_SDRAM
 #define STORAGE_LUN_NBR                  1
 #define STORAGE_TOTAL_SIZE				(32 * 1024 * 1024)
 #define STORAGE_BLK_SIZ                  0x200
 #define STORAGE_BLK_NBR                  ((STORAGE_TOTAL_SIZE) / (STORAGE_BLK_SIZ))
+#else
+#define STORAGE_LUN_NBR                  1
+#define STORAGE_TOTAL_SIZE				(64 * 1024 * 1024)
+#define STORAGE_BLK_SIZ                  0x1000
+#define STORAGE_BLK_NBR                  ((STORAGE_TOTAL_SIZE) / (STORAGE_BLK_SIZ))
+#endif
 
 /* USER CODE BEGIN PRIVATE_DEFINES */
 
@@ -115,7 +125,6 @@ const int8_t STORAGE_Inquirydata_HS[] = {/* 36 */
 /* USER CODE END INQUIRY_DATA_HS */
 
 /* USER CODE BEGIN PRIVATE_VARIABLES */
-extern QSPI_HandleTypeDef hqspi1;
 /* USER CODE END PRIVATE_VARIABLES */
 
 /**
@@ -180,7 +189,20 @@ USBD_StorageTypeDef USBD_Storage_Interface_fops_HS =
 int8_t STORAGE_Init_HS(uint8_t lun)
 {
   /* USER CODE BEGIN 9 */
-  return (USBD_OK);
+#if USE_SDRAM
+	return 0;
+#else
+	if (QSPI_Driver_locked())
+		return -1;
+	if(QSPI_Driver_state() == 1)
+		return 0;
+	//init qspi
+	if(  QSPI_Driver_init() == QSPI_STATUS_OK)
+	{
+		return 0;
+	}
+	return 0;
+#endif
   /* USER CODE END 9 */
 }
 
@@ -196,7 +218,9 @@ int8_t STORAGE_GetCapacity_HS(uint8_t lun, uint32_t *block_num, uint16_t *block_
   /* USER CODE BEGIN 10 */
   *block_num  = STORAGE_BLK_NBR;
   *block_size =  STORAGE_BLK_SIZ;
-  return (USBD_OK);
+  //printf("Capacity: %d, %d\n", *block_num, *block_size);
+
+  return USBD_OK;
   /* USER CODE END 10 */
 }
 
@@ -208,7 +232,22 @@ int8_t STORAGE_GetCapacity_HS(uint8_t lun, uint32_t *block_num, uint16_t *block_
 int8_t STORAGE_IsReady_HS(uint8_t lun)
 {
   /* USER CODE BEGIN 11 */
-  return (USBD_OK);
+#if USE_SDRAM
+	return 0;
+#else
+	 if(!QSPI_Driver_state())
+	 {
+		 if(  QSPI_Driver_init() == QSPI_STATUS_OK)
+		 {
+			 return 0;
+		 }
+		 else
+			 return -1;
+	 }
+	 if(QSPI_Driver_locked())
+		 return -1;
+	 return 0;
+#endif
   /* USER CODE END 11 */
 }
 
@@ -235,9 +274,34 @@ int8_t STORAGE_IsWriteProtected_HS(uint8_t lun)
 int8_t STORAGE_Read_HS(uint8_t lun, uint8_t *buf, uint32_t blk_addr, uint16_t blk_len)
 {
   /* USER CODE BEGIN 13 */
+#if USE_SDRAM
+  //printf("Reading sector 0x%X, %d sectors\n",(unsigned int)blk_addr,(unsigned int)blk_len);
   volatile uint8_t* mem = (volatile uint8_t*)(0xD0000000);
   memcpy(buf, mem + blk_addr * STORAGE_BLK_SIZ, blk_len * STORAGE_BLK_SIZ);
   return (USBD_OK);
+#else
+	 if(QSPI_Driver_locked())
+	 {
+		 printf("QSPI LOCKED!!\n");
+		 return -1;
+	 }
+	 uint32_t bufferSize = (BLOCK_SIZE * blk_len);
+	 uint32_t address =  (blk_addr * BLOCK_SIZE);
+	 uint32_t data_read = 0;
+	 //printf("Reading sector 0x%X, %d sectors\n",(unsigned int)blk_addr,(unsigned int)blk_len);
+	 while(data_read < bufferSize)
+	 {
+		 uint32_t incr = bufferSize < MAX_READ_SIZE ? bufferSize : MAX_READ_SIZE;
+		 if(QSPI_Driver_read(&buf[data_read],address,incr) != QSPI_STATUS_OK)
+		 {
+			 printf("READ FAILED: 0x%X\n", address);
+			 return -1;
+		 }
+		 data_read += incr;
+		 address += incr;
+	 }
+	 return 0;
+#endif
   /* USER CODE END 13 */
 }
 
@@ -252,9 +316,39 @@ int8_t STORAGE_Read_HS(uint8_t lun, uint8_t *buf, uint32_t blk_addr, uint16_t bl
 int8_t STORAGE_Write_HS(uint8_t lun, uint8_t *buf, uint32_t blk_addr, uint16_t blk_len)
 {
   /* USER CODE BEGIN 14 */
+  //printf("Writing sector 0x%X, %d sectors\n",(unsigned int)blk_addr,(unsigned int)blk_len);
+#if USE_SDRAM
   volatile uint8_t* mem = (volatile uint8_t*)(0xD0000000);
   memcpy(mem + blk_addr * STORAGE_BLK_SIZ, buf, blk_len * STORAGE_BLK_SIZ);
   return (USBD_OK);
+#else
+	 if(QSPI_Driver_locked())
+	 {
+		 printf("QSPI LOCKED!!\n");
+		 return -1;
+	 }
+	 //erase subsectors
+	 uint32_t subsector_addr = blk_addr * BLOCK_SIZE;
+	 int i=0;
+	 for(i=0;i<blk_len;i++)
+	 {
+		 if(QSPI_Driver_eraze_subsector(subsector_addr) != QSPI_STATUS_OK)
+		 {
+			 printf("ERASE FAILED: 0x%X\n", subsector_addr);
+			 return -1;
+		 }
+		 subsector_addr += BLOCK_SIZE;
+	 }
+	 //write data
+	 uint32_t bufferSize = (BLOCK_SIZE * blk_len);
+	 uint32_t address =  (blk_addr * BLOCK_SIZE);
+	 if(QSPI_Driver_write(buf, address, bufferSize) != QSPI_STATUS_OK)
+	 {
+		 printf("WRITE FAILED: 0x%X\n", address);
+		 return -1;
+	 }
+	 return 0;
+#endif
   /* USER CODE END 14 */
 }
 
