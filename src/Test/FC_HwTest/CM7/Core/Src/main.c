@@ -65,10 +65,10 @@
 #define SDRAM_MODEREG_WRITEBURST_MODE_PROGRAMMED ((uint16_t)0x0000)
 #define SDRAM_MODEREG_WRITEBURST_MODE_SINGLE     ((uint16_t)0x0200)
 
-
+#define TEST_SLEEP		1
 #define TEST_SDRAM 		0
 #define TEST_QSPI 		0
-#define TEST_PMIC 		0
+#define TEST_PMIC 		1
 #define TEST_MPU9250 	0
 #define TEST_BMP280 	0
 #define TEST_MPU9250_I2C 	0
@@ -212,12 +212,14 @@ int main(void)
 
 /* USER CODE BEGIN Boot_Mode_Sequence_1 */
   /* Wait until CPU2 boots and enters in stop mode or timeout*/
+#if !TEST_SLEEP
   timeout = 0xFFFF;
   while((__HAL_RCC_GET_FLAG(RCC_FLAG_D2CKRDY) != RESET) && (timeout-- > 0));
   if ( timeout < 0 )
   {
   Error_Handler();
   }
+#endif
 /* USER CODE END Boot_Mode_Sequence_1 */
   /* MCU Configuration--------------------------------------------------------*/
 
@@ -231,7 +233,7 @@ int main(void)
   /* Configure the system clock */
   SystemClock_Config();
   /* USER CODE BEGIN Boot_Mode_Sequence_2 */
-#if 1
+#if !TEST_SLEEP
   /* When system initialization is finished, Cortex-M7 will release Cortex-M4 by means of
   HSEM notification */
   /*HW semaphore Clock enable*/
@@ -255,6 +257,8 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
+
+
   //
   HAL_GPIO_WritePin(PWR_EN_PERIPH_GPIO_Port, PWR_EN_PERIPH_Pin, GPIO_PIN_SET);
   HAL_GPIO_WritePin(PWR_EN_BAT_GPIO_Port, PWR_EN_BAT_Pin, GPIO_PIN_SET);
@@ -278,6 +282,97 @@ int main(void)
   MX_TIM2_Init();
   /* USER CODE BEGIN 2 */
   printf("FC_HwTest...\n");
+
+
+  // check power on
+#if TEST_SLEEP
+  if(__HAL_PWR_GET_FLAG(PWR_FLAG_SB) != RESET)
+  {
+	  printf("Wakeup from STANDBY\n");
+
+	  // Clear system Standby flag
+	  __HAL_PWR_CLEAR_FLAG(PWR_FLAG_SB);
+
+	  // turn on LED...
+	  HAL_GPIO_WritePin(PWR_LED_GPIO_Port, PWR_LED_Pin, GPIO_PIN_RESET);
+
+	  /* The Following Wakeup sequence is highly recommended prior to each Standby mode entry
+	    mainly  when using more than one wakeup source this is to not miss any wakeup event.
+	    - Disable all used wakeup sources,
+	    - Clear all related wakeup flags,
+	    - Re-enable all used wakeup sources,
+	    - Enter the Standby mode.
+	  */
+	  /* Disable all used wakeup sources*/
+	  HAL_PWREx_DisableWakeUpPin(PWR_WAKEUP_PIN1);
+
+	  /* Re-enable all used wakeup sources*/
+	  /* Configure Wakeup pin */
+	  PWREx_WakeupPinTypeDef sPinParams;
+	  HAL_StatusTypeDef ret = HAL_OK;
+
+	  sPinParams.WakeUpPin    = PWR_WAKEUP_PIN1;
+	  sPinParams.PinPolarity  = PWR_PIN_POLARITY_HIGH;
+	  sPinParams.PinPull      = PWR_PIN_NO_PULL;
+	  HAL_PWREx_EnableWakeUpPin(&sPinParams);
+
+	  /* Clear all related wakeup flags */
+#define PWR_WAKEUP_FLAGS  (PWR_WAKEUP_FLAG1 | PWR_WAKEUP_FLAG2 | PWR_WAKEUP_FLAG3 | \
+                           PWR_WAKEUP_FLAG4 | PWR_WAKEUP_FLAG5 | PWR_WAKEUP_FLAG6)
+
+
+	  ret = HAL_PWREx_ClearWakeupFlag(PWR_WAKEUP_FLAGS);
+	  if(ret != HAL_OK)
+	  {
+	    Error_Handler();
+	  }
+
+	  uint32_t lastTick = HAL_GetTick();
+	  HAL_Delay(100);
+	  while (1)
+	  {
+		  GPIO_PinState state = HAL_GPIO_ReadPin(PWR_WKUP0_KEY_ENTER_GPIO_Port, PWR_WKUP0_KEY_ENTER_Pin);
+		  if (state == GPIO_PIN_RESET)
+			  break;
+	  }
+
+	  if ((HAL_GetTick() - lastTick) < 2000)
+	  {
+		  //if(__HAL_PWR_GET_FLAG(PWR_FLAG_SB) == RESET)
+		  {
+			  // deep sleep again
+			  printf("Deep sleep again~\n");
+
+		    /* Allocate the Flash memory to the CM4 to be able to execute code when CM7 enter STOP mode */
+		    //__HAL_RCC_FLASH_C2_ALLOCATE();
+
+		    /* Turn OFF LED1 */
+		    HAL_GPIO_WritePin(PWR_LED_GPIO_Port, PWR_LED_Pin, GPIO_PIN_SET);
+
+   			if(__HAL_RCC_GET_FLAG(RCC_FLAG_D2CKRDY) != RESET)
+			{
+				printf("D2 Domain not in Standby mode\n");
+			}
+
+			printf("PWR->CPUCR = %X\n", PWR->CPUCR);
+			printf("PWR->CPU2CR = %X\n", PWR->CPU2CR);
+
+		    /* Enter D3 to DStandby mode */
+		    HAL_PWREx_EnterSTANDBYMode(PWR_D3_DOMAIN);
+		    /* Enter D1 to DStandby mode */
+		    HAL_PWREx_EnterSTANDBYMode(PWR_D1_DOMAIN);
+
+
+		    printf("Never come here~ It sleep deeply...\n");
+		  }
+	  }
+	  else
+	  {
+		  printf("Normal Bootup...\n");
+	  }
+  }
+#endif
+
 
   /* Program the SDRAM external device */
   SDRAM_Initialization_Sequence(&hsdram1, &command);
@@ -324,8 +419,9 @@ int main(void)
 		uint8_t data[17];
 		uint8_t done = 1;
 
-		HAL_I2C_Master_Transmit(&hi2c1, i2c_addr, &reg_addr, 1, 1000);
-		HAL_I2C_Master_Receive(&hi2c1, i2c_addr, &data[0], 17, 1000);
+		//HAL_I2C_Master_Transmit(&hi2c1, i2c_addr, &reg_addr, 1, 1000);
+		//HAL_I2C_Master_Receive(&hi2c1, i2c_addr, &data[0], 17, 1000);
+		HAL_I2C_Mem_Read(&hi2c1, i2c_addr, reg_addr, I2C_MEMADD_SIZE_8BIT, &data[0], 17, 1000);
 
 		printf("READ PMIC Registers:\n");
 		for (int i = 0; i < sizeof(data) / sizeof(data[0]); i++)
@@ -513,6 +609,65 @@ int main(void)
     	}
     }
 
+#if TEST_SLEEP
+    if (HAL_GPIO_ReadPin(PWR_WKUP0_KEY_ENTER_GPIO_Port, PWR_WKUP0_KEY_ENTER_Pin) != GPIO_PIN_RESET)
+    {
+    	HAL_Delay(100);
+    	if (HAL_GPIO_ReadPin(PWR_WKUP0_KEY_ENTER_GPIO_Port, PWR_WKUP0_KEY_ENTER_Pin) != GPIO_PIN_RESET)
+    	{
+    		while (HAL_GPIO_ReadPin(PWR_WKUP0_KEY_ENTER_GPIO_Port, PWR_WKUP0_KEY_ENTER_Pin) != GPIO_PIN_RESET);
+
+    		  //if(__HAL_PWR_GET_FLAG(PWR_FLAG_SB) == RESET)
+    		  {
+    			  printf("ENTER Deep Sleep\n");
+
+    			  /* The Following Wakeup sequence is highly recommended prior to each Standby mode entry
+    			    mainly  when using more than one wakeup source this is to not miss any wakeup event.
+    			    - Disable all used wakeup sources,
+    			    - Clear all related wakeup flags,
+    			    - Re-enable all used wakeup sources,
+    			    - Enter the Standby mode.
+    			  */
+    			  /* Disable all used wakeup sources*/
+    			  HAL_PWREx_DisableWakeUpPin(PWR_WAKEUP_PIN1);
+
+    			  /* Re-enable all used wakeup sources*/
+    			  /* Configure Wakeup pin */
+    			  PWREx_WakeupPinTypeDef sPinParams;
+    			  HAL_StatusTypeDef ret = HAL_OK;
+
+    			  sPinParams.WakeUpPin    = PWR_WAKEUP_PIN1;
+    			  sPinParams.PinPolarity  = PWR_PIN_POLARITY_HIGH;
+    			  sPinParams.PinPull      = PWR_PIN_NO_PULL;
+    			  HAL_PWREx_EnableWakeUpPin(&sPinParams);
+
+
+    		    /* Allocate the Flash memory to the CM4 to be able to execute code when CM7 enter STOP mode */
+    		    //__HAL_RCC_FLASH_C2_ALLOCATE();
+
+    		    /* Turn OFF LED */
+    		    //HAL_GPIO_WritePin(PWR_LED_GPIO_Port, PWR_LED_Pin, GPIO_PIN_SET);
+
+    			if(__HAL_RCC_GET_FLAG(RCC_FLAG_D2CKRDY) != RESET)
+    			{
+    				printf("D2 Domain not in Standby mode\n");
+    			}
+
+    			printf("PWR->CPUCR = %X\n", PWR->CPUCR);
+    			printf("PWR->CPU2CR = %X\n", PWR->CPU2CR);
+
+			    /* Enter D3 to DStandby mode */
+			    HAL_PWREx_EnterSTANDBYMode(PWR_D3_DOMAIN);
+
+    		    /* Enter D1 to DStandby mode */
+    		    HAL_PWREx_EnterSTANDBYMode(PWR_D1_DOMAIN);
+
+    		    printf("Never come here~ I Think...\n");
+    		  }
+    	}
+    }
+#endif
+
     /* USER CODE BEGIN 3 */
 	if (HAL_GetTick() - lastTick > 1000)
 	{
@@ -607,7 +762,7 @@ int main(void)
 			PMIC_EnableRegulators(&hpmic, 0b10111111);
 			HAL_Delay(100);
 
-			HAL_GPIO_WritePin(PMIC_PWRUP_GPIO_Port, PMIC_PWRUP_Pin, GPIO_PIN_SET); // power-up --> active
+			//HAL_GPIO_WritePin(PMIC_PWRUP_GPIO_Port, PMIC_PWRUP_Pin, GPIO_PIN_SET); // power-up --> active
 			//HAL_GPIO_WritePin(PMIC_VCOM_GPIO_Port, PMIC_VCOM_Pin, GPIO_PIN_SET);
 			HAL_Delay(100);
 			pmicStatus = 1;
@@ -621,8 +776,9 @@ int main(void)
 				uint8_t data[17];
 				uint8_t done = 1;
 
-				HAL_I2C_Master_Transmit(&hi2c1, i2c_addr, &reg_addr, 1, 1000);
-				HAL_I2C_Master_Receive(&hi2c1, i2c_addr, &data[0], 17, 1000);
+				//HAL_I2C_Master_Transmit(&hi2c1, i2c_addr, &reg_addr, 1, 1000);
+				//HAL_I2C_Master_Receive(&hi2c1, i2c_addr, &data[0], 17, 1000);
+				HAL_I2C_Mem_Read(&hi2c1, i2c_addr, reg_addr, I2C_MEMADD_SIZE_8BIT, &data[0], 17, 1000);
 
 				printf("READ PMIC Registers:\n");
 				for (int i = 0; i < sizeof(data) / sizeof(data[0]); i++)
@@ -631,10 +787,10 @@ int main(void)
 		}
 		else
 		{
-			HAL_GPIO_WritePin(PMIC_VCOM_GPIO_Port, PMIC_VCOM_Pin, GPIO_PIN_RESET);
-			HAL_Delay(100);
+			//HAL_GPIO_WritePin(PMIC_VCOM_GPIO_Port, PMIC_VCOM_Pin, GPIO_PIN_RESET);
+			//HAL_Delay(100);
 
-			PMIC_EnableRegulators(&hpmic, 0x00); //0b00111111);
+			PMIC_EnableRegulators(&hpmic, 0b01000000);
 			HAL_Delay(100);
 
 
@@ -645,16 +801,17 @@ int main(void)
 				uint8_t data[17];
 				uint8_t done = 1;
 
-				HAL_I2C_Master_Transmit(&hi2c1, i2c_addr, &reg_addr, 1, 1000);
-				HAL_I2C_Master_Receive(&hi2c1, i2c_addr, &data[0], 17, 1000);
+				//HAL_I2C_Master_Transmit(&hi2c1, i2c_addr, &reg_addr, 1, 1000);
+				//HAL_I2C_Master_Receive(&hi2c1, i2c_addr, &data[0], 17, 1000);
+				HAL_I2C_Mem_Read(&hi2c1, i2c_addr, reg_addr, I2C_MEMADD_SIZE_8BIT, &data[0], 17, 1000);
 
 				printf("READ PMIC Registers:\n");
 				for (int i = 0; i < sizeof(data) / sizeof(data[0]); i++)
 					printf("  REG #%02d: %02X\n", i, data[i]);
 			  }
 
-			HAL_GPIO_WritePin(PMIC_PWRUP_GPIO_Port, PMIC_PWRUP_Pin, GPIO_PIN_RESET); // power-down --> standby
-			HAL_Delay(100);
+			//HAL_GPIO_WritePin(PMIC_PWRUP_GPIO_Port, PMIC_PWRUP_Pin, GPIO_PIN_RESET); // power-down --> standby
+			//HAL_Delay(100);
 			HAL_GPIO_WritePin(PMIC_WAKEUP_GPIO_Port, PMIC_WAKEUP_Pin, GPIO_PIN_RESET); // go to sleep
 			pmicStatus = 0;
 
@@ -1685,7 +1842,7 @@ static void MX_GPIO_Init(void)
   HAL_GPIO_Init(EINK_BUSY_GPIO_Port, &GPIO_InitStruct);
 
   /*Configure GPIO pins : KEY_MENU_Pin USB_OTG_HS_OVCR_Pin */
-  GPIO_InitStruct.Pin = KEY_MENU_Pin|USB_OTG_HS_OVCR_Pin;
+  GPIO_InitStruct.Pin = KEY_MENU_Pin|USB_OTG_HS_OVCR_Pin | PWR_WKUP0_KEY_ENTER_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);

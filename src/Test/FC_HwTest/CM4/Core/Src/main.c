@@ -97,6 +97,26 @@ int _write(int file, char *ptr, int len)
   */
 int main(void)
 {
+  /* STM32H7xx HAL library initialization:
+       - Systick timer is configured by default as source of time base, but user
+         can eventually implement his proper time base source (a general purpose
+         timer for example or other time source), keeping in mind that Time base
+         duration should be kept 1ms since PPP_TIMEOUT_VALUEs are defined and
+         handled in milliseconds basis.
+       - Set NVIC Group Priority to 4
+       - Low Level Initialization
+     */
+  HAL_Init();
+
+  /* Enter D3 domain to DStandby mode */
+  HAL_PWREx_EnterSTANDBYMode(PWR_D3_DOMAIN);
+
+  /* Enter D2 domain to DStandby mode */
+  HAL_PWREx_EnterSTANDBYMode(PWR_D2_DOMAIN);
+}
+
+int main_Normal(void)
+{
   /* USER CODE BEGIN 1 */
 
   /* USER CODE END 1 */
