@@ -10,6 +10,12 @@ D Power flag, -20V
 K power-flag
 $ENDCMP
 #
+$CMP BAV99-Alt
+D BAV99 High-speed switching diodes, SOT-23
+K diode
+F https://assets.nexperia.com/documents/data-sheet/BAV99_SER.pdf
+$ENDCMP
+#
 $CMP ED060SC7_EPD
 D EPD Connector, AXT334124
 K connector

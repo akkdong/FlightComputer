@@ -3,7 +3,7 @@ EELAYER 30 0
 EELAYER END
 $Descr A4 11693 8268
 encoding utf-8
-Sheet 9 12
+Sheet 10 12
 Title ""
 Date ""
 Rev ""
@@ -40,7 +40,7 @@ F 3 "" H 8800 2900 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Sheet
-S 9100 5400 950  750 
+S 5500 7250 950  250 
 U 5F7A3EBB
 F0 "MCU_POWER" 50
 F1 "MCU_POWER.sch" 50
@@ -616,8 +616,6 @@ Wire Wire Line
 Wire Wire Line
 	4700 4500 5600 4500
 Wire Wire Line
-	4700 4600 5500 4600
-Wire Wire Line
 	4700 1100 5600 1100
 Text Label 5550 3600 2    50   ~ 0
 KEY_LEFT
@@ -669,8 +667,6 @@ Wire Wire Line
 	4700 4000 5600 4000
 Wire Wire Line
 	4700 4400 5600 4400
-Wire Wire Line
-	4700 4700 5500 4700
 Text Label 5550 4400 2    50   ~ 0
 USB_OTG_FS_VBUS
 Text Label 5550 4500 2    50   ~ 0
@@ -706,9 +702,9 @@ PMIC_PWRUP
 Text Label 10300 4400 2    50   ~ 0
 PMIC_PWR_GOOD
 Text Label 10300 4500 2    50   ~ 0
-PMIC_nINT
+PWR_LED2
 Text Label 10300 4600 2    50   ~ 0
-PWR_EXTRA_EN
+PWR_LED1
 Text Label 10300 3400 2    50   ~ 0
 FMC_A12
 Wire Wire Line
@@ -847,8 +843,6 @@ Text Label 2650 7550 2    50   ~ 0
 QUADSPI_BK1_IO4
 Text HLabel 10350 4700 2    50   Input ~ 0
 FMC_nCAS
-Text HLabel 10350 4600 2    50   Input ~ 0
-PWR_EXTRA_EN
 Text HLabel 10350 4500 2    50   Input ~ 0
 PMIC_nINT
 Text HLabel 10350 4400 2    50   Input ~ 0
@@ -890,26 +884,26 @@ Wire Bus Line
 $Comp
 L Device:R_US R?
 U 1 1 5FD241CA
-P 4800 7150
+P 3800 7350
 AR Path="/5F2A50C6/5FD241CA" Ref="R?"  Part="1" 
 AR Path="/5F2A508D/5FD241CA" Ref="R?"  Part="1" 
 AR Path="/5F741CFB/5FD241CA" Ref="R189"  Part="1" 
-F 0 "R189" V 4750 7350 50  0000 L CNN
-F 1 "10K" V 4750 6850 50  0000 L CNN
-F 2 "FlightComputer_Library:R_0402_1005Metric_Pad0.72x0.64mm_HandSolder" V 4840 7140 50  0001 C CNN
-F 3 "~" H 4800 7150 50  0001 C CNN
-	1    4800 7150
+F 0 "R189" V 3750 7550 50  0000 L CNN
+F 1 "10K" V 3750 7050 50  0000 L CNN
+F 2 "FlightComputer_Library:R_0402_1005Metric_Pad0.72x0.64mm_HandSolder" V 3840 7340 50  0001 C CNN
+F 3 "~" H 3800 7350 50  0001 C CNN
+	1    3800 7350
 	0    -1   1    0   
 $EndComp
 $Comp
 L FlightComputer_Library:VCC_MCU #PWR0200
 U 1 1 5FD31656
-P 4300 7000
-F 0 "#PWR0200" H 4300 6850 50  0001 C CNN
-F 1 "VCC_MCU" H 4317 7173 50  0000 C CNN
-F 2 "" H 4300 7000 50  0001 C CNN
-F 3 "" H 4300 7000 50  0001 C CNN
-	1    4300 7000
+P 3300 7200
+F 0 "#PWR0200" H 3300 7050 50  0001 C CNN
+F 1 "VCC_MCU" H 3317 7373 50  0000 C CNN
+F 2 "" H 3300 7200 50  0001 C CNN
+F 3 "" H 3300 7200 50  0001 C CNN
+	1    3300 7200
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
@@ -1145,80 +1139,80 @@ FMC_D[0..15]
 $Comp
 L Device:R_US R?
 U 1 1 5FF918D9
-P 4800 7250
+P 3800 7450
 AR Path="/5F2A50C6/5FF918D9" Ref="R?"  Part="1" 
 AR Path="/5F2A508D/5FF918D9" Ref="R?"  Part="1" 
 AR Path="/5F741CFB/5FF918D9" Ref="R190"  Part="1" 
-F 0 "R190" V 4750 7450 50  0000 L CNN
-F 1 "10K" V 4750 6950 50  0000 L CNN
-F 2 "FlightComputer_Library:R_0402_1005Metric_Pad0.72x0.64mm_HandSolder" V 4840 7240 50  0001 C CNN
-F 3 "~" H 4800 7250 50  0001 C CNN
-	1    4800 7250
+F 0 "R190" V 3750 7650 50  0000 L CNN
+F 1 "10K" V 3750 7150 50  0000 L CNN
+F 2 "FlightComputer_Library:R_0402_1005Metric_Pad0.72x0.64mm_HandSolder" V 3840 7440 50  0001 C CNN
+F 3 "~" H 3800 7450 50  0001 C CNN
+	1    3800 7450
 	0    -1   1    0   
 $EndComp
 $Comp
 L Device:R_US R?
 U 1 1 5FF91C07
-P 4800 7350
+P 3800 7550
 AR Path="/5F2A50C6/5FF91C07" Ref="R?"  Part="1" 
 AR Path="/5F2A508D/5FF91C07" Ref="R?"  Part="1" 
 AR Path="/5F741CFB/5FF91C07" Ref="R191"  Part="1" 
-F 0 "R191" V 4750 7550 50  0000 L CNN
-F 1 "10K" V 4750 7050 50  0000 L CNN
-F 2 "FlightComputer_Library:R_0402_1005Metric_Pad0.72x0.64mm_HandSolder" V 4840 7340 50  0001 C CNN
-F 3 "~" H 4800 7350 50  0001 C CNN
-	1    4800 7350
+F 0 "R191" V 3750 7750 50  0000 L CNN
+F 1 "10K" V 3750 7250 50  0000 L CNN
+F 2 "FlightComputer_Library:R_0402_1005Metric_Pad0.72x0.64mm_HandSolder" V 3840 7540 50  0001 C CNN
+F 3 "~" H 3800 7550 50  0001 C CNN
+	1    3800 7550
 	0    -1   1    0   
 $EndComp
 $Comp
 L Device:R_US R?
 U 1 1 5FF91D51
-P 4800 7450
+P 3800 7650
 AR Path="/5F2A50C6/5FF91D51" Ref="R?"  Part="1" 
 AR Path="/5F2A508D/5FF91D51" Ref="R?"  Part="1" 
 AR Path="/5F741CFB/5FF91D51" Ref="R192"  Part="1" 
-F 0 "R192" V 4750 7650 50  0000 L CNN
-F 1 "10K" V 4750 7150 50  0000 L CNN
-F 2 "FlightComputer_Library:R_0402_1005Metric_Pad0.72x0.64mm_HandSolder" V 4840 7440 50  0001 C CNN
-F 3 "~" H 4800 7450 50  0001 C CNN
-	1    4800 7450
+F 0 "R192" V 3750 7850 50  0000 L CNN
+F 1 "10K" V 3750 7350 50  0000 L CNN
+F 2 "FlightComputer_Library:R_0402_1005Metric_Pad0.72x0.64mm_HandSolder" V 3840 7640 50  0001 C CNN
+F 3 "~" H 3800 7650 50  0001 C CNN
+	1    3800 7650
 	0    -1   1    0   
 $EndComp
 Wire Wire Line
-	4950 7150 5800 7150
+	3950 7350 4800 7350
 Wire Wire Line
-	4950 7250 5800 7250
+	3950 7450 4800 7450
 Wire Wire Line
-	4950 7350 5800 7350
+	3950 7550 4800 7550
 Wire Wire Line
-	4950 7450 5800 7450
-Text Label 5800 7150 2    50   ~ 0
+	3950 7650 4800 7650
+Text Label 4800 7350 2    50   ~ 0
 I2C1_SCL
-Text Label 5800 7250 2    50   ~ 0
+Text Label 4800 7450 2    50   ~ 0
 I2C1_SDA
-Text Label 5800 7350 2    50   ~ 0
+Text Label 4800 7550 2    50   ~ 0
 I2C2_SCL
-Text Label 5800 7450 2    50   ~ 0
+Text Label 4800 7650 2    50   ~ 0
 I2C2_SDA
 Wire Wire Line
-	4300 7450 4650 7450
+	3300 7650 3650 7650
 Wire Wire Line
-	4300 7000 4300 7150
+	3300 7200 3300 7350
 Wire Wire Line
-	4650 7350 4300 7350
-Connection ~ 4300 7350
+	3650 7550 3300 7550
+Connection ~ 3300 7550
 Wire Wire Line
-	4300 7350 4300 7450
+	3300 7550 3300 7650
 Wire Wire Line
-	4650 7250 4300 7250
-Connection ~ 4300 7250
+	3650 7450 3300 7450
+Connection ~ 3300 7450
 Wire Wire Line
-	4300 7250 4300 7350
+	3300 7450 3300 7550
 Wire Wire Line
-	4650 7150 4300 7150
-Connection ~ 4300 7150
+	3650 7350 3300 7350
+Connection ~ 3300 7350
 Wire Wire Line
-	4300 7150 4300 7250
+	3300 7350 3300 7450
 Wire Wire Line
 	4700 1200 5600 1200
 Wire Wire Line
@@ -1273,27 +1267,27 @@ BAT_SENSING
 $Comp
 L Connector:TestPoint_Alt TP?
 U 1 1 5F8B8E3C
-P 5500 4600
+P 5550 4900
 AR Path="/5F5976A1/5F8B8E3C" Ref="TP?"  Part="1" 
 AR Path="/5F741CFB/5F8B8E3C" Ref="TP14"  Part="1" 
-F 0 "TP14" V 5500 4800 50  0000 L CNN
-F 1 "PC14" V 5450 4400 50  0000 L CNN
-F 2 "TestPoint:TestPoint_Pad_D1.0mm" H 5700 4600 50  0001 C CNN
-F 3 "~" H 5700 4600 50  0001 C CNN
-	1    5500 4600
+F 0 "TP14" V 5550 5100 50  0000 L CNN
+F 1 "PC14" V 5500 4700 50  0000 L CNN
+F 2 "TestPoint:TestPoint_Pad_D1.0mm" H 5750 4900 50  0001 C CNN
+F 3 "~" H 5750 4900 50  0001 C CNN
+	1    5550 4900
 	0    1    1    0   
 $EndComp
 $Comp
 L Connector:TestPoint_Alt TP?
 U 1 1 5F8B9168
-P 5500 4700
+P 5550 5000
 AR Path="/5F5976A1/5F8B9168" Ref="TP?"  Part="1" 
 AR Path="/5F741CFB/5F8B9168" Ref="TP15"  Part="1" 
-F 0 "TP15" V 5500 4900 50  0000 L CNN
-F 1 "PC15" V 5450 4500 50  0000 L CNN
-F 2 "TestPoint:TestPoint_Pad_D1.0mm" H 5700 4700 50  0001 C CNN
-F 3 "~" H 5700 4700 50  0001 C CNN
-	1    5500 4700
+F 0 "TP15" V 5550 5200 50  0000 L CNN
+F 1 "PC15" V 5500 4800 50  0000 L CNN
+F 2 "TestPoint:TestPoint_Pad_D1.0mm" H 5750 5000 50  0001 C CNN
+F 3 "~" H 5750 5000 50  0001 C CNN
+	1    5550 5000
 	0    1    1    0   
 $EndComp
 Text Label 5550 3500 2    50   ~ 0
@@ -1453,6 +1447,130 @@ Wire Wire Line
 	650  3000 1850 3000
 Wire Wire Line
 	1200 3100 1850 3100
+Wire Wire Line
+	4700 4600 5200 4600
+Wire Wire Line
+	4700 4700 5100 4700
+Wire Wire Line
+	5550 4900 5200 4900
+Wire Wire Line
+	5200 4900 5200 4600
+Connection ~ 5200 4600
+Wire Wire Line
+	5200 4600 5600 4600
+Wire Wire Line
+	5550 5000 5100 5000
+Wire Wire Line
+	5100 5000 5100 4700
+Connection ~ 5100 4700
+Wire Wire Line
+	5100 4700 5600 4700
+Text HLabel 5600 4600 2    50   Input ~ 0
+EINK_CMD
+Text HLabel 5600 4700 2    50   Input ~ 0
+EINK_BUSY
+$Comp
+L Device:R_US R?
+U 1 1 5FCE8457
+P 8550 6150
+AR Path="/5F2A50C6/5FCE8457" Ref="R?"  Part="1" 
+AR Path="/5F2A508D/5F371147/5FCE8457" Ref="R?"  Part="1" 
+AR Path="/5F2A508D/5FCE8457" Ref="R?"  Part="1" 
+AR Path="/5F741CFB/5FCE8457" Ref="R?"  Part="1" 
+F 0 "R?" V 8650 6150 50  0000 L CNN
+F 1 "1K" V 8650 5950 50  0000 L CNN
+F 2 "FlightComputer_Library:R_0402_1005Metric_Pad0.72x0.64mm_HandSolder" V 8590 6140 50  0001 C CNN
+F 3 "~" H 8550 6150 50  0001 C CNN
+	1    8550 6150
+	0    -1   -1   0   
+$EndComp
+Wire Wire Line
+	7950 6150 8400 6150
+$Comp
+L Device:LED D?
+U 1 1 5FCE8466
+P 8950 5850
+AR Path="/5F2A50C6/5FCE8466" Ref="D?"  Part="1" 
+AR Path="/5F741CFB/5FCE8466" Ref="D?"  Part="1" 
+F 0 "D?" V 8988 5733 50  0000 R CNN
+F 1 "LED_R" V 8897 5733 50  0000 R CNN
+F 2 "LED_SMD:LED_0805_2012Metric_Pad1.15x1.40mm_HandSolder" H 8950 5850 50  0001 C CNN
+F 3 "~" H 8950 5850 50  0001 C CNN
+	1    8950 5850
+	0    -1   -1   0   
+$EndComp
+Wire Wire Line
+	8950 6000 8950 6150
+Wire Wire Line
+	8950 6150 8700 6150
+$Comp
+L FlightComputer_Library:VCC_MCU #PWR?
+U 1 1 5FCE846F
+P 8950 5600
+AR Path="/5F2A50C6/5FCE846F" Ref="#PWR?"  Part="1" 
+AR Path="/5F741CFB/5FCE846F" Ref="#PWR0129"  Part="1" 
+F 0 "#PWR0129" H 8950 5450 50  0001 C CNN
+F 1 "VCC_MCU" H 8967 5773 50  0000 C CNN
+F 2 "" H 8950 5600 50  0001 C CNN
+F 3 "" H 8950 5600 50  0001 C CNN
+	1    8950 5600
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	8950 5600 8950 5700
+$Comp
+L Device:R_US R?
+U 1 1 5FD1DDD7
+P 10350 6150
+AR Path="/5F2A50C6/5FD1DDD7" Ref="R?"  Part="1" 
+AR Path="/5F2A508D/5F371147/5FD1DDD7" Ref="R?"  Part="1" 
+AR Path="/5F2A508D/5FD1DDD7" Ref="R?"  Part="1" 
+AR Path="/5F741CFB/5FD1DDD7" Ref="R?"  Part="1" 
+F 0 "R?" V 10450 6150 50  0000 L CNN
+F 1 "1K" V 10450 5950 50  0000 L CNN
+F 2 "FlightComputer_Library:R_0402_1005Metric_Pad0.72x0.64mm_HandSolder" V 10390 6140 50  0001 C CNN
+F 3 "~" H 10350 6150 50  0001 C CNN
+	1    10350 6150
+	0    -1   -1   0   
+$EndComp
+Wire Wire Line
+	9700 6150 10200 6150
+$Comp
+L Device:LED D?
+U 1 1 5FD1DDDF
+P 10750 5850
+AR Path="/5F2A50C6/5FD1DDDF" Ref="D?"  Part="1" 
+AR Path="/5F741CFB/5FD1DDDF" Ref="D?"  Part="1" 
+F 0 "D?" V 10788 5733 50  0000 R CNN
+F 1 "LED_G" V 10697 5733 50  0000 R CNN
+F 2 "LED_SMD:LED_0805_2012Metric_Pad1.15x1.40mm_HandSolder" H 10750 5850 50  0001 C CNN
+F 3 "~" H 10750 5850 50  0001 C CNN
+	1    10750 5850
+	0    -1   -1   0   
+$EndComp
+Wire Wire Line
+	10750 6000 10750 6150
+Wire Wire Line
+	10750 6150 10500 6150
+$Comp
+L FlightComputer_Library:VCC_MCU #PWR?
+U 1 1 5FD1DDE7
+P 10750 5600
+AR Path="/5F2A50C6/5FD1DDE7" Ref="#PWR?"  Part="1" 
+AR Path="/5F741CFB/5FD1DDE7" Ref="#PWR0130"  Part="1" 
+F 0 "#PWR0130" H 10750 5450 50  0001 C CNN
+F 1 "VCC_MCU" H 10767 5773 50  0000 C CNN
+F 2 "" H 10750 5600 50  0001 C CNN
+F 3 "" H 10750 5600 50  0001 C CNN
+	1    10750 5600
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	10750 5600 10750 5700
+Text Label 7950 6150 0    50   ~ 0
+PWR_LED1
+Text Label 9700 6150 0    50   ~ 0
+PWR_LED2
 Wire Bus Line
 	1800 7250 1800 7700
 Wire Bus Line

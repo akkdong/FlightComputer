@@ -3,7 +3,7 @@ EELAYER 30 0
 EELAYER END
 $Descr A4 11693 8268
 encoding utf-8
-Sheet 5 12
+Sheet 12 12
 Title ""
 Date ""
 Rev ""
@@ -652,15 +652,9 @@ Text HLabel 3700 2750 0    50   Input ~ 0
 SPI_SCLK
 NoConn ~ 5950 6600
 NoConn ~ 5050 2950
-NoConn ~ 5050 3050
-NoConn ~ 5050 3150
-NoConn ~ 5050 3250
 NoConn ~ 6250 3350
-NoConn ~ 6250 3150
 NoConn ~ 6250 2950
 NoConn ~ 6250 2850
-NoConn ~ 5050 2150
-NoConn ~ 5050 1950
 NoConn ~ 5050 2450
 $Comp
 L Device:R_US R?
@@ -707,4 +701,76 @@ F 3 "" H 5650 2950 50  0001 C CNN
 	1    5650 2950
 	1    0    0    -1  
 $EndComp
+Wire Wire Line
+	5050 3050 3700 3050
+Wire Wire Line
+	5050 3150 3700 3150
+$Comp
+L Connector:TestPoint_Alt TP?
+U 1 1 5FE08929
+P 6950 3150
+AR Path="/5F5976A1/5FE08929" Ref="TP?"  Part="1" 
+AR Path="/5F741CFB/5FE08929" Ref="TP?"  Part="1" 
+AR Path="/5F2A50D8/5FE08929" Ref="TP?"  Part="1" 
+F 0 "TP?" V 6950 3350 50  0000 L CNN
+F 1 "PWM0" V 6900 2950 50  0000 L CNN
+F 2 "TestPoint:TestPoint_Pad_D1.0mm" H 7150 3150 50  0001 C CNN
+F 3 "~" H 7150 3150 50  0001 C CNN
+	1    6950 3150
+	0    1    1    0   
+$EndComp
+$Comp
+L Connector:TestPoint_Alt TP?
+U 1 1 5FE0B4FC
+P 4750 3250
+AR Path="/5F5976A1/5FE0B4FC" Ref="TP?"  Part="1" 
+AR Path="/5F741CFB/5FE0B4FC" Ref="TP?"  Part="1" 
+AR Path="/5F2A50D8/5FE0B4FC" Ref="TP?"  Part="1" 
+F 0 "TP?" V 4750 3450 50  0000 L CNN
+F 1 "PWM1" V 4800 3050 50  0000 L CNN
+F 2 "TestPoint:TestPoint_Pad_D1.0mm" H 4950 3250 50  0001 C CNN
+F 3 "~" H 4950 3250 50  0001 C CNN
+	1    4750 3250
+	0    -1   -1   0   
+$EndComp
+Wire Wire Line
+	6250 3150 6950 3150
+Wire Wire Line
+	4750 3250 5050 3250
+$Comp
+L Connector:TestPoint_Alt TP?
+U 1 1 5FE19321
+P 4400 2150
+AR Path="/5F5976A1/5FE19321" Ref="TP?"  Part="1" 
+AR Path="/5F741CFB/5FE19321" Ref="TP?"  Part="1" 
+AR Path="/5F2A50D8/5FE19321" Ref="TP?"  Part="1" 
+F 0 "TP?" V 4400 2350 50  0000 L CNN
+F 1 "BCM17" V 4450 1950 50  0000 L CNN
+F 2 "TestPoint:TestPoint_Pad_D1.0mm" H 4600 2150 50  0001 C CNN
+F 3 "~" H 4600 2150 50  0001 C CNN
+	1    4400 2150
+	0    -1   -1   0   
+$EndComp
+Wire Wire Line
+	4400 2150 5050 2150
+Wire Wire Line
+	4400 1950 5050 1950
+$Comp
+L Connector:TestPoint_Alt TP?
+U 1 1 5FE190AA
+P 4400 1950
+AR Path="/5F5976A1/5FE190AA" Ref="TP?"  Part="1" 
+AR Path="/5F741CFB/5FE190AA" Ref="TP?"  Part="1" 
+AR Path="/5F2A50D8/5FE190AA" Ref="TP?"  Part="1" 
+F 0 "TP?" V 4400 2150 50  0000 L CNN
+F 1 "GPCLK0" V 4450 1750 50  0000 L CNN
+F 2 "TestPoint:TestPoint_Pad_D1.0mm" H 4600 1950 50  0001 C CNN
+F 3 "~" H 4600 1950 50  0001 C CNN
+	1    4400 1950
+	0    -1   -1   0   
+$EndComp
+Text HLabel 3700 3050 0    50   Input ~ 0
+EINK_CMD
+Text HLabel 3700 3150 0    50   Input ~ 0
+EINK_BUSY
 $EndSCHEMATC
