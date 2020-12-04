@@ -736,19 +736,19 @@ Wire Wire Line
 $Comp
 L Connector:TestPoint_Alt TP?
 U 1 1 5FE19321
-P 4400 2150
+P 3800 2050
 AR Path="/5F5976A1/5FE19321" Ref="TP?"  Part="1" 
 AR Path="/5F741CFB/5FE19321" Ref="TP?"  Part="1" 
 AR Path="/5F2A50D8/5FE19321" Ref="TP14"  Part="1" 
-F 0 "TP14" V 4400 2350 50  0000 L CNN
-F 1 "BCM17" V 4450 1950 50  0000 L CNN
-F 2 "TestPoint:TestPoint_Pad_D1.0mm" H 4600 2150 50  0001 C CNN
-F 3 "~" H 4600 2150 50  0001 C CNN
-	1    4400 2150
+F 0 "TP14" V 3800 2250 50  0000 L CNN
+F 1 "BCM17" V 3750 1600 50  0000 L CNN
+F 2 "TestPoint:TestPoint_Pad_D1.0mm" H 4000 2050 50  0001 C CNN
+F 3 "~" H 4000 2050 50  0001 C CNN
+	1    3800 2050
 	0    -1   -1   0   
 $EndComp
 Wire Wire Line
-	4400 2150 5050 2150
+	3700 2150 3950 2150
 Wire Wire Line
 	4400 1950 5050 1950
 $Comp
@@ -803,4 +803,13 @@ Wire Wire Line
 	4600 3050 5050 3050
 Wire Wire Line
 	4600 3150 5050 3150
+Text HLabel 3700 2150 0    50   Input ~ 0
+RPI_STATUS
+Wire Wire Line
+	3800 2050 3950 2050
+Wire Wire Line
+	3950 2050 3950 2150
+Connection ~ 3950 2150
+Wire Wire Line
+	3950 2150 5050 2150
 $EndSCHEMATC

@@ -1366,9 +1366,9 @@ Connection ~ 650  3200
 Wire Wire Line
 	650  3200 650  3350
 Text Label 5500 3300 2    50   ~ 0
-LOW_BATTERY
+RPI_STATUS
 Text HLabel 5600 3300 2    50   Input ~ 0
-LOW_BATTERY
+RPI_STATUS
 Wire Wire Line
 	4700 3300 5600 3300
 NoConn ~ 950  3100
