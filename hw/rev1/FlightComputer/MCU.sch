@@ -3,7 +3,7 @@ EELAYER 30 0
 EELAYER END
 $Descr A4 11693 8268
 encoding utf-8
-Sheet 10 12
+Sheet 11 12
 Title ""
 Date ""
 Rev ""
@@ -578,8 +578,6 @@ Wire Wire Line
 Wire Wire Line
 	9600 4300 10350 4300
 Wire Wire Line
-	9600 4400 10350 4400
-Wire Wire Line
 	9600 4500 10350 4500
 Wire Wire Line
 	9600 4600 10350 4600
@@ -699,8 +697,6 @@ Text Label 10300 4200 2    50   ~ 0
 PMIC_WAKEUP
 Text Label 10300 4300 2    50   ~ 0
 PMIC_PWRUP
-Text Label 10300 4400 2    50   ~ 0
-PMIC_PWR_GOOD
 Text Label 10300 4500 2    50   ~ 0
 PWR_LED2
 Text Label 10300 4600 2    50   ~ 0
@@ -843,10 +839,6 @@ Text Label 2650 7550 2    50   ~ 0
 QUADSPI_BK1_IO4
 Text HLabel 10350 4700 2    50   Input ~ 0
 FMC_nCAS
-Text HLabel 10350 4500 2    50   Input ~ 0
-PMIC_nINT
-Text HLabel 10350 4400 2    50   Input ~ 0
-PMIC_PWR_GOOD
 Text HLabel 10350 4300 2    50   Input ~ 0
 PMIC_PWRUP
 Text HLabel 10350 4200 2    50   Input ~ 0
@@ -1264,32 +1256,6 @@ F 3 "~" H 5700 3400 50  0001 C CNN
 $EndComp
 Text HLabel 5600 3500 2    50   Input ~ 0
 BAT_SENSING
-$Comp
-L Connector:TestPoint_Alt TP?
-U 1 1 5F8B8E3C
-P 5550 4900
-AR Path="/5F5976A1/5F8B8E3C" Ref="TP?"  Part="1" 
-AR Path="/5F741CFB/5F8B8E3C" Ref="TP14"  Part="1" 
-F 0 "TP14" V 5550 5100 50  0000 L CNN
-F 1 "PC14" V 5500 4700 50  0000 L CNN
-F 2 "TestPoint:TestPoint_Pad_D1.0mm" H 5750 4900 50  0001 C CNN
-F 3 "~" H 5750 4900 50  0001 C CNN
-	1    5550 4900
-	0    1    1    0   
-$EndComp
-$Comp
-L Connector:TestPoint_Alt TP?
-U 1 1 5F8B9168
-P 5550 5000
-AR Path="/5F5976A1/5F8B9168" Ref="TP?"  Part="1" 
-AR Path="/5F741CFB/5F8B9168" Ref="TP15"  Part="1" 
-F 0 "TP15" V 5550 5200 50  0000 L CNN
-F 1 "PC15" V 5500 4800 50  0000 L CNN
-F 2 "TestPoint:TestPoint_Pad_D1.0mm" H 5750 5000 50  0001 C CNN
-F 3 "~" H 5750 5000 50  0001 C CNN
-	1    5550 5000
-	0    1    1    0   
-$EndComp
 Text Label 5550 3500 2    50   ~ 0
 PWR_BAT_SENSING
 Wire Wire Line
@@ -1447,24 +1413,6 @@ Wire Wire Line
 	650  3000 1850 3000
 Wire Wire Line
 	1200 3100 1850 3100
-Wire Wire Line
-	4700 4600 5200 4600
-Wire Wire Line
-	4700 4700 5100 4700
-Wire Wire Line
-	5550 4900 5200 4900
-Wire Wire Line
-	5200 4900 5200 4600
-Connection ~ 5200 4600
-Wire Wire Line
-	5200 4600 5600 4600
-Wire Wire Line
-	5550 5000 5100 5000
-Wire Wire Line
-	5100 5000 5100 4700
-Connection ~ 5100 4700
-Wire Wire Line
-	5100 4700 5600 4700
 Text HLabel 5600 4600 2    50   Input ~ 0
 EINK_CMD
 Text HLabel 5600 4700 2    50   Input ~ 0
@@ -1476,8 +1424,8 @@ P 8550 6150
 AR Path="/5F2A50C6/5FCE8457" Ref="R?"  Part="1" 
 AR Path="/5F2A508D/5F371147/5FCE8457" Ref="R?"  Part="1" 
 AR Path="/5F2A508D/5FCE8457" Ref="R?"  Part="1" 
-AR Path="/5F741CFB/5FCE8457" Ref="R?"  Part="1" 
-F 0 "R?" V 8650 6150 50  0000 L CNN
+AR Path="/5F741CFB/5FCE8457" Ref="R30"  Part="1" 
+F 0 "R30" V 8650 6150 50  0000 L CNN
 F 1 "1K" V 8650 5950 50  0000 L CNN
 F 2 "FlightComputer_Library:R_0402_1005Metric_Pad0.72x0.64mm_HandSolder" V 8590 6140 50  0001 C CNN
 F 3 "~" H 8550 6150 50  0001 C CNN
@@ -1491,8 +1439,8 @@ L Device:LED D?
 U 1 1 5FCE8466
 P 8950 5850
 AR Path="/5F2A50C6/5FCE8466" Ref="D?"  Part="1" 
-AR Path="/5F741CFB/5FCE8466" Ref="D?"  Part="1" 
-F 0 "D?" V 8988 5733 50  0000 R CNN
+AR Path="/5F741CFB/5FCE8466" Ref="D12"  Part="1" 
+F 0 "D12" V 8988 5733 50  0000 R CNN
 F 1 "LED_R" V 8897 5733 50  0000 R CNN
 F 2 "LED_SMD:LED_0805_2012Metric_Pad1.15x1.40mm_HandSolder" H 8950 5850 50  0001 C CNN
 F 3 "~" H 8950 5850 50  0001 C CNN
@@ -1525,8 +1473,8 @@ P 10350 6150
 AR Path="/5F2A50C6/5FD1DDD7" Ref="R?"  Part="1" 
 AR Path="/5F2A508D/5F371147/5FD1DDD7" Ref="R?"  Part="1" 
 AR Path="/5F2A508D/5FD1DDD7" Ref="R?"  Part="1" 
-AR Path="/5F741CFB/5FD1DDD7" Ref="R?"  Part="1" 
-F 0 "R?" V 10450 6150 50  0000 L CNN
+AR Path="/5F741CFB/5FD1DDD7" Ref="R31"  Part="1" 
+F 0 "R31" V 10450 6150 50  0000 L CNN
 F 1 "1K" V 10450 5950 50  0000 L CNN
 F 2 "FlightComputer_Library:R_0402_1005Metric_Pad0.72x0.64mm_HandSolder" V 10390 6140 50  0001 C CNN
 F 3 "~" H 10350 6150 50  0001 C CNN
@@ -1540,8 +1488,8 @@ L Device:LED D?
 U 1 1 5FD1DDDF
 P 10750 5850
 AR Path="/5F2A50C6/5FD1DDDF" Ref="D?"  Part="1" 
-AR Path="/5F741CFB/5FD1DDDF" Ref="D?"  Part="1" 
-F 0 "D?" V 10788 5733 50  0000 R CNN
+AR Path="/5F741CFB/5FD1DDDF" Ref="D13"  Part="1" 
+F 0 "D13" V 10788 5733 50  0000 R CNN
 F 1 "LED_G" V 10697 5733 50  0000 R CNN
 F 2 "LED_SMD:LED_0805_2012Metric_Pad1.15x1.40mm_HandSolder" H 10750 5850 50  0001 C CNN
 F 3 "~" H 10750 5850 50  0001 C CNN
@@ -1571,6 +1519,25 @@ Text Label 7950 6150 0    50   ~ 0
 PWR_LED1
 Text Label 9700 6150 0    50   ~ 0
 PWR_LED2
+$Comp
+L Connector:TestPoint_Alt TP?
+U 1 1 5FCA08F9
+P 10250 4400
+AR Path="/5F5976A1/5FCA08F9" Ref="TP?"  Part="1" 
+AR Path="/5F741CFB/5FCA08F9" Ref="TP25"  Part="1" 
+F 0 "TP25" V 10250 4600 50  0000 L CNN
+F 1 "PG12" V 10200 4200 50  0000 L CNN
+F 2 "TestPoint:TestPoint_Pad_D1.0mm" H 10450 4400 50  0001 C CNN
+F 3 "~" H 10450 4400 50  0001 C CNN
+	1    10250 4400
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	10250 4400 9600 4400
+Wire Wire Line
+	4700 4600 5600 4600
+Wire Wire Line
+	4700 4700 5600 4700
 Wire Bus Line
 	1800 7250 1800 7700
 Wire Bus Line

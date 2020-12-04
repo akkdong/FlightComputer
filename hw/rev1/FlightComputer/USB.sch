@@ -3,7 +3,7 @@ EELAYER 30 0
 EELAYER END
 $Descr A4 11693 8268
 encoding utf-8
-Sheet 11 12
+Sheet 8 12
 Title ""
 Date ""
 Rev ""
@@ -637,4 +637,17 @@ Wire Wire Line
 	3550 6200 3450 6200
 Wire Wire Line
 	3850 6200 3950 6200
+$Comp
+L power:GND #PWR0132
+U 1 1 5FE57B52
+P 7000 3150
+F 0 "#PWR0132" H 7000 2900 50  0001 C CNN
+F 1 "GND" V 7000 2950 50  0000 C CNN
+F 2 "" H 7000 3150 50  0001 C CNN
+F 3 "" H 7000 3150 50  0001 C CNN
+	1    7000 3150
+	0    -1   -1   0   
+$EndComp
+Wire Wire Line
+	6850 3150 7000 3150
 $EndSCHEMATC
