@@ -694,6 +694,8 @@ $Comp
 L FlightComputer_Library:RPI_Connector J6
 U 1 1 5F3373BE
 P 5650 2950
+AR Path="/5F3373BE" Ref="J6"  Part="1" 
+AR Path="/5F2A50D8/5F3373BE" Ref="J6"  Part="1" 
 F 0 "J6" H 5650 4515 50  0000 C CNN
 F 1 "RPI_Connector" H 5650 4424 50  0000 C CNN
 F 2 "Connector_PinSocket_2.54mm:PinSocket_2x20_P2.54mm_Vertical" H 5650 2950 50  0001 C CNN
@@ -748,7 +750,7 @@ F 3 "~" H 4000 2050 50  0001 C CNN
 	0    -1   -1   0   
 $EndComp
 Wire Wire Line
-	3700 2150 3950 2150
+	2900 2150 3650 2150
 Wire Wire Line
 	4400 1950 5050 1950
 $Comp
@@ -803,7 +805,7 @@ Wire Wire Line
 	4600 3050 5050 3050
 Wire Wire Line
 	4600 3150 5050 3150
-Text HLabel 3700 2150 0    50   Input ~ 0
+Text HLabel 2900 2150 0    50   Input ~ 0
 RPI_STATUS
 Wire Wire Line
 	3800 2050 3950 2050
@@ -812,4 +814,37 @@ Wire Wire Line
 Connection ~ 3950 2150
 Wire Wire Line
 	3950 2150 5050 2150
+$Comp
+L Device:R_US R?
+U 1 1 603516D0
+P 3300 2250
+AR Path="/5F2A50C6/603516D0" Ref="R?"  Part="1" 
+AR Path="/5F2A50D8/603516D0" Ref="R130"  Part="1" 
+F 0 "R130" V 3250 1950 50  0000 L CNN
+F 1 "47K" V 3250 2350 50  0000 L CNN
+F 2 "FlightComputer_Library:R_0402_1005Metric_Pad0.72x0.64mm_HandSolder" V 3340 2240 50  0001 C CNN
+F 3 "~" H 3300 2250 50  0001 C CNN
+	1    3300 2250
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	3450 2250 3650 2250
+Wire Wire Line
+	3650 2250 3650 2150
+Connection ~ 3650 2150
+Wire Wire Line
+	3650 2150 3950 2150
+$Comp
+L power:GND #PWR0144
+U 1 1 60358B48
+P 2950 2250
+F 0 "#PWR0144" H 2950 2000 50  0001 C CNN
+F 1 "GND" V 2955 2122 50  0000 R CNN
+F 2 "" H 2950 2250 50  0001 C CNN
+F 3 "" H 2950 2250 50  0001 C CNN
+	1    2950 2250
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	3150 2250 2950 2250
 $EndSCHEMATC
