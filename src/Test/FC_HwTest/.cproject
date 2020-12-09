@@ -113,6 +113,7 @@
 							<option id="fr.ac6.managedbuild.option.gnu.cross.instructionSet.1925869985.250251374" name="Instruction Set" superClass="fr.ac6.managedbuild.option.gnu.cross.instructionSet.1925869985"/>
 							<option id="fr.ac6.managedbuild.option.gnu.cross.fpu.489898928.583553376" name="Floating point hardware" superClass="fr.ac6.managedbuild.option.gnu.cross.fpu.489898928"/>
 							<option id="fr.ac6.managedbuild.option.gnu.cross.floatabi.1624888233.992114197" name="Floating-point ABI" superClass="fr.ac6.managedbuild.option.gnu.cross.floatabi.1624888233"/>
+							<targetPlatform archList="all" binaryParser="org.eclipse.cdt.core.ELF" id="fr.ac6.managedbuild.targetPlatform.gnu.cross" isAbstract="false" osList="all" superClass="fr.ac6.managedbuild.targetPlatform.gnu.cross"/>
 							<tool id="fr.ac6.managedbuild.tool.gnu.cross.c.compiler.449924523" name="MCU GCC Compiler" superClass="fr.ac6.managedbuild.tool.gnu.cross.c.compiler.1963797911">
 								<inputType id="fr.ac6.managedbuild.tool.gnu.cross.c.compiler.input.c.831447830" superClass="fr.ac6.managedbuild.tool.gnu.cross.c.compiler.input.c"/>
 								<inputType id="fr.ac6.managedbuild.tool.gnu.cross.c.compiler.input.s.2035451580" superClass="fr.ac6.managedbuild.tool.gnu.cross.c.compiler.input.s"/>
@@ -131,7 +132,7 @@
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="CM4/Core/Src"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Common"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Drivers"/>
-						<entry excluding="ST/STM32_USB_Device_Library/|Third_Party/FatFs/" flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="Middlewares"/>
+						<entry excluding="ST/STM32_USB_Device_Library/|Third_Party/FatFs/|ST/STM32_USB_Host_Library/" flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="Middlewares"/>
 						<entry excluding="startup_stm32h745xx_CM7.s" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="startup"/>
 					</sourceEntries>
 				</configuration>
@@ -239,11 +240,11 @@
 						</toolChain>
 					</folderInfo>
 					<sourceEntries>
-						<entry excluding="startup_stm32h745xx_CM7.s" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="startup"/>
-						<entry excluding="ST/STM32_USB_Device_Library/|Third_Party/FatFs/|Third_Party/FatFs/" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Middlewares"/>
-						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Drivers"/>
-						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Common"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="CM4/Core/Src"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Common"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Drivers"/>
+						<entry excluding="ST/STM32_USB_Device_Library/|ST/STM32_USB_Host_Library/|Third_Party/FatFs/" flags="VALUE_WORKSPACE_PATH" kind="sourcePath" name="Middlewares"/>
+						<entry excluding="startup_stm32h745xx_CM7.s" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="startup"/>
 					</sourceEntries>
 				</configuration>
 			</storageModule>
@@ -287,6 +288,8 @@
 								<option id="gnu.c.compiler.option.include.paths.2004459889" name="Include paths (-I)" superClass="gnu.c.compiler.option.include.paths" useByScannerDiscovery="false" valueType="includePath">
 									<listOptionValue builtIn="false" value="../CM7/USB_DEVICE/App"/>
 									<listOptionValue builtIn="false" value="../CM7/USB_DEVICE/Target"/>
+									<listOptionValue builtIn="false" value="../CM7/USB_HOST/App"/>
+									<listOptionValue builtIn="false" value="../CM7/USB_HOST/Target"/>
 									<listOptionValue builtIn="false" value="../CM7/Core/Inc"/>
 									<listOptionValue builtIn="false" value="../CM7/FATFS/App"/>
 									<listOptionValue builtIn="false" value="../CM7/FATFS/Target"/>
@@ -295,6 +298,8 @@
 									<listOptionValue builtIn="false" value="../Middlewares/ST/STM32_USB_Device_Library/Core/Inc"/>
 									<listOptionValue builtIn="false" value="../Middlewares/ST/STM32_USB_Device_Library/Class/MSC/Inc"/>
 									<listOptionValue builtIn="false" value="../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc"/>
+									<listOptionValue builtIn="false" value="../Middlewares/ST/STM32_USB_Host_Library/Core/Inc"/>
+									<listOptionValue builtIn="false" value="../Middlewares/ST/STM32_USB_Host_Library/Class/HID/Inc"/>
 									<listOptionValue builtIn="false" value="../Middlewares/Third_Party/FatFs/src"/>
 									<listOptionValue builtIn="false" value="../Drivers/CMSIS/Device/ST/STM32H7xx/Include"/>
 									<listOptionValue builtIn="false" value="../Drivers/CMSIS/Include"/>
@@ -374,6 +379,7 @@
 							<option id="fr.ac6.managedbuild.option.gnu.cross.instructionSet.639486060.1872171352" name="Instruction Set" superClass="fr.ac6.managedbuild.option.gnu.cross.instructionSet.639486060"/>
 							<option id="fr.ac6.managedbuild.option.gnu.cross.fpu.758179852.1902612428" name="Floating point hardware" superClass="fr.ac6.managedbuild.option.gnu.cross.fpu.758179852"/>
 							<option id="fr.ac6.managedbuild.option.gnu.cross.floatabi.557860566.562243553" name="Floating-point ABI" superClass="fr.ac6.managedbuild.option.gnu.cross.floatabi.557860566"/>
+							<targetPlatform archList="all" binaryParser="org.eclipse.cdt.core.ELF" id="fr.ac6.managedbuild.targetPlatform.gnu.cross" isAbstract="false" osList="all" superClass="fr.ac6.managedbuild.targetPlatform.gnu.cross"/>
 							<tool id="fr.ac6.managedbuild.tool.gnu.cross.c.compiler.1273459867" name="MCU GCC Compiler" superClass="fr.ac6.managedbuild.tool.gnu.cross.c.compiler.16947462">
 								<inputType id="fr.ac6.managedbuild.tool.gnu.cross.c.compiler.input.c.1196778967" superClass="fr.ac6.managedbuild.tool.gnu.cross.c.compiler.input.c"/>
 								<inputType id="fr.ac6.managedbuild.tool.gnu.cross.c.compiler.input.s.1239175114" superClass="fr.ac6.managedbuild.tool.gnu.cross.c.compiler.input.s"/>
@@ -388,14 +394,21 @@
 							</tool>
 						</toolChain>
 					</folderInfo>
+					<fileInfo id="fr.ac6.managedbuild.config.gnu.cross.exe.debug.1386821906.1563596860" name="usbh_conf_template.c" rcbsApplicability="disable" resourcePath="Middlewares/ST/STM32_USB_Host_Library/Core/Src/usbh_conf_template.c" toolsToInvoke="fr.ac6.managedbuild.tool.gnu.cross.c.compiler.1273459867.1511606175">
+						<tool id="fr.ac6.managedbuild.tool.gnu.cross.c.compiler.1273459867.1511606175" name="MCU GCC Compiler" superClass="fr.ac6.managedbuild.tool.gnu.cross.c.compiler.1273459867">
+							<inputType id="fr.ac6.managedbuild.tool.gnu.cross.c.compiler.input.c.1394726331" superClass="fr.ac6.managedbuild.tool.gnu.cross.c.compiler.input.c"/>
+							<inputType id="fr.ac6.managedbuild.tool.gnu.cross.c.compiler.input.s.235853023" superClass="fr.ac6.managedbuild.tool.gnu.cross.c.compiler.input.s"/>
+						</tool>
+					</fileInfo>
 					<sourceEntries>
-						<entry excluding="startup_stm32h745xx_CM7.s" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="CM7/FATFS"/>
-						<entry excluding="startup_stm32h745xx_CM4.s" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="startup"/>
-						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="CM7/USB_DEVICE"/>
-						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Middlewares"/>
-						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Drivers"/>
-						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Common"/>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="CM7/Core/Src"/>
+						<entry excluding="startup_stm32h745xx_CM7.s" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="CM7/FATFS"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="CM7/USB_DEVICE"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="CM7/USB_HOST"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Common"/>
+						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Drivers"/>
+						<entry excluding="ST/STM32_USB_Host_Library/Core/Src/usbh_conf_template.c" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Middlewares"/>
+						<entry excluding="startup_stm32h745xx_CM4.s" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="startup"/>
 					</sourceEntries>
 				</configuration>
 			</storageModule>

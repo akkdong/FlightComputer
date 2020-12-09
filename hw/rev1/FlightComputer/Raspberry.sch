@@ -814,19 +814,6 @@ Wire Wire Line
 Connection ~ 3950 2150
 Wire Wire Line
 	3950 2150 5050 2150
-$Comp
-L Device:R_US R?
-U 1 1 603516D0
-P 3300 2250
-AR Path="/5F2A50C6/603516D0" Ref="R?"  Part="1" 
-AR Path="/5F2A50D8/603516D0" Ref="R130"  Part="1" 
-F 0 "R130" V 3250 1950 50  0000 L CNN
-F 1 "47K" V 3250 2350 50  0000 L CNN
-F 2 "FlightComputer_Library:R_0402_1005Metric_Pad0.72x0.64mm_HandSolder" V 3340 2240 50  0001 C CNN
-F 3 "~" H 3300 2250 50  0001 C CNN
-	1    3300 2250
-	0    1    1    0   
-$EndComp
 Wire Wire Line
 	3450 2250 3650 2250
 Wire Wire Line
@@ -847,4 +834,17 @@ F 3 "" H 2950 2250 50  0001 C CNN
 $EndComp
 Wire Wire Line
 	3150 2250 2950 2250
+$Comp
+L Device:R_US R?
+U 1 1 603516D0
+P 3300 2250
+AR Path="/5F2A50C6/603516D0" Ref="R?"  Part="1" 
+AR Path="/5F2A50D8/603516D0" Ref="R130"  Part="1" 
+F 0 "R130" V 3250 1950 50  0000 L CNN
+F 1 "100K" V 3250 2350 50  0000 L CNN
+F 2 "FlightComputer_Library:R_0402_1005Metric_Pad0.72x0.64mm_HandSolder" V 3340 2240 50  0001 C CNN
+F 3 "~" H 3300 2250 50  0001 C CNN
+	1    3300 2250
+	0    1    1    0   
+$EndComp
 $EndSCHEMATC

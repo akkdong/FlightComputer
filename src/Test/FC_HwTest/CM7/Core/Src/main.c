@@ -29,10 +29,13 @@
 #include "MPU9250.h"
 #include "bmp280_port.h"
 #include "qspi_drv.h"
+
+#include "usb_host.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN PTD */
+
 
 /* USER CODE END PTD */
 
@@ -65,16 +68,18 @@
 #define SDRAM_MODEREG_WRITEBURST_MODE_PROGRAMMED ((uint16_t)0x0000)
 #define SDRAM_MODEREG_WRITEBURST_MODE_SINGLE     ((uint16_t)0x0200)
 
-#define TEST_SLEEP		1
+#define TEST_SLEEP		0
 #define TEST_SDRAM 		0
 #define TEST_QSPI 		0
-#define TEST_PMIC 		1
+#define TEST_PMIC 		0
 #define TEST_MPU9250 	0
 #define TEST_BMP280 	0
 #define TEST_MPU9250_I2C 	0
 #define TEST_BMP280_I2C 	0
 #define TEST_GPS		0
 #define TEST_MSC		0
+#define TEST_USB_HOST	1
+#define TEST_USB_DEVICE 0
 #define TEST_SPISLAVE	0
 #define TEST_UART3		0
 
@@ -123,6 +128,10 @@ BMP280_HandleTypeDef bmp280;
 uint8_t rx_buf[64];
 volatile int rx_done;
 
+
+#if TEST_USB_HOST
+#endif
+
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -150,7 +159,6 @@ static void QSPI_AutoPollingMemReady(QSPI_HandleTypeDef *hqspi);
 static void QSPI_DummyCyclesCfg(QSPI_HandleTypeDef *hqspi);
 static void QSPI_EnterFourBytesAddress(QSPI_HandleTypeDef *hqspi);
 #endif
-
 
 static void Error_HandlerQSPI(const char* msg);
 
@@ -270,11 +278,19 @@ int main(void)
   MX_FMC_Init();
   MX_QUADSPI_Init();
   MX_SPI1_Init();
-  //MX_SPI4_Init();
+  MX_SPI4_Init();
   MX_USART1_UART_Init();
   MX_USART2_UART_Init();
   MX_USART3_UART_Init();
+#if TEST_USB_DEVICE
   MX_USB_DEVICE_Init();
+#endif
+#if TEST_USB_HOST
+  /* Enable the USB voltage level detector */
+  HAL_PWREx_EnableUSBVoltageDetector();
+
+  MX_USB_HOST_Init();
+#endif
   MX_I2C1_Init();
   MX_I2C2_Init();
   MX_FATFS_Init();
@@ -435,8 +451,8 @@ int main(void)
 #if TEST_BMP280
 #if USE_SPI
   bmp280.spi = &hspi4;
-  bmp280.cs_port = GPIOE;
-  bmp280.cs_pin = GPIO_PIN_3;
+  bmp280.cs_port = IMU1_nCS2_GPIO_Port;
+  bmp280.cs_pin = IMU1_nCS2_Pin; // IMU1_nCS2
 #else
   bmp280.i2c = &hi2c2;
 #endif
@@ -446,8 +462,8 @@ int main(void)
 
 #if TEST_MPU9250
   mpu9250_conf.hspi = &hspi4;
-  mpu9250_conf.GPIOx = GPIOE; // IMU1_nCS2
-  mpu9250_conf.GPIO_PIN = GPIO_PIN_4;
+  mpu9250_conf.GPIOx = IMU1_nCS1_GPIO_Port;
+  mpu9250_conf.GPIO_PIN = IMU1_nCS1_Pin; // IMU1_nCS1
   mpu9250_conf.ACCEL_SCALE = ACCEL_SCALE_2G;
   mpu9250_conf.GYRO_SCALE = GYRO_SCALE_1000dps;
 
@@ -525,6 +541,11 @@ int main(void)
 #endif
 
 
+#if TEST_USB_HOST
+#endif
+
+
+
   //volatile uint8_t* norPtr = (volatile uint8_t *)0x90000000;
   //printf("nor: %02X\n", norPtr[0]);
 
@@ -584,14 +605,24 @@ int main(void)
   }
 #endif
 
+#if 0
   {
 	  HAL_ADC_Start_DMA(&hadc3, (uint32_t*)adc_buff, NO_SAMPLE);
 	  HAL_TIM_Base_Start(&htim2);
   }
+#endif
+
+#if TEST_USB_HOST
+  //HAL_GPIO_WritePin(USB_OTG_HS_PWR_EN_GPIO_Port, USB_OTG_HS_PWR_EN_Pin, GPIO_PIN_SET);
+#endif
 
 
   while (1)
   {
+#if TEST_USB_HOST
+	  MX_USB_HOST_Process();
+#endif
+
 #if TEST_MSC
 	  // nop ...
 #endif
@@ -1348,8 +1379,8 @@ static void MX_SPI4_Init(void)
   hspi4.Init.Mode = SPI_MODE_MASTER;
   hspi4.Init.Direction = SPI_DIRECTION_2LINES;
   hspi4.Init.DataSize = SPI_DATASIZE_8BIT;
-  hspi4.Init.CLKPolarity = SPI_POLARITY_HIGH; // SPI_POLARITY_HIGH, SPI_POLARITY_LOW
-  hspi4.Init.CLKPhase = SPI_PHASE_2EDGE; // SPI_PHASE_2EDGE, SPI_PHASE_1EDGE
+  hspi4.Init.CLKPolarity = SPI_POLARITY_LOW; // SPI_POLARITY_HIGH, SPI_POLARITY_LOW
+  hspi4.Init.CLKPhase = SPI_PHASE_1EDGE; // SPI_PHASE_2EDGE, SPI_PHASE_1EDGE
   hspi4.Init.NSS = SPI_NSS_SOFT;
   hspi4.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_256; // SPI_BAUDRATEPRESCALER_2;
   hspi4.Init.FirstBit = SPI_FIRSTBIT_MSB;
@@ -2201,6 +2232,11 @@ void HAL_SPI_RxCpltCallback(SPI_HandleTypeDef *hspi)
 	HAL_UART_Transmit(&huart1, rx_buf, sizeof(rx_buf) / sizeof(rx_buf[0]), HAL_MAX_DELAY);
 	HAL_UART_Transmit(&huart1, (uint8_t *)"\n", 1, HAL_MAX_DELAY);
 }
+
+
+#if TEST_USB_HOST
+
+#endif
 
 /* USER CODE END 4 */
 

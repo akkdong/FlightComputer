@@ -3,7 +3,7 @@ EELAYER 30 0
 EELAYER END
 $Descr A4 11693 8268
 encoding utf-8
-Sheet 7 12
+Sheet 6 12
 Title ""
 Date ""
 Rev ""
@@ -28,6 +28,8 @@ $Comp
 L FlightComputer_Library:GY-91 M2
 U 1 1 5F337F74
 P 4150 2750
+AR Path="/5F337F74" Ref="M2"  Part="1" 
+AR Path="/5F2A508D/5F337F74" Ref="M2"  Part="1" 
 F 0 "M2" H 4206 3865 50  0000 C CNN
 F 1 "GY-91" H 4206 3774 50  0000 C CNN
 F 2 "FlightComputer_Library:GY-91" H 4150 2750 50  0001 C CNN
