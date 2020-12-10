@@ -45,6 +45,8 @@
 									<listOptionValue builtIn="false" value="../Drivers/Peripheral/Inc"/>
 									<listOptionValue builtIn="false" value="../Middlewares/ST/STM32_USB_Device_Library/Core/Inc"/>
 									<listOptionValue builtIn="false" value="../Middlewares/ST/STM32_USB_Device_Library/Class/MSC/Inc"/>
+									<listOptionValue builtIn="false" value="../Middlewares/ST/STM32_USB_Host_Library/Core/Inc"/>
+									<listOptionValue builtIn="false" value="../Middlewares/ST/STM32_USB_Host_Library/Class/HID/Inc"/>
 								</option>
 								<option id="gnu.c.compiler.option.preprocessor.def.symbols.1048673916" name="Defined symbols (-D)" superClass="gnu.c.compiler.option.preprocessor.def.symbols" useByScannerDiscovery="false" valueType="definedSymbols">
 									<listOptionValue builtIn="false" value="CORE_CM4"/>
@@ -286,24 +288,24 @@
 								<option defaultValue="gnu.c.optimization.level.none" id="fr.ac6.managedbuild.gnu.c.compiler.option.optimization.level.1817805240" name="Optimization Level" superClass="fr.ac6.managedbuild.gnu.c.compiler.option.optimization.level" useByScannerDiscovery="false" value="fr.ac6.managedbuild.gnu.c.optimization.level.debug" valueType="enumerated"/>
 								<option id="gnu.c.compiler.option.debugging.level.72636147" name="Debug Level" superClass="gnu.c.compiler.option.debugging.level" useByScannerDiscovery="false" value="gnu.c.debugging.level.max" valueType="enumerated"/>
 								<option id="gnu.c.compiler.option.include.paths.2004459889" name="Include paths (-I)" superClass="gnu.c.compiler.option.include.paths" useByScannerDiscovery="false" valueType="includePath">
-									<listOptionValue builtIn="false" value="../CM7/USB_DEVICE/App"/>
-									<listOptionValue builtIn="false" value="../CM7/USB_DEVICE/Target"/>
-									<listOptionValue builtIn="false" value="../CM7/USB_HOST/App"/>
-									<listOptionValue builtIn="false" value="../CM7/USB_HOST/Target"/>
-									<listOptionValue builtIn="false" value="../CM7/Core/Inc"/>
-									<listOptionValue builtIn="false" value="../CM7/FATFS/App"/>
-									<listOptionValue builtIn="false" value="../CM7/FATFS/Target"/>
-									<listOptionValue builtIn="false" value="../Drivers/STM32H7xx_HAL_Driver/Inc"/>
-									<listOptionValue builtIn="false" value="../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy"/>
-									<listOptionValue builtIn="false" value="../Middlewares/ST/STM32_USB_Device_Library/Core/Inc"/>
-									<listOptionValue builtIn="false" value="../Middlewares/ST/STM32_USB_Device_Library/Class/MSC/Inc"/>
-									<listOptionValue builtIn="false" value="../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc"/>
-									<listOptionValue builtIn="false" value="../Middlewares/ST/STM32_USB_Host_Library/Core/Inc"/>
-									<listOptionValue builtIn="false" value="../Middlewares/ST/STM32_USB_Host_Library/Class/HID/Inc"/>
-									<listOptionValue builtIn="false" value="../Middlewares/Third_Party/FatFs/src"/>
-									<listOptionValue builtIn="false" value="../Drivers/CMSIS/Device/ST/STM32H7xx/Include"/>
-									<listOptionValue builtIn="false" value="../Drivers/CMSIS/Include"/>
-									<listOptionValue builtIn="false" value="../Drivers/Peripheral/Inc"/>
+									<listOptionValue builtIn="false" value="&quot;../CM7/USB_DEVICE/App&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;../CM7/USB_DEVICE/Target&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;../CM7/USB_HOST/App&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;../CM7/USB_HOST/Target&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;../CM7/Core/Inc&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;../CM7/FATFS/App&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;../CM7/FATFS/Target&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;../Drivers/STM32H7xx_HAL_Driver/Inc&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;../Drivers/STM32H7xx_HAL_Driver/Inc/Legacy&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;../Middlewares/ST/STM32_USB_Device_Library/Core/Inc&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;../Middlewares/ST/STM32_USB_Device_Library/Class/MSC/Inc&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;../Middlewares/ST/STM32_USB_Host_Library/Core/Inc&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;../Middlewares/ST/STM32_USB_Host_Library/Class/HID/Inc&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;../Middlewares/Third_Party/FatFs/src&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;../Drivers/CMSIS/Device/ST/STM32H7xx/Include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;../Drivers/CMSIS/Include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;../Drivers/Peripheral/Inc&quot;"/>
 								</option>
 								<option id="gnu.c.compiler.option.preprocessor.def.symbols.165599707" name="Defined symbols (-D)" superClass="gnu.c.compiler.option.preprocessor.def.symbols" useByScannerDiscovery="false" valueType="definedSymbols">
 									<listOptionValue builtIn="false" value="CORE_CM7"/>
@@ -394,12 +396,6 @@
 							</tool>
 						</toolChain>
 					</folderInfo>
-					<fileInfo id="fr.ac6.managedbuild.config.gnu.cross.exe.debug.1386821906.1563596860" name="usbh_conf_template.c" rcbsApplicability="disable" resourcePath="Middlewares/ST/STM32_USB_Host_Library/Core/Src/usbh_conf_template.c" toolsToInvoke="fr.ac6.managedbuild.tool.gnu.cross.c.compiler.1273459867.1511606175">
-						<tool id="fr.ac6.managedbuild.tool.gnu.cross.c.compiler.1273459867.1511606175" name="MCU GCC Compiler" superClass="fr.ac6.managedbuild.tool.gnu.cross.c.compiler.1273459867">
-							<inputType id="fr.ac6.managedbuild.tool.gnu.cross.c.compiler.input.c.1394726331" superClass="fr.ac6.managedbuild.tool.gnu.cross.c.compiler.input.c"/>
-							<inputType id="fr.ac6.managedbuild.tool.gnu.cross.c.compiler.input.s.235853023" superClass="fr.ac6.managedbuild.tool.gnu.cross.c.compiler.input.s"/>
-						</tool>
-					</fileInfo>
 					<sourceEntries>
 						<entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="CM7/Core/Src"/>
 						<entry excluding="startup_stm32h745xx_CM7.s" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="CM7/FATFS"/>
@@ -548,11 +544,12 @@
 	</storageModule>
 	<storageModule moduleId="org.eclipse.cdt.core.LanguageSettingsProviders"/>
 	<storageModule moduleId="refreshScope" versionNumber="2">
-		<configuration artifactName="${ProjName}_CM4" configurationName="Debug">
-			<resource resourceType="PROJECT" workspacePath="FC_HwTest"/>
-		</configuration>
-		<configuration artifactName="${ProjName}_CM7" configurationName="Debug">
-			<resource resourceType="PROJECT" workspacePath="FC_HwTest"/>
+		<configuration configurationName="Release_CM7"/>
+		<configuration configurationName="Debug_CM7"/>
+		<configuration configurationName="Release_CM4"/>
+		<configuration configurationName="Debug_CM4"/>
+		<configuration configurationName="Debug">
+			<resource resourceType="PROJECT" workspacePath="/FC_HwTest"/>
 		</configuration>
 	</storageModule>
 	<storageModule moduleId="org.eclipse.cdt.make.core.buildtargets"/>
