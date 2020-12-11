@@ -41,6 +41,9 @@
 
 /* USB Host core handle declaration */
 USBH_HandleTypeDef hUsbHostHS;
+uint8_t prev_select;
+uint32_t hid_demo_ready;
+
 ApplicationTypeDef Appli_state = APPLICATION_IDLE;
 
 /*
@@ -119,29 +122,13 @@ static void USBH_UserProcess  (USBH_HandleTypeDef *phost, uint8_t id)
 	  break;
 
   case HOST_USER_DISCONNECTION: // 0x05
-	  printf(" USER DISCONNECTION\n");
 	  Appli_state = APPLICATION_DISCONNECT;
+	  printf(" USER DISCONNECTION\n");
 	  break;
 
   case HOST_USER_CLASS_ACTIVE: // 0x02
-	  printf(" CLASS ACTIVATED\n");
 	  Appli_state = APPLICATION_READY;
-	  {
-		  HID_TypeTypeDef type = USBH_HID_GetDeviceType(&phost);
-		  printf(" Device Type = %d\n", type);
-		  if(type == HID_KEYBOARD)
-		  {
-			  printf("KEYBOARD READY\n");
-			//hid_demo.state = HID_DEMO_KEYBOARD;
-			//USR_KEYBRD_Init();
-		  }
-		  else if(type == HID_MOUSE)
-		  {
-			  printf("MOUSE READY\n");
-			//hid_demo.state = HID_DEMO_MOUSE;
-			//USR_MOUSE_Init();
-		  }
-		  }
+	  printf(" CLASS ACTIVATED\n");
 	  break;
 
   case HOST_USER_CLASS_SELECTED:
@@ -149,12 +136,12 @@ static void USBH_UserProcess  (USBH_HandleTypeDef *phost, uint8_t id)
 	  break;
 
   case HOST_USER_CONNECTION: // 0x04
-	  printf(" USER CONNECTION\n");
 	  Appli_state = APPLICATION_START;
+	  printf(" USER CONNECTION\n");
 	  break;
 
   default:
-  break;
+	  break;
   }
   /* USER CODE END CALL_BACK_1 */
 }

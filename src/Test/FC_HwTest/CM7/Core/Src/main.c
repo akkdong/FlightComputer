@@ -31,6 +31,7 @@
 #include "qspi_drv.h"
 
 #include "usb_host.h"
+#include "hid_host.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -613,7 +614,8 @@ int main(void)
 #endif
 
 #if TEST_USB_HOST
-  //HAL_GPIO_WritePin(USB_OTG_HS_PWR_EN_GPIO_Port, USB_OTG_HS_PWR_EN_Pin, GPIO_PIN_SET);
+  HID_InitApplication();
+  HID_HOST_Start();
 #endif
 
 
@@ -621,6 +623,7 @@ int main(void)
   {
 #if TEST_USB_HOST
 	  MX_USB_HOST_Process();
+	  HID_HOST_Process();
 #endif
 
 #if TEST_MSC
