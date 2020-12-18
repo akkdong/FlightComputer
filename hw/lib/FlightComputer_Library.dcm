@@ -52,6 +52,14 @@ K Fixed 5V 2A battery boost converter
 F http://www.ti.com/lit/ds/symlink/tps61030.pdf
 $ENDCMP
 #
+$CMP TPS61235P
+K TPS61235P, TPS61236P
+$ENDCMP
+#
+$CMP TPS61236P
+K TPS61235P, TPS61236P
+$ENDCMP
+#
 $CMP USB_B_Micro
 D USB Micro Type B connector
 K connector USB micro

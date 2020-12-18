@@ -27,8 +27,9 @@ typedef struct _BMP280_HandleTypeDef
 	struct bmp280_uncomp_data ucomp_data;
 
 	uint32_t pres32, pres64;
-	double pres;
 	uint32_t temp32;
+	
+	double pres;
 	double temp;
 
 } BMP280_HandleTypeDef;

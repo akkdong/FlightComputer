@@ -163,6 +163,10 @@ static void QSPI_EnterFourBytesAddress(QSPI_HandleTypeDef *hqspi);
 
 static void Error_HandlerQSPI(const char* msg);
 
+
+void imu_init(void);
+void imu_run(void);
+
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
