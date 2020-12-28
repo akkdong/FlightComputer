@@ -25,6 +25,13 @@
 #define REG_PG				0x0F
 #define REG_REVID			0x10
 
+#define MASK_PERIPH			0x01
+#define MASK_PMIC			0x02
+#define MASK_WAKEUP			0x04
+#define MASK_PWRUP			0x08
+#define MASK_VCOM			0x10
+#define MASK_REGISTER		0x80
+
 extern UART_HandleTypeDef huart1;
 extern UART_HandleTypeDef huart2;
 
@@ -51,141 +58,344 @@ void cmd_tokenize(char* str, char** tok1, char** tok2, char** tok3, char** tok4)
 	*tok4 = strtok(NULL, " ");
 }
 
+
+void makeLower(char *str)
+{
+	if (!str)
+		return;
+
+	char *ptr = str;
+	while(*ptr)
+	{
+		if ('A' <= *ptr && *ptr <= 'Z')
+			*ptr = (*ptr - 'A') + 'a';
+		ptr++;
+	}
+}
+
+int toNumber(char ch, int base)
+{
+	if (base == 16)
+	{
+		if ('a' <= ch && ch <= 'f')
+			return (ch - 'a') + 10;
+	}
+
+	if (ch < '0' || '9' < ch)
+		return -1;
+
+	int num = ch - '0';
+	if (num >= base)
+		return -1;
+
+	return num;
+}
+
+int validateNumber(const char* str)
+{
+	if (!str)
+		return 0; // INVALID
+
+	int base = 10;
+	const char* ptr = str;
+	if (*ptr == '-')
+		ptr++;
+
+	if (strncmp(ptr, "0x", 2) == 0)
+	{
+		base = 16;
+		ptr += 2;
+	}
+	else if (strncmp(ptr, "0b", 2) == 0)
+	{
+		base = 2;
+		ptr += 2;
+	}
+
+	while (*ptr)
+	{
+		int value = toNumber(*ptr, base);
+		if (value < 0)
+			return 0; // INVALID
+
+		ptr++;
+	}
+
+	return 1; // OK
+}
+
+int parseNumber(const char* str)
+{
+	if (!str)
+		return 0;
+
+	int sign = 1;
+	int base = 10;
+	const char* ptr = str;
+	if (*ptr == '-')
+	{
+		sign = -1;
+		ptr++;
+	}
+
+	if (strncmp(ptr, "0x", 2) == 0)
+	{
+		base = 16;
+		ptr += 2;
+	}
+	else if (strncmp(ptr, "0b", 2) == 0)
+	{
+		base = 2;
+		ptr += 2;
+	}
+
+	int num = 0;
+	while (*ptr)
+	{
+		int value = toNumber(*ptr, base);
+		if (value < 0)
+			break;
+
+		num = num * base + value;
+		ptr++;
+	}
+
+	return num * sign;
+}
+
+
+// on [all, pmic, periph, 5v, wakeup, pwrup, vcom]
+// off [all, pmic, periph, 5v, wakeup, pwrup, vcom]
+// read reg{ister} [all, 0x00 ~ 0x10]
+// read port [all, pmic, periph, 5v, wakeup, pwrup, vcom]
+// write reg-no value
+//
+
 void cmd_process(char* str)
 {
 	char *cmd, *param1, *param2, *param3;
 	cmd_tokenize(str, &cmd, &param1, &param2, &param3);
+	makeLower(cmd);
+	makeLower(param1);
+	makeLower(param2);
+	makeLower(param3);
 
-	if (stricmp(cmd, "status") == 0)
+	if (strcmp(cmd, "on") == 0)
 	{
-		uint8_t show = 0x03;
-		if (param1 && stricmp(param1, "port") == 0)
+		uint8_t mask = 0x00;
+
+		if (param1 == NULL || strcmp(param1, "all") == 0)
+			mask = 0xFF;
+		else if (strcmp(param1, "pmic") == 0)
+			mask = MASK_PMIC;
+		else if (strcmp(param1, "periph") == 0)
+			mask = MASK_PERIPH;
+		else if (strcmp(param1, "wakeup") == 0)
+			mask = MASK_WAKEUP;
+		else if (strcmp(param1, "pwrup") == 0)
+			mask = MASK_PWRUP;
+		else if (strcmp(param1, "vcom") == 0)
+			mask = MASK_VCOM;
+
+		if (mask & MASK_PMIC)
 		{
-			show = 0x01;
+			HAL_GPIO_WritePin(PWR_EN_BAT__GPIO_Port, PWR_EN_BAT__Pin, GPIO_PIN_SET);
+			UART_Printf(&UART1, "Port(PMIC) -> %d\n", HAL_GPIO_ReadPin(PWR_EN_BAT__GPIO_Port, PWR_EN_BAT__Pin));
+			HAL_Delay(20);
 		}
-		else if (param1 && stricmp(param1, "pmic") == 0)
+		if (mask & MASK_PERIPH)
 		{
-			show = 0x02;
+			HAL_GPIO_WritePin(PWR_EN_PERIPH_GPIO_Port, PWR_EN_PERIPH_Pin, GPIO_PIN_SET);
+			UART_Printf(&UART1, "Port(PERIPH) -> %d\n", HAL_GPIO_ReadPin(PWR_EN_PERIPH_GPIO_Port, PWR_EN_PERIPH_Pin));
+			HAL_Delay(20);
 		}
-
-		if (show & 0x01)
+		if (mask & MASK_WAKEUP)
 		{
-			UART_Printf(&UART1, "BAT: %d\n", HAL_GPIO_ReadPin(PWR_EN_BAT__GPIO_Port, PWR_EN_BAT__Pin));
-			HAL_Delay(10);
-			UART_Printf(&UART1, "PERRIH: %d\n", HAL_GPIO_ReadPin(PWR_EN_PERIPH_GPIO_Port, PWR_EN_PERIPH_Pin));
-			HAL_Delay(10);
-			UART_Printf(&UART1, "5V: %d\n", HAL_GPIO_ReadPin(PWR_5V_EN_GPIO_Port, PWR_5V_EN_Pin));
-			HAL_Delay(10);
-
-			UART_Printf(&UART1, "WAKEUP: %d\n", HAL_GPIO_ReadPin(PMIC_WAKEUP_GPIO_Port, PMIC_WAKEUP_Pin));
-			HAL_Delay(10);
-			UART_Printf(&UART1, "PWRUP: %d\n", HAL_GPIO_ReadPin(PMIC_PWRUP_GPIO_Port, PMIC_PWRUP_Pin));
-			HAL_Delay(10);
-			UART_Printf(&UART1, "VOM: %d\n", HAL_GPIO_ReadPin(PMIC_VCOM_GPIO_Port, PMIC_VCOM_Pin));
-			HAL_Delay(10);
+			HAL_GPIO_WritePin(PMIC_WAKEUP_GPIO_Port, PMIC_WAKEUP_Pin, GPIO_PIN_SET);
+			UART_Printf(&UART1, "Port(WAKEUP) -> %d\n", HAL_GPIO_ReadPin(PMIC_WAKEUP_GPIO_Port, PMIC_WAKEUP_Pin));
+			HAL_Delay(20);
 		}
-
-		if (show & 0x02)
+		if (mask & MASK_PWRUP)
 		{
-			// READ Registers
-			uint8_t data[17];
-			HAL_I2C_Mem_Read(&hi2c1, PMIC_ADDR, REG_TMST_VALUE, I2C_MEMADD_SIZE_8BIT, &data[0], 17, 1000);
+			HAL_GPIO_WritePin(PMIC_PWRUP_GPIO_Port, PMIC_PWRUP_Pin, GPIO_PIN_SET);
+			UART_Printf(&UART1, "Port(PWRUP) -> %d\n", HAL_GPIO_ReadPin(PMIC_PWRUP_GPIO_Port, PMIC_PWRUP_Pin));
+			HAL_Delay(20);
+		}
+		if (mask & MASK_VCOM)
+		{
+			HAL_GPIO_WritePin(PMIC_VCOM_GPIO_Port, PMIC_VCOM_Pin, GPIO_PIN_SET);
+			UART_Printf(&UART1, "Port(VCOM) -> %d\n", HAL_GPIO_ReadPin(PMIC_VCOM_GPIO_Port, PMIC_VCOM_Pin));
+			HAL_Delay(20);
+		}
+		if (mask == 0x00)
+			UART_Printf(&UART1, "Invalid Port name: %s\n", param1);
+	}
+	else if (strcmp(cmd, "off") == 0)
+	{
+		uint8_t mask = 0x00;
 
-			//
-			UART_Printf(&UART1, "Dump PMIC register\n");
-			for (int i = 0; i < sizeof(data) / sizeof(data[0]); i++)
+		if (param1 == NULL || strcmp(param1, "all") == 0)
+			mask = 0xFF;
+		else if (strcmp(param1, "pmic") == 0)
+			mask = MASK_PMIC;
+		else if (strcmp(param1, "periph") == 0)
+			mask = MASK_PERIPH;
+		else if (strcmp(param1, "wakeup") == 0)
+			mask = MASK_WAKEUP;
+		else if (strcmp(param1, "pwrup") == 0)
+			mask = MASK_PWRUP;
+		else if (strcmp(param1, "vcom") == 0)
+			mask = MASK_VCOM;
+
+		if (mask & MASK_PMIC)
+		{
+			HAL_GPIO_WritePin(PWR_EN_BAT__GPIO_Port, PWR_EN_BAT__Pin, GPIO_PIN_RESET);
+			UART_Printf(&UART1, "Port(PMIC) -> %d\n", HAL_GPIO_ReadPin(PWR_EN_BAT__GPIO_Port, PWR_EN_BAT__Pin));
+			HAL_Delay(20);
+		}
+		if (mask & MASK_PERIPH)
+		{
+			HAL_GPIO_WritePin(PWR_EN_PERIPH_GPIO_Port, PWR_EN_PERIPH_Pin, GPIO_PIN_RESET);
+			UART_Printf(&UART1, "Port(PERIPH) -> %d\n", HAL_GPIO_ReadPin(PWR_EN_PERIPH_GPIO_Port, PWR_EN_PERIPH_Pin));
+			HAL_Delay(20);
+		}
+		if (mask & MASK_WAKEUP)
+		{
+			HAL_GPIO_WritePin(PMIC_WAKEUP_GPIO_Port, PMIC_WAKEUP_Pin, GPIO_PIN_RESET);
+			UART_Printf(&UART1, "Port(WAKEUP) -> %d\n", HAL_GPIO_ReadPin(PMIC_WAKEUP_GPIO_Port, PMIC_WAKEUP_Pin));
+			HAL_Delay(20);
+		}
+		if (mask & MASK_PWRUP)
+		{
+			HAL_GPIO_WritePin(PMIC_PWRUP_GPIO_Port, PMIC_PWRUP_Pin, GPIO_PIN_RESET);
+			UART_Printf(&UART1, "Port(PWRUP) -> %d\n", HAL_GPIO_ReadPin(PMIC_PWRUP_GPIO_Port, PMIC_PWRUP_Pin));
+			HAL_Delay(20);
+		}
+		if (mask & MASK_VCOM)
+		{
+			HAL_GPIO_WritePin(PMIC_VCOM_GPIO_Port, PMIC_VCOM_Pin, GPIO_PIN_RESET);
+			UART_Printf(&UART1, "Port(VCOM) -> %d\n", HAL_GPIO_ReadPin(PMIC_VCOM_GPIO_Port, PMIC_VCOM_Pin));
+			HAL_Delay(20);
+		}
+		if (mask == 0x00)
+			UART_Printf(&UART1, "Invalid Port name: %s\n", param1);
+	}
+	else if (strcmp(cmd, "read") == 0)
+	{
+		if (strcmp(param1, "port") == 0)
+		{
+			uint8_t mask = 0x00;
+
+			if (param2 == NULL || strcmp(param2, "all") == 0)
+				mask = 0xFF;
+			else if (strcmp(param2, "pmic") == 0)
+				mask = MASK_PMIC;
+			else if (strcmp(param2, "periph") == 0)
+				mask = MASK_PERIPH;
+			else if (strcmp(param2, "wakeup") == 0)
+				mask = MASK_WAKEUP;
+			else if (strcmp(param2, "pwrup") == 0)
+				mask = MASK_PWRUP;
+			else if (strcmp(param2, "vcom") == 0)
+				mask = MASK_VCOM;
+
+			if (mask & MASK_PMIC)
 			{
-				UART_Printf(&UART1, "  REG #%02X: %02X\n", i, data[i]);
-				HAL_Delay(10);
+				UART_Printf(&UART1, "Port(PMIC) -> %d\n", HAL_GPIO_ReadPin(PWR_EN_BAT__GPIO_Port, PWR_EN_BAT__Pin));
+				HAL_Delay(20);
+			}
+			if (mask & MASK_PERIPH)
+			{
+				UART_Printf(&UART1, "Port(PERIPH) -> %d\n", HAL_GPIO_ReadPin(PWR_EN_PERIPH_GPIO_Port, PWR_EN_PERIPH_Pin));
+				HAL_Delay(20);
+			}
+			if (mask & MASK_WAKEUP)
+			{
+				UART_Printf(&UART1, "Port(WAKEUP) -> %d\n", HAL_GPIO_ReadPin(PMIC_WAKEUP_GPIO_Port, PMIC_WAKEUP_Pin));
+				HAL_Delay(20);
+			}
+			if (mask & MASK_PWRUP)
+			{
+				UART_Printf(&UART1, "Port(PWRUP) -> %d\n", HAL_GPIO_ReadPin(PMIC_PWRUP_GPIO_Port, PMIC_PWRUP_Pin));
+				HAL_Delay(20);
+			}
+			if (mask & MASK_VCOM)
+			{
+				UART_Printf(&UART1, "Port(VCOM) -> %d\n", HAL_GPIO_ReadPin(PMIC_VCOM_GPIO_Port, PMIC_VCOM_Pin));
+				HAL_Delay(20);
+			}
+			if (mask == 0x00)
+				UART_Printf(&UART1, "Invalid Port name: %s\n", param2);
+		}
+		else if (strncmp(param1, "reg", 3) == 0)
+		{
+			uint8_t reg = (uint8_t)-1;
+
+			if (param2 == NULL || validateNumber(param2))
+			{
+				if (param2 == NULL)
+				{
+					reg = 0x80;
+				}
+				else
+				{
+					reg = parseNumber(param2);
+					if (reg < REG_TMST_VALUE || REG_REVID < reg)
+						reg = (uint8_t)-1;
+				}
 			}
 
+			if (reg != (uint8_t)-1)
+			{
+				for (int i = 0; i <= 0x10; i++)
+				{
+					if (reg == 0x80 || reg == i)
+					{
+						uint8_t data = 0xFF;
+						HAL_I2C_Mem_Read(&hi2c1, PMIC_ADDR, i, I2C_MEMADD_SIZE_8BIT, &data, 1, 1000);
+						UART_Printf(&UART1, "Reg(#%02X) -> %02X\n", i, data);
+						HAL_Delay(20);
+					}
+				}
+			}
+			else
+			{
+				UART_Printf(&UART1, "Invalid Register number: %s\n", param2);
+			}
+		}
+		else
+		{
+			UART_Printf(&UART1, "Invalid read parameter: %s\n", param1);
 		}
 	}
-	else if (stricmp(cmd, "port") == 0)
+	else if (strcmp(cmd, "write") == 0)
 	{
-		if (param1 && param2 && param3)
+		uint8_t reg = (uint8_t)-1;
+		uint8_t val = 0x00;
+
+		if (validateNumber(param1) && validateNumber(param2))
 		{
-			if (stricmp(param1, "on") == 0)
-			{
-				if (stricmp(param2, "power") == 0)
-				{
-					if (stricmp(param3, "bat") == 0)
-					{
-						HAL_GPIO_WritePin(PWR_EN_BAT__GPIO_Port, PWR_EN_BAT__Pin, GPIO_PIN_SET);
-						UART_Puts(&UART1, "Turn on BAT\n");
-					}
-					else if (stricmp(param3, "periph") == 0)
-					{
-						HAL_GPIO_WritePin(PWR_EN_PERIPH_GPIO_Port, PWR_EN_PERIPH_Pin, GPIO_PIN_SET);
-						UART_Puts(&UART1, "Turn on PERIPH\n");
-					}
-					else if (stricmp(param3, "5v") == 0)
-					{
-						HAL_GPIO_WritePin(PWR_5V_EN_GPIO_Port, PWR_5V_EN_Pin, GPIO_PIN_SET);
-						UART_Puts(&UART1, "Turn on 5V\n");
-					}
-				}
-				else if (stricmp(param2, "pmic") == 0)
-				{
-					if (stricmp(param3, "wakeup") == 0)
-					{
-						HAL_GPIO_WritePin(PMIC_WAKEUP_GPIO_Port, PMIC_WAKEUP_Pin, GPIO_PIN_SET);
-						UART_Puts(&UART1, "Turn on PMIC WAKEUP\n");
-					}
-					else if (stricmp(param3, "pwrup") == 0)
-					{
-						HAL_GPIO_WritePin(PMIC_PWRUP_GPIO_Port, PMIC_PWRUP_Pin, GPIO_PIN_SET);
-						UART_Puts(&UART1, "Turn on PMIC PWRUP\n");
-					}
-					else if (stricmp(param3, "vcom") == 0)
-					{
-						HAL_GPIO_WritePin(PMIC_VCOM_GPIO_Port, PMIC_VCOM_Pin, GPIO_PIN_SET);
-						UART_Puts(&UART1, "Turn on PMIC VCOM\n");
-					}
-				}
-			}
-			else if (stricmp(param1, "off") == 0)
-			{
-				if (stricmp(param2, "power") == 0)
-				{
-					if (stricmp(param3, "bat") == 0)
-					{
-						HAL_GPIO_WritePin(PWR_EN_BAT__GPIO_Port, PWR_EN_BAT__Pin, GPIO_PIN_RESET);
-						UART_Puts(&UART1, "Turn off BAT\n");
-					}
-					else if (stricmp(param3, "periph") == 0)
-					{
-						HAL_GPIO_WritePin(PWR_EN_PERIPH_GPIO_Port, PWR_EN_PERIPH_Pin, GPIO_PIN_RESET);
-						UART_Puts(&UART1, "Turn off PERIPH\n");
-					}
-					else if (stricmp(param3, "5v") == 0)
-					{
-						HAL_GPIO_WritePin(PWR_5V_EN_GPIO_Port, PWR_5V_EN_Pin, GPIO_PIN_RESET);
-						UART_Puts(&UART1, "Turn off 5V\n");
-					}
-				}
-				else if (stricmp(param2, "pmic") == 0)
-				{
-					if (stricmp(param3, "wakeup") == 0)
-					{
-						HAL_GPIO_WritePin(PMIC_WAKEUP_GPIO_Port, PMIC_WAKEUP_Pin, GPIO_PIN_RESET);
-						UART_Puts(&UART1, "Turn off PMIC WAKEUP\n");
-					}
-					else if (stricmp(param3, "pwrup") == 0)
-					{
-						HAL_GPIO_WritePin(PMIC_PWRUP_GPIO_Port, PMIC_PWRUP_Pin, GPIO_PIN_RESET);
-						UART_Puts(&UART1, "Turn off PMIC POWERUP\n");
-					}
-					else if (stricmp(param3, "vcom") == 0)
-					{
-						HAL_GPIO_WritePin(PMIC_VCOM_GPIO_Port, PMIC_VCOM_Pin, GPIO_PIN_RESET);
-						UART_Puts(&UART1, "Turn off PMIC VCOM\n");
-					}
-				}
-			}
+			reg = parseNumber(param1);
+			val = parseNumber(param2);
+
+			if (reg < REG_TMST_VALUE || REG_REVID < reg)
+				reg = (uint8_t)-1;
+		}
+
+		if (reg != (uint8_t)-1)
+		{
+			HAL_I2C_Mem_Write(&hi2c1, PMIC_ADDR, reg, I2C_MEMADD_SIZE_8BIT, &val, 1, 1000);
+			UART_Printf(&UART1, "Reg(#%02X) <-- %02X\n", reg, val);
+
+			uint8_t data;
+			HAL_I2C_Mem_Read(&hi2c1, PMIC_ADDR, reg, I2C_MEMADD_SIZE_8BIT, &data, 1, 1000);
+			UART_Printf(&UART1, "Reg(#%02X) --> %02X\n", reg, val);
+		}
+		else
+		{
+			UART_Printf(&UART1, "Invalid Register number: %s, %s\n", param1 ? param1 : "(nil)", param2 ? param2 : "(nil)");
 		}
 	}
-
 }
 
 void main_loop_begin(void)
