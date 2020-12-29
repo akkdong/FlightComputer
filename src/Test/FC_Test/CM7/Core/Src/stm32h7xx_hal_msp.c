@@ -289,6 +289,9 @@ void HAL_QSPI_MspInit(QSPI_HandleTypeDef* hqspi)
 
   /* USER CODE BEGIN QUADSPI_MspInit 1 */
 
+	HAL_NVIC_SetPriority(QUADSPI_IRQn, 0x0F, 0);
+	HAL_NVIC_EnableIRQ(QUADSPI_IRQn);
+
   /* USER CODE END QUADSPI_MspInit 1 */
   }
 
@@ -324,6 +327,8 @@ void HAL_QSPI_MspDeInit(QSPI_HandleTypeDef* hqspi)
     HAL_GPIO_DeInit(GPIOG, GPIO_PIN_6);
 
   /* USER CODE BEGIN QUADSPI_MspDeInit 1 */
+
+  HAL_NVIC_DisableIRQ(QUADSPI_IRQn);
 
   /* USER CODE END QUADSPI_MspDeInit 1 */
   }

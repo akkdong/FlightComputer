@@ -122,7 +122,7 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-	if (HAL_GetTick() - lastTick > 1000)
+	if (HAL_GetTick() - lastTick > 500)
 	{
 		HAL_GPIO_TogglePin(PWR_LED2_GPIO_Port, PWR_LED2_Pin);
 		lastTick = HAL_GetTick();

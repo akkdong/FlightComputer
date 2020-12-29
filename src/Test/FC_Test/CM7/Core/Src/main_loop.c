@@ -3,7 +3,9 @@
 
 #include <string.h>
 #include "UART.h"
+#include "qspi_drv.h"
 #include "main.h"
+
 
 #define PMIC_ADDR			(0x48 << 1)
 
@@ -409,6 +411,28 @@ void main_loop_begin(void)
 
 	cmd_buf[0] = '\0';
 	cmd_len = 0;
+
+
+	if (QSPI_Driver_locked())
+	{
+		UART_Printf(&UART1, "QSPI Driver locked\n");
+		return;
+	}
+
+	if(QSPI_Driver_state() == 1)
+	{
+		UART_Printf(&UART1, "QSPI Driver have been ready\n");
+		return;
+	}
+
+	if(  QSPI_Driver_init() == QSPI_STATUS_OK)
+	{
+		UART_Printf(&UART1, "QSPI Driver initialized\n");
+	}
+	else
+	{
+		UART_Printf(&UART1, "QSPI Driver initialization failed!!\n");
+	}
 }
 
 
