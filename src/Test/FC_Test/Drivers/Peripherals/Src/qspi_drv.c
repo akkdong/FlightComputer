@@ -180,7 +180,7 @@ QSPI_STATUS QSPI_Driver_init()
 
 	/* Configure Volatile Configuration register (with new dummy cycles) */
 	QSPI_DummyCyclesCfg(&hqspi);
-	//const char *str_fat = "mkfs.fat";
+	const char *str_fat = "mkfs.fat";
 
 	/* Reading Sequence ------------------------------------------------ */
 	uint32_t address = 0;
@@ -213,9 +213,9 @@ QSPI_STATUS QSPI_Driver_init()
 	}
 #endif
 
-#if 0
+#if 1
 	rx_buf[MAX_READ_SIZE-1] = 0;
-	if(strncmp((char*)&rx_buf[3], str_fat, strlen(str_fat)))
+	if(strncmp((char*)&rx_buf[2], str_fat, strlen(str_fat)))
 	{
 		qspi_locked--;
 		return QSPI_STATUS_ERROR;
