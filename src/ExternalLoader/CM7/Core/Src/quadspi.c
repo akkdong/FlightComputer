@@ -130,9 +130,6 @@ void HAL_QSPI_MspDeInit(QSPI_HandleTypeDef* qspiHandle)
 
 /* USER CODE BEGIN 1 */
 
-QSPI_HandleTypeDef hqspi;
-
-
 /* QUADSPI init function */
 uint8_t CSP_QUADSPI_Init(void) {
     //prepare QSPI peripheral for ST-Link Utility operations
