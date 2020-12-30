@@ -21,9 +21,10 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "usbd_storage_if.h"
+#include "qspi_drv.h"
 
 /* USER CODE BEGIN INCLUDE */
-#include "qspi_drv.h"
+
 /* USER CODE END INCLUDE */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -116,9 +117,9 @@ const int8_t STORAGE_Inquirydata_FS[] = {/* 36 */
   0x00,
   0x00,
   0x00,
-  'S', 'T', 'M', ' ', ' ', ' ', ' ', ' ', /* Manufacturer : 8 bytes */
-  'P', 'r', 'o', 'd', 'u', 'c', 't', ' ', /* Product      : 16 Bytes */
-  ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ',
+  'R', 'a', 's', 'c', 'a', 'l', ' ', ' ', /* Manufacturer : 8 bytes */
+  'F', 'l', 'i', 'g', 'h', 't', ' ', 'C', /* Product      : 16 Bytes */
+  'o', 'm', 'p', 't', 'e', 'r', ' ', ' ',
   '0', '.', '0' ,'1'                      /* Version      : 4 Bytes */
 };
 /* USER CODE END INQUIRY_DATA_FS */

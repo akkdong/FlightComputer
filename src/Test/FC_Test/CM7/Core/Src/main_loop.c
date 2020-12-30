@@ -573,9 +573,9 @@ FILINFO finfo;
 
 void test_fatfs(const char* cmd)
 {
-	if (f_mount(&USERFatFS, (const TCHAR *)USERPath, 0) == FR_OK)
+	if (f_mount(&QSPIDISKFatFS, (const TCHAR *)QSPIDISKPath, 0) == FR_OK)
 	{
-		if (f_opendir(&dir, "/") == FR_OK)
+		if (f_opendir(&dir, "2:/") == FR_OK)
 		{
 			UART_Printf(&UART1, "DIR /\n");
 			while (1)

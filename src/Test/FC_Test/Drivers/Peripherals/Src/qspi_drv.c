@@ -215,7 +215,7 @@ QSPI_STATUS QSPI_Driver_init()
 
 #if 1
 	rx_buf[MAX_READ_SIZE-1] = 0;
-	if(strncmp((char*)&rx_buf[2], str_fat, strlen(str_fat)))
+	if(strncmp((char*)&rx_buf[3], str_fat, strlen(str_fat)))
 	{
 		qspi_locked--;
 		return QSPI_STATUS_ERROR;
