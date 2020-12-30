@@ -58,6 +58,25 @@ void test_sdram(void);
 void test_fatfs(const char* cmd);
 
 
+int __io_putchar(int ch)
+{
+	//ITM_SendChar(ch);
+	uint8_t data = (uint8_t)ch;
+	UART_Write(&UART1, data);
+	return(ch);
+}
+
+int _write(int file, char *ptr, int len)
+{
+	int DataIdx;
+	for (DataIdx = 0; DataIdx < len; DataIdx++)
+	{
+		__io_putchar( *ptr++ );
+	}
+	return len;
+}
+
+
 void cmd_tokenize(char* str, char** tok1, char** tok2, char** tok3, char** tok4)
 {
 	*tok1 = strtok(str, " ");
