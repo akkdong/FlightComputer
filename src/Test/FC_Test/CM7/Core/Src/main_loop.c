@@ -4,6 +4,8 @@
 #include <string.h>
 #include "UART.h"
 #include "qspi_drv.h"
+#include "sdram.h"
+#include "fatfs.h"
 #include "main.h"
 
 
@@ -50,6 +52,10 @@ UARTDriver UART3;
 
 char cmd_buf[64];
 int  cmd_len = 0;
+
+
+void test_sdram(void);
+void test_fatfs(const char* cmd);
 
 
 void cmd_tokenize(char* str, char** tok1, char** tok2, char** tok3, char** tok4)
@@ -398,6 +404,17 @@ void cmd_process(char* str)
 			UART_Printf(&UART1, "Invalid Register number: %s, %s\n", param1 ? param1 : "(nil)", param2 ? param2 : "(nil)");
 		}
 	}
+	else if (strcmp(cmd, "test") == 0)
+	{
+		if (strcmp(param1, "sdram") == 0)
+		{
+			test_sdram();
+		}
+		else if (strcmp(param1, "dir") == 0)
+		{
+			test_fatfs(param2);
+		}
+	}
 }
 
 void main_loop_begin(void)
@@ -412,7 +429,7 @@ void main_loop_begin(void)
 	cmd_buf[0] = '\0';
 	cmd_len = 0;
 
-
+	// initialize qspi nor
 	if (QSPI_Driver_locked())
 	{
 		UART_Printf(&UART1, "QSPI Driver locked\n");
@@ -433,6 +450,14 @@ void main_loop_begin(void)
 	{
 		UART_Printf(&UART1, "QSPI Driver initialization failed!!\n");
 	}
+
+	// initialize SDRAM
+	SDRAM_Do_InitializeSequence(&hsdram1);
+
+	//
+	MX_FATFS_Init();
+
+	test_fatfs("/");
 }
 
 
@@ -473,3 +498,76 @@ void main_loop_end(void)
 {
 	UART_End(&UART1);
 }
+
+
+
+
+void test_sdram(void)
+{
+	volatile uint8_t* memPtr = (volatile uint8_t *)SDRAM_BANK_ADDR; // 0xD0000000
+	UART_Printf(&UART1, "Test SDRAM ====\n");
+	volatile uint8_t* tmpPtr = memPtr;
+	uint32_t data = 0x55;
+	{
+		uint32_t tickStart = HAL_GetTick();
+		for(uint32_t i = 0; i < 32 * 1024 * 1024; i++)
+			*tmpPtr++ = data;
+		UART_Printf(&UART1, "Clear All: elapsed %d msec\n", HAL_GetTick() - tickStart);
+	}
+
+	UART_Printf(&UART1, "Write Data ");
+	tmpPtr = memPtr;
+	data = 0x55;
+	for(uint32_t i = 0; i < 32 * 1024 * 1024; i++)
+	{
+		if ((i % (1024 * 1024)) == 0)
+			UART_Printf(&UART1, ".");
+		*tmpPtr++ = data++;
+	}
+
+	UART_Printf(&UART1, "\nCompare Data ");
+	tmpPtr = memPtr;
+	data = 0x55;
+	uint8_t memOk = 1;
+	for(uint32_t i = 0; i < 32 * 1024 * 1024; i++)
+	{
+		if ((i % (1024 * 1024)) == 0)
+			UART_Printf(&UART1, ".");
+
+		uint8_t a = *tmpPtr;
+		uint8_t b = data;
+		if (a != b)
+		{
+			UART_Printf(&UART1, "\nMemory corrupt at %08X: %02X, %02X\n", (unsigned int)i, a, b);
+			memOk = 0;
+			break;
+		}
+		tmpPtr++;
+		data++;
+	}
+	if (memOk)
+		UART_Printf(&UART1, "\nMemory compare passed!!\n");
+}
+
+DIR dir;
+FILINFO finfo;
+
+void test_fatfs(const char* cmd)
+{
+	if (f_mount(&USERFatFS, (const TCHAR *)USERPath, 0) == FR_OK)
+	{
+		if (f_opendir(&dir, "/") == FR_OK)
+		{
+			UART_Printf(&UART1, "DIR /\n");
+			while (1)
+			{
+				if (f_readdir(&dir, &finfo) != FR_OK)
+					break;
+
+				UART_Printf(&UART1, "%s\n", finfo.fname);
+			}
+			f_closedir(&dir);
+		}
+	}
+}
+

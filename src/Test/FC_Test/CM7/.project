@@ -47,6 +47,11 @@
 			<locationURI>PARENT-1-PROJECT_LOC/Drivers/Peripherals/Src/qspi_drv.c</locationURI>
 		</link>
 		<link>
+			<name>Drivers/Peripherals/sdram.c</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/Drivers/Peripherals/Src/sdram.c</locationURI>
+		</link>
+		<link>
 			<name>Drivers/STM32H7xx_HAL_Driver/stm32h7xx_hal.c</name>
 			<type>1</type>
 			<locationURI>$%7BPARENT-1-PROJECT_LOC%7D/Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal.c</locationURI>
@@ -200,6 +205,11 @@
 			<name>Drivers/STM32H7xx_HAL_Driver/stm32h7xx_ll_usb.c</name>
 			<type>1</type>
 			<locationURI>$%7BPARENT-1-PROJECT_LOC%7D/Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_ll_usb.c</locationURI>
+		</link>
+		<link>
+			<name>Middlewares/ST/STM32_USB_Device_Library/usbd_cdc.c</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Src/usbd_cdc.c</locationURI>
 		</link>
 		<link>
 			<name>Middlewares/ST/STM32_USB_Device_Library/usbd_core.c</name>

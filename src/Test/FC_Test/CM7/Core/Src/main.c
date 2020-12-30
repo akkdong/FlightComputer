@@ -154,7 +154,9 @@ Error_Handler();
   MX_USART1_UART_Init();
   MX_USB_DEVICE_Init();
   MX_FATFS_Init();
+#if ENABLE_USB_HOST
   MX_USB_HOST_Init();
+#endif
   MX_ADC3_Init();
   MX_I2C1_Init();
   MX_SPI4_Init();

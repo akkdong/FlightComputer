@@ -22,6 +22,12 @@ uint8_t retSDRAMDISK;    /* Return value for SDRAMDISK */
 char SDRAMDISKPath[4];   /* SDRAMDISK logical drive path */
 FATFS SDRAMDISKFatFS;    /* File system object for SDRAMDISK logical drive */
 FIL SDRAMDISKFile;       /* File object for SDRAMDISK */
+
+uint8_t retQSPIDISK;
+char QSPIDISKPath[4];
+FATFS QSPIDISKFatFS;
+FIL QSPIDISKFile;
+
 uint8_t retUSER;    /* Return value for USER */
 char USERPath[4];   /* USER logical drive path */
 FATFS USERFatFS;    /* File system object for USER logical drive */
@@ -35,11 +41,12 @@ void MX_FATFS_Init(void)
 {
   /*## FatFS: Link the SDRAMDISK driver ###########################*/
   retSDRAMDISK = FATFS_LinkDriver(&SDRAMDISK_Driver, SDRAMDISKPath);
-  /*## FatFS: Link the USER driver ###########################*/
+  /*## FatFS: Link the QSPIDISK driver ###########################*/
   retUSER = FATFS_LinkDriver(&USER_Driver, USERPath);
 
   /* USER CODE BEGIN Init */
   /* additional user code for init */
+  retQSPIDISK = FATFS_LinkDriver(&QSPIDISK_Driver, QSPIDISKPath);
   /* USER CODE END Init */
 }
 

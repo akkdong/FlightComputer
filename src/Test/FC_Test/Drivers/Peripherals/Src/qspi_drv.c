@@ -434,7 +434,7 @@ void HAL_QSPI_ErrorCallback(QSPI_HandleTypeDef *hqspi)
 
 
 
-QSPI_STATUS QSPI_Driver_eraze_subsector(uint32_t address)
+QSPI_STATUS QSPI_Driver_erase_subsector(uint32_t address)
 {
 	qspi_locked++;
 	/* Enable write operations ------------------------------------------- */
@@ -466,14 +466,14 @@ QSPI_STATUS QSPI_Driver_eraze_subsector(uint32_t address)
 	return QSPI_STATUS_OK;
 }
 
-QSPI_STATUS QSPI_Driver_eraze(uint32_t address, uint32_t size)
+QSPI_STATUS QSPI_Driver_erase(uint32_t address, uint32_t size)
 {
 
 	uint32_t start_address = address;
 	uint32_t erased_size = 0;
 	while(erased_size < size)
 	{
-		if(QSPI_Driver_eraze_subsector(start_address) != QSPI_STATUS_OK){
+		if(QSPI_Driver_erase_subsector(start_address) != QSPI_STATUS_OK){
 			return QSPI_STATUS_ERROR;
 		}
 		erased_size += QSPI_SUBSECTOR_SIZE;

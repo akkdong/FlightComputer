@@ -26,6 +26,7 @@
 #include "ff.h"
 #include "ff_gen_drv.h"
 #include "sdram_diskio.h" /* defines SDRAMDISK_Driver as external */
+#include "qspi_diskio.h"
 #include "user_diskio.h" /* defines USER_Driver as external */
 
 /* USER CODE BEGIN Includes */
@@ -36,6 +37,12 @@ extern uint8_t retSDRAMDISK; /* Return value for SDRAMDISK */
 extern char SDRAMDISKPath[4]; /* SDRAMDISK logical drive path */
 extern FATFS SDRAMDISKFatFS; /* File system object for SDRAMDISK logical drive */
 extern FIL SDRAMDISKFile; /* File object for SDRAMDISK */
+
+extern uint8_t retQSPIDISK;
+extern char QSPIDISKPath[4];
+extern FATFS QSPIDISKFatFS;
+extern FIL QSPIDISKFile;
+
 extern uint8_t retUSER; /* Return value for USER */
 extern char USERPath[4]; /* USER logical drive path */
 extern FATFS USERFatFS; /* File system object for USER logical drive */
