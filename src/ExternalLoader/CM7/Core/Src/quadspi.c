@@ -535,6 +535,7 @@ static uint8_t QSPI_ResetChip() {
         return HAL_ERROR;
     }
 
+#if 0
     /* Erasing Sequence -------------------------------------------------- */
     sCommand.InstructionMode = QSPI_INSTRUCTION_2_LINES;
     sCommand.AddressSize = QSPI_ADDRESS_24_BITS;
@@ -610,6 +611,7 @@ static uint8_t QSPI_ResetChip() {
         != HAL_OK) {
         return HAL_ERROR;
     }
+#endif
 
     return HAL_OK;
 }

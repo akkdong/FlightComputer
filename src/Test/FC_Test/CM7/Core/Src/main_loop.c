@@ -55,6 +55,7 @@ int  cmd_len = 0;
 
 
 void test_sdram(void);
+void test_nor(void);
 void test_fatfs(const char* cmd);
 
 
@@ -429,6 +430,10 @@ void cmd_process(char* str)
 		{
 			test_sdram();
 		}
+		else if (strcmp(param1, "nor") == 0)
+		{
+			test_nor();
+		}
 		else if (strcmp(param1, "dir") == 0)
 		{
 			test_fatfs(param2);
@@ -566,6 +571,50 @@ void test_sdram(void)
 	}
 	if (memOk)
 		UART_Printf(&UART1, "\nMemory compare passed!!\n");
+}
+
+
+#define SECTORS_COUNT 10
+uint8_t buffer_test[QSPI_SUBSECTOR_SIZE];
+
+void test_nor(void)
+{
+	uint32_t var = 0;
+
+	for (var = 0; var < QSPI_SUBSECTOR_SIZE; var++)
+	{
+		buffer_test[var] = (var & 0xff);
+	}
+
+	for (var = 0; var < SECTORS_COUNT; var++)
+	{
+		if (QSPI_Driver_erase(var * QSPI_SUBSECTOR_SIZE, QSPI_SUBSECTOR_SIZE) != QSPI_STATUS_OK)
+		{
+			UART_Printf(&UART1, "EraseSector(%X) FAILED!\n", var);
+			return;
+		}
+
+		if (QSPI_Driver_write(buffer_test, var * QSPI_SUBSECTOR_SIZE, sizeof(buffer_test)) != QSPI_STATUS_OK)
+		{
+			UART_Printf(&UART1, "WriteMemory(%X) FAILED!\n", var);
+			return;
+		}
+	}
+
+	if (QSPI_EnableMemoryMappedMode() != QSPI_STATUS_OK)
+	{
+		UART_Printf(&UART1, "Memory mapped mode EANBLE FAILED!\n");
+		return;
+	}
+
+	for (var = 0; var < SECTORS_COUNT; var++)
+	{
+		if (memcmp(buffer_test, (uint8_t*) (QSPI_BANK_ADDR + var * QSPI_SUBSECTOR_SIZE), QSPI_SUBSECTOR_SIZE) != HAL_OK)
+		{
+			UART_Printf(&UART1, "MemoryTest(%X) FAILED!\n", var);
+			return;
+		}
+	}
 }
 
 DIR dir;

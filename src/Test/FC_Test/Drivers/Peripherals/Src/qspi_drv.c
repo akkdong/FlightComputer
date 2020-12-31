@@ -37,22 +37,22 @@ QSPI_CommandTypeDef sCommand;
  */
 static void QSPI_DummyCyclesCfg(QSPI_HandleTypeDef *hqspi)
 {
-	QSPI_CommandTypeDef sCommand;
+	QSPI_CommandTypeDef command;
 	uint8_t reg;
 
 	/* Read Volatile Configuration register --------------------------- */
-	sCommand.InstructionMode   = QSPI_INSTRUCTION_1_LINE;
-	sCommand.Instruction       = READ_VOL_CFG_REG_CMD;
-	sCommand.AddressMode       = QSPI_ADDRESS_NONE;
-	sCommand.AlternateByteMode = QSPI_ALTERNATE_BYTES_NONE;
-	sCommand.DataMode          = QSPI_DATA_1_LINE;
-	sCommand.DummyCycles       = 0;
-	sCommand.NbData            = 2;
-	sCommand.DdrMode           = QSPI_DDR_MODE_DISABLE;
-	sCommand.DdrHoldHalfCycle  = QSPI_DDR_HHC_ANALOG_DELAY;
-	sCommand.SIOOMode          = QSPI_SIOO_INST_EVERY_CMD;
+	command.InstructionMode   = QSPI_INSTRUCTION_1_LINE;
+	command.Instruction       = READ_VOL_CFG_REG_CMD;
+	command.AddressMode       = QSPI_ADDRESS_NONE;
+	command.AlternateByteMode = QSPI_ALTERNATE_BYTES_NONE;
+	command.DataMode          = QSPI_DATA_1_LINE;
+	command.DummyCycles       = 0;
+	command.NbData            = 2;
+	command.DdrMode           = QSPI_DDR_MODE_DISABLE;
+	command.DdrHoldHalfCycle  = QSPI_DDR_HHC_ANALOG_DELAY;
+	command.SIOOMode          = QSPI_SIOO_INST_EVERY_CMD;
 
-	if (HAL_QSPI_Command(hqspi, &sCommand, QSPI_COMMAND_TIMEOUT) != HAL_OK)
+	if (HAL_QSPI_Command(hqspi, &command, QSPI_COMMAND_TIMEOUT) != HAL_OK)
 	{
 		Error_Handler();
 	}
@@ -75,11 +75,11 @@ static void QSPI_DummyCyclesCfg(QSPI_HandleTypeDef *hqspi)
 	QSPI_WriteEnable(hqspi);
 
 	/* Write Volatile Configuration register (with new dummy cycles) -- */
-	sCommand.Instruction = WRITE_VOL_CFG_REG_CMD;
+	command.Instruction = WRITE_VOL_CFG_REG_CMD;
 	  MODIFY_REG(reg, 0xF0F0, ((DUMMY_CLOCK_CYCLES_READ_QUAD << 4) |
 	                           (DUMMY_CLOCK_CYCLES_READ_QUAD << 12)));
 
-	if (HAL_QSPI_Command(hqspi, &sCommand, QSPI_COMMAND_TIMEOUT) != HAL_OK)
+	if (HAL_QSPI_Command(hqspi, &command, QSPI_COMMAND_TIMEOUT) != HAL_OK)
 	{
 		Error_Handler();
 	}
@@ -106,54 +106,54 @@ static void QSPI_DummyCyclesCfg(QSPI_HandleTypeDef *hqspi)
  */
 static void QSPI_WriteEnable(QSPI_HandleTypeDef *hqspi)
 {
-	QSPI_CommandTypeDef     sCommand;
-	QSPI_AutoPollingTypeDef sConfig;
+	QSPI_CommandTypeDef     command;
+	QSPI_AutoPollingTypeDef config;
 
 	/* Enable write operations ------------------------------------------ */
-	sCommand.InstructionMode   = QSPI_INSTRUCTION_1_LINE;
-	sCommand.Instruction       = WRITE_ENABLE_CMD;
-	sCommand.AddressMode       = QSPI_ADDRESS_NONE;
-	sCommand.AlternateByteMode = QSPI_ALTERNATE_BYTES_NONE;
-	sCommand.DataMode          = QSPI_DATA_NONE;
-	sCommand.DummyCycles       = 0;
-	sCommand.DdrMode           = QSPI_DDR_MODE_DISABLE;
-	sCommand.DdrHoldHalfCycle  = QSPI_DDR_HHC_ANALOG_DELAY;
-	sCommand.SIOOMode          = QSPI_SIOO_INST_EVERY_CMD;
+	command.InstructionMode   = QSPI_INSTRUCTION_1_LINE;
+	command.Instruction       = WRITE_ENABLE_CMD;
+	command.AddressMode       = QSPI_ADDRESS_NONE;
+	command.AlternateByteMode = QSPI_ALTERNATE_BYTES_NONE;
+	command.DataMode          = QSPI_DATA_NONE;
+	command.DummyCycles       = 0;
+	command.DdrMode           = QSPI_DDR_MODE_DISABLE;
+	command.DdrHoldHalfCycle  = QSPI_DDR_HHC_ANALOG_DELAY;
+	command.SIOOMode          = QSPI_SIOO_INST_EVERY_CMD;
 
 #if USE_INTERRUPT
 	command_complete = 0;
-	if (HAL_QSPI_Command_IT(hqspi, &sCommand) != HAL_OK)
+	if (HAL_QSPI_Command_IT(hqspi, &command) != HAL_OK)
 	{
 		Error_Handler();
 	}
 	while(!command_complete);
 #else
-	if (HAL_QSPI_Command(hqspi, &sCommand, QSPI_COMMAND_TIMEOUT) != HAL_OK)
+	if (HAL_QSPI_Command(hqspi, &command, QSPI_COMMAND_TIMEOUT) != HAL_OK)
 	{
 		Error_Handler();
 	}
 #endif
 
 	/* Configure automatic polling mode to wait for write enabling ---- */
-	sConfig.Match           = 0x0202;
-	sConfig.Mask            = 0x0202;
-	sConfig.MatchMode       = QSPI_MATCH_MODE_AND;
-	sConfig.StatusBytesSize = 2;
-	sConfig.Interval        = 0x10;
-	sConfig.AutomaticStop   = QSPI_AUTOMATIC_STOP_ENABLE;
+	config.Match           = 0x0202;
+	config.Mask            = 0x0202;
+	config.MatchMode       = QSPI_MATCH_MODE_AND;
+	config.StatusBytesSize = 2;
+	config.Interval        = 0x10;
+	config.AutomaticStop   = QSPI_AUTOMATIC_STOP_ENABLE;
 
-	sCommand.Instruction    = READ_STATUS_REG_CMD;
-	sCommand.DataMode       = QSPI_DATA_1_LINE;
+	command.Instruction    = READ_STATUS_REG_CMD;
+	command.DataMode       = QSPI_DATA_1_LINE;
 
 #if USE_INTERRUPT
 	status_matched = 0;
-	if (HAL_QSPI_AutoPolling_IT(hqspi, &sCommand, &sConfig) != HAL_OK)
+	if (HAL_QSPI_AutoPolling_IT(hqspi, &command, &config) != HAL_OK)
 	{
 		Error_Handler();
 	}
 	while(!status_matched);
 #else
-	if (HAL_QSPI_AutoPolling(hqspi, &sCommand, &sConfig, QSPI_COMMAND_TIMEOUT) != HAL_OK)
+	if (HAL_QSPI_AutoPolling(hqspi, &command, &config, QSPI_COMMAND_TIMEOUT) != HAL_OK)
 	{
 		Error_Handler();
 	}
@@ -165,7 +165,6 @@ QSPI_STATUS QSPI_Driver_init()
 	qspi_locked++;
 	//HAL_GPIO_WritePin(GPIOB,GPIO_PIN_2,GPIO_PIN_SET);
 	//HAL_GPIO_WritePin(GPIOE,GPIO_PIN_8,GPIO_PIN_RESET);
-
 
 	sCommand.InstructionMode   = QSPI_INSTRUCTION_1_LINE;
 	sCommand.AddressSize       = QSPI_ADDRESS_32_BITS;
@@ -180,7 +179,9 @@ QSPI_STATUS QSPI_Driver_init()
 
 	/* Configure Volatile Configuration register (with new dummy cycles) */
 	QSPI_DummyCyclesCfg(&hqspi);
+#if CHECK_FS
 	const char *str_fat = "mkfs.fat";
+#endif
 
 	/* Reading Sequence ------------------------------------------------ */
 	uint32_t address = 0;
@@ -213,7 +214,7 @@ QSPI_STATUS QSPI_Driver_init()
 	}
 #endif
 
-#if 1
+#if CHECK_FS
 	rx_buf[MAX_READ_SIZE-1] = 0;
 	if(strncmp((char*)&rx_buf[3], str_fat, strlen(str_fat)))
 	{
@@ -221,6 +222,9 @@ QSPI_STATUS QSPI_Driver_init()
 		return QSPI_STATUS_ERROR;
 	}
 #endif
+
+	// enable memory mapped mode
+	QSPI_EnableMemoryMappedMode();
 
 	//HAL_GPIO_WritePin(GPIOB,GPIO_PIN_2,GPIO_PIN_RESET);
 	//HAL_GPIO_WritePin(GPIOE,GPIO_PIN_8,GPIO_PIN_SET);
@@ -336,36 +340,36 @@ uint8_t QSPI_Driver_locked()
  */
 static void QSPI_AutoPollingMemReady(QSPI_HandleTypeDef *hqspi)
 {
-	QSPI_CommandTypeDef     sCommand;
-	QSPI_AutoPollingTypeDef sConfig;
+	QSPI_CommandTypeDef     command;
+	QSPI_AutoPollingTypeDef config;
 
 	/* Configure automatic polling mode to wait for memory ready ------ */
-	sCommand.InstructionMode   = QSPI_INSTRUCTION_1_LINE;
-	sCommand.Instruction       = READ_STATUS_REG_CMD;
-	sCommand.AddressMode       = QSPI_ADDRESS_NONE;
-	sCommand.AlternateByteMode = QSPI_ALTERNATE_BYTES_NONE;
-	sCommand.DataMode          = QSPI_DATA_1_LINE;
-	sCommand.DummyCycles       = 0;
-	sCommand.DdrMode           = QSPI_DDR_MODE_DISABLE;
-	sCommand.DdrHoldHalfCycle  = QSPI_DDR_HHC_ANALOG_DELAY;
-	sCommand.SIOOMode          = QSPI_SIOO_INST_EVERY_CMD;
+	command.InstructionMode   = QSPI_INSTRUCTION_1_LINE;
+	command.Instruction       = READ_STATUS_REG_CMD;
+	command.AddressMode       = QSPI_ADDRESS_NONE;
+	command.AlternateByteMode = QSPI_ALTERNATE_BYTES_NONE;
+	command.DataMode          = QSPI_DATA_1_LINE;
+	command.DummyCycles       = 0;
+	command.DdrMode           = QSPI_DDR_MODE_DISABLE;
+	command.DdrHoldHalfCycle  = QSPI_DDR_HHC_ANALOG_DELAY;
+	command.SIOOMode          = QSPI_SIOO_INST_EVERY_CMD;
 
-	sConfig.Match           = 0x00;
-	sConfig.Mask            = 0x0101;
-	sConfig.MatchMode       = QSPI_MATCH_MODE_AND;
-	sConfig.StatusBytesSize = 2;
-	sConfig.Interval        = 0x10;
-	sConfig.AutomaticStop   = QSPI_AUTOMATIC_STOP_ENABLE;
+	config.Match           = 0x00;
+	config.Mask            = 0x0101;
+	config.MatchMode       = QSPI_MATCH_MODE_AND;
+	config.StatusBytesSize = 2;
+	config.Interval        = 0x10;
+	config.AutomaticStop   = QSPI_AUTOMATIC_STOP_ENABLE;
 
 #if USE_INTERRUPT
 	status_matched = 0;
-	if (HAL_QSPI_AutoPolling_IT(hqspi, &sCommand, &sConfig) != HAL_OK)
+	if (HAL_QSPI_AutoPolling_IT(hqspi, &command, &config) != HAL_OK)
 	{
 		Error_Handler();
 	}
 	while(!status_matched);
 #else
-	if (HAL_QSPI_AutoPolling(hqspi, &sCommand, &sConfig, QSPI_COMMAND_TIMEOUT) != HAL_OK)
+	if (HAL_QSPI_AutoPolling(hqspi, &command, &config, QSPI_COMMAND_TIMEOUT) != HAL_OK)
 	{
 		Error_Handler();
 	}
@@ -547,3 +551,30 @@ QSPI_STATUS QSPI_Driver_write(uint8_t *buf, uint32_t address, uint32_t size)
 }
 
 
+QSPI_STATUS QSPI_EnableMemoryMappedMode(void)
+{
+    QSPI_CommandTypeDef sCommand;
+    QSPI_MemoryMappedTypeDef sMemMappedCfg;
+
+    /* Enable Memory-Mapped mode-------------------------------------------------- */
+
+    sCommand.InstructionMode = QSPI_INSTRUCTION_1_LINE;
+    sCommand.AddressSize = QSPI_ADDRESS_32_BITS;
+    sCommand.AlternateByteMode = QSPI_ALTERNATE_BYTES_NONE;
+    sCommand.DdrMode = QSPI_DDR_MODE_DISABLE;
+    sCommand.DdrHoldHalfCycle = QSPI_DDR_HHC_ANALOG_DELAY;
+    sCommand.SIOOMode = QSPI_SIOO_INST_EVERY_CMD;
+    sCommand.AddressMode = QSPI_ADDRESS_1_LINE;
+    sCommand.DataMode = QSPI_DATA_4_LINES;
+    sCommand.NbData = 0;
+    sCommand.Address = 0;
+    sCommand.Instruction = QUAD_OUT_FAST_READ_CMD;
+    sCommand.DummyCycles = DUMMY_CLOCK_CYCLES_READ_QUAD;
+
+    sMemMappedCfg.TimeOutActivation = QSPI_TIMEOUT_COUNTER_DISABLE;
+
+    if (HAL_QSPI_MemoryMapped(&hqspi, &sCommand, &sMemMappedCfg) != HAL_OK) {
+        return QSPI_STATUS_ERROR;
+    }
+    return QSPI_STATUS_OK;
+}

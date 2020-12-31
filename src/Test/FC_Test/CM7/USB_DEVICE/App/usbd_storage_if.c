@@ -289,7 +289,7 @@ int8_t STORAGE_Read_FS(uint8_t lun, uint8_t *buf, uint32_t blk_addr, uint16_t bl
 		 uint32_t incr = bufferSize < MAX_READ_SIZE ? bufferSize : MAX_READ_SIZE;
 		 if(QSPI_Driver_read(&buf[data_read],address,incr) != QSPI_STATUS_OK)
 		 {
-			 printf("READ FAILED: 0x%X\n", address);
+			 printf("READ FAILED: 0x%X\n", (unsigned int)address);
 			 return -1;
 		 }
 		 data_read += incr;
@@ -325,7 +325,7 @@ int8_t STORAGE_Write_FS(uint8_t lun, uint8_t *buf, uint32_t blk_addr, uint16_t b
 	 {
 		 if(QSPI_Driver_erase_subsector(subsector_addr) != QSPI_STATUS_OK)
 		 {
-			 printf("ERASE FAILED: 0x%X\n", subsector_addr);
+			 printf("ERASE FAILED: 0x%X\n", (unsigned int)subsector_addr);
 			 return -1;
 		 }
 		 subsector_addr += BLOCK_SIZE;
@@ -335,7 +335,7 @@ int8_t STORAGE_Write_FS(uint8_t lun, uint8_t *buf, uint32_t blk_addr, uint16_t b
 	 uint32_t address =  (blk_addr * BLOCK_SIZE);
 	 if(QSPI_Driver_write(buf, address, bufferSize) != QSPI_STATUS_OK)
 	 {
-		 printf("WRITE FAILED: 0x%X\n", address);
+		 printf("WRITE FAILED: 0x%X\n", (unsigned int)address);
 		 return -1;
 	 }
 	 return 0;
