@@ -134,7 +134,7 @@ void UART_Begin(UARTDriver* uart, UARTDriverIdentifier id, UART_HandleTypeDef* h
 
 	//
 	RB_Init(&uart->rx_rb, uart->rx_buffer, MAX_RX_BUFFER);
-	RB_Init(&uart->tx_rb, uart->tx_buffer, MAX_RX_BUFFER);
+	RB_Init(&uart->tx_rb, uart->tx_buffer, MAX_TX_BUFFER);
 
 	__HAL_UART_ENABLE_IT(uart->uartHandle, UART_IT_RXNE);
 }

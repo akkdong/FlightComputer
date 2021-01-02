@@ -176,6 +176,16 @@ DRESULT QSPI_write (
 {
   /* USER CODE BEGIN WRITE */
   /* USER CODE HERE */
+	for (UINT i = 0; i < count; i++)
+	{
+		uint32_t addr = sector * BLOCK_SIZE;
+		if (QSPI_Driver_erase_subsector(addr) != QSPI_STATUS_OK)
+			return RES_ERROR;
+
+		const BYTE* dest = buff + (i * BLOCK_SIZE);
+		if (QSPI_Driver_write((uint8_t *)dest, addr, BLOCK_SIZE) != QSPI_STATUS_OK)
+			return RES_ERROR;
+	}
     return RES_OK;
   /* USER CODE END WRITE */
 }

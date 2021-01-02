@@ -27,7 +27,7 @@
 #define SECTOR_ERASE_4_BYTE_ADDR_CMD         0xDC
 #define SUBSECTOR_ERASE_CMD                  0x20
 #define SUBSECTOR_ERASE_4_BYTE_ADDR_CMD      0x21
-#define EXT_QUAD_IN_FAST_PROG_CMD            0x12 /*0x38*/
+#define EXT_QUAD_IN_FAST_PROG_CMD            0x38 /*0x38*/
 #define QUAD_IN_FAST_PROG_4_BYTE_ADDR_CMD    0x34
 
 
@@ -65,7 +65,7 @@ QSPI_STATUS 	QSPI_Driver_write(uint8_t *buf, uint32_t address, uint32_t size);
 QSPI_STATUS 	QSPI_Driver_erase_subsector(uint32_t address);
 QSPI_STATUS 	QSPI_Driver_erase(uint32_t address, uint32_t size);
 
-QSPI_STATUS 	QSPI_EnableMemoryMappedMode(void);
+//QSPI_STATUS 	QSPI_EnableMemoryMappedMode(void);
 
 
 #endif

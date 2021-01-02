@@ -24,7 +24,9 @@
 #include "qspi_drv.h"
 
 /* USER CODE BEGIN INCLUDE */
-
+#include "UART.h"
+extern UARTDriver UART1;
+#define printf(...)	UART_Printf(&UART1, __VA_ARGS__)
 /* USER CODE END INCLUDE */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -189,19 +191,34 @@ USBD_StorageTypeDef USBD_Storage_Interface_fops_FS =
 int8_t STORAGE_Init_FS(uint8_t lun)
 {
   /* USER CODE BEGIN 2 */
+	//printf("STORAGE_Init_FS\n");
 #if USE_SDRAM
 	return 0;
 #else
+	HAL_Delay(10);
 	if (QSPI_Driver_locked())
-		return -1;
+	{
+		printf( "Locked\n");
+		//HAL_Delay(10);
+		return USBD_FAIL;
+	}
 	if(QSPI_Driver_state() == 1)
-		return 0;
+	{
+		//printf( "OK\n");
+		//HAL_Delay(10);
+		return USBD_OK;
+	}
 	//init qspi
 	if(  QSPI_Driver_init() == QSPI_STATUS_OK)
 	{
-		return 0;
+		//printf( "INIT OK\n");
+		//HAL_Delay(10);
+		return USBD_OK;
 	}
-	return 0;
+
+	printf( "N/A\n");
+	//HAL_Delay(10);
+	return USBD_FAIL;
 #endif
   /* USER CODE END 2 */
 }
@@ -216,8 +233,12 @@ int8_t STORAGE_Init_FS(uint8_t lun)
 int8_t STORAGE_GetCapacity_FS(uint8_t lun, uint32_t *block_num, uint16_t *block_size)
 {
   /* USER CODE BEGIN 3 */
+  //printf("STORAGE_GetCapacity_FS(%u, %u)\n", STORAGE_BLK_NBR, STORAGE_BLK_SIZ);
+  //HAL_Delay(10);
+
   *block_num  = STORAGE_BLK_NBR;
   *block_size = STORAGE_BLK_SIZ;
+
   return (USBD_OK);
   /* USER CODE END 3 */
 }
@@ -230,6 +251,7 @@ int8_t STORAGE_GetCapacity_FS(uint8_t lun, uint32_t *block_num, uint16_t *block_
 int8_t STORAGE_IsReady_FS(uint8_t lun)
 {
   /* USER CODE BEGIN 4 */
+	//printf("STORAGE_IsReady_FS\n");
 #if USE_SDRAM
 	return 0;
 #else
@@ -237,14 +259,25 @@ int8_t STORAGE_IsReady_FS(uint8_t lun)
 	 {
 		 if(  QSPI_Driver_init() == QSPI_STATUS_OK)
 		 {
-			 return 0;
+			 //printf("OK\n");
+			 //HAL_Delay(10);
+			 return USBD_OK;
 		 }
-		 else
-			 return -1;
+
+		 printf("INIT FAILED\n");
+		 //HAL_Delay(10);
+		 return USBD_FAIL;
 	 }
 	 if(QSPI_Driver_locked())
-		 return -1;
-	 return 0;
+	 {
+		 printf("LOCKED\n");
+		 //HAL_Delay(10);
+		 return USBD_FAIL;
+	 }
+
+	 //printf("OK\n");
+	 //HAL_Delay(10);
+	 return USBD_OK;
 #endif
   /* USER CODE END 4 */
 }
@@ -269,16 +302,19 @@ int8_t STORAGE_IsWriteProtected_FS(uint8_t lun)
 int8_t STORAGE_Read_FS(uint8_t lun, uint8_t *buf, uint32_t blk_addr, uint16_t blk_len)
 {
   /* USER CODE BEGIN 6 */
+	//printf("STORAGE_Read_FS(%d: %u, %u)\n", lun, blk_addr, blk_len);
+	//HAL_Delay(10);
+
 #if USE_SDRAM
   //printf("Reading sector 0x%X, %d sectors\n",(unsigned int)blk_addr,(unsigned int)blk_len);
-  volatile uint8_t* mem = (volatile uint8_t*)(0xD0000000);
+  uint8_t* mem = (uint8_t*)(0xD0000000);
   memcpy(buf, mem + blk_addr * STORAGE_BLK_SIZ, blk_len * STORAGE_BLK_SIZ);
   return (USBD_OK);
 #else
 	 if(QSPI_Driver_locked())
 	 {
 		 printf("QSPI LOCKED!!\n");
-		 return -1;
+		 return USBD_FAIL;
 	 }
 	 uint32_t bufferSize = (BLOCK_SIZE * blk_len);
 	 uint32_t address =  (blk_addr * BLOCK_SIZE);
@@ -287,15 +323,15 @@ int8_t STORAGE_Read_FS(uint8_t lun, uint8_t *buf, uint32_t blk_addr, uint16_t bl
 	 while(data_read < bufferSize)
 	 {
 		 uint32_t incr = bufferSize < MAX_READ_SIZE ? bufferSize : MAX_READ_SIZE;
-		 if(QSPI_Driver_read(&buf[data_read],address,incr) != QSPI_STATUS_OK)
+		 if(QSPI_Driver_read(&buf[data_read], address, incr) != QSPI_STATUS_OK)
 		 {
 			 printf("READ FAILED: 0x%X\n", (unsigned int)address);
-			 return -1;
+			 return USBD_FAIL;
 		 }
 		 data_read += incr;
 		 address += incr;
 	 }
-	 return 0;
+	 return USBD_OK;
 #endif
   /* USER CODE END 6 */
 }
@@ -308,15 +344,18 @@ int8_t STORAGE_Read_FS(uint8_t lun, uint8_t *buf, uint32_t blk_addr, uint16_t bl
 int8_t STORAGE_Write_FS(uint8_t lun, uint8_t *buf, uint32_t blk_addr, uint16_t blk_len)
 {
   /* USER CODE BEGIN 7 */
+  printf("STORAGE_Write_FS(%d: %u, %u)\n", lun, blk_addr, blk_len);
+  //HAL_Delay(10);
+
 #if USE_SDRAM
-  volatile uint8_t* mem = (volatile uint8_t*)(0xD0000000);
+  uint8_t* mem = (uint8_t*)(0xD0000000);
   memcpy(mem + blk_addr * STORAGE_BLK_SIZ, buf, blk_len * STORAGE_BLK_SIZ);
   return (USBD_OK);
 #else
 	 if(QSPI_Driver_locked())
 	 {
 		 printf("QSPI LOCKED!!\n");
-		 return -1;
+		 return USBD_FAIL;
 	 }
 	 //erase subsectors
 	 uint32_t subsector_addr = blk_addr * BLOCK_SIZE;
@@ -326,7 +365,7 @@ int8_t STORAGE_Write_FS(uint8_t lun, uint8_t *buf, uint32_t blk_addr, uint16_t b
 		 if(QSPI_Driver_erase_subsector(subsector_addr) != QSPI_STATUS_OK)
 		 {
 			 printf("ERASE FAILED: 0x%X\n", (unsigned int)subsector_addr);
-			 return -1;
+			 return USBD_FAIL;
 		 }
 		 subsector_addr += BLOCK_SIZE;
 	 }
@@ -336,9 +375,9 @@ int8_t STORAGE_Write_FS(uint8_t lun, uint8_t *buf, uint32_t blk_addr, uint16_t b
 	 if(QSPI_Driver_write(buf, address, bufferSize) != QSPI_STATUS_OK)
 	 {
 		 printf("WRITE FAILED: 0x%X\n", (unsigned int)address);
-		 return -1;
+		 return USBD_FAIL;
 	 }
-	 return 0;
+	 return USBD_OK;
 #endif
   /* USER CODE END 7 */
 }

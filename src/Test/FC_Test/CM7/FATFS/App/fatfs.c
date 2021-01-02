@@ -41,7 +41,7 @@ void MX_FATFS_Init(void)
 {
   /*## FatFS: Link the SDRAMDISK driver ###########################*/
   retSDRAMDISK = FATFS_LinkDriver(&SDRAMDISK_Driver, SDRAMDISKPath);
-  /*## FatFS: Link the QSPIDISK driver ###########################*/
+  /*## FatFS: Link the USER driver ###########################*/
   retUSER = FATFS_LinkDriver(&USER_Driver, USERPath);
 
   /* USER CODE BEGIN Init */

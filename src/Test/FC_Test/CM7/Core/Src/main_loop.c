@@ -1,9 +1,15 @@
 // main_loop.c
 //
 
+#define USE_QSPIDRV (1)
+
 #include <string.h>
 #include "UART.h"
+#if USE_QSPIDRV
 #include "qspi_drv.h"
+#else
+#include "quadspi.h"
+#endif
 #include "sdram.h"
 #include "fatfs.h"
 #include "main.h"
@@ -56,7 +62,11 @@ int  cmd_len = 0;
 
 void test_sdram(void);
 void test_nor(void);
+void test_dump(void);
 void test_fatfs(const char* cmd);
+void test_erase_subsector(uint32_t addr);
+void test_write_subsector(uint32_t addr);
+void test_read_subsector(uint32_t addr);
 
 
 int __io_putchar(int ch)
@@ -434,9 +444,25 @@ void cmd_process(char* str)
 		{
 			test_nor();
 		}
+		else if (strcmp(param1, "dump") == 0)
+		{
+			test_dump();
+		}
 		else if (strcmp(param1, "dir") == 0)
 		{
 			test_fatfs(param2);
+		}
+		else if (strcmp(param1, "erase") == 0)
+		{
+			test_erase_subsector(parseNumber(param2));
+		}
+		else if (strcmp(param1, "write") == 0)
+		{
+			test_write_subsector(parseNumber(param2));
+		}
+		else if (strcmp(param1, "read") == 0)
+		{
+			test_read_subsector(parseNumber(param2));
 		}
 	}
 }
@@ -454,6 +480,7 @@ void main_loop_begin(void)
 	cmd_len = 0;
 
 	// initialize qspi nor
+#if USE_QSPIDRV
 	if (QSPI_Driver_locked())
 	{
 		UART_Printf(&UART1, "QSPI Driver locked\n");
@@ -472,16 +499,25 @@ void main_loop_begin(void)
 	}
 	else
 	{
-		UART_Printf(&UART1, "QSPI Driver initialization failed!!\n");
+		UART_Printf(&UART1, "QSPI Driver initialize failed!!\n");
 	}
+
+	//if (QSPI_EnableMemoryMappedMode() != QSPI_STATUS_OK)
+	//{
+	//	UART_Printf(&UART1, "Memory mapped mode EANBLE FAILED!\n");
+	//}
+#else
+	CSP_QUADSPI_Init();
+
+	//CSP_QSPI_EnableMemoryMappedMode();
+#endif
+
 
 	// initialize SDRAM
 	SDRAM_Do_InitializeSequence(&hsdram1);
 
 	//
 	MX_FATFS_Init();
-
-	test_fatfs("/");
 }
 
 
@@ -575,12 +611,30 @@ void test_sdram(void)
 
 
 #define SECTORS_COUNT 10
+#ifndef QSPI_SUBSECTOR_SIZE
+#define QSPI_SUBSECTOR_SIZE MEMORY_SECTOR_SIZE
+#endif
+
 uint8_t buffer_test[QSPI_SUBSECTOR_SIZE];
+char* prefix[SECTORS_COUNT] =
+{
+	 "A variometer is", // 0
+	 "also known as 1", // 1
+	 "rate of climb 2", // 2
+	 "descent indicat", // 3
+	 "rate of climb 3", // 4
+	 "vertical veloci", // 5
+	 "one of the flig", // 6
+	 "some instrument", // 7
+	 "inform to pilot", // 8
+	 "descent o climb" // 9
+};
 
 void test_nor(void)
 {
-	uint32_t var = 0;
+	uint32_t var = 0x55;
 
+#if USE_QSPIDRV
 	for (var = 0; var < QSPI_SUBSECTOR_SIZE; var++)
 	{
 		buffer_test[var] = (var & 0xff);
@@ -593,6 +647,8 @@ void test_nor(void)
 			UART_Printf(&UART1, "EraseSector(%X) FAILED!\n", var);
 			return;
 		}
+
+		memcpy(&buffer_test[0], prefix[var], strlen(prefix[var]));
 
 		if (QSPI_Driver_write(buffer_test, var * QSPI_SUBSECTOR_SIZE, sizeof(buffer_test)) != QSPI_STATUS_OK)
 		{
@@ -609,12 +665,139 @@ void test_nor(void)
 
 	for (var = 0; var < SECTORS_COUNT; var++)
 	{
+		memcpy(&buffer_test[0], prefix[var], strlen(prefix[var]));
+
 		if (memcmp(buffer_test, (uint8_t*) (QSPI_BANK_ADDR + var * QSPI_SUBSECTOR_SIZE), QSPI_SUBSECTOR_SIZE) != HAL_OK)
 		{
 			UART_Printf(&UART1, "MemoryTest(%X) FAILED!\n", var);
 			return;
 		}
 	}
+#else
+    for (var = 0; var < MEMORY_SECTOR_SIZE; var++)
+    {
+        buffer_test[var] = (var & 0xFF);
+    }
+    for (var = 0; var < SECTORS_COUNT; var++)
+    {
+        if (CSP_QSPI_EraseSector(var * MEMORY_SECTOR_SIZE, (var + 1) * MEMORY_SECTOR_SIZE - 1) != HAL_OK)
+        {
+        	UART_Printf(&UART1, "EraseSector(%X) FAILED!\n", var);
+        	return;
+        }
+        if (CSP_QSPI_WriteMemory(buffer_test, var * MEMORY_SECTOR_SIZE, sizeof(buffer_test)) != HAL_OK)
+        {
+        	UART_Printf(&UART1, "WriteMemory(%X) FAILED!\n", var);
+        	return;
+        }
+    }
+    if (CSP_QSPI_EnableMemoryMappedMode() != HAL_OK)
+    {
+    	UART_Printf(&UART1, "Memory mapped mode EANBLE FAILED!\n");
+    	return;
+    }
+    for (var = 0; var < SECTORS_COUNT; var++)
+    {
+        if (memcmp(buffer_test, (uint8_t*) (0x90000000 + var * MEMORY_SECTOR_SIZE), MEMORY_SECTOR_SIZE) != HAL_OK)
+        {
+        	UART_Printf(&UART1, "MemoryTest(%X) FAILED!\n", var);
+        	return;
+        }
+    }
+#endif
+}
+
+void test_dump(void)
+{
+	//
+#if USE_QSPIDRV
+	//
+	QSPI_Driver_read(buffer_test, 0x0000000, 32);
+	for (int i = 0; i< 32; i++)
+	{
+		UART_Printf(&UART1, "%02X ", buffer_test[i]);
+		if ((i % 16) == 15)
+		{
+			UART_Write(&UART1,'\n');
+			HAL_Delay(10);
+		}
+	}
+	UART_Write(&UART1,'\n');
+
+	QSPI_Driver_read(buffer_test, 0x00001F0, 32);
+	for (int i = 0; i< 32; i++)
+	{
+		UART_Printf(&UART1, "%02X ", buffer_test[i]);
+		if ((i % 16) == 15)
+		{
+			UART_Write(&UART1,'\n');
+			HAL_Delay(10);
+		}
+	}
+	UART_Write(&UART1,'\n');
+
+	//
+	QSPI_Driver_read(buffer_test, 0x0000800, 32);
+	for (int i = 0; i< 32; i++)
+	{
+		UART_Printf(&UART1, "%02X ", buffer_test[i]);
+		if ((i % 16) == 15)
+		{
+			UART_Write(&UART1,'\n');
+			HAL_Delay(10);
+		}
+	}
+	UART_Write(&UART1,'\n');
+
+#else
+	if (CSP_QSPI_ReadMemory(buffer_test, 0x0000000, 0x200) == HAL_OK)
+	{
+		for (int i = 0; i < 0x200; i++)
+		{
+			UART_Printf(&UART1, "%02X ", buffer_test[i]);
+			if ((i % 16) == 15)
+			{
+				UART_Write(&UART1, '\n');
+				HAL_Delay(10);
+			}
+		}
+
+		UART_Write(&UART1, '\n');
+	}
+	else
+	{
+		UART_Printf(&UART1, "Bulk read FAILED!\n");
+		HAL_Delay(10);
+	}
+
+    if (CSP_QSPI_EnableMemoryMappedMode() != HAL_OK)
+    {
+    	UART_Printf(&UART1, "Enable memory-mapped mode FAILED!\n");
+    	return;
+    }
+
+	for (uint32_t var = 0; var < SECTORS_COUNT; var++)
+	{
+		uint32_t* nor = (uint32_t*)(0x90000000 + var * QSPI_SUBSECTOR_SIZE);
+		UART_Printf(&UART1, "[%X]\n", (uint32_t)nor);
+		HAL_Delay(10);
+
+		for (int i = 0; i < 4; i++)
+		{
+			uint32_t data = *nor++;
+
+			uint8_t* ptr = (uint8_t *)&data;
+			uint8_t d1 = ptr[0];
+			uint8_t d2 = ptr[1];
+			uint8_t d3 = ptr[2];
+			uint8_t d4 = ptr[3];
+			UART_Printf(&UART1, "%02X %02X %02X %02X ", d1, d2, d3, d4);
+			HAL_Delay(10);
+		}
+
+		UART_Printf(&UART1, "\n");
+	}
+#endif
 }
 
 DIR dir;
@@ -629,7 +812,7 @@ void test_fatfs(const char* cmd)
 			UART_Printf(&UART1, "DIR /\n");
 			while (1)
 			{
-				if (f_readdir(&dir, &finfo) != FR_OK)
+				if (f_readdir(&dir, &finfo) != FR_OK || !finfo.fname[0])
 					break;
 
 				UART_Printf(&UART1, "%s\n", finfo.fname);
@@ -639,3 +822,45 @@ void test_fatfs(const char* cmd)
 	}
 }
 
+void test_erase_subsector(uint32_t addr)
+{
+	UART_Printf(&UART1, "Erase: %08X\n", addr);
+
+	addr = addr & 0x7FFFFFFF;
+	if (QSPI_Driver_erase_subsector(addr) == QSPI_STATUS_OK)
+		UART_Printf(&UART1, "    OK\n");
+	else
+		UART_Printf(&UART1, "    FAILED\n");
+}
+
+void test_write_subsector(uint32_t addr)
+{
+	UART_Printf(&UART1, "Write: %08X\n", addr);
+
+	addr = addr & 0x7FFFFFFF;
+	if (QSPI_Driver_write(&buffer_test[0], addr, 64) == QSPI_STATUS_OK)
+		UART_Printf(&UART1, "    OK\n");
+	else
+		UART_Printf(&UART1, "    FAILED\n");
+}
+
+void test_read_subsector(uint32_t addr)
+{
+	UART_Printf(&UART1, "Read: %08X\n", addr);
+
+	addr = addr & 0x7FFFFFFF;
+	if (QSPI_Driver_read(&buffer_test[0], addr, 64) == QSPI_STATUS_OK)
+	{
+		for (int i = 0; i< 64; i++)
+		{
+			UART_Printf(&UART1, "%02X ", buffer_test[i]);
+			if ((i % 16) == 15)
+			{
+				UART_Write(&UART1,'\n');
+				HAL_Delay(10);
+			}
+		}
+	}
+	else
+		UART_Printf(&UART1, "    FAILED\n");
+}
