@@ -2,7 +2,7 @@ Debug/
 .settings/
 /Test
 /bin
-/workspace
+/workspace*
 
 *.bak
 *.o
@@ -10,5 +10,7 @@ Debug/
 *.sch-bak
 *.bck
 *.kicad_pcb-bak
+*.launch
+*.mxproject
 
 fp-info-cache
