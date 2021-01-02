@@ -4,7 +4,7 @@
 #define USE_QSPIDRV (1)
 
 #include <string.h>
-#include "UART.h"
+#include "uart_drv.h"
 #if USE_QSPIDRV
 #include "qspi_drv.h"
 #else
@@ -807,7 +807,7 @@ void test_fatfs(const char* cmd)
 {
 	if (f_mount(&QSPIDISKFatFS, (const TCHAR *)QSPIDISKPath, 0) == FR_OK)
 	{
-		if (f_opendir(&dir, "2:/") == FR_OK)
+		if (f_opendir(&dir, cmd) == FR_OK) /* ex: "2:/" */
 		{
 			UART_Printf(&UART1, "DIR /\n");
 			while (1)

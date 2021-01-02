@@ -1,8 +1,8 @@
-// UART.h
+// uart_drv.h
 //
 
-#ifndef __UART_H__
-#define __UART_H__
+#ifndef __UART_DRV_H__
+#define __UART_DRV_H__
 
 #include "stm32h7xx_hal.h"
 #include "RingBuffer.h"
@@ -78,4 +78,4 @@ int 				UART_Printf(UARTDriver* uart, const char * fmt, ...);
 void 				UART_Flush(UARTDriver* uart);
 
 
-#endif // __UART_H__
+#endif // __UART_DRV_H__

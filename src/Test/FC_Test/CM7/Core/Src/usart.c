@@ -21,7 +21,6 @@
 #include "usart.h"
 
 /* USER CODE BEGIN 0 */
-#include "stm32h745xx.h"
 /* USER CODE END 0 */
 
 UART_HandleTypeDef huart1;
@@ -230,7 +229,7 @@ void HAL_UART_MspDeInit(UART_HandleTypeDef* uartHandle)
     HAL_GPIO_DeInit(GPIOA, DEBUG_TX_Pin|DEBUG_RX_Pin);
 
   /* USER CODE BEGIN USART1_MspDeInit 1 */
-    HAL_NVIC_DisableIRQ(UART1_IRQn);
+    HAL_NVIC_DisableIRQ(USART1_IRQn);
   /* USER CODE END USART1_MspDeInit 1 */
   }
   else if(uartHandle->Instance==USART2)
@@ -248,7 +247,7 @@ void HAL_UART_MspDeInit(UART_HandleTypeDef* uartHandle)
     HAL_GPIO_DeInit(GPIOA, GPS_TX_Pin|GPS_RX_Pin);
 
   /* USER CODE BEGIN USART2_MspDeInit 1 */
-    HAL_NVIC_DisableIRQ(UART2_IRQn);
+    HAL_NVIC_DisableIRQ(USART2_IRQn);
   /* USER CODE END USART2_MspDeInit 1 */
   }
   else if(uartHandle->Instance==USART3)
@@ -266,7 +265,7 @@ void HAL_UART_MspDeInit(UART_HandleTypeDef* uartHandle)
     HAL_GPIO_DeInit(GPIOC, VARIO_TX_Pin|VARIO_RX_Pin);
 
   /* USER CODE BEGIN USART3_MspDeInit 1 */
-    HAL_NVIC_DisableIRQ(UART3_IRQn);
+    HAL_NVIC_DisableIRQ(USART3_IRQn);
   /* USER CODE END USART3_MspDeInit 1 */
   }
 }

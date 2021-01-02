@@ -1,11 +1,11 @@
-// UART.c
+// uart_drv.c
 //
 
 #include <stdint.h>
 #include <stdio.h>
 #include <stdarg.h>
 
-#include "UART.h"
+#include "uart_drv.h"
 
 #define MAX_PRINT_BUFFER		(128)
 
