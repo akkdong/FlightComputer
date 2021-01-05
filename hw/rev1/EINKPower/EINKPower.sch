@@ -1,0 +1,1267 @@
+EESchema Schematic File Version 4
+EELAYER 30 0
+EELAYER END
+$Descr USLegal 14000 8500
+encoding utf-8
+Sheet 1 1
+Title "Flight Computer 5V Booster"
+Date ""
+Rev "1"
+Comp "Notirous Rascal Club"
+Comment1 ""
+Comment2 ""
+Comment3 ""
+Comment4 ""
+$EndDescr
+$Comp
+L pspice:INDUCTOR L?
+U 1 1 5FD2B0D3
+P 3800 1550
+AR Path="/5F2A50C6/5FD2B0D3" Ref="L?"  Part="1" 
+AR Path="/5FD2B0D3" Ref="L1"  Part="1" 
+F 0 "L1" H 3675 1675 50  0000 C CNN
+F 1 "22uH" H 3925 1675 50  0000 C CNN
+F 2 "Inductor_SMD:L_12x12mm_H6mm" H 3800 1550 50  0001 C CNN
+F 3 "~" H 3800 1550 50  0001 C CNN
+	1    3800 1550
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:R_US R?
+U 1 1 5FD2B108
+P 5650 2150
+AR Path="/5F2A50C6/5FD2B108" Ref="R?"  Part="1" 
+AR Path="/5FD2B108" Ref="R6"  Part="1" 
+F 0 "R6" H 5450 2200 50  0000 L CNN
+F 1 "120K" H 5400 2100 50  0000 L CNN
+F 2 "FlightComputer_Library:R_0402_1005Metric_Pad0.72x0.64mm_HandSolder" V 5690 2140 50  0001 C CNN
+F 3 "~" H 5650 2150 50  0001 C CNN
+	1    5650 2150
+	-1   0    0    -1  
+$EndComp
+$Comp
+L Device:R_US R?
+U 1 1 5FD2B10E
+P 5650 1750
+AR Path="/5F2A50C6/5FD2B10E" Ref="R?"  Part="1" 
+AR Path="/5FD2B10E" Ref="R5"  Part="1" 
+F 0 "R5" H 5750 1700 50  0000 L CNN
+F 1 "2M" H 5725 1800 50  0000 L CNN
+F 2 "FlightComputer_Library:R_0402_1005Metric_Pad0.72x0.64mm_HandSolder" V 5690 1740 50  0001 C CNN
+F 3 "~" H 5650 1750 50  0001 C CNN
+	1    5650 1750
+	1    0    0    1   
+$EndComp
+$Comp
+L Device:C_Small C?
+U 1 1 5FD2B12F
+P 6150 1950
+AR Path="/5F2A50C6/5FD2B12F" Ref="C?"  Part="1" 
+AR Path="/5FD2B12F" Ref="C5"  Part="1" 
+F 0 "C5" H 6242 1996 50  0000 L CNN
+F 1 "1uF" H 6242 1905 50  0000 L CNN
+F 2 "FlightComputer_Library:C_0402_1005Metric_Pad0.74x0.62mm_HandSolder" H 6150 1950 50  0001 C CNN
+F 3 "~" H 6150 1950 50  0001 C CNN
+	1    6150 1950
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:R_US R?
+U 1 1 5FD2B18E
+P 2450 2700
+AR Path="/5F2A50C6/5FD2B18E" Ref="R?"  Part="1" 
+AR Path="/5FD2B18E" Ref="R3"  Part="1" 
+F 0 "R3" H 2518 2746 50  0000 L CNN
+F 1 "100K" H 2518 2655 50  0000 L CNN
+F 2 "FlightComputer_Library:R_0402_1005Metric_Pad0.72x0.64mm_HandSolder" V 2490 2690 50  0001 C CNN
+F 3 "~" H 2450 2700 50  0001 C CNN
+	1    2450 2700
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:CP1_Small C?
+U 1 1 5FD32188
+P 2000 1750
+AR Path="/5F2A50C6/5FD32188" Ref="C?"  Part="1" 
+AR Path="/5FD32188" Ref="C1"  Part="1" 
+F 0 "C1" H 2091 1796 50  0000 L CNN
+F 1 "4.7uF" H 2091 1705 50  0000 L CNN
+F 2 "Capacitor_Tantalum_SMD:CP_EIA-3528-15_AVX-H_Pad1.50x2.35mm_HandSolder" H 2000 1750 50  0001 C CNN
+F 3 "~" H 2000 1750 50  0001 C CNN
+	1    2000 1750
+	1    0    0    -1  
+$EndComp
+$Comp
+L Connector_Generic:Conn_01x02 J1
+U 1 1 5FD371A8
+P 2650 5125
+F 0 "J1" H 2568 5342 50  0000 C CNN
+F 1 "Conn_01x02" H 2568 5251 50  0000 C CNN
+F 2 "Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical" H 2650 5125 50  0001 C CNN
+F 3 "~" H 2650 5125 50  0001 C CNN
+	1    2650 5125
+	1    0    0    -1  
+$EndComp
+$Comp
+L FlightComputer_Library:+22V #PWR016
+U 1 1 5FF48D67
+P 7350 1550
+F 0 "#PWR016" H 7350 1400 50  0001 C CNN
+F 1 "+22V" V 7365 1678 50  0000 L CNN
+F 2 "" H 7350 1550 50  0001 C CNN
+F 3 "" H 7350 1550 50  0001 C CNN
+	1    7350 1550
+	0    1    1    0   
+$EndComp
+$Comp
+L FlightComputer_Library:-20V #PWR018
+U 1 1 5FF497C7
+P 7400 3550
+F 0 "#PWR018" H 7400 3650 50  0001 C CNN
+F 1 "-20V" V 7400 3678 50  0000 L CNN
+F 2 "" H 7400 3550 50  0001 C CNN
+F 3 "" H 7400 3550 50  0001 C CNN
+	1    7400 3550
+	0    1    1    0   
+$EndComp
+$Comp
+L power:+15V #PWR026
+U 1 1 5FF49A9D
+P 12100 3450
+F 0 "#PWR026" H 12100 3300 50  0001 C CNN
+F 1 "+15V" V 12115 3578 50  0000 L CNN
+F 2 "" H 12100 3450 50  0001 C CNN
+F 3 "" H 12100 3450 50  0001 C CNN
+	1    12100 3450
+	0    1    1    0   
+$EndComp
+$Comp
+L power:-15V #PWR028
+U 1 1 5FF4A610
+P 12100 5050
+F 0 "#PWR028" H 12100 5150 50  0001 C CNN
+F 1 "-15V" V 12115 5178 50  0000 L CNN
+F 2 "" H 12100 5050 50  0001 C CNN
+F 3 "" H 12100 5050 50  0001 C CNN
+	1    12100 5050
+	0    1    1    0   
+$EndComp
+$Comp
+L power:VCOM #PWR023
+U 1 1 5FF4AF4A
+P 11000 1650
+F 0 "#PWR023" H 11000 1500 50  0001 C CNN
+F 1 "VCOM" V 11015 1778 50  0000 L CNN
+F 2 "" H 11000 1650 50  0001 C CNN
+F 3 "" H 11000 1650 50  0001 C CNN
+	1    11000 1650
+	0    1    1    0   
+$EndComp
+$Comp
+L Device:C_Small C?
+U 1 1 5FF5E737
+P 6850 3050
+AR Path="/5F2A50C6/5FF5E737" Ref="C?"  Part="1" 
+AR Path="/5FF5E737" Ref="C6"  Part="1" 
+F 0 "C6" H 6950 3000 50  0000 L CNN
+F 1 "1uF" H 6950 3100 50  0000 L CNN
+F 2 "FlightComputer_Library:C_0402_1005Metric_Pad0.74x0.62mm_HandSolder" H 6850 3050 50  0001 C CNN
+F 3 "~" H 6850 3050 50  0001 C CNN
+	1    6850 3050
+	1    0    0    1   
+$EndComp
+$Comp
+L Device:C_Small C?
+U 1 1 5FF62421
+P 5900 3300
+AR Path="/5F2A50C6/5FF62421" Ref="C?"  Part="1" 
+AR Path="/5FF62421" Ref="C4"  Part="1" 
+F 0 "C4" H 5992 3346 50  0000 L CNN
+F 1 "100pF" H 5992 3255 50  0000 L CNN
+F 2 "FlightComputer_Library:C_0402_1005Metric_Pad0.74x0.62mm_HandSolder" H 5900 3300 50  0001 C CNN
+F 3 "~" H 5900 3300 50  0001 C CNN
+	1    5900 3300
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:R_US R?
+U 1 1 5FF66565
+P 2850 2700
+AR Path="/5F2A50C6/5FF66565" Ref="R?"  Part="1" 
+AR Path="/5FF66565" Ref="R4"  Part="1" 
+F 0 "R4" H 2918 2746 50  0000 L CNN
+F 1 "100K" H 2918 2655 50  0000 L CNN
+F 2 "FlightComputer_Library:R_0402_1005Metric_Pad0.72x0.64mm_HandSolder" V 2890 2690 50  0001 C CNN
+F 3 "~" H 2850 2700 50  0001 C CNN
+	1    2850 2700
+	1    0    0    -1  
+$EndComp
+$Comp
+L Diode:1N4001 D2
+U 1 1 5FF70609
+P 5100 3250
+F 0 "D2" V 5150 3400 50  0000 C CNN
+F 1 "1N4001" V 5050 3500 50  0000 C CNN
+F 2 "Diode_THT:D_DO-41_SOD81_P10.16mm_Horizontal" H 5100 3075 50  0001 C CNN
+F 3 "http://www.vishay.com/docs/88503/1n4001.pdf" H 5100 3250 50  0001 C CNN
+	1    5100 3250
+	0    1    1    0   
+$EndComp
+$Comp
+L Device:C_Small C?
+U 1 1 5FFA2F09
+P 4800 3550
+AR Path="/5F2A50C6/5FFA2F09" Ref="C?"  Part="1" 
+AR Path="/5FFA2F09" Ref="C2"  Part="1" 
+F 0 "C2" V 4650 3400 50  0000 L CNN
+F 1 "0.1uF" V 4650 3550 50  0000 L CNN
+F 2 "FlightComputer_Library:C_0402_1005Metric_Pad0.74x0.62mm_HandSolder" H 4800 3550 50  0001 C CNN
+F 3 "~" H 4800 3550 50  0001 C CNN
+	1    4800 3550
+	0    1    1    0   
+$EndComp
+$Comp
+L Device:R_US R?
+U 1 1 6000B81B
+P 6400 3300
+AR Path="/5F2A50C6/6000B81B" Ref="R?"  Part="1" 
+AR Path="/6000B81B" Ref="R8"  Part="1" 
+F 0 "R8" H 6200 3350 50  0000 L CNN
+F 1 "560K" H 6150 3250 50  0000 L CNN
+F 2 "FlightComputer_Library:R_0402_1005Metric_Pad0.72x0.64mm_HandSolder" V 6440 3290 50  0001 C CNN
+F 3 "~" H 6400 3300 50  0001 C CNN
+	1    6400 3300
+	-1   0    0    -1  
+$EndComp
+$Comp
+L Device:R_US R?
+U 1 1 6000B821
+P 6400 2800
+AR Path="/5F2A50C6/6000B821" Ref="R?"  Part="1" 
+AR Path="/6000B821" Ref="R7"  Part="1" 
+F 0 "R7" H 6450 2750 50  0000 L CNN
+F 1 "39K" H 6450 2850 50  0000 L CNN
+F 2 "FlightComputer_Library:R_0402_1005Metric_Pad0.72x0.64mm_HandSolder" V 6440 2790 50  0001 C CNN
+F 3 "~" H 6400 2800 50  0001 C CNN
+	1    6400 2800
+	1    0    0    1   
+$EndComp
+$Comp
+L pspice:INDUCTOR L?
+U 1 1 5FF5B44E
+P 3850 3550
+AR Path="/5F2A50C6/5FF5B44E" Ref="L?"  Part="1" 
+AR Path="/5FF5B44E" Ref="L2"  Part="1" 
+F 0 "L2" H 4000 3650 50  0000 C CNN
+F 1 "22uH" H 3750 3650 50  0000 C CNN
+F 2 "Inductor_SMD:L_12x12mm_H6mm" H 3850 3550 50  0001 C CNN
+F 3 "~" H 3850 3550 50  0001 C CNN
+	1    3850 3550
+	-1   0    0    -1  
+$EndComp
+Wire Wire Line
+	10600 3750 10600 4250
+Wire Wire Line
+	10600 4250 11350 4250
+Connection ~ 10600 4250
+Wire Wire Line
+	10600 4250 10600 4750
+$Comp
+L Device:CP1_Small C?
+U 1 1 60146042
+P 9350 3850
+AR Path="/5F2A50C6/60146042" Ref="C?"  Part="1" 
+AR Path="/60146042" Ref="C7"  Part="1" 
+F 0 "C7" H 9441 3896 50  0000 L CNN
+F 1 "10uF" H 9441 3805 50  0000 L CNN
+F 2 "Capacitor_Tantalum_SMD:CP_EIA-1608-08_AVX-J_Pad1.25x1.05mm_HandSolder" H 9350 3850 50  0001 C CNN
+F 3 "~" H 9350 3850 50  0001 C CNN
+	1    9350 3850
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:C_Small C?
+U 1 1 60146048
+P 9850 3850
+AR Path="/5F2A50C6/60146048" Ref="C?"  Part="1" 
+AR Path="/60146048" Ref="C9"  Part="1" 
+F 0 "C9" H 9942 3896 50  0000 L CNN
+F 1 "0.1uF" H 9942 3805 50  0000 L CNN
+F 2 "FlightComputer_Library:C_0402_1005Metric_Pad0.74x0.62mm_HandSolder" H 9850 3850 50  0001 C CNN
+F 3 "~" H 9850 3850 50  0001 C CNN
+	1    9850 3850
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:CP1_Small C?
+U 1 1 60149C2A
+P 9350 4650
+AR Path="/5F2A50C6/60149C2A" Ref="C?"  Part="1" 
+AR Path="/60149C2A" Ref="C8"  Part="1" 
+F 0 "C8" H 9441 4696 50  0000 L CNN
+F 1 "10uF" H 9441 4605 50  0000 L CNN
+F 2 "Capacitor_Tantalum_SMD:CP_EIA-1608-08_AVX-J_Pad1.25x1.05mm_HandSolder" H 9350 4650 50  0001 C CNN
+F 3 "~" H 9350 4650 50  0001 C CNN
+	1    9350 4650
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:C_Small C?
+U 1 1 60149C30
+P 9850 4650
+AR Path="/5F2A50C6/60149C30" Ref="C?"  Part="1" 
+AR Path="/60149C30" Ref="C10"  Part="1" 
+F 0 "C10" H 9942 4696 50  0000 L CNN
+F 1 "0.1uF" H 9942 4605 50  0000 L CNN
+F 2 "FlightComputer_Library:C_0402_1005Metric_Pad0.74x0.62mm_HandSolder" H 9850 4650 50  0001 C CNN
+F 3 "~" H 9850 4650 50  0001 C CNN
+	1    9850 4650
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:CP1_Small C?
+U 1 1 6014E29E
+P 11850 3850
+AR Path="/5F2A50C6/6014E29E" Ref="C?"  Part="1" 
+AR Path="/6014E29E" Ref="C13"  Part="1" 
+F 0 "C13" H 11941 3896 50  0000 L CNN
+F 1 "10uF" H 11941 3805 50  0000 L CNN
+F 2 "Capacitor_Tantalum_SMD:CP_EIA-1608-08_AVX-J_Pad1.25x1.05mm_HandSolder" H 11850 3850 50  0001 C CNN
+F 3 "~" H 11850 3850 50  0001 C CNN
+	1    11850 3850
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:C_Small C?
+U 1 1 6014E2A4
+P 11350 3850
+AR Path="/5F2A50C6/6014E2A4" Ref="C?"  Part="1" 
+AR Path="/6014E2A4" Ref="C11"  Part="1" 
+F 0 "C11" H 11442 3896 50  0000 L CNN
+F 1 "0.1uF" H 11442 3805 50  0000 L CNN
+F 2 "FlightComputer_Library:C_0402_1005Metric_Pad0.74x0.62mm_HandSolder" H 11350 3850 50  0001 C CNN
+F 3 "~" H 11350 3850 50  0001 C CNN
+	1    11350 3850
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:CP1_Small C?
+U 1 1 60151EF4
+P 11350 4650
+AR Path="/5F2A50C6/60151EF4" Ref="C?"  Part="1" 
+AR Path="/60151EF4" Ref="C12"  Part="1" 
+F 0 "C12" H 11441 4696 50  0000 L CNN
+F 1 "10uF" H 11441 4605 50  0000 L CNN
+F 2 "Capacitor_Tantalum_SMD:CP_EIA-1608-08_AVX-J_Pad1.25x1.05mm_HandSolder" H 11350 4650 50  0001 C CNN
+F 3 "~" H 11350 4650 50  0001 C CNN
+	1    11350 4650
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:C_Small C?
+U 1 1 60151EFA
+P 11850 4650
+AR Path="/5F2A50C6/60151EFA" Ref="C?"  Part="1" 
+AR Path="/60151EFA" Ref="C14"  Part="1" 
+F 0 "C14" H 11942 4696 50  0000 L CNN
+F 1 "0.1uF" H 11942 4605 50  0000 L CNN
+F 2 "FlightComputer_Library:C_0402_1005Metric_Pad0.74x0.62mm_HandSolder" H 11850 4650 50  0001 C CNN
+F 3 "~" H 11850 4650 50  0001 C CNN
+	1    11850 4650
+	1    0    0    -1  
+$EndComp
+$Comp
+L FlightComputer_Library:-20V #PWR021
+U 1 1 6015DE78
+P 8875 5050
+F 0 "#PWR021" H 8875 5150 50  0001 C CNN
+F 1 "-20V" V 8875 5178 50  0000 L CNN
+F 2 "" H 8875 5050 50  0001 C CNN
+F 3 "" H 8875 5050 50  0001 C CNN
+	1    8875 5050
+	0    -1   -1   0   
+$EndComp
+$Comp
+L FlightComputer_Library:+22V #PWR022
+U 1 1 6015E664
+P 8900 3450
+F 0 "#PWR022" H 8900 3300 50  0001 C CNN
+F 1 "+22V" V 8915 3578 50  0000 L CNN
+F 2 "" H 8900 3450 50  0001 C CNN
+F 3 "" H 8900 3450 50  0001 C CNN
+	1    8900 3450
+	0    -1   -1   0   
+$EndComp
+Wire Wire Line
+	8900 3450 9350 3450
+Wire Wire Line
+	8875 5050 9350 5050
+Wire Wire Line
+	10600 4250 9850 4250
+Wire Wire Line
+	9350 4250 9350 3950
+Wire Wire Line
+	9350 4550 9350 4250
+Connection ~ 9350 4250
+Wire Wire Line
+	9850 3950 9850 4250
+Connection ~ 9850 4250
+Wire Wire Line
+	9850 4250 9350 4250
+Wire Wire Line
+	9850 4550 9850 4250
+Wire Wire Line
+	9850 3750 9850 3450
+Connection ~ 9850 3450
+Wire Wire Line
+	9850 3450 10300 3450
+Wire Wire Line
+	9350 3750 9350 3450
+Connection ~ 9350 3450
+Wire Wire Line
+	9350 3450 9850 3450
+Wire Wire Line
+	9350 4750 9350 5050
+Connection ~ 9350 5050
+Wire Wire Line
+	9350 5050 9850 5050
+Wire Wire Line
+	9850 4750 9850 5050
+Connection ~ 9850 5050
+Wire Wire Line
+	9850 5050 10300 5050
+Wire Wire Line
+	11350 3950 11350 4250
+Connection ~ 11350 4250
+Wire Wire Line
+	11350 4250 11850 4250
+Wire Wire Line
+	11850 3950 11850 4250
+Connection ~ 11850 4250
+Wire Wire Line
+	11850 4250 12100 4250
+Wire Wire Line
+	11850 4550 11850 4250
+Wire Wire Line
+	11350 4550 11350 4250
+Wire Wire Line
+	11350 3450 11350 3750
+Wire Wire Line
+	11850 3750 11850 3450
+Wire Wire Line
+	10900 3450 11350 3450
+Connection ~ 11350 3450
+Wire Wire Line
+	11350 3450 11850 3450
+Wire Wire Line
+	11850 4750 11850 5050
+Wire Wire Line
+	11850 5050 11350 5050
+Wire Wire Line
+	11350 4750 11350 5050
+Connection ~ 11350 5050
+Wire Wire Line
+	11350 5050 10900 5050
+Wire Wire Line
+	12100 3450 11850 3450
+Connection ~ 11850 3450
+Wire Wire Line
+	12100 5050 11850 5050
+Connection ~ 11850 5050
+$Comp
+L power:GND #PWR?
+U 1 1 601F06C1
+P 12100 4250
+AR Path="/5F2A50C6/601F06C1" Ref="#PWR?"  Part="1" 
+AR Path="/601F06C1" Ref="#PWR027"  Part="1" 
+F 0 "#PWR027" H 12100 4000 50  0001 C CNN
+F 1 "GND" V 12100 4050 50  0000 C CNN
+F 2 "" H 12100 4250 50  0001 C CNN
+F 3 "" H 12100 4250 50  0001 C CNN
+	1    12100 4250
+	0    -1   -1   0   
+$EndComp
+$Comp
+L Amplifier_Operational:LM358 U2
+U 1 1 601FE47B
+P 10100 1650
+F 0 "U2" H 10100 2017 50  0000 C CNN
+F 1 "LM358" H 10100 1926 50  0000 C CNN
+F 2 "Package_SO:TSSOP-8_3x3mm_P0.65mm" H 10100 1650 50  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/lm2904-n.pdf" H 10100 1650 50  0001 C CNN
+	1    10100 1650
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:R_POT_TRIM_US RV1
+U 1 1 601FF177
+P 8950 1550
+F 0 "RV1" H 8883 1596 50  0000 R CNN
+F 1 "100K" H 8883 1505 50  0000 R CNN
+F 2 "Potentiometer_THT:Potentiometer_Bourns_3299W_Vertical" H 8950 1550 50  0001 C CNN
+F 3 "~" H 8950 1550 50  0001 C CNN
+	1    8950 1550
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:C_Small C?
+U 1 1 6020060C
+P 12275 2050
+AR Path="/5F2A50C6/6020060C" Ref="C?"  Part="1" 
+AR Path="/6020060C" Ref="C16"  Part="1" 
+F 0 "C16" V 12425 1875 50  0000 L CNN
+F 1 "0.1uF" V 12425 2075 50  0000 L CNN
+F 2 "FlightComputer_Library:C_0402_1005Metric_Pad0.74x0.62mm_HandSolder" H 12275 2050 50  0001 C CNN
+F 3 "~" H 12275 2050 50  0001 C CNN
+	1    12275 2050
+	0    1    1    0   
+$EndComp
+$Comp
+L Amplifier_Operational:LM358 U2
+U 3 1 60201E5D
+P 11950 1650
+F 0 "U2" H 11908 1696 50  0000 L CNN
+F 1 "LM358" H 11908 1605 50  0000 L CNN
+F 2 "Package_SO:TSSOP-8_3x3mm_P0.65mm" H 11950 1650 50  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/lm2904-n.pdf" H 11950 1650 50  0001 C CNN
+	3    11950 1650
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:R_US R?
+U 1 1 60206746
+P 8950 2000
+AR Path="/5F2A50C6/60206746" Ref="R?"  Part="1" 
+AR Path="/60206746" Ref="R9"  Part="1" 
+F 0 "R9" H 8750 2050 50  0000 L CNN
+F 1 "200K" H 8675 1975 50  0000 L CNN
+F 2 "FlightComputer_Library:R_0402_1005Metric_Pad0.72x0.64mm_HandSolder" V 8990 1990 50  0001 C CNN
+F 3 "~" H 8950 2000 50  0001 C CNN
+	1    8950 2000
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	9800 1750 9600 1750
+Wire Wire Line
+	9600 1750 9600 2025
+Wire Wire Line
+	9600 2025 10650 2025
+Wire Wire Line
+	10650 2025 10650 1650
+Wire Wire Line
+	10650 1650 10400 1650
+Wire Wire Line
+	10650 1650 11000 1650
+Connection ~ 10650 1650
+Wire Wire Line
+	9100 1550 9800 1550
+Wire Wire Line
+	8950 1700 8950 1850
+Wire Wire Line
+	8950 1400 8950 1200
+Wire Wire Line
+	8950 1200 8675 1200
+$Comp
+L power:GND #PWR?
+U 1 1 6022B680
+P 8675 1200
+AR Path="/5F2A50C6/6022B680" Ref="#PWR?"  Part="1" 
+AR Path="/6022B680" Ref="#PWR019"  Part="1" 
+F 0 "#PWR019" H 8675 950 50  0001 C CNN
+F 1 "GND" V 8675 1000 50  0000 C CNN
+F 2 "" H 8675 1200 50  0001 C CNN
+F 3 "" H 8675 1200 50  0001 C CNN
+	1    8675 1200
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	8950 2150 8950 2350
+Wire Wire Line
+	8950 2350 8675 2350
+$Comp
+L power:-15V #PWR020
+U 1 1 6024074B
+P 8675 2350
+F 0 "#PWR020" H 8675 2450 50  0001 C CNN
+F 1 "-15V" V 8690 2478 50  0000 L CNN
+F 2 "" H 8675 2350 50  0001 C CNN
+F 3 "" H 8675 2350 50  0001 C CNN
+	1    8675 2350
+	0    -1   -1   0   
+$EndComp
+$Comp
+L power:-15V #PWR025
+U 1 1 602604D0
+P 11850 2100
+F 0 "#PWR025" H 11850 2200 50  0001 C CNN
+F 1 "-15V" H 11865 2273 50  0000 C CNN
+F 2 "" H 11850 2100 50  0001 C CNN
+F 3 "" H 11850 2100 50  0001 C CNN
+	1    11850 2100
+	-1   0    0    1   
+$EndComp
+$Comp
+L power:+15V #PWR024
+U 1 1 60260BAB
+P 11850 1175
+F 0 "#PWR024" H 11850 1025 50  0001 C CNN
+F 1 "+15V" H 11865 1348 50  0000 C CNN
+F 2 "" H 11850 1175 50  0001 C CNN
+F 3 "" H 11850 1175 50  0001 C CNN
+	1    11850 1175
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	11850 2100 11850 2050
+Connection ~ 11850 2050
+Wire Wire Line
+	11850 2050 11850 1950
+Wire Wire Line
+	11850 2050 12175 2050
+Wire Wire Line
+	12375 2050 12625 2050
+$Comp
+L Device:C_Small C?
+U 1 1 601FF76E
+P 12275 1250
+AR Path="/5F2A50C6/601FF76E" Ref="C?"  Part="1" 
+AR Path="/601FF76E" Ref="C15"  Part="1" 
+F 0 "C15" V 12375 1300 50  0000 L CNN
+F 1 "0.1uF" V 12375 1025 50  0000 L CNN
+F 2 "FlightComputer_Library:C_0402_1005Metric_Pad0.74x0.62mm_HandSolder" H 12275 1250 50  0001 C CNN
+F 3 "~" H 12275 1250 50  0001 C CNN
+	1    12275 1250
+	0    -1   -1   0   
+$EndComp
+$Comp
+L power:GND #PWR?
+U 1 1 60298271
+P 12625 1250
+AR Path="/5F2A50C6/60298271" Ref="#PWR?"  Part="1" 
+AR Path="/60298271" Ref="#PWR029"  Part="1" 
+F 0 "#PWR029" H 12625 1000 50  0001 C CNN
+F 1 "GND" V 12625 1050 50  0000 C CNN
+F 2 "" H 12625 1250 50  0001 C CNN
+F 3 "" H 12625 1250 50  0001 C CNN
+	1    12625 1250
+	0    -1   -1   0   
+$EndComp
+$Comp
+L power:GND #PWR?
+U 1 1 6029883A
+P 12625 2050
+AR Path="/5F2A50C6/6029883A" Ref="#PWR?"  Part="1" 
+AR Path="/6029883A" Ref="#PWR030"  Part="1" 
+F 0 "#PWR030" H 12625 1800 50  0001 C CNN
+F 1 "GND" V 12625 1850 50  0000 C CNN
+F 2 "" H 12625 2050 50  0001 C CNN
+F 3 "" H 12625 2050 50  0001 C CNN
+	1    12625 2050
+	0    -1   -1   0   
+$EndComp
+Wire Wire Line
+	12375 1250 12625 1250
+$Comp
+L Connector_Generic:Conn_01x02 J2
+U 1 1 602BF16E
+P 5125 5225
+F 0 "J2" H 5043 5442 50  0000 C CNN
+F 1 "Conn_01x02" H 5043 5351 50  0000 C CNN
+F 2 "Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical" H 5125 5225 50  0001 C CNN
+F 3 "~" H 5125 5225 50  0001 C CNN
+	1    5125 5225
+	1    0    0    1   
+$EndComp
+$Comp
+L Connector_Generic:Conn_01x02 J3
+U 1 1 602BF904
+P 5125 5975
+F 0 "J3" H 5043 6192 50  0000 C CNN
+F 1 "Conn_01x02" H 5043 6101 50  0000 C CNN
+F 2 "Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical" H 5125 5975 50  0001 C CNN
+F 3 "~" H 5125 5975 50  0001 C CNN
+	1    5125 5975
+	1    0    0    1   
+$EndComp
+$Comp
+L Connector_Generic:Conn_01x02 J4
+U 1 1 602BFE88
+P 5125 6725
+F 0 "J4" H 5043 6942 50  0000 C CNN
+F 1 "Conn_01x02" H 5043 6851 50  0000 C CNN
+F 2 "Connector_PinHeader_2.54mm:PinHeader_1x02_P2.54mm_Vertical" H 5125 6725 50  0001 C CNN
+F 3 "~" H 5125 6725 50  0001 C CNN
+	1    5125 6725
+	1    0    0    1   
+$EndComp
+$Comp
+L FlightComputer_Library:VCC_5V #PWR?
+U 1 1 602C034C
+P 1900 5125
+AR Path="/5F2A50C6/602C034C" Ref="#PWR?"  Part="1" 
+AR Path="/602C034C" Ref="#PWR02"  Part="1" 
+F 0 "#PWR02" H 1900 4975 50  0001 C CNN
+F 1 "VCC_5V" V 1900 5375 50  0000 C CNN
+F 2 "" H 1900 5125 50  0001 C CNN
+F 3 "" H 1900 5125 50  0001 C CNN
+	1    1900 5125
+	0    -1   -1   0   
+$EndComp
+Wire Wire Line
+	1900 5125 2025 5125
+$Comp
+L FlightComputer_Library:+22V #PWR08
+U 1 1 602D55F4
+P 4300 5125
+F 0 "#PWR08" H 4300 4975 50  0001 C CNN
+F 1 "+22V" V 4315 5253 50  0000 L CNN
+F 2 "" H 4300 5125 50  0001 C CNN
+F 3 "" H 4300 5125 50  0001 C CNN
+	1    4300 5125
+	0    -1   -1   0   
+$EndComp
+$Comp
+L FlightComputer_Library:-20V #PWR09
+U 1 1 602D5EC2
+P 4300 5225
+F 0 "#PWR09" H 4300 5325 50  0001 C CNN
+F 1 "-20V" V 4300 5353 50  0000 L CNN
+F 2 "" H 4300 5225 50  0001 C CNN
+F 3 "" H 4300 5225 50  0001 C CNN
+	1    4300 5225
+	0    -1   -1   0   
+$EndComp
+$Comp
+L power:+15V #PWR010
+U 1 1 602D6305
+P 4300 5875
+F 0 "#PWR010" H 4300 5725 50  0001 C CNN
+F 1 "+15V" V 4315 6003 50  0000 L CNN
+F 2 "" H 4300 5875 50  0001 C CNN
+F 3 "" H 4300 5875 50  0001 C CNN
+	1    4300 5875
+	0    -1   -1   0   
+$EndComp
+$Comp
+L power:-15V #PWR011
+U 1 1 602D67FA
+P 4300 5975
+F 0 "#PWR011" H 4300 6075 50  0001 C CNN
+F 1 "-15V" V 4315 6103 50  0000 L CNN
+F 2 "" H 4300 5975 50  0001 C CNN
+F 3 "" H 4300 5975 50  0001 C CNN
+	1    4300 5975
+	0    -1   -1   0   
+$EndComp
+$Comp
+L power:VCOM #PWR012
+U 1 1 602D6C9B
+P 4300 6625
+F 0 "#PWR012" H 4300 6475 50  0001 C CNN
+F 1 "VCOM" V 4315 6753 50  0000 L CNN
+F 2 "" H 4300 6625 50  0001 C CNN
+F 3 "" H 4300 6625 50  0001 C CNN
+	1    4300 6625
+	0    -1   -1   0   
+$EndComp
+Wire Wire Line
+	4300 5125 4600 5125
+Wire Wire Line
+	4925 5225 4600 5225
+$Comp
+L power:GND #PWR?
+U 1 1 602F4B51
+P 1900 5225
+AR Path="/5F2A50C6/602F4B51" Ref="#PWR?"  Part="1" 
+AR Path="/602F4B51" Ref="#PWR03"  Part="1" 
+F 0 "#PWR03" H 1900 4975 50  0001 C CNN
+F 1 "GND" H 1905 5052 50  0000 C CNN
+F 2 "" H 1900 5225 50  0001 C CNN
+F 3 "" H 1900 5225 50  0001 C CNN
+	1    1900 5225
+	0    1    1    0   
+$EndComp
+$Comp
+L power:PWR_FLAG #FLG01
+U 1 1 603050CF
+P 2025 5000
+F 0 "#FLG01" H 2025 5075 50  0001 C CNN
+F 1 "PWR_FLAG" H 2025 5173 50  0000 C CNN
+F 2 "" H 2025 5000 50  0001 C CNN
+F 3 "~" H 2025 5000 50  0001 C CNN
+	1    2025 5000
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	2025 5000 2025 5125
+Connection ~ 2025 5125
+Wire Wire Line
+	2025 5125 2450 5125
+$Comp
+L power:GND #PWR?
+U 1 1 6033C495
+P 4600 6900
+AR Path="/5F2A50C6/6033C495" Ref="#PWR?"  Part="1" 
+AR Path="/6033C495" Ref="#PWR013"  Part="1" 
+F 0 "#PWR013" H 4600 6650 50  0001 C CNN
+F 1 "GND" H 4605 6727 50  0000 C CNN
+F 2 "" H 4600 6900 50  0001 C CNN
+F 3 "" H 4600 6900 50  0001 C CNN
+	1    4600 6900
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	4925 6725 4600 6725
+Wire Wire Line
+	4600 6725 4600 6900
+$Comp
+L Connector_Generic:Conn_01x03 J5
+U 1 1 6034636C
+P 7250 5225
+F 0 "J5" H 7330 5267 50  0000 L CNN
+F 1 "Conn_01x03" H 7330 5176 50  0000 L CNN
+F 2 "Connector_PinHeader_2.54mm:PinHeader_1x03_P2.54mm_Vertical" H 7250 5225 50  0001 C CNN
+F 3 "~" H 7250 5225 50  0001 C CNN
+	1    7250 5225
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	7050 5125 6325 5125
+Wire Wire Line
+	7050 5225 6325 5225
+$Comp
+L power:GND #PWR?
+U 1 1 60364628
+P 6700 5425
+AR Path="/5F2A50C6/60364628" Ref="#PWR?"  Part="1" 
+AR Path="/60364628" Ref="#PWR015"  Part="1" 
+F 0 "#PWR015" H 6700 5175 50  0001 C CNN
+F 1 "GND" H 6705 5252 50  0000 C CNN
+F 2 "" H 6700 5425 50  0001 C CNN
+F 3 "" H 6700 5425 50  0001 C CNN
+	1    6700 5425
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	7050 5325 6700 5325
+Wire Wire Line
+	6700 5325 6700 5425
+Text Label 6325 5225 0    50   ~ 0
+EN_VEE
+Text Label 6325 5125 0    50   ~ 0
+EN_VDD
+$Comp
+L power:PWR_FLAG #FLG03
+U 1 1 60370139
+P 4600 5025
+F 0 "#FLG03" H 4600 5100 50  0001 C CNN
+F 1 "PWR_FLAG" H 4600 5198 50  0000 C CNN
+F 2 "" H 4600 5025 50  0001 C CNN
+F 3 "~" H 4600 5025 50  0001 C CNN
+	1    4600 5025
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:PWR_FLAG #FLG04
+U 1 1 603708BC
+P 4600 5325
+F 0 "#FLG04" H 4600 5400 50  0001 C CNN
+F 1 "PWR_FLAG" H 4600 5498 50  0000 C CNN
+F 2 "" H 4600 5325 50  0001 C CNN
+F 3 "~" H 4600 5325 50  0001 C CNN
+	1    4600 5325
+	-1   0    0    1   
+$EndComp
+Wire Wire Line
+	4600 5025 4600 5125
+Connection ~ 4600 5125
+Wire Wire Line
+	4600 5125 4925 5125
+Wire Wire Line
+	4600 5325 4600 5225
+Connection ~ 4600 5225
+Wire Wire Line
+	4600 5225 4300 5225
+Wire Wire Line
+	4300 5875 4925 5875
+Wire Wire Line
+	4300 5975 4925 5975
+Wire Wire Line
+	4300 6625 4925 6625
+Wire Wire Line
+	1900 5225 2025 5225
+$Comp
+L power:PWR_FLAG #FLG02
+U 1 1 603B1712
+P 2025 5375
+F 0 "#FLG02" H 2025 5450 50  0001 C CNN
+F 1 "PWR_FLAG" H 2025 5548 50  0000 C CNN
+F 2 "" H 2025 5375 50  0001 C CNN
+F 3 "~" H 2025 5375 50  0001 C CNN
+	1    2025 5375
+	-1   0    0    1   
+$EndComp
+Wire Wire Line
+	2025 5375 2025 5225
+Connection ~ 2025 5225
+Wire Wire Line
+	2025 5225 2450 5225
+$Comp
+L Regulator_Switching:LT1945 U1
+U 1 1 5FFDA905
+P 3850 2500
+F 0 "U1" H 3850 3067 50  0000 C CNN
+F 1 "LT1945" H 3850 2976 50  0000 C CNN
+F 2 "Package_SO:MSOP-10_3x3mm_P0.5mm" H 3900 2250 50  0001 L CNN
+F 3 "https://www.analog.com/media/en/technical-documentation/data-sheets/1945fa.pdf" H 3950 2500 50  0001 C CNN
+	1    3850 2500
+	1    0    0    -1  
+$EndComp
+$Comp
+L Regulator_Linear:MC79L15_SO8 U4
+U 1 1 5FFF0FDF
+P 10600 5050
+F 0 "U4" H 10600 4901 50  0000 C CNN
+F 1 "MC79L15_SO8" H 10600 4810 50  0000 C CNN
+F 2 "Package_SO:SOIC-8_3.9x4.9mm_P1.27mm" H 10600 4850 50  0001 C CIN
+F 3 "http://www.ti.com/lit/ds/symlink/lm79l.pdf" H 10600 5100 50  0001 C CNN
+	1    10600 5050
+	1    0    0    -1  
+$EndComp
+$Comp
+L Regulator_Linear:MC78L15_SO8 U3
+U 1 1 5FFF1F8E
+P 10600 3450
+F 0 "U3" H 10600 3692 50  0000 C CNN
+F 1 "MC78L15_SO8" H 10600 3601 50  0000 C CNN
+F 2 "Package_SO:SOIC-8_3.9x4.9mm_P1.27mm" H 10700 3650 50  0001 C CIN
+F 3 "https://www.onsemi.com/pub/Collateral/MC78L00A-D.PDF" H 10800 3450 50  0001 C CNN
+	1    10600 3450
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	11850 1250 12175 1250
+Connection ~ 11850 1250
+Wire Wire Line
+	11850 1175 11850 1250
+Wire Wire Line
+	11850 1250 11850 1350
+$Comp
+L Diode:1N4001 D3
+U 1 1 5FF9AB85
+P 5450 3550
+F 0 "D3" H 5450 3767 50  0000 C CNN
+F 1 "1N4001" H 5450 3676 50  0000 C CNN
+F 2 "Diode_THT:D_DO-41_SOD81_P10.16mm_Horizontal" H 5450 3375 50  0001 C CNN
+F 3 "http://www.vishay.com/docs/88503/1n4001.pdf" H 5450 3550 50  0001 C CNN
+	1    5450 3550
+	1    0    0    -1  
+$EndComp
+$Comp
+L Diode:1N4001 D1
+U 1 1 5FF9AEE1
+P 4800 1550
+F 0 "D1" H 4800 1767 50  0000 C CNN
+F 1 "1N4001" H 4800 1676 50  0000 C CNN
+F 2 "Diode_THT:D_DO-41_SOD81_P10.16mm_Horizontal" H 4800 1375 50  0001 C CNN
+F 3 "http://www.vishay.com/docs/88503/1n4001.pdf" H 4800 1550 50  0001 C CNN
+	1    4800 1550
+	-1   0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR?
+U 1 1 5FF9EC78
+P 3750 3000
+AR Path="/5F2A50C6/5FF9EC78" Ref="#PWR?"  Part="1" 
+AR Path="/5FF9EC78" Ref="#PWR07"  Part="1" 
+F 0 "#PWR07" H 3750 2750 50  0001 C CNN
+F 1 "GND" H 3755 2827 50  0000 C CNN
+F 2 "" H 3750 3000 50  0001 C CNN
+F 3 "" H 3750 3000 50  0001 C CNN
+	1    3750 3000
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	3750 2800 3750 2900
+Wire Wire Line
+	3750 2900 3850 2900
+Wire Wire Line
+	3850 2900 3850 2800
+Connection ~ 3750 2900
+Wire Wire Line
+	3750 2900 3750 3000
+$Comp
+L Device:R_US R?
+U 1 1 5FFBC52B
+P 2050 2400
+AR Path="/5F2A50C6/5FFBC52B" Ref="R?"  Part="1" 
+AR Path="/5FFBC52B" Ref="R2"  Part="1" 
+F 0 "R2" V 2000 2200 50  0000 L CNN
+F 1 "33R" V 2000 2500 50  0000 L CNN
+F 2 "FlightComputer_Library:R_0402_1005Metric_Pad0.72x0.64mm_HandSolder" V 2090 2390 50  0001 C CNN
+F 3 "~" H 2050 2400 50  0001 C CNN
+	1    2050 2400
+	0    1    1    0   
+$EndComp
+$Comp
+L Device:R_US R?
+U 1 1 5FFBC875
+P 2050 2300
+AR Path="/5F2A50C6/5FFBC875" Ref="R?"  Part="1" 
+AR Path="/5FFBC875" Ref="R1"  Part="1" 
+F 0 "R1" V 2000 2100 50  0000 L CNN
+F 1 "33R" V 2000 2400 50  0000 L CNN
+F 2 "FlightComputer_Library:R_0402_1005Metric_Pad0.72x0.64mm_HandSolder" V 2090 2290 50  0001 C CNN
+F 3 "~" H 2050 2300 50  0001 C CNN
+	1    2050 2300
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	2200 2300 2450 2300
+Wire Wire Line
+	3450 2400 2850 2400
+Wire Wire Line
+	2450 2550 2450 2300
+Connection ~ 2450 2300
+Wire Wire Line
+	2450 2300 3450 2300
+Wire Wire Line
+	2850 2550 2850 2400
+Connection ~ 2850 2400
+Wire Wire Line
+	2850 2400 2200 2400
+$Comp
+L power:GND #PWR?
+U 1 1 5FFE424E
+P 2450 3000
+AR Path="/5F2A50C6/5FFE424E" Ref="#PWR?"  Part="1" 
+AR Path="/5FFE424E" Ref="#PWR05"  Part="1" 
+F 0 "#PWR05" H 2450 2750 50  0001 C CNN
+F 1 "GND" H 2455 2827 50  0000 C CNN
+F 2 "" H 2450 3000 50  0001 C CNN
+F 3 "" H 2450 3000 50  0001 C CNN
+	1    2450 3000
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR?
+U 1 1 5FFE44F3
+P 2850 3000
+AR Path="/5F2A50C6/5FFE44F3" Ref="#PWR?"  Part="1" 
+AR Path="/5FFE44F3" Ref="#PWR06"  Part="1" 
+F 0 "#PWR06" H 2850 2750 50  0001 C CNN
+F 1 "GND" H 2855 2827 50  0000 C CNN
+F 2 "" H 2850 3000 50  0001 C CNN
+F 3 "" H 2850 3000 50  0001 C CNN
+	1    2850 3000
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	2850 2850 2850 3000
+Wire Wire Line
+	2450 2850 2450 3000
+Wire Wire Line
+	1900 2400 1300 2400
+Wire Wire Line
+	1900 2300 1300 2300
+$Comp
+L power:GND #PWR?
+U 1 1 6001F34B
+P 2000 1950
+AR Path="/5F2A50C6/6001F34B" Ref="#PWR?"  Part="1" 
+AR Path="/6001F34B" Ref="#PWR04"  Part="1" 
+F 0 "#PWR04" H 2000 1700 50  0001 C CNN
+F 1 "GND" H 2005 1777 50  0000 C CNN
+F 2 "" H 2000 1950 50  0001 C CNN
+F 3 "" H 2000 1950 50  0001 C CNN
+	1    2000 1950
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	2000 1850 2000 1950
+Wire Wire Line
+	3450 2200 3250 2200
+Wire Wire Line
+	3250 2200 3250 1550
+Wire Wire Line
+	3250 1550 2000 1550
+Wire Wire Line
+	2000 1550 2000 1650
+$Comp
+L FlightComputer_Library:VCC_5V #PWR?
+U 1 1 6003494C
+P 1700 1550
+AR Path="/5F2A50C6/6003494C" Ref="#PWR?"  Part="1" 
+AR Path="/6003494C" Ref="#PWR01"  Part="1" 
+F 0 "#PWR01" H 1700 1400 50  0001 C CNN
+F 1 "VCC_5V" V 1700 1800 50  0000 C CNN
+F 2 "" H 1700 1550 50  0001 C CNN
+F 3 "" H 1700 1550 50  0001 C CNN
+	1    1700 1550
+	0    -1   -1   0   
+$EndComp
+Wire Wire Line
+	3550 1550 3250 1550
+Connection ~ 3250 1550
+Wire Wire Line
+	3600 3550 3250 3550
+Wire Wire Line
+	3250 3550 3250 2200
+Connection ~ 3250 2200
+Wire Wire Line
+	4050 1550 4450 1550
+Wire Wire Line
+	4450 1550 4450 2300
+Wire Wire Line
+	4450 2300 4250 2300
+Wire Wire Line
+	4250 2400 4450 2400
+Wire Wire Line
+	4450 2400 4450 3550
+Wire Wire Line
+	4450 3550 4100 3550
+Wire Wire Line
+	5650 1900 5650 1950
+Wire Wire Line
+	4950 1550 5100 1550
+Wire Wire Line
+	6150 1550 6150 1850
+Wire Wire Line
+	5650 1600 5650 1550
+Connection ~ 5650 1550
+Wire Wire Line
+	5650 1550 6150 1550
+Wire Wire Line
+	4650 1550 4450 1550
+Connection ~ 4450 1550
+Wire Wire Line
+	4250 2200 5100 2200
+Wire Wire Line
+	5100 2200 5100 1950
+Wire Wire Line
+	5100 1950 5650 1950
+Connection ~ 5650 1950
+Wire Wire Line
+	5650 1950 5650 2000
+$Comp
+L Device:C_Small C?
+U 1 1 600C69B6
+P 5100 1750
+AR Path="/5F2A50C6/600C69B6" Ref="C?"  Part="1" 
+AR Path="/600C69B6" Ref="C3"  Part="1" 
+F 0 "C3" H 5192 1796 50  0000 L CNN
+F 1 "4.7pF" H 5192 1705 50  0000 L CNN
+F 2 "FlightComputer_Library:C_0402_1005Metric_Pad0.74x0.62mm_HandSolder" H 5100 1750 50  0001 C CNN
+F 3 "~" H 5100 1750 50  0001 C CNN
+	1    5100 1750
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	5100 1850 5100 1950
+Connection ~ 5100 1950
+Wire Wire Line
+	5100 1650 5100 1550
+Connection ~ 5100 1550
+Wire Wire Line
+	5100 1550 5650 1550
+Wire Wire Line
+	1700 1550 2000 1550
+Connection ~ 2000 1550
+Wire Wire Line
+	4450 3550 4700 3550
+Connection ~ 4450 3550
+Wire Wire Line
+	4900 3550 5100 3550
+Wire Wire Line
+	5100 3400 5100 3550
+Connection ~ 5100 3550
+Wire Wire Line
+	5100 3550 5300 3550
+Wire Wire Line
+	5600 3550 5900 3550
+Wire Wire Line
+	6400 2950 6400 3050
+Wire Wire Line
+	6400 3450 6400 3550
+Connection ~ 6400 3550
+Wire Wire Line
+	6400 3550 6850 3550
+Wire Wire Line
+	6400 3050 5900 3050
+Wire Wire Line
+	5400 3050 5400 2500
+Wire Wire Line
+	5400 2500 4250 2500
+Connection ~ 6400 3050
+Wire Wire Line
+	6400 3050 6400 3150
+Connection ~ 5900 3050
+Wire Wire Line
+	5900 3050 5400 3050
+Wire Wire Line
+	5900 3200 5900 3050
+Wire Wire Line
+	5900 3400 5900 3550
+Connection ~ 5900 3550
+Wire Wire Line
+	5900 3550 6400 3550
+$Comp
+L power:GND #PWR?
+U 1 1 60210CC0
+P 5100 2950
+AR Path="/5F2A50C6/60210CC0" Ref="#PWR?"  Part="1" 
+AR Path="/60210CC0" Ref="#PWR014"  Part="1" 
+F 0 "#PWR014" H 5100 2700 50  0001 C CNN
+F 1 "GND" H 5105 2777 50  0000 C CNN
+F 2 "" H 5100 2950 50  0001 C CNN
+F 3 "" H 5100 2950 50  0001 C CNN
+	1    5100 2950
+	-1   0    0    1   
+$EndComp
+Wire Wire Line
+	5100 3100 5100 2950
+$Comp
+L power:GND #PWR?
+U 1 1 6022F6C9
+P 7400 2400
+AR Path="/5F2A50C6/6022F6C9" Ref="#PWR?"  Part="1" 
+AR Path="/6022F6C9" Ref="#PWR017"  Part="1" 
+F 0 "#PWR017" H 7400 2150 50  0001 C CNN
+F 1 "GND" H 7405 2227 50  0000 C CNN
+F 2 "" H 7400 2400 50  0001 C CNN
+F 3 "" H 7400 2400 50  0001 C CNN
+	1    7400 2400
+	0    -1   -1   0   
+$EndComp
+Wire Wire Line
+	6150 2050 6150 2400
+Wire Wire Line
+	5650 2300 5650 2400
+Wire Wire Line
+	6850 3150 6850 3550
+Connection ~ 6850 3550
+Wire Wire Line
+	6150 2400 6400 2400
+Wire Wire Line
+	5650 2400 6150 2400
+Connection ~ 6150 2400
+Wire Wire Line
+	6400 2400 6400 2650
+Connection ~ 6400 2400
+Wire Wire Line
+	6400 2400 6850 2400
+Wire Wire Line
+	6850 2950 6850 2400
+Connection ~ 6850 2400
+Wire Wire Line
+	6850 2400 7400 2400
+Wire Wire Line
+	6150 1550 7350 1550
+Connection ~ 6150 1550
+Text Label 1300 2300 0    50   ~ 0
+EN_VEE
+Text Label 1300 2400 0    50   ~ 0
+EN_VDD
+Wire Wire Line
+	6850 3550 7400 3550
+$EndSCHEMATC
