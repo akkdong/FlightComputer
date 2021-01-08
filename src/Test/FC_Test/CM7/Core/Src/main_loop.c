@@ -10,6 +10,7 @@
 #else
 #include "quadspi.h"
 #endif
+#include "epd_drv.h"
 #include "sdram.h"
 #include "fatfs.h"
 #include "main.h"
@@ -512,6 +513,9 @@ void main_loop_begin(void)
 	//CSP_QSPI_EnableMemoryMappedMode();
 #endif
 
+	// EPD
+	EPD_Init();
+
 
 	// initialize SDRAM
 	SDRAM_Do_InitializeSequence(&hsdram1);
@@ -520,6 +524,43 @@ void main_loop_begin(void)
 	MX_FATFS_Init();
 }
 
+uint32_t epdTick = 0;
+uint32_t on = 0;
+
+void epd_loop(void)
+{
+	if (HAL_GetTick() - epdTick > 1000)
+	{
+		on = 1 - on;
+
+		if (on)
+		{
+			EPD_Set_CKV();
+			EPD_Set_SPH();
+			EPD_Set_SPV();
+			EPD_Set_LE();
+			EPD_Set_CL();
+			EPD_Set_OE();
+			EPD_Set_GMODE();
+
+			EPD_Set_DATA(0x55);
+		}
+		else
+		{
+			EPD_Reset_CKV();
+			EPD_Reset_SPH();
+			EPD_Reset_SPV();
+			EPD_Reset_LE();
+			EPD_Reset_CL();
+			EPD_Reset_OE();
+			EPD_Reset_GMODE();
+
+			EPD_Set_DATA(0xAA);
+		}
+
+		epdTick = HAL_GetTick();
+	}
+}
 
 void main_loop(void)
 {
@@ -552,6 +593,8 @@ void main_loop(void)
 		UART_Write(&UART1, ch);
 	}
 #endif
+
+	epd_loop();
 }
 
 void main_loop_end(void)
@@ -657,11 +700,13 @@ void test_nor(void)
 		}
 	}
 
+	/*
 	if (QSPI_EnableMemoryMappedMode() != QSPI_STATUS_OK)
 	{
 		UART_Printf(&UART1, "Memory mapped mode EANBLE FAILED!\n");
 		return;
 	}
+	*/
 
 	for (var = 0; var < SECTORS_COUNT; var++)
 	{

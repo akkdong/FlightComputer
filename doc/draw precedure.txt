@@ -1,0 +1,45 @@
+poweron
+
+## clear screen
+
+data_output: clear_byte
+
+for clear_cycles
+	vscan_start
+	data_output: data of each cycles
+
+	for height
+		hscan_start
+		
+		for width: nibble step
+			clock_pixel
+			
+		hscan_end
+		output_row
+		latch_row
+		
+	vscan_end
+	
+	
+	
+	
+## draw screen
+
+for count of contrast_cycles
+	for count of each contrast_cycles
+		vscan_start
+		
+		for height
+			hscan_start
+			
+			for width: nibble step
+				data_output: pixel(nibble)
+				clock_pixel
+				
+			hscan_end
+			output_row
+			latch_row
+			
+		vscan_end
+
+poweroff

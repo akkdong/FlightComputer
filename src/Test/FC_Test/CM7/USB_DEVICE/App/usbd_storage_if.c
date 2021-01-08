@@ -24,7 +24,7 @@
 #include "qspi_drv.h"
 
 /* USER CODE BEGIN INCLUDE */
-#include "UART.h"
+#include "uart_drv.h"
 extern UARTDriver UART1;
 #define printf(...)	UART_Printf(&UART1, __VA_ARGS__)
 /* USER CODE END INCLUDE */
