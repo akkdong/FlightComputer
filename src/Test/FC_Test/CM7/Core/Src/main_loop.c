@@ -15,6 +15,8 @@
 #include "fatfs.h"
 #include "main.h"
 
+#include "sample_image.h"
+
 
 #define PMIC_ADDR			(0x48 << 1)
 
@@ -466,6 +468,105 @@ void cmd_process(char* str)
 			test_read_subsector(parseNumber(param2));
 		}
 	}
+	else if (strcmp(cmd, "epd") == 0)
+	{
+		if (strcmp(param1, "clear") == 0)
+		{
+			EPD_ClearScreen();
+			//epd_clearScreen();
+			UART_Printf(&UART1, "clear done!\n");
+		}
+		else if (strcmp(param1, "draw") == 0)
+		{
+			EPD_Draw16Gray(img_bytes);
+			UART_Printf(&UART1, "draw-16bit done!\n");
+		}
+		else if (strcmp(param1, "mono") == 0)
+		{
+			EPD_Draw16Gray(img_bytes);
+			UART_Printf(&UART1, "draw-mono done!\n");
+		}
+		else
+		{
+			int ok = 1;
+
+			if (strcmp(param1, "ckv") == 0)
+			{
+				if (strcmp(param2, "on") == 0)
+					EPD_Set_CKV();
+				else if (strcmp(param2, "off") == 0)
+					EPD_Reset_CKV();
+				else
+					ok = 0;
+			}
+			else if (strcmp(param1, "sph") == 0)
+			{
+				if (strcmp(param2, "on") == 0)
+					EPD_Set_SPH();
+				else if (strcmp(param2, "off") == 0)
+					EPD_Reset_SPH();
+				else
+					ok = 0;
+			}
+			else if (strcmp(param1, "spv") == 0)
+			{
+				if (strcmp(param2, "on") == 0)
+					EPD_Set_SPV();
+				else if (strcmp(param2, "off") == 0)
+					EPD_Reset_SPV();
+				else
+					ok = 0;
+			}
+			else if (strcmp(param1, "le") == 0)
+			{
+				if (strcmp(param2, "on") == 0)
+					EPD_Set_LE();
+				else if (strcmp(param2, "off") == 0)
+					EPD_Reset_LE();
+				else
+					ok = 0;
+			}
+			else if (strcmp(param1, "cl") == 0)
+			{
+				if (strcmp(param2, "on") == 0)
+					EPD_Set_CL();
+				else if (strcmp(param2, "off") == 0)
+					EPD_Reset_CL();
+				else
+					ok = 0;
+			}
+			else if (strcmp(param1, "oe") == 0)
+			{
+				if (strcmp(param2, "on") == 0)
+					EPD_Set_OE();
+				else if (strcmp(param2, "off") == 0)
+					EPD_Reset_OE();
+				else
+					ok = 0;
+			}
+			else if (strcmp(param1, "gmode") == 0)
+			{
+				if (strcmp(param2, "on") == 0)
+					EPD_Set_GMODE();
+				else if (strcmp(param2, "off") == 0)
+					EPD_Reset_GMODE();
+				else
+					ok = 0;
+			}
+			else if (strcmp(param1, "data") == 0)
+			{
+				int data = parseNumber(param2);
+				EPD_Set_DATA(data);
+			}
+			else
+			{
+				ok = 0;
+			}
+
+			if (!ok)
+				UART_Printf(&UART1, "Invalid command or parameter: %s, %s\n", param1 ? param1 : "(nil)", param2 ? param2 : "(nil)");
+		}
+	}
 }
 
 void main_loop_begin(void)
@@ -515,6 +616,7 @@ void main_loop_begin(void)
 
 	// EPD
 	EPD_Init();
+	//epd_init();
 
 
 	// initialize SDRAM
@@ -524,43 +626,6 @@ void main_loop_begin(void)
 	MX_FATFS_Init();
 }
 
-uint32_t epdTick = 0;
-uint32_t on = 0;
-
-void epd_loop(void)
-{
-	if (HAL_GetTick() - epdTick > 1000)
-	{
-		on = 1 - on;
-
-		if (on)
-		{
-			EPD_Set_CKV();
-			EPD_Set_SPH();
-			EPD_Set_SPV();
-			EPD_Set_LE();
-			EPD_Set_CL();
-			EPD_Set_OE();
-			EPD_Set_GMODE();
-
-			EPD_Set_DATA(0x55);
-		}
-		else
-		{
-			EPD_Reset_CKV();
-			EPD_Reset_SPH();
-			EPD_Reset_SPV();
-			EPD_Reset_LE();
-			EPD_Reset_CL();
-			EPD_Reset_OE();
-			EPD_Reset_GMODE();
-
-			EPD_Set_DATA(0xAA);
-		}
-
-		epdTick = HAL_GetTick();
-	}
-}
 
 void main_loop(void)
 {
@@ -593,8 +658,6 @@ void main_loop(void)
 		UART_Write(&UART1, ch);
 	}
 #endif
-
-	epd_loop();
 }
 
 void main_loop_end(void)

@@ -7,6 +7,17 @@
 
 #include "epd_drv.h"
 
+#define EPD_WIDTH     		800
+#define EPD_HEIGHT    		600
+#define CLK_DELAY_US  		10
+#define VCLK_DELAY_US 		10
+#define OUTPUT_DELAY_US   	12
+#define CLEAR_BYTE    		0b10101010
+#define DARK_BYTE     		0b01010101
+
+#define PIXEL2EPDCMD(x)		(((x) == 1) ? 0b00000010 : (((x) == 0) ? 0b00000001 : 0b00000011))
+
+#define DWT_Delay_ms(x)		if ((x) > 0) HAL_Delay(x)
 
 
 
@@ -16,10 +27,84 @@
 uint32_t pinLUT[256];
 
 
+/* Contrast cycles in order of contrast (Darkest first).  */
+const uint8_t contrast_cycles[] = {2,2,1,1};
+const uint8_t sz_contrast_cycles = sizeof(contrast_cycles)/sizeof(uint8_t);
+
+/* Screen clearing state */
+const uint8_t clear_cycles[] = {
+  CLEAR_BYTE, CLEAR_BYTE, CLEAR_BYTE, CLEAR_BYTE, CLEAR_BYTE,
+  CLEAR_BYTE, CLEAR_BYTE, CLEAR_BYTE,
+  DARK_BYTE, DARK_BYTE, DARK_BYTE, DARK_BYTE, DARK_BYTE, DARK_BYTE,
+  CLEAR_BYTE, CLEAR_BYTE, CLEAR_BYTE, CLEAR_BYTE, CLEAR_BYTE,
+  CLEAR_BYTE, CLEAR_BYTE, CLEAR_BYTE,
+  CLEAR_BYTE,
+};
+const uint8_t sz_clear_cycles = sizeof(clear_cycles)/sizeof(uint8_t);
+
 
 
 ////////////////////////////////////////////////////////////////////////////////////////
 //
+
+
+/**
+ * @brief  Initializes DWT_Clock_Cycle_Count for DWT_Delay_us function
+ * @return Error DWT counter
+ *         1: clock cycle counter not started
+ *         0: clock cycle counter works
+ */
+uint32_t DWT_Delay_Init(void) {
+	/* Disable TRC */
+	CoreDebug->DEMCR &= ~CoreDebug_DEMCR_TRCENA_Msk; // ~0x01000000;
+	/* Enable TRC */
+	CoreDebug->DEMCR |=  CoreDebug_DEMCR_TRCENA_Msk; // 0x01000000;
+
+	/* Disable clock cycle counter */
+	DWT->CTRL &= ~DWT_CTRL_CYCCNTENA_Msk; //~0x00000001;
+	/* Enable  clock cycle counter */
+	DWT->CTRL |=  DWT_CTRL_CYCCNTENA_Msk; //0x00000001;
+
+	/* Reset the clock cycle counter value */
+	DWT->CYCCNT = 0;
+
+	/* 3 NO OPERATION instructions */
+	__ASM volatile ("NOP");
+	__ASM volatile ("NOP");
+	__ASM volatile ("NOP");
+
+	/* Check if clock cycle counter has started */
+	if(DWT->CYCCNT)
+	{
+		return 0; /*clock cycle counter started*/
+	}
+	else
+	{
+		return 1; /*clock cycle counter not started*/
+	}
+}
+
+
+
+/**
+ * @brief  This function provides a delay (in microseconds)
+ * @param  microseconds: delay in microseconds
+ */
+__STATIC_INLINE void DWT_Delay_us(volatile uint32_t microseconds)
+{
+	if (microseconds == 0)
+		return;
+
+	uint32_t clk_cycle_start = DWT->CYCCNT;
+
+	/* Go to number of cycles for system */
+	microseconds *= (HAL_RCC_GetHCLKFreq() / 1000000);
+
+	/* Delay till end */
+	while ((DWT->CYCCNT - clk_cycle_start) < microseconds);
+}
+
+
 
 void EPD_Init(void)
 {
@@ -29,4 +114,392 @@ void EPD_Init(void)
 		uint32_t mask = ((i & 0b00111111) << 2) | (((i & 0b11000000) >> 6) << 11);
 		pinLUT[i] = (((~mask) & 0b0001100011111100) << GPIO_NUMBER) | mask;
 	}
+
+	EPD_Reset_CKV();
+	EPD_Reset_SPH();
+	EPD_Reset_SPV();
+	EPD_Reset_LE();
+	EPD_Reset_CL();
+	EPD_Reset_OE();
+	EPD_Reset_GMODE();
+
+	EPD_Set_DATA(0);
+
+	DWT_Delay_Init();
+}
+
+
+
+void EPD_ClockPixel(void)
+{
+	EPD_Set_CL();
+	// DWT_Delay_us(1);
+	EPD_Reset_CL();
+	// DWT_Delay_us(1);
+}
+
+void EPD_OutputRow(void)
+{
+    // OUTPUTROW
+	DWT_Delay_us(OUTPUT_DELAY_US);
+	EPD_Set_OE();
+	EPD_Set_CKV();
+	DWT_Delay_us(OUTPUT_DELAY_US);
+    EPD_Reset_CKV();
+    DWT_Delay_us(OUTPUT_DELAY_US);
+    EPD_Reset_OE();
+    // END OUTPUTROW
+
+    // NEXTROW START
+    EPD_Set_CL();
+    DWT_Delay_us(CLK_DELAY_US);
+    EPD_Reset_CL();
+    DWT_Delay_us(CLK_DELAY_US);
+    EPD_Set_CL();
+    DWT_Delay_us(CLK_DELAY_US);
+    EPD_Reset_CL();
+    DWT_Delay_us(CLK_DELAY_US);
+    EPD_Set_CKV();
+    // END NEXTROW
+}
+
+void EPD_LatchRow(void)
+{
+	EPD_Set_LE();
+	DWT_Delay_us(CLK_DELAY_US);
+    EPD_Set_CL();
+    DWT_Delay_us(CLK_DELAY_US);
+    EPD_Reset_CL();
+    DWT_Delay_us(CLK_DELAY_US);
+    EPD_Set_CL();
+    DWT_Delay_us(CLK_DELAY_US);
+    EPD_Reset_CL();
+    DWT_Delay_us(CLK_DELAY_US);
+
+    EPD_Reset_LE();
+    DWT_Delay_us(CLK_DELAY_US);
+    EPD_Set_CL();
+    DWT_Delay_us(CLK_DELAY_US);
+    EPD_Reset_CL();
+    DWT_Delay_us(CLK_DELAY_US);
+    EPD_Set_CL();
+    DWT_Delay_us(CLK_DELAY_US);
+    EPD_Reset_CL();
+    DWT_Delay_us(CLK_DELAY_US);
+}
+
+void EPD_VScanStart(void)
+{
+    // VSCANSTART
+    EPD_Set_GMODE();
+    //EPD_Set_OE();
+    DWT_Delay_us(500);
+
+    EPD_Set_SPV();
+    DWT_Delay_us(VCLK_DELAY_US);
+    EPD_Reset_CKV();
+    DWT_Delay_us(VCLK_DELAY_US);
+    EPD_Set_CKV();
+    DWT_Delay_us(VCLK_DELAY_US);
+
+    EPD_Reset_SPV();
+    DWT_Delay_us(VCLK_DELAY_US);
+    EPD_Reset_CKV();
+    DWT_Delay_us(VCLK_DELAY_US);
+    EPD_Set_CKV();
+    DWT_Delay_us(VCLK_DELAY_US);
+
+    EPD_Set_SPV();
+    DWT_Delay_us(VCLK_DELAY_US);
+    EPD_Reset_CKV();
+    DWT_Delay_us(VCLK_DELAY_US);
+    EPD_Set_CKV();
+    DWT_Delay_us(VCLK_DELAY_US);
+    // END VSCANSTART
+}
+
+void EPD_VScanEnd(void)
+{
+    // VSCANEND
+	EPD_Set_DATA(0b00000000);
+	EPD_HScanStart();
+    for (int j = 0; j < 200; ++j)
+    {
+            EPD_Set_CL();
+            //DWT_Delay_us(CLK_DELAY_US);
+            EPD_Reset_CL();
+            //DWT_Delay_us(CLK_DELAY_US);
+    }
+    EPD_HScanEnd();
+    //noInterrupts();
+    EPD_Set_OE();
+    EPD_Set_CKV();
+    DWT_Delay_us(1);
+    EPD_Reset_CKV();
+    DWT_Delay_us(1);
+    EPD_Reset_OE();
+    //interrupts();
+    EPD_Set_CL();
+    DWT_Delay_us(CLK_DELAY_US);
+    EPD_Reset_CL();
+    DWT_Delay_us(CLK_DELAY_US);
+    EPD_Set_CL();
+    DWT_Delay_us(CLK_DELAY_US);
+    EPD_Reset_CL();
+    DWT_Delay_us(CLK_DELAY_US);
+    DWT_Delay_us(1);
+    EPD_Reset_CKV();
+    EPD_Reset_OE();
+    DWT_Delay_us(50);
+    EPD_Set_CKV();
+    DWT_Delay_us(50);
+    EPD_Reset_CKV();
+    DWT_Delay_us(1);
+    EPD_Reset_GMODE();
+    DWT_Delay_us(1);
+    // END VSCANEND
+}
+
+void EPD_HScanStart(void)
+{
+    // HSCANSTART
+    EPD_Set_OE();
+    EPD_Reset_SPH();
+    // END HSCANSTART
+}
+
+void EPD_HScanEnd(void)
+{
+    // HSCANEND
+    EPD_Set_SPH();
+    DWT_Delay_us(CLK_DELAY_US);
+    EPD_Set_CL();
+    DWT_Delay_us(CLK_DELAY_US);
+    EPD_Reset_CL();
+    DWT_Delay_us(CLK_DELAY_US);
+    EPD_Set_CL();
+    DWT_Delay_us(CLK_DELAY_US);
+    EPD_Reset_CL();
+    DWT_Delay_us(CLK_DELAY_US);
+}
+
+
+
+void EPD_ClearScreen(void)
+{
+	EPD_Set_DATA(CLEAR_BYTE);
+
+    for (int k = 0; k < sz_clear_cycles; ++k)
+    {
+		EPD_VScanStart();
+		EPD_Set_DATA(clear_cycles[k]);
+
+		// Height of the display
+		for (int i = 0; i < EPD_HEIGHT; ++i)
+		{
+			EPD_HScanStart();
+
+			// Width of the display, 4 Pixels each.
+			for (int j = 0; j < (EPD_WIDTH / 4); ++j)
+			{
+				EPD_ClockPixel();
+			}
+
+			EPD_HScanEnd();
+			EPD_OutputRow();
+			EPD_LatchRow();
+		}
+
+		EPD_VScanEnd();
+
+    } // End loop of Refresh Cycles Size
+}
+
+
+void EPD_Draw16Gray(const uint8_t* img_bytes) // 800x600 16gray
+{
+	for (int k = 0; k < sz_contrast_cycles; ++k)
+	{
+		for (int contrast_cnt = 0; contrast_cnt < contrast_cycles[k]; ++contrast_cnt)
+		{
+			EPD_VScanStart();
+			const uint8_t *dp = img_bytes;
+
+			// Height of the display
+			for (int i = 0; i < EPD_HEIGHT; ++i)
+			{
+				EPD_HScanStart();
+
+				// Width of the display, 4 Pixels each.
+				for (int j = 0; j < (EPD_WIDTH / 4); ++j)
+				{
+					uint8_t pixel = 0b00000000;
+					uint8_t pix1 = (*(dp) >> (7 - k)) & 1;
+					uint8_t pix2 = (*(dp++) >> (3 - k)) & 1;
+					uint8_t pix3 = (*(dp) >> (7 - k)) & 1;
+					uint8_t pix4 = (*(dp++) >> (3 - k)) & 1;
+
+					pixel |= (PIXEL2EPDCMD(pix1) << 6);
+					pixel |= (PIXEL2EPDCMD(pix2) << 4);
+					pixel |= (PIXEL2EPDCMD(pix3) << 2);
+					pixel |= (PIXEL2EPDCMD(pix4) << 0);
+
+					EPD_Set_DATA(pixel);
+					EPD_ClockPixel();
+				}
+
+				EPD_HScanEnd();
+				EPD_OutputRow();
+				EPD_LatchRow();
+			}
+
+			EPD_VScanEnd();
+		} // End contrast count
+
+	} // End loop of Refresh Cycles Size
+}
+
+
+//
+//
+//
+//
+//
+
+
+void epd_vscan_start()
+{
+    EPD_Set_CKV(); //CKV_SET;
+    DWT_Delay_us(7);
+    EPD_Reset_SPV(); //SPV_CLEAR;
+    DWT_Delay_us(10);
+    EPD_Reset_CKV(); //CKV_CLEAR;
+    DWT_Delay_us(0);
+    EPD_Set_CKV(); //CKV_SET;
+    DWT_Delay_us(8);
+    EPD_Set_SPV(); //SPV_SET;
+    DWT_Delay_us(10);
+    EPD_Reset_CKV(); //CKV_CLEAR;
+    DWT_Delay_us(0);
+    EPD_Set_CKV(); //CKV_SET;
+    DWT_Delay_us(18);
+    EPD_Reset_CKV(); //CKV_CLEAR;
+    DWT_Delay_us(0);
+    EPD_Set_CKV(); //CKV_SET;
+    DWT_Delay_us(18);
+    EPD_Reset_CKV(); //CKV_CLEAR;
+    DWT_Delay_us(0);
+    EPD_Set_CKV(); //CKV_SET;
+}
+
+void epd_hscan_start(uint32_t _d)
+{
+    EPD_Reset_SPH(); //SPH_CLEAR;
+
+    //GPIO.out_w1ts = (_d) | CL;
+    //GPIO.out_w1tc = DATA | CL;
+	EPD_Set_DATA(_d);
+	EPD_Set_CL();
+	EPD_Set_DATA(0);
+	EPD_Reset_CL();
+
+    EPD_Set_SPH(); //SPH_SET;
+    EPD_Set_CKV(); //CKV_SET;
+}
+
+void epd_vscan_end()
+{
+    EPD_Reset_CKV(); //CKV_CLEAR;
+    EPD_Set_LE(); //LE_SET;
+    EPD_Reset_LE(); //LE_CLEAR;
+    DWT_Delay_us(0);
+}
+
+#define DATA (0x00)
+
+void epd_clearFast(uint8_t c, uint8_t rep)
+{
+	uint8_t data = 0;
+	if (c == 0)
+		data = 0b10101010;
+	else if (c == 1)
+		data = 0b01010101;
+	else if (c == 2)
+		data = 0b00000000;
+	else if (c == 3)
+		data = 0b11111111;
+
+	//uint32_t _send = pinLUT[data];
+	for (int k = 0; k < rep; ++k)
+	{
+		epd_vscan_start();
+
+		for (int i = 0; i < 600; ++i)
+		{
+			epd_hscan_start(data);
+
+			//GPIO.out_w1ts = (_send) | CL;
+			//GPIO.out_w1tc = DATA | CL;
+			EPD_Set_DATA(data);
+			EPD_Set_CL();
+			EPD_Set_DATA(0);
+			EPD_Reset_CL();
+
+			for (int j = 0; j < 99; ++j)
+			{
+				//GPIO.out_w1ts = (_send) | CL;
+				//GPIO.out_w1tc = DATA | CL;
+				//GPIO.out_w1ts = (_send) | CL;
+				//GPIO.out_w1tc = DATA | CL;
+
+				EPD_Set_DATA(data);
+				EPD_Set_CL();
+				EPD_Set_DATA(0);
+				EPD_Reset_CL();
+
+				EPD_Set_DATA(data);
+				EPD_Set_CL();
+				EPD_Set_DATA(0);
+				EPD_Reset_CL();
+			}
+
+			//GPIO.out_w1ts = (_send) | CL;
+			//GPIO.out_w1tc = DATA | CL;
+
+			EPD_Set_DATA(data);
+			EPD_Set_CL();
+			EPD_Set_DATA(0);
+			EPD_Reset_CL();
+
+			epd_vscan_end();
+		}
+		DWT_Delay_us(230);
+	}
+}
+
+
+void epd_init(void)
+{
+    EPD_Reset_LE(); // LE_CLEAR;
+    EPD_Reset_OE(); // OE_CLEAR;
+    EPD_Reset_CL(); // CL_CLEAR;
+    EPD_Set_SPH(); // SPH_SET;
+    EPD_Set_GMODE(); // GMOD_SET;
+    EPD_Set_SPV(); // SPV_SET;
+    EPD_Reset_CKV(); // CKV_CLEAR;
+    EPD_Reset_OE(); // OE_CLEAR;
+
+    EPD_Set_OE(); // OE_SET;
+}
+
+void epd_clearScreen(void)
+{
+    epd_clearFast(0, 1);
+    epd_clearFast(1, 21);
+    epd_clearFast(2, 1);
+    epd_clearFast(0, 12);
+    epd_clearFast(2, 1);
+    epd_clearFast(1, 21);
+    epd_clearFast(2, 1);
+    epd_clearFast(0, 12);
 }

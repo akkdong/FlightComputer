@@ -128,22 +128,23 @@ inline void EPD_Reset_GMODE(void)
 }
 */
 
-//                                      Bits:    5432109876543210
-#define EPD_Set_CKV()		do { GPIOJ->BSRR = 0b0000000100000000; } while (0)
-#define EPD_Set_SPH()		do { GPIOK->BSRR = 0b0000000000000010; } while (0)
-#define EPD_Set_SPV()		do { GPIOK->BSRR = 0b0000000000000100; } while (0)
-#define EPD_Set_LE()		do { GPIOJ->BSRR = 0b0000100000000000; } while (0)
-#define EPD_Set_CL()		do { GPIOJ->BSRR = 0b0000001000000000; } while (0)
-#define EPD_Set_OE()		do { GPIOK->BSRR = 0b0000000000000001; } while (0)
-#define EPD_Set_GMODE()		do { GPIOJ->BSRR = 0b0000010000000000; } while (0)
+//                                      Bits:     5432109876543210
+#define EPD_Set_CKV()		do { GPIOJ->BSRR = (0b0000000100000000); } while (0)
+#define EPD_Set_SPH()		do { GPIOK->BSRR = (0b0000000000000010); } while (0)
+#define EPD_Set_SPV()		do { GPIOK->BSRR = (0b0000000000000100); } while (0)
+#define EPD_Set_LE()		do { GPIOJ->BSRR = (0b0000100000000000); } while (0)
+#define EPD_Set_CL()		do { GPIOJ->BSRR = (0b0000001000000000); } while (0)
+#define EPD_Set_OE()		do { GPIOK->BSRR = (0b0000000000000001); } while (0)
+#define EPD_Set_GMODE()		do { GPIOJ->BSRR = (0b0000010000000000); } while (0)
 
-#define EPD_Reset_CKV()		do { GPIOJ->BSRR = (0b000000100000000 << GPIO_NUMBER); } while (0)
-#define EPD_Reset_SPH()		do { GPIOK->BSRR = (0b000000000000010 << GPIO_NUMBER); } while (0)
-#define EPD_Reset_SPV()		do { GPIOK->BSRR = (0b000000000000100 << GPIO_NUMBER); } while (0)
-#define EPD_Reset_LE()		do { GPIOJ->BSRR = (0b000100000000000 << GPIO_NUMBER); } while (0)
-#define EPD_Reset_CL()		do { GPIOJ->BSRR = (0b000001000000000 << GPIO_NUMBER); } while (0)
-#define EPD_Reset_OE()		do { GPIOK->BSRR = (0b000000000000001 << GPIO_NUMBER); } while (0)
-#define EPD_Reset_GMODE() 	do { GPIOJ->BSRR = (0b000010000000000 << GPIO_NUMBER); } while (0)
+//                                      Bits:     5432109876543210
+#define EPD_Reset_CKV()		do { GPIOJ->BSRR = (0b0000000100000000 << GPIO_NUMBER); } while (0)
+#define EPD_Reset_SPH()		do { GPIOK->BSRR = (0b0000000000000010 << GPIO_NUMBER); } while (0)
+#define EPD_Reset_SPV()		do { GPIOK->BSRR = (0b0000000000000100 << GPIO_NUMBER); } while (0)
+#define EPD_Reset_LE()		do { GPIOJ->BSRR = (0b0000100000000000 << GPIO_NUMBER); } while (0)
+#define EPD_Reset_CL()		do { GPIOJ->BSRR = (0b0000001000000000 << GPIO_NUMBER); } while (0)
+#define EPD_Reset_OE()		do { GPIOK->BSRR = (0b0000000000000001 << GPIO_NUMBER); } while (0)
+#define EPD_Reset_GMODE() 	do { GPIOJ->BSRR = (0b0000010000000000 << GPIO_NUMBER); } while (0)
 
 #define EPD_Set_DATA(data)	do { GPIOD->BSRR = pinLUT[(data)]; } while (0)
 
@@ -154,6 +155,19 @@ inline void EPD_Reset_GMODE(void)
 
 void EPD_Init(void);
 
+void EPD_ClockPixel(void);
+void EPD_OutputRow(void);
+void EPD_LatchRow(void);
+void EPD_VScanStart(void);
+void EPD_VScanEnd(void);
+void EPD_HScanStart(void);
+void EPD_HScanEnd(void);
 
+void EPD_ClearScreen(void);
+void EPD_Draw16Gray(const uint8_t* img_bytes);
+
+
+void epd_init(void);
+void epd_clearScreen(void);
 
 #endif // __EPD_DRV_H__
