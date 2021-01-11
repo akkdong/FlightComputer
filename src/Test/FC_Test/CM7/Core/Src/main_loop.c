@@ -15,7 +15,11 @@
 #include "fatfs.h"
 #include "main.h"
 
+#if 1
 #include "sample_image.h"
+#else
+#include "eagle.h"
+#endif
 
 
 #define PMIC_ADDR			(0x48 << 1)
@@ -476,6 +480,12 @@ void cmd_process(char* str)
 			//epd_clearScreen();
 			UART_Printf(&UART1, "clear done!\n");
 		}
+		else if (strcmp(param1, "clear2") == 0)
+		{
+			epd_clearScreen();
+			//epd_clearScreen();
+			UART_Printf(&UART1, "clear done!\n");
+		}
 		else if (strcmp(param1, "draw") == 0)
 		{
 			EPD_Draw16Gray(img_bytes);
@@ -483,7 +493,7 @@ void cmd_process(char* str)
 		}
 		else if (strcmp(param1, "mono") == 0)
 		{
-			EPD_Draw16Gray(img_bytes);
+			EPD_DrawMono(img_bytes);
 			UART_Printf(&UART1, "draw-mono done!\n");
 		}
 		else

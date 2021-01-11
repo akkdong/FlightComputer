@@ -9,9 +9,9 @@
 
 #define EPD_WIDTH     		800
 #define EPD_HEIGHT    		600
-#define CLK_DELAY_US  		10
-#define VCLK_DELAY_US 		10
-#define OUTPUT_DELAY_US   	12
+#define CLK_DELAY_US  		1
+#define VCLK_DELAY_US 		1
+#define OUTPUT_DELAY_US   	2
 #define CLEAR_BYTE    		0b10101010
 #define DARK_BYTE     		0b01010101
 
@@ -115,13 +115,13 @@ void EPD_Init(void)
 		pinLUT[i] = (((~mask) & 0b0001100011111100) << GPIO_NUMBER) | mask;
 	}
 
-	EPD_Reset_CKV();
-	EPD_Reset_SPH();
-	EPD_Reset_SPV();
-	EPD_Reset_LE();
-	EPD_Reset_CL();
-	EPD_Reset_OE();
 	EPD_Reset_GMODE();
+	EPD_Reset_CKV();
+	EPD_Reset_CL();
+	EPD_Set_SPH();
+	EPD_Set_SPV();
+	EPD_Reset_LE();
+	EPD_Reset_OE();
 
 	EPD_Set_DATA(0);
 
@@ -133,9 +133,9 @@ void EPD_Init(void)
 void EPD_ClockPixel(void)
 {
 	EPD_Set_CL();
-	// DWT_Delay_us(1);
+	//DWT_Delay_us(CLK_DELAY_US);
 	EPD_Reset_CL();
-	// DWT_Delay_us(1);
+	//DWT_Delay_us(CLK_DELAY_US);
 }
 
 void EPD_OutputRow(void)
@@ -213,13 +213,14 @@ void EPD_VScanStart(void)
     DWT_Delay_us(VCLK_DELAY_US);
     EPD_Reset_CKV();
     DWT_Delay_us(VCLK_DELAY_US);
-    EPD_Set_CKV();
+    //EPD_Set_CKV();
     DWT_Delay_us(VCLK_DELAY_US);
     // END VSCANSTART
 }
 
 void EPD_VScanEnd(void)
 {
+#if 0
     // VSCANEND
 	EPD_Set_DATA(0b00000000);
 	EPD_HScanStart();
@@ -258,6 +259,15 @@ void EPD_VScanEnd(void)
     EPD_Reset_GMODE();
     DWT_Delay_us(1);
     // END VSCANEND
+
+#else
+
+    EPD_Reset_CKV();
+    DWT_Delay_us(1);
+    EPD_Reset_GMODE();
+    DWT_Delay_us(1);
+
+#endif
 }
 
 void EPD_HScanStart(void)
@@ -323,11 +333,12 @@ void EPD_Draw16Gray(const uint8_t* img_bytes) // 800x600 16gray
 		for (int contrast_cnt = 0; contrast_cnt < contrast_cycles[k]; ++contrast_cnt)
 		{
 			EPD_VScanStart();
-			const uint8_t *dp = img_bytes;
 
 			// Height of the display
 			for (int i = 0; i < EPD_HEIGHT; ++i)
 			{
+				const uint8_t *dp = img_bytes + ((EPD_HEIGHT - 1) - i) * (EPD_WIDTH / 2);
+
 				EPD_HScanStart();
 
 				// Width of the display, 4 Pixels each.
@@ -357,6 +368,10 @@ void EPD_Draw16Gray(const uint8_t* img_bytes) // 800x600 16gray
 		} // End contrast count
 
 	} // End loop of Refresh Cycles Size
+}
+
+void EPD_DrawMono(const uint8_t* img_bytes)
+{
 }
 
 
@@ -494,6 +509,9 @@ void epd_init(void)
 
 void epd_clearScreen(void)
 {
+	EPD_Set_GMODE();
+	DWT_Delay_us(500);
+
     epd_clearFast(0, 1);
     epd_clearFast(1, 21);
     epd_clearFast(2, 1);
@@ -502,4 +520,6 @@ void epd_clearScreen(void)
     epd_clearFast(1, 21);
     epd_clearFast(2, 1);
     epd_clearFast(0, 12);
+
+    EPD_Reset_GMODE();
 }
