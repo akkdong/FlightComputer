@@ -20,6 +20,7 @@
 #else
 #include "eagle.h"
 #endif
+#include "image_mono.h"
 
 
 #define PMIC_ADDR			(0x48 << 1)
@@ -493,7 +494,7 @@ void cmd_process(char* str)
 		}
 		else if (strcmp(param1, "mono") == 0)
 		{
-			EPD_DrawMono(img_bytes);
+			EPD_DrawMono(mono_bytes);
 			UART_Printf(&UART1, "draw-mono done!\n");
 		}
 		else
