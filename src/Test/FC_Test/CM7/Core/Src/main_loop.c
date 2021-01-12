@@ -21,6 +21,7 @@
 #include "eagle.h"
 #endif
 #include "image_mono.h"
+#include "landscape.h"
 
 
 #define PMIC_ADDR			(0x48 << 1)
@@ -66,6 +67,10 @@ UARTDriver UART3;
 
 char cmd_buf[64];
 int  cmd_len = 0;
+
+uint8_t*	imagePtr1;
+uint8_t*	imagePtr2;
+uint8_t*	imagePtrActive;
 
 
 void test_sdram(void);
@@ -494,8 +499,27 @@ void cmd_process(char* str)
 		}
 		else if (strcmp(param1, "mono") == 0)
 		{
-			EPD_DrawMono(mono_bytes);
-			UART_Printf(&UART1, "draw-mono done!\n");
+			EPD_DrawMono(imagePtrActive);
+			UART_Printf(&UART1, "draw active image done!\n");
+		}
+		else if (strcmp(param1, "mono1") == 0)
+		{
+			EPD_DrawMono(imagePtr1);
+			imagePtrActive = imagePtr1;
+			UART_Printf(&UART1, "draw image1 done!\n");
+		}
+		else if (strcmp(param1, "mono2") == 0)
+		{
+			EPD_DrawMono(imagePtr2);
+			imagePtrActive = imagePtr2;
+			UART_Printf(&UART1, "draw image2 done!\n");
+		}
+		else if (strcmp(param1, "partial") == 0)
+		{
+			uint8_t* imageAlt = imagePtrActive == imagePtr1 ? imagePtr2 : imagePtr1;
+			EPD_DrawPartial(imageAlt, imagePtrActive);
+			imagePtrActive = imageAlt;
+			UART_Printf(&UART1, "draw partial done!\n");
 		}
 		else
 		{
@@ -635,6 +659,15 @@ void main_loop_begin(void)
 
 	//
 	MX_FATFS_Init();
+
+
+	//
+	imagePtr1 = (uint8_t *)(SDRAM_BANK_ADDR + 800 / 8 * 600 * 1);
+	imagePtr2 = (uint8_t *)(SDRAM_BANK_ADDR + 800 / 8 * 600 * 2);
+	imagePtrActive = imagePtr1;
+
+	memcpy(imagePtr1, alien_bytes, 800 / 8 * 600);
+	memcpy(imagePtr2, landscape_bytes, 800 / 8 * 600);
 }
 
 

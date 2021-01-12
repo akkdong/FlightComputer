@@ -1,4 +1,4 @@
-const uint8_t mono_bytes[800/8*600] = {
+const uint8_t alien_bytes[800/8*600] = {
 	0b00000000,
 	0b00000000,
 	0b00000000,

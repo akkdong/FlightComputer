@@ -166,7 +166,7 @@ void EPD_HScanEnd(void);
 void EPD_ClearScreen(void);
 void EPD_Draw16Gray(const uint8_t* img_bytes);
 void EPD_DrawMono(const uint8_t* img_bytes);
-
+void EPD_DrawPartial(const uint8_t* img_bytes, const uint8_t* old_bytes);
 
 void epd_init(void);
 void epd_clearScreen(void);

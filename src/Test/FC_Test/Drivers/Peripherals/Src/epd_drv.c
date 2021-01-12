@@ -5,6 +5,7 @@
  *      Author: akkdong
  */
 
+#include <string.h>
 #include "epd_drv.h"
 
 #define EPD_WIDTH     		800
@@ -24,18 +25,65 @@
 ////////////////////////////////////////////////////////////////////////////////////////
 //
 
-const uint8_t LUT2[16] = {0xAA, 0xA9, 0xA6, 0xA5, 0x9A, 0x99, 0x96, 0x95,
-						  0x6A, 0x69, 0x66, 0x65, 0x5A, 0x59, 0x56, 0x55};
-const uint8_t LUTW[16] = {0xFF, 0xFE, 0xFB, 0xFA, 0xEF, 0xEE, 0xEB, 0xEA,
-						  0xBF, 0xBE, 0xBB, 0xBA, 0xAF, 0xAE, 0xAB, 0xAA};
-const uint8_t LUTB[16] = {0xFF, 0xFD, 0xF7, 0xF5, 0xDF, 0xDD, 0xD7, 0xD5,
-						  0x7F, 0x7D, 0x77, 0x75, 0x5F, 0x5D, 0x57, 0x55};
+#if R2L
+
+const uint8_t LUT2[16] =
+{
+	0xAA, 0xA9, 0xA6, 0xA5,
+	0x9A, 0x99, 0x96, 0x95,
+	0x6A, 0x69, 0x66, 0x65,
+	0x5A, 0x59, 0x56, 0x55
+};
+
+const uint8_t LUTW[16] =
+{
+	0xFF, 0xFE, 0xFB, 0xFA,
+	0xEF, 0xEE, 0xEB, 0xEA,
+	0xBF, 0xBE, 0xBB, 0xBA,
+	0xAF, 0xAE, 0xAB, 0xAA
+};
+
+const uint8_t LUTB[16] =
+{
+	0xFF, 0xFD, 0xF7, 0xF5,
+	0xDF, 0xDD, 0xD7, 0xD5,
+	0x7F, 0x7D, 0x77, 0x75,
+	0x5F, 0x5D, 0x57, 0x55
+};
+
+#else // L2R
+
+const uint8_t LUT2[16] =
+{
+	0xAA, 0x6A, 0x9A, 0x5A,
+	0xA6, 0x66, 0x96, 0x56,
+	0xA9, 0x69, 0x99, 0x59,
+	0xA5, 0x65, 0x95, 0x55
+};
+
+const uint8_t LUTW[16] =
+{
+	0xFF, 0xBF, 0xEF, 0xAF,
+	0xFB, 0xBB, 0xEB, 0xAB,
+	0xFE, 0xBE, 0xEE, 0xAE,
+	0xFA, 0xBA, 0xEA, 0xAA
+};
+
+const uint8_t LUTB[16] =
+{
+	0xFF, 0x7F, 0xDF, 0x5F,
+	0xF7, 0x77, 0xD7, 0x57,
+	0xFD, 0x7D, 0xDD, 0x5D,
+	0xF5, 0x75, 0xD5, 0x55
+};
+
+#endif
 
 uint32_t pinLUT[256];
 
 
 /* Contrast cycles in order of contrast (Darkest first).  */
-const uint8_t contrast_cycles[] = {2,2,1,1};
+const uint8_t contrast_cycles[] = {4,4,4,4};
 const uint8_t sz_contrast_cycles = sizeof(contrast_cycles)/sizeof(uint8_t);
 
 /* Screen clearing state */
@@ -335,6 +383,7 @@ void EPD_ClearScreen(void)
 
 void EPD_Draw16Gray(const uint8_t* img_bytes) // 800x600 16gray
 {
+	//for (int k = 0; k < 6; k++)
 	for (int k = 0; k < sz_contrast_cycles; ++k)
 	{
 		for (int contrast_cnt = 0; contrast_cnt < contrast_cycles[k]; ++contrast_cnt)
@@ -382,9 +431,9 @@ void EPD_DrawMono(const uint8_t* img_bytes)
     uint8_t data;
     uint8_t dram;
 
-	for (int k = 0; k < 4; ++k)
+	for (int k = 0; k < 12; ++k)
 	{
-		uint8_t* ptr = img_bytes + 59999;
+		const uint8_t* ptr = img_bytes + 59999;
 		EPD_VScanStart();
 
 		for (int i = 0; i < 600; ++i)
@@ -395,16 +444,16 @@ void EPD_DrawMono(const uint8_t* img_bytes)
 			{
 				dram = *(ptr--);
 
-				data = LUTB[dram >> 4];
+				data = LUTB[dram & 0x0F];
 				EPD_Set_DATA(data);
 				EPD_ClockPixel();
 
-				data = LUTB[dram & 0x0F];
+				data = LUTB[dram >> 4];
 				EPD_Set_DATA(data);
 				EPD_ClockPixel();
 			}
 
-			EPD_HSanEnd();
+			EPD_HScanEnd();
 			EPD_OutputRow();
 			EPD_LatchRow();
 		}
@@ -413,37 +462,41 @@ void EPD_DrawMono(const uint8_t* img_bytes)
 	}
 
 	//
-	uint16_t _pos = 59999;
-
-	EPD_VScanStart();
-
-	for (int i = 0; i < 600; ++i)
+	for (int k = 0; k < 12; ++k)
 	{
-		EPD_HScanStart();
+		uint16_t _pos = 59999;
 
-		for (int j = 0; j < 800 / 8; ++j)
+		EPD_VScanStart();
+
+		for (int i = 0; i < 600; ++i)
 		{
-			dram = *(img_bytes + _pos);
+			EPD_HScanStart();
 
-			data = LUT2[dram >> 4];
-			EPD_Set_DATA(data);
-			EPD_ClockPixel();
+			for (int j = 0; j < 800 / 8; ++j)
+			{
+				dram = *(img_bytes + _pos);
 
-			data = LUT2[dram & 0x0F];
-			EPD_Set_DATA(data);
-			EPD_ClockPixel();
+				data = LUT2[dram & 0x0F];
+				EPD_Set_DATA(data);
+				EPD_ClockPixel();
 
-			--_pos;
+				data = LUT2[dram >> 4];
+				EPD_Set_DATA(data);
+				EPD_ClockPixel();
+
+				--_pos;
+			}
+
+			EPD_HScanEnd();
+			EPD_OutputRow();
+			EPD_LatchRow();
 		}
 
-		EPD_HSanEnd();
-		EPD_OutputRow();
-		EPD_LatchRow();
+		EPD_VScanEnd();
 	}
 
-	EPD_VScanEnd();
-
 	//
+	/*
 	EPD_VScanStart();
 
 	for (int i = 0; i < 600; ++i)
@@ -465,14 +518,70 @@ void EPD_DrawMono(const uint8_t* img_bytes)
 			//--_pos;
 		}
 
-		EPD_HSanEnd();
+		EPD_HScanEnd();
 		EPD_OutputRow();
 		EPD_LatchRow();
 	}
 
 	EPD_VScanEnd();
+	*/
 }
 
+void EPD_DrawPartial(const uint8_t* img_bytes, const uint8_t* old_bytes)
+{
+	uint8_t* tempPtr = (uint8_t *)(0xD0000000 + 800 / 8 * 600 * 3);
+
+    uint8_t data;
+    uint8_t dram;
+
+    uint8_t diffw, diffb;
+    uint32_t n = 119999;
+    uint16_t _pos = 59999;
+
+    for (int i = 0; i < 600; ++i)
+    {
+        for (int j = 0; j < 100; ++j)
+        {
+            diffw = *(old_bytes + _pos) & ~*(img_bytes + _pos);
+            diffb = ~*(old_bytes + _pos) & *(img_bytes + _pos);
+            _pos--;
+            *(tempPtr + n) = LUTW[diffw >> 4] & (LUTB[diffb >> 4]);
+            n--;
+            *(tempPtr + n) = LUTW[diffw & 0x0F] & (LUTB[diffb & 0x0F]);
+            n--;
+        }
+    }
+
+	for (int k = 0; k < 16; ++k)
+	{
+		n = 119999;
+		EPD_VScanStart();
+
+		for (int i = 0; i < 600; ++i)
+		{
+			EPD_HScanStart();
+
+			for (int j = 0; j < 800 / 8; ++j)
+			{
+				data = *(tempPtr + n);
+				n--;
+				EPD_Set_DATA(data);
+				EPD_ClockPixel();
+
+				data = *(tempPtr + n);
+				n--;
+				EPD_Set_DATA(data);
+				EPD_ClockPixel();
+			}
+
+			EPD_HScanEnd();
+			EPD_OutputRow();
+			EPD_LatchRow();
+		}
+
+		EPD_VScanEnd();
+	}
+}
 
 
 //
