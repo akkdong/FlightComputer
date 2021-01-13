@@ -81,6 +81,11 @@ void test_erase_subsector(uint32_t addr);
 void test_write_subsector(uint32_t addr);
 void test_read_subsector(uint32_t addr);
 
+uint8_t * getOfflineImage(int type);
+void makeCheckPattern(uint8_t* ptr);
+void makeVLine(uint8_t* ptr);
+void makeHLine(uint8_t* ptr);
+
 
 int __io_putchar(int ch)
 {
@@ -482,9 +487,10 @@ void cmd_process(char* str)
 	{
 		if (strcmp(param1, "clear") == 0)
 		{
+			uint32_t lastTick = HAL_GetTick();
 			EPD_ClearScreen();
-			//epd_clearScreen();
-			UART_Printf(&UART1, "clear done!\n");
+			UART_Printf(&UART1, "clear done!: %u ms\n", HAL_GetTick() - lastTick);
+			memset(imagePtrActive, 0, 800 / 8 * 600);
 		}
 		else if (strcmp(param1, "clear2") == 0)
 		{
@@ -492,34 +498,52 @@ void cmd_process(char* str)
 			//epd_clearScreen();
 			UART_Printf(&UART1, "clear done!\n");
 		}
-		else if (strcmp(param1, "draw") == 0)
+		else if (strcmp(param1, "gray") == 0)
 		{
+			uint32_t lastTick = HAL_GetTick();
 			EPD_Draw16Gray(img_bytes);
-			UART_Printf(&UART1, "draw-16bit done!\n");
+			UART_Printf(&UART1, "draw gray image done!: %u ms\n", HAL_GetTick() - lastTick);
 		}
 		else if (strcmp(param1, "mono") == 0)
 		{
-			EPD_DrawMono(imagePtrActive);
-			UART_Printf(&UART1, "draw active image done!\n");
-		}
-		else if (strcmp(param1, "mono1") == 0)
-		{
-			EPD_DrawMono(imagePtr1);
-			imagePtrActive = imagePtr1;
-			UART_Printf(&UART1, "draw image1 done!\n");
+			//
+			int type = param2 ? parseNumber(param2) : 0;
+			uint8_t* imageDst = getOfflineImage(type);
+
+			uint32_t lastTick = HAL_GetTick();
+			EPD_DrawMono(imageDst);
+			imagePtrActive = imageDst;
+			UART_Printf(&UART1, "draw mono image done!: %u ms\n", HAL_GetTick() - lastTick);
 		}
 		else if (strcmp(param1, "mono2") == 0)
 		{
-			EPD_DrawMono(imagePtr2);
-			imagePtrActive = imagePtr2;
-			UART_Printf(&UART1, "draw image2 done!\n");
+			//
+			int type = param2 ? parseNumber(param2) : 0;
+			uint8_t* imageDst = getOfflineImage(type);
+
+			uint32_t lastTick = HAL_GetTick();
+			EPD_DrawMono2(imageDst);
+			imagePtrActive = imageDst;
+			UART_Printf(&UART1, "draw mono2 image done!: %u ms\n", HAL_GetTick() - lastTick);
 		}
-		else if (strcmp(param1, "partial") == 0)
+		else if (strcmp(param1, "fast") == 0)
 		{
-			uint8_t* imageAlt = imagePtrActive == imagePtr1 ? imagePtr2 : imagePtr1;
-			EPD_DrawPartial(imageAlt, imagePtrActive);
-			imagePtrActive = imageAlt;
-			UART_Printf(&UART1, "draw partial done!\n");
+			int type = param2 ? parseNumber(param2) : 0;
+			uint8_t* imageDst = getOfflineImage(type);
+
+			uint32_t lastTick = HAL_GetTick();
+			EPD_DrawPartial(imageDst, imagePtrActive);
+			imagePtrActive = imageDst;
+			UART_Printf(&UART1, "draw fast done!: %u ms\n", HAL_GetTick() - lastTick);
+		}
+		else if (strcmp(param1, "test") == 0)
+		{
+			uint8_t data = parseNumber(param2);
+			int count = parseNumber(param3);
+
+			uint32_t lastTick = HAL_GetTick();
+			EPD_DrawTest(data, count);
+			UART_Printf(&UART1, "draw test (%02X, %d) : %u ms\n", data, count, HAL_GetTick() - lastTick);
 		}
 		else
 		{
@@ -666,8 +690,7 @@ void main_loop_begin(void)
 	imagePtr2 = (uint8_t *)(SDRAM_BANK_ADDR + 800 / 8 * 600 * 2);
 	imagePtrActive = imagePtr1;
 
-	memcpy(imagePtr1, alien_bytes, 800 / 8 * 600);
-	memcpy(imagePtr2, landscape_bytes, 800 / 8 * 600);
+	makeCheckPattern(imagePtrActive);
 }
 
 
@@ -1016,3 +1039,75 @@ void test_read_subsector(uint32_t addr)
 	else
 		UART_Printf(&UART1, "    FAILED\n");
 }
+
+
+
+uint8_t * getOfflineImage(int type)
+{
+	uint8_t* imageDst = imagePtr1 == imagePtrActive ? imagePtr2 : imagePtr1;
+	switch (type)
+	{
+	case 1:
+		memcpy(imageDst, alien_bytes, 800 / 8 * 600);
+		break;
+	case 2:
+		memcpy(imageDst, landscape_bytes, 800 / 8 * 600);
+		break;
+	case 3:
+		makeCheckPattern(imageDst);
+		break;
+	case 4:
+		makeVLine(imageDst);
+		break;
+	case 5:
+		makeHLine(imageDst);
+		break;
+	case 0:
+	default:
+		imageDst = imagePtrActive;
+		break;
+	}
+
+	return imageDst;
+}
+
+void makeCheckPattern(uint8_t* ptr)
+{
+	for (int y = 0; y < 600; y++)
+	{
+		for (int x = 0; x < 100 /*800/8*/; x++)
+		{
+			int iy = y / 60; // 0 ~ 9
+			int ix = x / 10; // 0 ~ 9
+
+			*ptr++ = ((iy % 2) == (ix % 2)) ? 0xFF : 0x00;
+		}
+	}
+}
+
+void makeVLine(uint8_t* ptr)
+{
+	for (int y = 0; y < 600; y++)
+	{
+		for (int x = 0; x < 100 /*800/8*/; x++)
+		{
+			int iy = y / 60;
+
+			*ptr++ = ((iy % 2) == 1) ? 0xFF : 0x00;
+		}
+	}
+}
+
+void makeHLine(uint8_t* ptr)
+{
+	for (int y = 0; y < 600; y++)
+	{
+		for (int x = 0; x < 100 /*800/8*/; x++)
+		{
+			int ix = x / 10;
+
+			*ptr++ = ((ix % 2) == 1) ? 0xFF : 0x00;
+		}
+	}
+}
+

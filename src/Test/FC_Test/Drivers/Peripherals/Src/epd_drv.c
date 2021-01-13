@@ -10,7 +10,7 @@
 
 #define EPD_WIDTH     		800
 #define EPD_HEIGHT    		600
-#define CLK_DELAY_US  		1
+#define CLK_DELAY_US  		0
 #define VCLK_DELAY_US 		1
 #define OUTPUT_DELAY_US   	2
 #define CLEAR_BYTE    		0b10101010
@@ -53,6 +53,9 @@ const uint8_t LUTB[16] =
 
 #else // L2R
 
+// 0 -> W : 10
+// 1 -> B : 01
+
 const uint8_t LUT2[16] =
 {
 	0xAA, 0x6A, 0x9A, 0x5A,
@@ -61,7 +64,7 @@ const uint8_t LUT2[16] =
 	0xA5, 0x65, 0x95, 0x55
 };
 
-const uint8_t LUTW[16] =
+const uint8_t LUT_W[16] =
 {
 	0xFF, 0xBF, 0xEF, 0xAF,
 	0xFB, 0xBB, 0xEB, 0xAB,
@@ -69,13 +72,22 @@ const uint8_t LUTW[16] =
 	0xFA, 0xBA, 0xEA, 0xAA
 };
 
-const uint8_t LUTB[16] =
+const uint8_t LUT_B[16] =
 {
-	0xFF, 0x7F, 0xDF, 0x5F,
-	0xF7, 0x77, 0xD7, 0x57,
-	0xFD, 0x7D, 0xDD, 0x5D,
-	0xF5, 0x75, 0xD5, 0x55
+	0x55, 0xD5, 0x75, 0xF5,
+	0x5D, 0xDD, 0x7D, 0xFD,
+	0x57, 0xD7, 0x77, 0xF7,
+	0x5F, 0xDF, 0x7F, 0xFF
 };
+
+const uint8_t LUT_BW[16] =
+{
+	0x55, 0x95, 0x65, 0xA5,
+	0x59, 0x99, 0x69, 0xA9,
+	0x56, 0x96, 0x66, 0xA6,
+	0x5A, 0x9A, 0x6A, 0xAA
+};
+
 
 #endif
 
@@ -83,13 +95,14 @@ uint32_t pinLUT[256];
 
 
 /* Contrast cycles in order of contrast (Darkest first).  */
-const uint8_t contrast_cycles[] = {4,4,4,4};
+const uint8_t contrast_cycles[] = {4,4,2,1};
 const uint8_t sz_contrast_cycles = sizeof(contrast_cycles)/sizeof(uint8_t);
 
 /* Screen clearing state */
 const uint8_t clear_cycles[] = {
   CLEAR_BYTE, CLEAR_BYTE, CLEAR_BYTE, CLEAR_BYTE, CLEAR_BYTE,
   CLEAR_BYTE, CLEAR_BYTE, CLEAR_BYTE,
+  DARK_BYTE, DARK_BYTE, DARK_BYTE, DARK_BYTE, DARK_BYTE, DARK_BYTE,
   DARK_BYTE, DARK_BYTE, DARK_BYTE, DARK_BYTE, DARK_BYTE, DARK_BYTE,
   CLEAR_BYTE, CLEAR_BYTE, CLEAR_BYTE, CLEAR_BYTE, CLEAR_BYTE,
   CLEAR_BYTE, CLEAR_BYTE, CLEAR_BYTE,
@@ -184,6 +197,17 @@ void EPD_Init(void)
 }
 
 
+void EPD_PowerOn(void)
+{
+    EPD_Set_GMODE();
+    //EPD_Set_OE();
+    DWT_Delay_us(100);
+}
+
+void EPD_PowerOff(void)
+{
+	EPD_Reset_GMODE();
+}
 
 void EPD_ClockPixel(void)
 {
@@ -196,7 +220,7 @@ void EPD_ClockPixel(void)
 void EPD_OutputRow(void)
 {
     // OUTPUTROW
-	DWT_Delay_us(OUTPUT_DELAY_US);
+	//DWT_Delay_us(OUTPUT_DELAY_US);
 	EPD_Set_OE();
 	EPD_Set_CKV();
 	DWT_Delay_us(OUTPUT_DELAY_US);
@@ -207,13 +231,13 @@ void EPD_OutputRow(void)
 
     // NEXTROW START
     EPD_Set_CL();
-    DWT_Delay_us(CLK_DELAY_US);
+    //DWT_Delay_us(CLK_DELAY_US);
     EPD_Reset_CL();
-    DWT_Delay_us(CLK_DELAY_US);
+    //DWT_Delay_us(CLK_DELAY_US);
     EPD_Set_CL();
-    DWT_Delay_us(CLK_DELAY_US);
+    //DWT_Delay_us(CLK_DELAY_US);
     EPD_Reset_CL();
-    DWT_Delay_us(CLK_DELAY_US);
+    //DWT_Delay_us(CLK_DELAY_US);
     EPD_Set_CKV();
     // END NEXTROW
 }
@@ -221,34 +245,34 @@ void EPD_OutputRow(void)
 void EPD_LatchRow(void)
 {
 	EPD_Set_LE();
-	DWT_Delay_us(CLK_DELAY_US);
+	//DWT_Delay_us(CLK_DELAY_US);
     EPD_Set_CL();
-    DWT_Delay_us(CLK_DELAY_US);
+    //DWT_Delay_us(CLK_DELAY_US);
     EPD_Reset_CL();
-    DWT_Delay_us(CLK_DELAY_US);
+    //DWT_Delay_us(CLK_DELAY_US);
     EPD_Set_CL();
-    DWT_Delay_us(CLK_DELAY_US);
+    //DWT_Delay_us(CLK_DELAY_US);
     EPD_Reset_CL();
-    DWT_Delay_us(CLK_DELAY_US);
+    //DWT_Delay_us(CLK_DELAY_US);
 
     EPD_Reset_LE();
-    DWT_Delay_us(CLK_DELAY_US);
+    //DWT_Delay_us(CLK_DELAY_US);
     EPD_Set_CL();
-    DWT_Delay_us(CLK_DELAY_US);
+    //DWT_Delay_us(CLK_DELAY_US);
     EPD_Reset_CL();
-    DWT_Delay_us(CLK_DELAY_US);
+    //DWT_Delay_us(CLK_DELAY_US);
     EPD_Set_CL();
-    DWT_Delay_us(CLK_DELAY_US);
+    //DWT_Delay_us(CLK_DELAY_US);
     EPD_Reset_CL();
-    DWT_Delay_us(CLK_DELAY_US);
+    //DWT_Delay_us(CLK_DELAY_US);
 }
 
 void EPD_VScanStart(void)
 {
     // VSCANSTART
-    EPD_Set_GMODE();
-    //EPD_Set_OE();
-    DWT_Delay_us(500);
+    //EPD_Set_GMODE();
+    ////EPD_Set_OE();
+    //DWT_Delay_us(100);
 
     EPD_Set_SPV();
     DWT_Delay_us(VCLK_DELAY_US);
@@ -296,13 +320,13 @@ void EPD_VScanEnd(void)
     EPD_Reset_OE();
     //interrupts();
     EPD_Set_CL();
-    DWT_Delay_us(CLK_DELAY_US);
+    //DWT_Delay_us(CLK_DELAY_US);
     EPD_Reset_CL();
-    DWT_Delay_us(CLK_DELAY_US);
+    //DWT_Delay_us(CLK_DELAY_US);
     EPD_Set_CL();
-    DWT_Delay_us(CLK_DELAY_US);
+    //DWT_Delay_us(CLK_DELAY_US);
     EPD_Reset_CL();
-    DWT_Delay_us(CLK_DELAY_US);
+    //DWT_Delay_us(CLK_DELAY_US);
     DWT_Delay_us(1);
     EPD_Reset_CKV();
     EPD_Reset_OE();
@@ -319,8 +343,8 @@ void EPD_VScanEnd(void)
 
     EPD_Reset_CKV();
     DWT_Delay_us(1);
-    EPD_Reset_GMODE();
-    DWT_Delay_us(1);
+    //EPD_Reset_GMODE();
+    //DWT_Delay_us(1);
 
 #endif
 }
@@ -337,22 +361,22 @@ void EPD_HScanEnd(void)
 {
     // HSCANEND
     EPD_Set_SPH();
-    DWT_Delay_us(CLK_DELAY_US);
+    //DWT_Delay_us(CLK_DELAY_US);
     EPD_Set_CL();
-    DWT_Delay_us(CLK_DELAY_US);
+    //DWT_Delay_us(CLK_DELAY_US);
     EPD_Reset_CL();
-    DWT_Delay_us(CLK_DELAY_US);
+    //DWT_Delay_us(CLK_DELAY_US);
     EPD_Set_CL();
-    DWT_Delay_us(CLK_DELAY_US);
+    //DWT_Delay_us(CLK_DELAY_US);
     EPD_Reset_CL();
-    DWT_Delay_us(CLK_DELAY_US);
+    //DWT_Delay_us(CLK_DELAY_US);
 }
 
 
 
 void EPD_ClearScreen(void)
 {
-	EPD_Set_DATA(CLEAR_BYTE);
+	EPD_PowerOn();
 
     for (int k = 0; k < sz_clear_cycles; ++k)
     {
@@ -378,11 +402,15 @@ void EPD_ClearScreen(void)
 		EPD_VScanEnd();
 
     } // End loop of Refresh Cycles Size
+	
+    EPD_PowerOff();	
 }
 
 
 void EPD_Draw16Gray(const uint8_t* img_bytes) // 800x600 16gray
 {
+	EPD_PowerOn();
+	
 	//for (int k = 0; k < 6; k++)
 	for (int k = 0; k < sz_contrast_cycles; ++k)
 	{
@@ -424,14 +452,18 @@ void EPD_Draw16Gray(const uint8_t* img_bytes) // 800x600 16gray
 		} // End contrast count
 
 	} // End loop of Refresh Cycles Size
+	
+	EPD_PowerOff();
 }
 
 void EPD_DrawMono(const uint8_t* img_bytes)
 {
+	EPD_PowerOn();
+	
     uint8_t data;
     uint8_t dram;
 
-	for (int k = 0; k < 12; ++k)
+	for (int k = 0; k < 10; ++k)
 	{
 		const uint8_t* ptr = img_bytes + 59999;
 		EPD_VScanStart();
@@ -444,11 +476,11 @@ void EPD_DrawMono(const uint8_t* img_bytes)
 			{
 				dram = *(ptr--);
 
-				data = LUTB[dram & 0x0F];
+				data = LUT_B[dram & 0x0F];
 				EPD_Set_DATA(data);
 				EPD_ClockPixel();
 
-				data = LUTB[dram >> 4];
+				data = LUT_B[dram >> 4];
 				EPD_Set_DATA(data);
 				EPD_ClockPixel();
 			}
@@ -462,7 +494,7 @@ void EPD_DrawMono(const uint8_t* img_bytes)
 	}
 
 	//
-	for (int k = 0; k < 12; ++k)
+	for (int k = 0; k < 10; ++k)
 	{
 		uint16_t _pos = 59999;
 
@@ -476,11 +508,11 @@ void EPD_DrawMono(const uint8_t* img_bytes)
 			{
 				dram = *(img_bytes + _pos);
 
-				data = LUT2[dram & 0x0F];
+				data = LUT_W[dram & 0x0F];
 				EPD_Set_DATA(data);
 				EPD_ClockPixel();
 
-				data = LUT2[dram >> 4];
+				data = LUT_W[dram >> 4];
 				EPD_Set_DATA(data);
 				EPD_ClockPixel();
 
@@ -525,10 +557,88 @@ void EPD_DrawMono(const uint8_t* img_bytes)
 
 	EPD_VScanEnd();
 	*/
+	
+	EPD_PowerOff();
+}
+
+
+void EPD_DrawMono2(const uint8_t* img_bytes)
+{
+	EPD_PowerOn();
+	
+    uint8_t data;
+    uint8_t dram;
+
+	for (int k = 0; k < 10; ++k)
+	{
+		const uint8_t* ptr = img_bytes + 59999;
+		EPD_VScanStart();
+
+		for (int i = 0; i < 600; ++i)
+		{
+			EPD_HScanStart();
+
+			for (int j = 0; j < 800 / 8; ++j)
+			{
+				dram = *(ptr--);
+
+				data = LUT_W[dram & 0x0F];
+				EPD_Set_DATA(data);
+				EPD_ClockPixel();
+
+				data = LUT_W[dram >> 4];
+				EPD_Set_DATA(data);
+				EPD_ClockPixel();
+			}
+
+			EPD_HScanEnd();
+			EPD_OutputRow();
+			EPD_LatchRow();
+		}
+
+		EPD_VScanEnd();
+	}
+
+	//
+	for (int k = 0; k < 10; ++k)
+	{
+		uint16_t _pos = 59999;
+
+		EPD_VScanStart();
+
+		for (int i = 0; i < 600; ++i)
+		{
+			EPD_HScanStart();
+
+			for (int j = 0; j < 800 / 8; ++j)
+			{
+				dram = *(img_bytes + _pos);
+
+				data = LUT_B[dram & 0x0F];
+				EPD_Set_DATA(data);
+				EPD_ClockPixel();
+
+				data = LUT_B[dram >> 4];
+				EPD_Set_DATA(data);
+				EPD_ClockPixel();
+
+				--_pos;
+			}
+
+			EPD_HScanEnd();
+			EPD_OutputRow();
+			EPD_LatchRow();
+		}
+
+		EPD_VScanEnd();
+	}
+	
+	EPD_PowerOff();
 }
 
 void EPD_DrawPartial(const uint8_t* img_bytes, const uint8_t* old_bytes)
 {
+	/*
 	uint8_t* tempPtr = (uint8_t *)(0xD0000000 + 800 / 8 * 600 * 3);
 
     uint8_t data;
@@ -581,7 +691,79 @@ void EPD_DrawPartial(const uint8_t* img_bytes, const uint8_t* old_bytes)
 
 		EPD_VScanEnd();
 	}
+	*/
+	
+	EPD_PowerOn();
+
+	uint8_t data;
+	uint8_t dram;
+
+	for (int k = 0; k < 16; ++k)
+	{
+		const uint8_t* ptr = img_bytes + 59999;
+		EPD_VScanStart();
+
+		for (int i = 0; i < 600; ++i)
+		{
+			EPD_HScanStart();
+
+			for (int j = 0; j < 800 / 8; ++j)
+			{
+				dram = *(ptr--);
+
+				data = LUT_BW[dram & 0x0F];
+				EPD_Set_DATA(data);
+				EPD_ClockPixel();
+
+				data = LUT_BW[dram >> 4];
+				EPD_Set_DATA(data);
+				EPD_ClockPixel();
+			}
+
+			EPD_HScanEnd();
+			EPD_OutputRow();
+			EPD_LatchRow();
+		}
+
+		EPD_VScanEnd();
+	}
+	
+	EPD_PowerOff();
 }
+
+
+void EPD_DrawTest(uint8_t data, int rep)
+{
+	EPD_PowerOn();
+	
+	//for (int k = 0; k < 16; ++k)
+	{
+		EPD_VScanStart();
+
+		for (int i = 0; i < 600; ++i)
+		{
+			EPD_HScanStart();
+
+			for (int j = 0; j < 800 / 8; ++j)
+			{
+				EPD_Set_DATA(data);
+				EPD_ClockPixel();
+
+				EPD_Set_DATA(data);
+				EPD_ClockPixel();
+			}
+
+			EPD_HScanEnd();
+			EPD_OutputRow();
+			EPD_LatchRow();
+		}
+
+		EPD_VScanEnd();
+	}
+	
+	EPD_PowerOff();
+}
+
 
 
 //
