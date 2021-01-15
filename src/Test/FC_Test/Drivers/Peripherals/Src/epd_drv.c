@@ -53,8 +53,8 @@ const uint8_t LUTB[16] =
 
 #else // L2R
 
-// 0 -> W : 10
-// 1 -> B : 01
+// 1 -> W : 10
+// 0 -> B : 01
 
 const uint8_t LUT2[16] =
 {
@@ -66,16 +66,16 @@ const uint8_t LUT2[16] =
 
 const uint8_t LUT_W[16] =
 {
-	0xFF, 0xBF, 0xEF, 0xAF,
-	0xFB, 0xBB, 0xEB, 0xAB,
+	0xFF, 0xBF, 0xEF, 0xAF,	// 0000:WWWW:11111111, 0001:---W:10111111, 0010:--W-:11101111, --WW: 10101111
+	0xFB, 0xBB, 0xEB, 0xAB, // -W--: 11111011, ...
 	0xFE, 0xBE, 0xEE, 0xAE,
 	0xFA, 0xBA, 0xEA, 0xAA
 };
 
 const uint8_t LUT_B[16] =
 {
-	0x55, 0xD5, 0x75, 0xF5,
-	0x5D, 0xDD, 0x7D, 0xFD,
+	0x55, 0xD5, 0x75, 0xF5,	// ----: 11111111, ---B: 10111111, --B-: 11101111, --BB: 01011111
+	0x5D, 0xDD, 0x7D, 0xFD, // -B--: 11111011, ...
 	0x57, 0xD7, 0x77, 0xF7,
 	0x5F, 0xDF, 0x7F, 0xFF
 };
@@ -201,7 +201,7 @@ void EPD_PowerOn(void)
 {
     EPD_Set_GMODE();
     //EPD_Set_OE();
-    DWT_Delay_us(100);
+    DWT_Delay_us(0);
 }
 
 void EPD_PowerOff(void)
@@ -223,22 +223,24 @@ void EPD_OutputRow(void)
 	//DWT_Delay_us(OUTPUT_DELAY_US);
 	EPD_Set_OE();
 	EPD_Set_CKV();
-	DWT_Delay_us(OUTPUT_DELAY_US);
+	DWT_Delay_us(5/*OUTPUT_DELAY_US*/);
     EPD_Reset_CKV();
-    DWT_Delay_us(OUTPUT_DELAY_US);
     EPD_Reset_OE();
+    DWT_Delay_us(200/*OUTPUT_DELAY_US*/);
     // END OUTPUTROW
 
+#if 0
     // NEXTROW START
     EPD_Set_CL();
-    //DWT_Delay_us(CLK_DELAY_US);
+    DWT_Delay_us(1/*CLK_DELAY_US*/);
     EPD_Reset_CL();
-    //DWT_Delay_us(CLK_DELAY_US);
+    DWT_Delay_us(1/*CLK_DELAY_US*/);
     EPD_Set_CL();
-    //DWT_Delay_us(CLK_DELAY_US);
+    DWT_Delay_us(1/*CLK_DELAY_US*/);
     EPD_Reset_CL();
-    //DWT_Delay_us(CLK_DELAY_US);
-    EPD_Set_CKV();
+    DWT_Delay_us(1/*CLK_DELAY_US*/);
+    //EPD_Set_CKV();
+#endif
     // END NEXTROW
 }
 
@@ -278,22 +280,23 @@ void EPD_VScanStart(void)
     DWT_Delay_us(VCLK_DELAY_US);
     EPD_Reset_CKV();
     DWT_Delay_us(VCLK_DELAY_US);
+
     EPD_Set_CKV();
     DWT_Delay_us(VCLK_DELAY_US);
-
     EPD_Reset_SPV();
     DWT_Delay_us(VCLK_DELAY_US);
     EPD_Reset_CKV();
     DWT_Delay_us(VCLK_DELAY_US);
+
     EPD_Set_CKV();
     DWT_Delay_us(VCLK_DELAY_US);
-
     EPD_Set_SPV();
     DWT_Delay_us(VCLK_DELAY_US);
     EPD_Reset_CKV();
     DWT_Delay_us(VCLK_DELAY_US);
+
     //EPD_Set_CKV();
-    DWT_Delay_us(VCLK_DELAY_US);
+    //DWT_Delay_us(VCLK_DELAY_US);
     // END VSCANSTART
 }
 
@@ -352,7 +355,7 @@ void EPD_VScanEnd(void)
 void EPD_HScanStart(void)
 {
     // HSCANSTART
-    EPD_Set_OE();
+    //EPD_Set_OE();
     EPD_Reset_SPH();
     // END HSCANSTART
 }
@@ -395,8 +398,8 @@ void EPD_ClearScreen(void)
 			}
 
 			EPD_HScanEnd();
-			EPD_OutputRow();
 			EPD_LatchRow();
+			EPD_OutputRow();
 		}
 
 		EPD_VScanEnd();
@@ -444,8 +447,8 @@ void EPD_Draw16Gray(const uint8_t* img_bytes) // 800x600 16gray
 				}
 
 				EPD_HScanEnd();
-				EPD_OutputRow();
 				EPD_LatchRow();
+				EPD_OutputRow();
 			}
 
 			EPD_VScanEnd();
@@ -486,8 +489,8 @@ void EPD_DrawMono(const uint8_t* img_bytes)
 			}
 
 			EPD_HScanEnd();
-			EPD_OutputRow();
 			EPD_LatchRow();
+			EPD_OutputRow();
 		}
 
 		EPD_VScanEnd();
@@ -520,8 +523,8 @@ void EPD_DrawMono(const uint8_t* img_bytes)
 			}
 
 			EPD_HScanEnd();
-			EPD_OutputRow();
 			EPD_LatchRow();
+			EPD_OutputRow();
 		}
 
 		EPD_VScanEnd();
@@ -592,8 +595,8 @@ void EPD_DrawMono2(const uint8_t* img_bytes)
 			}
 
 			EPD_HScanEnd();
-			EPD_OutputRow();
 			EPD_LatchRow();
+			EPD_OutputRow();
 		}
 
 		EPD_VScanEnd();
@@ -626,8 +629,8 @@ void EPD_DrawMono2(const uint8_t* img_bytes)
 			}
 
 			EPD_HScanEnd();
-			EPD_OutputRow();
 			EPD_LatchRow();
+			EPD_OutputRow();
 		}
 
 		EPD_VScanEnd();
@@ -721,8 +724,8 @@ void EPD_DrawPartial(const uint8_t* img_bytes, const uint8_t* old_bytes)
 			}
 
 			EPD_HScanEnd();
-			EPD_OutputRow();
 			EPD_LatchRow();
+			EPD_OutputRow();
 		}
 
 		EPD_VScanEnd();
@@ -731,12 +734,130 @@ void EPD_DrawPartial(const uint8_t* img_bytes, const uint8_t* old_bytes)
 	EPD_PowerOff();
 }
 
+void EPD_DrawTest2(uint8_t* img_bytes)
+{
+    uint8_t data;
+    uint8_t dram;
+
+	for (int i = 0; i < 16 ; i++)
+	{
+		// VSCAN-START
+		EPD_Set_GMODE();
+		EPD_Set_OE();
+		DWT_Delay_us(1);
+
+		EPD_Set_CKV();		DWT_Delay_us(0);
+		EPD_Reset_SPV();	DWT_Delay_us(1);
+		EPD_Reset_CKV();	DWT_Delay_us(4);
+
+		EPD_Set_CKV();		DWT_Delay_us(0);
+		EPD_Set_SPV();		DWT_Delay_us(1);
+		EPD_Reset_CKV();	DWT_Delay_us(4);
+
+		EPD_Set_CKV();		DWT_Delay_us(1);
+		EPD_Reset_CKV();	DWT_Delay_us(4);
+
+		EPD_Set_CKV();		DWT_Delay_us(1);
+		EPD_Reset_CKV();	DWT_Delay_us(4);
+
+		EPD_Set_CKV();		DWT_Delay_us(1);
+
+		const uint8_t* ptr = img_bytes + 59999;
+
+		for (int y = 0; y < 600; y++)
+		{
+			// HSCAN-START
+			//EPD_Reset_LE();
+			//EPD_Reset_OE();
+
+			EPD_Reset_SPH();
+
+			// WRITE-DATA
+			for (int x = 0; x < 100; x++)
+			{
+				dram = *(ptr--);
+
+				data = LUT_BW[dram & 0x0F];
+				EPD_Set_DATA(data);
+				//DWT_Delay_us(1);
+				EPD_Set_CL();
+				//DWT_Delay_us(1);
+				EPD_Reset_CL();
+
+				if (x == 0)
+				{
+					EPD_Set_SPH();
+					EPD_Set_CKV();
+				}
+
+				data = LUT_BW[dram >> 4];
+				EPD_Set_DATA(data);
+				//DWT_Delay_us(1);
+				EPD_Set_CL();
+				//DWT_Delay_us(1);
+				EPD_Reset_CL();
+			}
+
+			// HSCAN-STOP
+			//EPD_Set_SPH();
+			//EPD_Set_CKV();
+
+			//DWT_Delay_us(1);
+			EPD_Set_CL();
+			//DWT_Delay_us(1);
+			EPD_Reset_CL();
+
+			//EPD_Reset_SPV();
+			EPD_Reset_CKV();
+
+			EPD_Set_LE();
+			DWT_Delay_us(1); // ??
+			EPD_Reset_LE();
+
+
+			// WRITE-LINE
+			/*
+			EPD_Set_OE();
+			EPD_Set_CKV();
+			DWT_Delay_us(5);
+			EPD_Reset_CKV();
+			DWT_Delay_us(200);
+			EPD_Reset_OE();
+			*/
+		}
+
+		// VSCAN-STOP
+		EPD_Reset_GMODE();
+		EPD_Set_CKV();
+		DWT_Delay_us(1);
+		EPD_Reset_CKV();
+		DWT_Delay_us(4);
+		EPD_Set_CKV();
+		DWT_Delay_us(1);
+		EPD_Reset_CKV();
+		DWT_Delay_us(4);
+		EPD_Set_CKV();
+		DWT_Delay_us(1);
+		EPD_Reset_CKV();
+		DWT_Delay_us(4);
+		EPD_Set_CKV();
+		DWT_Delay_us(1);
+		EPD_Reset_CKV();
+		DWT_Delay_us(4);
+		EPD_Set_CKV();
+		DWT_Delay_us(1);
+		EPD_Reset_CKV();
+		DWT_Delay_us(4);
+	}
+}
+
 
 void EPD_DrawTest(uint8_t data, int rep)
 {
+#if 0
 	EPD_PowerOn();
 	
-	//for (int k = 0; k < 16; ++k)
+	for (int k = 0; k < rep; ++k)
 	{
 		EPD_VScanStart();
 
@@ -762,6 +883,170 @@ void EPD_DrawTest(uint8_t data, int rep)
 	}
 	
 	EPD_PowerOff();
+#else
+
+	for (int i = 0; i < rep ; i++)
+	{
+		// VSCAN-START
+		EPD_Set_GMODE();
+		EPD_Set_OE();
+		DWT_Delay_us(1);
+
+		EPD_Set_CKV();		DWT_Delay_us(0);
+		EPD_Reset_SPV();	DWT_Delay_us(1);
+		EPD_Reset_CKV();	DWT_Delay_us(4);
+
+		EPD_Set_CKV();		DWT_Delay_us(0);
+		EPD_Set_SPV();		DWT_Delay_us(1);
+		EPD_Reset_CKV();	DWT_Delay_us(4);
+
+		EPD_Set_CKV();		DWT_Delay_us(1);
+		EPD_Reset_CKV();	DWT_Delay_us(4);
+
+		EPD_Set_CKV();		DWT_Delay_us(1);
+		EPD_Reset_CKV();	DWT_Delay_us(4);
+
+		EPD_Set_CKV();		DWT_Delay_us(1);
+
+		for (int y = 0; y < 600; y++)
+		{
+			// HSCAN-START
+			//EPD_Reset_LE();
+			//EPD_Reset_OE();
+
+			EPD_Reset_SPH();
+
+			// WRITE-DATA
+			for (int x = 0; x < 200; x++)
+			{
+				EPD_Set_DATA(data);
+
+				//DWT_Delay_us(1);
+				EPD_Set_CL();
+				//DWT_Delay_us(1);
+				EPD_Reset_CL();
+
+				if (x == 0)
+				{
+					EPD_Set_SPH();
+					EPD_Set_CKV();
+				}
+			}
+
+			// HSCAN-STOP
+			//EPD_Set_SPH();
+			//EPD_Set_CKV();
+
+			//DWT_Delay_us(1);
+			EPD_Set_CL();
+			//DWT_Delay_us(1);
+			EPD_Reset_CL();
+
+			//EPD_Reset_SPV();
+			EPD_Reset_CKV();
+
+			EPD_Set_LE();
+			DWT_Delay_us(1); // ??
+			EPD_Reset_LE();
+
+
+			// WRITE-LINE
+			/*
+			EPD_Set_OE();
+			EPD_Set_CKV();
+			DWT_Delay_us(5);
+			EPD_Reset_CKV();
+			DWT_Delay_us(200);
+			EPD_Reset_OE();
+			*/
+		}
+
+		// VSCAN-STOP
+		EPD_Reset_GMODE();
+		EPD_Set_CKV();
+		DWT_Delay_us(1);
+		EPD_Reset_CKV();
+		DWT_Delay_us(4);
+		EPD_Set_CKV();
+		DWT_Delay_us(1);
+		EPD_Reset_CKV();
+		DWT_Delay_us(4);
+		EPD_Set_CKV();
+		DWT_Delay_us(1);
+		EPD_Reset_CKV();
+		DWT_Delay_us(4);
+		EPD_Set_CKV();
+		DWT_Delay_us(1);
+		EPD_Reset_CKV();
+		DWT_Delay_us(4);
+		EPD_Set_CKV();
+		DWT_Delay_us(1);
+		EPD_Reset_CKV();
+		DWT_Delay_us(4);
+	}
+
+	/*
+	for (int k = 0; k < rep; ++k)
+	{
+		// START OF FRAME
+		EPD_Set_GMODE(); 	DWT_Delay_us(100);
+
+		EPD_Set_CKV();    	DWT_Delay_us(VCLK_DELAY_US);
+		EPD_Reset_CKV();    DWT_Delay_us(VCLK_DELAY_US);
+
+		EPD_Reset_SPV();    DWT_Delay_us(VCLK_DELAY_US);
+		EPD_Set_CKV();    	DWT_Delay_us(VCLK_DELAY_US);
+		EPD_Reset_CKV();    DWT_Delay_us(VCLK_DELAY_US);
+		EPD_Set_SPV();    	DWT_Delay_us(VCLK_DELAY_US);
+
+		for (int i = 0; i < 600; ++i)
+		{
+			// START ROW
+			EPD_Reset_SPH();	DWT_Delay_us(1);
+
+			// WRITE PIXEL DATA
+			for (int j = 0; j < 800 / 8; ++j)
+			{
+				EPD_Set_DATA(data);
+				EPD_Set_CL();	// DWT_Delay_us(CLK_DELAY_US);
+				EPD_Reset_CL();	// DWT_Delay_us(CLK_DELAY_US);
+
+				EPD_Set_DATA(data);
+				EPD_Set_CL();	// DWT_Delay_us(CLK_DELAY_US);
+				EPD_Reset_CL();	// DWT_Delay_us(CLK_DELAY_US);
+			}
+
+			// END ROW
+			EPD_Set_SPH();	    DWT_Delay_us(1);
+			EPD_Set_CL();	    //DWT_Delay_us(1);
+			EPD_Reset_CL();	    //DWT_Delay_us(1);
+			EPD_Set_CL();	    //DWT_Delay_us(1);
+			EPD_Reset_CL();		//DWT_Delay_us(1);
+
+			EPD_Set_LE();		DWT_Delay_us(1);
+			EPD_Set_CL();		//DWT_Delay_us(1);
+			EPD_Reset_CL();		//DWT_Delay_us(1);
+			EPD_Set_CL();		//DWT_Delay_us(1);
+			EPD_Reset_CL();		//DWT_Delay_us(1);
+			EPD_Reset_LE();		DWT_Delay_us(1);
+
+			// WRITE TO SCREEN
+			EPD_Set_OE();		DWT_Delay_us(1);
+			EPD_Set_CKV();		DWT_Delay_us(6);
+			EPD_Reset_CKV();	DWT_Delay_us(1);
+			EPD_Reset_OE();		DWT_Delay_us(1);
+		}
+
+		// END OF FRAME
+		EPD_Reset_GMODE();		DWT_Delay_us(1);
+		EPD_Set_CKV();			DWT_Delay_us(1);
+		EPD_Reset_CKV();	    DWT_Delay_us(1);
+
+		HAL_Delay(100);
+	}
+	*/
+
+#endif
 }
 
 

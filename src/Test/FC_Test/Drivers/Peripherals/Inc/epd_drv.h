@@ -149,6 +149,26 @@ inline void EPD_Reset_GMODE(void)
 #define EPD_Set_DATA(data)	do { GPIOD->BSRR = pinLUT[(data)]; } while (0)
 
 
+/*
+#define CKV_Set()			EPD_Set_CKV()
+#define SPH_Set()			EPD_Set_SPH()
+#define SPV_Set()			EPD_Set_SPV()
+#define LE_Set()			EPD_Set_LE()
+#define CL_Set()			EPD_Set_CL()
+#define OE_Set()			EPD_Set_OE()
+#define GMODE_Set()			EPD_Set_GMODE()
+
+#define CKV_Reset()			EPD_Reset_CKV()
+#define SPH_Reset()			EPD_Reset_SPH()
+#define SPV_Reset()			EPD_Reset_SPV()
+#define LE_Reset()			EPD_Reset_LE()
+#define CL_Reset()			EPD_Reset_CL()
+#define OE_Reset()			EPD_Reset_OE()
+#define GMODE_Reset()		EPD_Reset_GMODE()
+
+#define DATA_Write(data)	EPD_Set_DATA(data)
+*/
+
 
 ////////////////////////////////////////////////////////////////////////////////////////
 //
@@ -168,8 +188,9 @@ void EPD_Draw16Gray(const uint8_t* img_bytes);
 void EPD_DrawMono(const uint8_t* img_bytes);
 void EPD_DrawMono2(const uint8_t* img_bytes);
 void EPD_DrawPartial(const uint8_t* new_bytes, const uint8_t* old_bytes);
-void EPD_DrawTest(uint8_t data, int rep);
 
+void EPD_DrawTest(uint8_t data, int rep);
+void EPD_DrawTest2(uint8_t* img_bytes)
 
 void epd_init(void);
 void epd_clearScreen(void);

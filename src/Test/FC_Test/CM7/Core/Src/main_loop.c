@@ -522,7 +522,7 @@ void cmd_process(char* str)
 			uint8_t* imageDst = getOfflineImage(type);
 
 			uint32_t lastTick = HAL_GetTick();
-			EPD_DrawMono2(imageDst);
+			EPD_DrawTest2(imageDst);
 			imagePtrActive = imageDst;
 			UART_Printf(&UART1, "draw mono2 image done!: %u ms\n", HAL_GetTick() - lastTick);
 		}
