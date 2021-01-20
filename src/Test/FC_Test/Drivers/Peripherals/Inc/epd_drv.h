@@ -190,7 +190,7 @@ void EPD_DrawMono2(const uint8_t* img_bytes);
 void EPD_DrawPartial(const uint8_t* new_bytes, const uint8_t* old_bytes);
 
 void EPD_DrawTest(uint8_t data, int rep);
-void EPD_DrawTest2(uint8_t* img_bytes)
+void EPD_DrawTest2(uint8_t* bytes);
 
 void epd_init(void);
 void epd_clearScreen(void);

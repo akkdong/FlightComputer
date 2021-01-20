@@ -87,6 +87,9 @@ void makeVLine(uint8_t* ptr);
 void makeHLine(uint8_t* ptr);
 
 
+void tensorflow_test(void);
+
+
 int __io_putchar(int ch)
 {
 	//ITM_SendChar(ch);
@@ -624,6 +627,13 @@ void cmd_process(char* str)
 
 			if (!ok)
 				UART_Printf(&UART1, "Invalid command or parameter: %s, %s\n", param1 ? param1 : "(nil)", param2 ? param2 : "(nil)");
+		}
+	}
+	else if (strcmp(cmd, "tf") == 0)
+	{
+		if (strcmp(param1, "test1") == 0)
+		{
+			tensorflow_test();
 		}
 	}
 }
