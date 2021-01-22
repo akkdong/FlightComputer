@@ -8,7 +8,7 @@
 #include "RingBuffer.h"
 
 #define	MAX_RX_BUFFER			(64)
-#define MAX_TX_BUFFER			(128)
+#define MAX_TX_BUFFER			(512)
 
 #include "UART_Conf.h"
 

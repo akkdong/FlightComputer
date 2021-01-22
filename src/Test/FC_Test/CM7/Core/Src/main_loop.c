@@ -87,7 +87,8 @@ void makeVLine(uint8_t* ptr);
 void makeHLine(uint8_t* ptr);
 
 
-void tensorflow_test(void);
+void tensorflow_test1(void);
+void tensorflow_test2(uint8_t* addrModel);
 
 
 int __io_putchar(int ch)
@@ -633,7 +634,33 @@ void cmd_process(char* str)
 	{
 		if (strcmp(param1, "test1") == 0)
 		{
-			tensorflow_test();
+			tensorflow_test1();
+		}
+		else if (strcmp(param1, "test2") == 0)
+		{
+			uint32_t srcAddr = 0x03000000;
+			uint8_t* dstAddr = (uint8_t *)(SDRAM_BANK_ADDR + 0x01000000);
+			int32_t sizeRemain = 9516216;
+
+			while (sizeRemain > 0)
+			{
+				uint32_t size = MAX_READ_SIZE; // sizeRemain > MAX_READ_SIZE ? MAX_READ_SIZE : sizeRemain;
+				QSPI_STATUS status = QSPI_Driver_read(dstAddr, srcAddr, size);
+				if (status != QSPI_STATUS_OK)
+				{
+					UART_Printf(&UART1, "Read failed at 0x%08X\n", srcAddr);
+					return;
+				}
+
+				dstAddr += size;
+				srcAddr += size;
+				sizeRemain -= size;
+			}
+
+			UART_Printf(&UART1, "Start tensorflow test2\n");
+			HAL_Delay(10);
+
+			tensorflow_test2((uint8_t *)(SDRAM_BANK_ADDR + 0x01000000));
 		}
 	}
 }
