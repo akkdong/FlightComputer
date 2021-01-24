@@ -33,7 +33,7 @@ P 5650 1650
 AR Path="/5F2A50C6/5FD2B108" Ref="R?"  Part="1" 
 AR Path="/5FD2B108" Ref="R2"  Part="1" 
 F 0 "R2" H 5450 1700 50  0000 L CNN
-F 1 "120K" H 5400 1600 50  0000 L CNN
+F 1 "27K" H 5400 1600 50  0000 L CNN
 F 2 "FlightComputer_Library:R_0402_1005Metric_Pad0.72x0.64mm_HandSolder" V 5690 1640 50  0001 C CNN
 F 3 "~" H 5650 1650 50  0001 C CNN
 	1    5650 1650
@@ -46,7 +46,7 @@ P 5650 1250
 AR Path="/5F2A50C6/5FD2B10E" Ref="R?"  Part="1" 
 AR Path="/5FD2B10E" Ref="R1"  Part="1" 
 F 0 "R1" H 5750 1200 50  0000 L CNN
-F 1 "2M" H 5725 1300 50  0000 L CNN
+F 1 "300K" H 5725 1300 50  0000 L CNN
 F 2 "FlightComputer_Library:R_0402_1005Metric_Pad0.72x0.64mm_HandSolder" V 5690 1240 50  0001 C CNN
 F 3 "~" H 5650 1250 50  0001 C CNN
 	1    5650 1250
@@ -194,7 +194,7 @@ P 6400 2800
 AR Path="/5F2A50C6/6000B81B" Ref="R?"  Part="1" 
 AR Path="/6000B81B" Ref="R9"  Part="1" 
 F 0 "R9" H 6200 2850 50  0000 L CNN
-F 1 "560K" H 6150 2750 50  0000 L CNN
+F 1 "110K" H 6150 2750 50  0000 L CNN
 F 2 "FlightComputer_Library:R_0402_1005Metric_Pad0.72x0.64mm_HandSolder" V 6440 2790 50  0001 C CNN
 F 3 "~" H 6400 2800 50  0001 C CNN
 	1    6400 2800
@@ -207,7 +207,7 @@ P 6400 2300
 AR Path="/5F2A50C6/6000B821" Ref="R?"  Part="1" 
 AR Path="/6000B821" Ref="R8"  Part="1" 
 F 0 "R8" H 6450 2250 50  0000 L CNN
-F 1 "39K" H 6450 2350 50  0000 L CNN
+F 1 "10K" H 6450 2350 50  0000 L CNN
 F 2 "FlightComputer_Library:R_0402_1005Metric_Pad0.72x0.64mm_HandSolder" V 6440 2290 50  0001 C CNN
 F 3 "~" H 6400 2300 50  0001 C CNN
 	1    6400 2300
@@ -889,9 +889,9 @@ Wire Wire Line
 	6150 1050 7350 1050
 Connection ~ 6150 1050
 Text Label 1300 1800 0    50   ~ 0
-EN_15P
-Text Label 1300 1900 0    50   ~ 0
 EN_15N
+Text Label 1300 1900 0    50   ~ 0
+EN_15P
 Wire Wire Line
 	6850 3050 7400 3050
 Wire Wire Line
@@ -1486,9 +1486,9 @@ Wire Wire Line
 	6100 3600 7300 3600
 Connection ~ 6100 3600
 Text Label 1250 4350 0    50   ~ 0
-EN_22P
-Text Label 1250 4450 0    50   ~ 0
 EN_20N
+Text Label 1250 4450 0    50   ~ 0
+EN_22P
 Wire Wire Line
 	6800 5600 7350 5600
 $Comp
@@ -1614,7 +1614,7 @@ L Jumper:SolderJumper_2_Open JP1
 U 1 1 601199AE
 P 10750 3850
 F 0 "JP1" H 10750 4055 50  0000 C CNN
-F 1 "SolderJumper_2_Open" H 10750 3964 50  0000 C CNN
+F 1 "Open" H 10750 3964 50  0000 C CNN
 F 2 "FlightComputer_Library:Jumper_0402_1005Metric" H 10750 3850 50  0001 C CNN
 F 3 "~" H 10750 3850 50  0001 C CNN
 	1    10750 3850
@@ -1654,9 +1654,6 @@ Text Label 8950 5750 0    50   ~ 0
 EN_22P
 Text Label 8950 5850 0    50   ~ 0
 EN_20N
-NoConn ~ 10450 3100
-NoConn ~ 9850 3200
-NoConn ~ 9850 3000
 $Comp
 L power:PWR_FLAG #FLG0101
 U 1 1 6016CDF8
@@ -1866,21 +1863,18 @@ Wire Wire Line
 $Comp
 L FlightComputer_Library:VCC_5V #PWR?
 U 1 1 60363D6B
-P 1650 6450
+P 1500 6450
 AR Path="/5F2A50C6/60363D6B" Ref="#PWR?"  Part="1" 
 AR Path="/60363D6B" Ref="#PWR026"  Part="1" 
-F 0 "#PWR026" H 1650 6300 50  0001 C CNN
-F 1 "VCC_5V" V 1650 6700 50  0000 C CNN
-F 2 "" H 1650 6450 50  0001 C CNN
-F 3 "" H 1650 6450 50  0001 C CNN
-	1    1650 6450
+F 0 "#PWR026" H 1500 6300 50  0001 C CNN
+F 1 "VCC_5V" V 1500 6700 50  0000 C CNN
+F 2 "" H 1500 6450 50  0001 C CNN
+F 3 "" H 1500 6450 50  0001 C CNN
+	1    1500 6450
 	0    -1   -1   0   
 $EndComp
 Wire Wire Line
-	1650 6450 2000 6450
-Wire Wire Line
 	2000 6750 2000 6450
-Connection ~ 2000 6450
 Wire Wire Line
 	2000 6450 3300 6450
 Wire Wire Line
@@ -1990,4 +1984,47 @@ Wire Wire Line
 	3150 6650 3150 7100
 Text Label 1500 7400 0    50   ~ 0
 EN_VCC_EINK
+$Comp
+L Jumper:SolderJumper_2_Open JP2
+U 1 1 600EEAE6
+P 1750 6450
+F 0 "JP2" H 1750 6655 50  0000 C CNN
+F 1 "Close" H 1750 6564 50  0000 C CNN
+F 2 "FlightComputer_Library:Jumper_0402_1005Metric" H 1750 6450 50  0001 C CNN
+F 3 "~" H 1750 6450 50  0001 C CNN
+	1    1750 6450
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	1500 6450 1600 6450
+Wire Wire Line
+	1900 6450 2000 6450
+Connection ~ 2000 6450
+Wire Wire Line
+	10450 3100 10650 3100
+Wire Wire Line
+	10650 3100 10650 3400
+Wire Wire Line
+	10650 3400 9700 3400
+Wire Wire Line
+	9700 3400 9700 3200
+Wire Wire Line
+	9700 3200 9850 3200
+$Comp
+L power:GND #PWR?
+U 1 1 6012BB16
+P 9500 3200
+AR Path="/5F2A50C6/6012BB16" Ref="#PWR?"  Part="1" 
+AR Path="/6012BB16" Ref="#PWR0103"  Part="1" 
+F 0 "#PWR0103" H 9500 2950 50  0001 C CNN
+F 1 "GND" H 9505 3027 50  0000 C CNN
+F 2 "" H 9500 3200 50  0001 C CNN
+F 3 "" H 9500 3200 50  0001 C CNN
+	1    9500 3200
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	9500 3200 9500 3000
+Wire Wire Line
+	9500 3000 9850 3000
 $EndSCHEMATC
