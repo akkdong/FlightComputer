@@ -640,7 +640,7 @@ void cmd_process(char* str)
 		{
 			uint32_t srcAddr = 0x03000000;
 			uint8_t* dstAddr = (uint8_t *)(SDRAM_BANK_ADDR + 0x01000000);
-			int32_t sizeRemain = 9516216;
+			int32_t sizeRemain = 9516216+1000000;
 
 			while (sizeRemain > 0)
 			{

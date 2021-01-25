@@ -192,7 +192,7 @@ extern "C" void tensorflow_test1(void)
 
 
 	output = interpreter->output(0);
-	if (!input) {
+	if (!output) {
 		printf("ERR: no output\n");
 		return;
 	}
@@ -322,14 +322,15 @@ extern "C" void tensorflow_test2(uint8_t* addrModel)
 		return;
 	}
 
-	printf("input.dims.size = %d\n", input->dims->size);
-	HAL_Delay(10);
-	printf(" dims.x = %d\n", input->dims->data[0]);
-	HAL_Delay(10);
-	printf(" dims.y = %d\n", input->dims->data[0]);
-	HAL_Delay(10);
 	printf("input.type = %d\n", input->type);
 	HAL_Delay(10);
+	printf("input.dims.size = %d\n", input->dims->size);
+	HAL_Delay(10);
+	for (int i = 0; i < input->dims->size; i++)
+	{
+		printf("       dims.data[%d] = %d\n", i, input->dims->data[i]);
+		HAL_Delay(10);
+	}
 
 	// Get the input quantization parameters
 	float input_scale = input->params.scale;
@@ -344,14 +345,15 @@ extern "C" void tensorflow_test2(uint8_t* addrModel)
 		return;
 	}
 
-	printf("output.dims.size = %d\n", output->dims->size);
-	HAL_Delay(10);
-	printf(" dims.x = %d\n", output->dims->data[0]);
-	HAL_Delay(10);
-	printf(" dims.y = %d\n", output->dims->data[0]);
-	HAL_Delay(10);
 	printf("output.type = %d\n", output->type);
 	HAL_Delay(10);
+	printf("output.dims.size = %d\n", output->dims->size);
+	HAL_Delay(10);
+	for (int i = 0; i < output->dims->size; i++)
+	{
+		printf("       dims.data[%d] = %d\n", i, output->dims->data[i]);
+		HAL_Delay(10);
+	}
 
 
 	// Get the output quantization parameters
