@@ -36,6 +36,26 @@
 			<locationURI>$%7BPARENT-1-PROJECT_LOC%7D/Common</locationURI>
 		</link>
 		<link>
+			<name>Drivers/BSP/epd_drv.c</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/Drivers/BSP/Src/epd_drv.c</locationURI>
+		</link>
+		<link>
+			<name>Drivers/BSP/qspi_drv.c</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/Drivers/BSP/Src/qspi_drv.c</locationURI>
+		</link>
+		<link>
+			<name>Drivers/BSP/sdram_drv.c</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/Drivers/BSP/Src/sdram_drv.c</locationURI>
+		</link>
+		<link>
+			<name>Drivers/BSP/uart_drv.c</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/Drivers/BSP/Src/uart_drv.c</locationURI>
+		</link>
+		<link>
 			<name>Drivers/STM32H7xx_HAL_Driver/stm32h7xx_hal.c</name>
 			<type>1</type>
 			<locationURI>$%7BPARENT-1-PROJECT_LOC%7D/Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal.c</locationURI>
@@ -294,6 +314,11 @@
 			<name>Middlewares/Third_Party/FatFs/syscall.c</name>
 			<type>1</type>
 			<locationURI>$%7BPARENT-1-PROJECT_LOC%7D/Middlewares/Third_Party/FatFs/src/option/syscall.c</locationURI>
+		</link>
+		<link>
+			<name>Middlewares/Third_Party/TLSF/tlsf.c</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/Middlewares/Third_Party/TLSF/src/tlsf.c</locationURI>
 		</link>
 	</linkedResources>
 </projectDescription>
