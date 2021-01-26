@@ -61,10 +61,6 @@ void Error_Handler(void);
 /* Private defines -----------------------------------------------------------*/
 #define IMU1_SCLK_Pin GPIO_PIN_2
 #define IMU1_SCLK_GPIO_Port GPIOE
-#define IMU1_nCS1_Pin GPIO_PIN_3
-#define IMU1_nCS1_GPIO_Port GPIOE
-#define IMU1_nCS2_Pin GPIO_PIN_4
-#define IMU1_nCS2_GPIO_Port GPIOE
 #define IMU1_MISO_Pin GPIO_PIN_5
 #define IMU1_MISO_GPIO_Port GPIOE
 #define IMU1_MOSI_Pin GPIO_PIN_6
@@ -97,12 +93,6 @@ void Error_Handler(void);
 #define KEY_LEFT_GPIO_Port GPIOC
 #define KEY_RIGHT_Pin GPIO_PIN_5
 #define KEY_RIGHT_GPIO_Port GPIOC
-#define IMU_DRDY_Pin GPIO_PIN_0
-#define IMU_DRDY_GPIO_Port GPIOB
-#define IMU_FSYNC_Pin GPIO_PIN_1
-#define IMU_FSYNC_GPIO_Port GPIOB
-#define IMU_nINT_Pin GPIO_PIN_2
-#define IMU_nINT_GPIO_Port GPIOB
 #define USB_OTG_HS_ID_Pin GPIO_PIN_12
 #define USB_OTG_HS_ID_GPIO_Port GPIOB
 #define EPD_D6_Pin GPIO_PIN_11
@@ -167,8 +157,6 @@ void Error_Handler(void);
 #define PMIC_WAKEUP_GPIO_Port GPIOG
 #define PMIC_PWRUP_Pin GPIO_PIN_11
 #define PMIC_PWRUP_GPIO_Port GPIOG
-#define PWR_LED2_Pin GPIO_PIN_13
-#define PWR_LED2_GPIO_Port GPIOG
 #define PWR_LED1_Pin GPIO_PIN_14
 #define PWR_LED1_GPIO_Port GPIOG
 #define PWR_5V_EN_Pin GPIO_PIN_9

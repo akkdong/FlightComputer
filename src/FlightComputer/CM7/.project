@@ -28,7 +28,6 @@
 		<nature>com.st.stm32cube.ide.mcu.MCUMultiCpuProjectNature</nature>
 		<nature>org.eclipse.cdt.managedbuilder.core.managedBuildNature</nature>
 		<nature>org.eclipse.cdt.managedbuilder.core.ScannerConfigNature</nature>
-		<nature>org.eclipse.cdt.core.ccnature</nature>
 	</natures>
 	<linkedResources>
 		<link>
@@ -85,6 +84,11 @@
 			<name>Drivers/STM32H7xx_HAL_Driver/stm32h7xx_hal_gpio.c</name>
 			<type>1</type>
 			<locationURI>$%7BPARENT-1-PROJECT_LOC%7D/Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_gpio.c</locationURI>
+		</link>
+		<link>
+			<name>Drivers/STM32H7xx_HAL_Driver/stm32h7xx_hal_hcd.c</name>
+			<type>1</type>
+			<locationURI>$%7BPARENT-1-PROJECT_LOC%7D/Drivers/STM32H7xx_HAL_Driver/Src/stm32h7xx_hal_hcd.c</locationURI>
 		</link>
 		<link>
 			<name>Drivers/STM32H7xx_HAL_Driver/stm32h7xx_hal_hsem.c</name>
@@ -225,6 +229,46 @@
 			<name>Middlewares/ST/STM32_USB_Device_Library/usbd_msc_scsi.c</name>
 			<type>1</type>
 			<locationURI>$%7BPARENT-1-PROJECT_LOC%7D/Middlewares/ST/STM32_USB_Device_Library/Class/MSC/Src/usbd_msc_scsi.c</locationURI>
+		</link>
+		<link>
+			<name>Middlewares/ST/STM32_USB_Host_Library/usbh_core.c</name>
+			<type>1</type>
+			<locationURI>$%7BPARENT-1-PROJECT_LOC%7D/Middlewares/ST/STM32_USB_Host_Library/Core/Src/usbh_core.c</locationURI>
+		</link>
+		<link>
+			<name>Middlewares/ST/STM32_USB_Host_Library/usbh_ctlreq.c</name>
+			<type>1</type>
+			<locationURI>$%7BPARENT-1-PROJECT_LOC%7D/Middlewares/ST/STM32_USB_Host_Library/Core/Src/usbh_ctlreq.c</locationURI>
+		</link>
+		<link>
+			<name>Middlewares/ST/STM32_USB_Host_Library/usbh_hid.c</name>
+			<type>1</type>
+			<locationURI>$%7BPARENT-1-PROJECT_LOC%7D/Middlewares/ST/STM32_USB_Host_Library/Class/HID/Src/usbh_hid.c</locationURI>
+		</link>
+		<link>
+			<name>Middlewares/ST/STM32_USB_Host_Library/usbh_hid_keybd.c</name>
+			<type>1</type>
+			<locationURI>$%7BPARENT-1-PROJECT_LOC%7D/Middlewares/ST/STM32_USB_Host_Library/Class/HID/Src/usbh_hid_keybd.c</locationURI>
+		</link>
+		<link>
+			<name>Middlewares/ST/STM32_USB_Host_Library/usbh_hid_mouse.c</name>
+			<type>1</type>
+			<locationURI>$%7BPARENT-1-PROJECT_LOC%7D/Middlewares/ST/STM32_USB_Host_Library/Class/HID/Src/usbh_hid_mouse.c</locationURI>
+		</link>
+		<link>
+			<name>Middlewares/ST/STM32_USB_Host_Library/usbh_hid_parser.c</name>
+			<type>1</type>
+			<locationURI>$%7BPARENT-1-PROJECT_LOC%7D/Middlewares/ST/STM32_USB_Host_Library/Class/HID/Src/usbh_hid_parser.c</locationURI>
+		</link>
+		<link>
+			<name>Middlewares/ST/STM32_USB_Host_Library/usbh_ioreq.c</name>
+			<type>1</type>
+			<locationURI>$%7BPARENT-1-PROJECT_LOC%7D/Middlewares/ST/STM32_USB_Host_Library/Core/Src/usbh_ioreq.c</locationURI>
+		</link>
+		<link>
+			<name>Middlewares/ST/STM32_USB_Host_Library/usbh_pipes.c</name>
+			<type>1</type>
+			<locationURI>$%7BPARENT-1-PROJECT_LOC%7D/Middlewares/ST/STM32_USB_Host_Library/Core/Src/usbh_pipes.c</locationURI>
 		</link>
 		<link>
 			<name>Middlewares/Third_Party/FatFs/cc949.c</name>

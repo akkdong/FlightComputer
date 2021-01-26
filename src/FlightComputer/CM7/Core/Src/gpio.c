@@ -52,14 +52,11 @@ void MX_GPIO_Init(void)
   __HAL_RCC_GPIOF_CLK_ENABLE();
   __HAL_RCC_GPIOH_CLK_ENABLE();
   __HAL_RCC_GPIOA_CLK_ENABLE();
-  __HAL_RCC_GPIOB_CLK_ENABLE();
   __HAL_RCC_GPIOG_CLK_ENABLE();
+  __HAL_RCC_GPIOB_CLK_ENABLE();
   __HAL_RCC_GPIOD_CLK_ENABLE();
   __HAL_RCC_GPIOJ_CLK_ENABLE();
   __HAL_RCC_GPIOK_CLK_ENABLE();
-
-  /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOE, IMU1_nCS1_Pin|IMU1_nCS2_Pin, GPIO_PIN_SET);
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(EINK_BUSY_GPIO_Port, EINK_BUSY_Pin, GPIO_PIN_RESET);
@@ -83,17 +80,10 @@ void MX_GPIO_Init(void)
                           |PMIC_PWRUP_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOG, PWR_LED2_Pin|PWR_LED1_Pin, GPIO_PIN_SET);
+  HAL_GPIO_WritePin(PWR_LED1_GPIO_Port, PWR_LED1_Pin, GPIO_PIN_SET);
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(PWR_5V_EN_GPIO_Port, PWR_5V_EN_Pin, GPIO_PIN_RESET);
-
-  /*Configure GPIO pins : PEPin PEPin */
-  GPIO_InitStruct.Pin = IMU1_nCS1_Pin|IMU1_nCS2_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(GPIOE, &GPIO_InitStruct);
 
   /*Configure GPIO pins : PCPin PCPin PCPin PCPin
                            PCPin PCPin PCPin PCPin
@@ -118,11 +108,11 @@ void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : PBPin PBPin PBPin PBPin */
-  GPIO_InitStruct.Pin = IMU_DRDY_Pin|IMU_FSYNC_Pin|IMU_nINT_Pin|USB_OTG_HS_ID_Pin;
+  /*Configure GPIO pin : PtPin */
+  GPIO_InitStruct.Pin = USB_OTG_HS_ID_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
-  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+  HAL_GPIO_Init(USB_OTG_HS_ID_GPIO_Port, &GPIO_InitStruct);
 
   /*Configure GPIO pins : PDPin PDPin PDPin PDPin
                            PDPin PDPin PDPin PDPin
@@ -150,9 +140,9 @@ void MX_GPIO_Init(void)
   HAL_GPIO_Init(GPIOK, &GPIO_InitStruct);
 
   /*Configure GPIO pins : PGPin PGPin PGPin PGPin
-                           PGPin PGPin PGPin */
+                           PGPin PGPin */
   GPIO_InitStruct.Pin = PWR_EN_PMIC_Pin|PWR_EN_PERIPH_Pin|PMIC_VCOM_Pin|PMIC_WAKEUP_Pin
-                          |PMIC_PWRUP_Pin|PWR_LED2_Pin|PWR_LED1_Pin;
+                          |PMIC_PWRUP_Pin|PWR_LED1_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;

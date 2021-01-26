@@ -26,6 +26,7 @@
 #include "spi.h"
 #include "usart.h"
 #include "usb_device.h"
+#include "usb_host.h"
 #include "gpio.h"
 #include "fmc.h"
 
@@ -138,6 +139,7 @@ Error_Handler();
   MX_SPI4_Init();
   MX_USART2_UART_Init();
   MX_USART3_UART_Init();
+  MX_USB_HOST_Init();
   /* USER CODE BEGIN 2 */
 
   /* USER CODE END 2 */
