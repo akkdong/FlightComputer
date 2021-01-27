@@ -2362,6 +2362,8 @@ $Comp
 L FlightComputer_Library:EPD_PMIC U9
 U 1 1 608099CD
 P 2250 5250
+AR Path="/608099CD" Ref="U9"  Part="1" 
+AR Path="/5F5976A1/608099CD" Ref="U9"  Part="1" 
 F 0 "U9" H 2578 6196 50  0000 L CNN
 F 1 "EPD_PMIC" H 2578 6105 50  0000 L CNN
 F 2 "FlightComputer_Library:EPD_PMIC" H 2250 5250 50  0001 C CNN
