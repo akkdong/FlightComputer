@@ -36,6 +36,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include <string.h>
 #include "ff_gen_drv.h"
+#include "qspi_drv.h"
 
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
@@ -83,6 +84,20 @@ DSTATUS USER_initialize (
 {
   /* USER CODE BEGIN INIT */
     Stat = STA_NOINIT;
+
+	if (QSPI_Driver_locked())
+	{
+		Stat &= ~STA_NOINIT;
+	}
+	else if(QSPI_Driver_state() == 1)
+	{
+		Stat &= ~STA_NOINIT;
+	}
+	else if(  QSPI_Driver_init() == QSPI_STATUS_OK)
+	{
+		Stat &= ~STA_NOINIT;
+	}
+
     return Stat;
   /* USER CODE END INIT */
 }
@@ -98,6 +113,12 @@ DSTATUS USER_status (
 {
   /* USER CODE BEGIN STATUS */
     Stat = STA_NOINIT;
+
+    if(QSPI_Driver_state())
+    {
+        Stat &= ~STA_NOINIT;
+    }
+
     return Stat;
   /* USER CODE END STATUS */
 }
@@ -118,6 +139,21 @@ DRESULT USER_read (
 )
 {
   /* USER CODE BEGIN READ */
+    uint32_t bufferSize = (BLOCK_SIZE * count);
+    uint32_t address =  (sector * BLOCK_SIZE);
+    uint32_t data_read = 0;
+    //printf("read %d blocks, sector %d\n",count,sector);
+    while(data_read < bufferSize)
+    {
+        uint32_t incr = bufferSize < MAX_READ_SIZE ? bufferSize : MAX_READ_SIZE;
+        if(QSPI_Driver_read(&buff[data_read],address,incr) != QSPI_STATUS_OK)
+        {
+            return RES_ERROR;
+        }
+        data_read += incr;
+        address += incr;
+    }
+
     return RES_OK;
   /* USER CODE END READ */
 }
@@ -139,7 +175,16 @@ DRESULT USER_write (
 )
 {
   /* USER CODE BEGIN WRITE */
-  /* USER CODE HERE */
+	for (UINT i = 0; i < count; i++)
+	{
+		uint32_t addr = sector * BLOCK_SIZE;
+		if (QSPI_Driver_erase_subsector(addr) != QSPI_STATUS_OK)
+			return RES_ERROR;
+
+		const BYTE* dest = buff + (i * BLOCK_SIZE);
+		if (QSPI_Driver_write((uint8_t *)dest, addr, BLOCK_SIZE) != QSPI_STATUS_OK)
+			return RES_ERROR;
+	}
     return RES_OK;
   /* USER CODE END WRITE */
 }
@@ -161,6 +206,37 @@ DRESULT USER_ioctl (
 {
   /* USER CODE BEGIN IOCTL */
     DRESULT res = RES_ERROR;
+
+    if (Stat & STA_NOINIT) return RES_NOTRDY;
+
+    switch (cmd)
+    {
+        /* Make sure that no pending write process */
+    case CTRL_SYNC :
+        res = RES_OK;
+        break;
+
+        /* Get number of sectors on the disk (DWORD) */
+    case GET_SECTOR_COUNT :
+        *(DWORD*)buff = QSPI_SUBSECTOR_COUNT;
+        res = RES_OK;
+        break;
+
+        /* Get R/W sector size (WORD) */
+    case GET_SECTOR_SIZE :
+        *(WORD*)buff = QSPI_SUBSECTOR_SIZE;
+        res = RES_OK;
+        break;
+
+        /* Get erase block size in unit of sector (DWORD) */
+    case GET_BLOCK_SIZE :
+        *(DWORD*)buff = QSPI_SUBSECTOR_SIZE;
+        break;
+
+    default:
+        res = RES_PARERR;
+    }
+
     return res;
   /* USER CODE END IOCTL */
 }

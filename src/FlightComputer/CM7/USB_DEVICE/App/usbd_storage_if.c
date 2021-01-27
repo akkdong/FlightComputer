@@ -23,7 +23,8 @@
 #include "usbd_storage_if.h"
 
 /* USER CODE BEGIN INCLUDE */
-
+#include "qspi_drv.h"
+#include <stdio.h>
 /* USER CODE END INCLUDE */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -63,9 +64,11 @@
   * @{
   */
 
-#define STORAGE_LUN_NBR                  1
-#define STORAGE_BLK_NBR                  0x10000
-#define STORAGE_BLK_SIZ                  0x200
+#define STORAGE_TOTAL_SIZE				 (64 * 1024 * 1024)
+#define STORAGE_LUN_NBR                  (1)
+#define STORAGE_BLK_SIZ                  (0x1000)
+#define STORAGE_BLK_NBR                  ((STORAGE_TOTAL_SIZE) / (STORAGE_BLK_SIZ))
+
 
 /* USER CODE BEGIN PRIVATE_DEFINES */
 
@@ -93,9 +96,9 @@
   * @{
   */
 
-/* USER CODE BEGIN INQUIRY_DATA_FS */
+/* USER CODE BEGIN INQUIRY_DATA_HS */
 /** USB Mass storage Standard Inquiry Data. */
-const int8_t STORAGE_Inquirydata_FS[] = {/* 36 */
+const int8_t STORAGE_Inquirydata_HS[] = {/* 36 */
 
   /* LUN 0 */
   0x00,
@@ -106,12 +109,12 @@ const int8_t STORAGE_Inquirydata_FS[] = {/* 36 */
   0x00,
   0x00,
   0x00,
-  'S', 'T', 'M', ' ', ' ', ' ', ' ', ' ', /* Manufacturer : 8 bytes */
-  'P', 'r', 'o', 'd', 'u', 'c', 't', ' ', /* Product      : 16 Bytes */
-  ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ',
+  'R', 'a', 's', 'c', 'a', 'l', ' ', ' ', /* Manufacturer : 8 bytes */
+  'F', 'l', 'i', 'g', 'h', 't', ' ', 'C', /* Product      : 16 Bytes */
+  'o', 'm', 'p', 't', 'e', 'r', ' ', ' ',
   '0', '.', '0' ,'1'                      /* Version      : 4 Bytes */
 };
-/* USER CODE END INQUIRY_DATA_FS */
+/* USER CODE END INQUIRY_DATA_HS */
 
 /* USER CODE BEGIN PRIVATE_VARIABLES */
 
@@ -126,7 +129,7 @@ const int8_t STORAGE_Inquirydata_FS[] = {/* 36 */
   * @{
   */
 
-extern USBD_HandleTypeDef hUsbDeviceFS;
+extern USBD_HandleTypeDef hUsbDeviceHS;
 
 /* USER CODE BEGIN EXPORTED_VARIABLES */
 
@@ -141,13 +144,13 @@ extern USBD_HandleTypeDef hUsbDeviceFS;
   * @{
   */
 
-static int8_t STORAGE_Init_FS(uint8_t lun);
-static int8_t STORAGE_GetCapacity_FS(uint8_t lun, uint32_t *block_num, uint16_t *block_size);
-static int8_t STORAGE_IsReady_FS(uint8_t lun);
-static int8_t STORAGE_IsWriteProtected_FS(uint8_t lun);
-static int8_t STORAGE_Read_FS(uint8_t lun, uint8_t *buf, uint32_t blk_addr, uint16_t blk_len);
-static int8_t STORAGE_Write_FS(uint8_t lun, uint8_t *buf, uint32_t blk_addr, uint16_t blk_len);
-static int8_t STORAGE_GetMaxLun_FS(void);
+static int8_t STORAGE_Init_HS(uint8_t lun);
+static int8_t STORAGE_GetCapacity_HS(uint8_t lun, uint32_t *block_num, uint16_t *block_size);
+static int8_t STORAGE_IsReady_HS(uint8_t lun);
+static int8_t STORAGE_IsWriteProtected_HS(uint8_t lun);
+static int8_t STORAGE_Read_HS(uint8_t lun, uint8_t *buf, uint32_t blk_addr, uint16_t blk_len);
+static int8_t STORAGE_Write_HS(uint8_t lun, uint8_t *buf, uint32_t blk_addr, uint16_t blk_len);
+static int8_t STORAGE_GetMaxLun_HS(void);
 
 /* USER CODE BEGIN PRIVATE_FUNCTIONS_DECLARATION */
 
@@ -157,28 +160,46 @@ static int8_t STORAGE_GetMaxLun_FS(void);
   * @}
   */
 
-USBD_StorageTypeDef USBD_Storage_Interface_fops_FS =
+USBD_StorageTypeDef USBD_Storage_Interface_fops_HS =
 {
-  STORAGE_Init_FS,
-  STORAGE_GetCapacity_FS,
-  STORAGE_IsReady_FS,
-  STORAGE_IsWriteProtected_FS,
-  STORAGE_Read_FS,
-  STORAGE_Write_FS,
-  STORAGE_GetMaxLun_FS,
-  (int8_t *)STORAGE_Inquirydata_FS
+  STORAGE_Init_HS,
+  STORAGE_GetCapacity_HS,
+  STORAGE_IsReady_HS,
+  STORAGE_IsWriteProtected_HS,
+  STORAGE_Read_HS,
+  STORAGE_Write_HS,
+  STORAGE_GetMaxLun_HS,
+  (int8_t *)STORAGE_Inquirydata_HS
 };
 
 /* Private functions ---------------------------------------------------------*/
 /**
-  * @brief  Initializes over USB FS IP
+  * @brief  Initializes over USB HS IP
   * @param  lun:
   * @retval USBD_OK if all operations are OK else USBD_FAIL
   */
-int8_t STORAGE_Init_FS(uint8_t lun)
+int8_t STORAGE_Init_HS(uint8_t lun)
 {
   /* USER CODE BEGIN 2 */
-  return (USBD_OK);
+	if (QSPI_Driver_locked())
+	{
+		//printf( "Locked\n");
+		return USBD_FAIL;
+	}
+	if(QSPI_Driver_state() == 1)
+	{
+		//printf( "OK\n");
+		return USBD_OK;
+	}
+	//init qspi
+	if(  QSPI_Driver_init() == QSPI_STATUS_OK)
+	{
+		//printf( "INIT OK\n");
+		return USBD_OK;
+	}
+
+	//printf( "N/A\n");
+	return USBD_FAIL;
   /* USER CODE END 2 */
 }
 
@@ -189,7 +210,7 @@ int8_t STORAGE_Init_FS(uint8_t lun)
   * @param  block_size: .
   * @retval USBD_OK if all operations are OK else USBD_FAIL
   */
-int8_t STORAGE_GetCapacity_FS(uint8_t lun, uint32_t *block_num, uint16_t *block_size)
+int8_t STORAGE_GetCapacity_HS(uint8_t lun, uint32_t *block_num, uint16_t *block_size)
 {
   /* USER CODE BEGIN 3 */
   *block_num  = STORAGE_BLK_NBR;
@@ -203,10 +224,28 @@ int8_t STORAGE_GetCapacity_FS(uint8_t lun, uint32_t *block_num, uint16_t *block_
   * @param  lun: .
   * @retval USBD_OK if all operations are OK else USBD_FAIL
   */
-int8_t STORAGE_IsReady_FS(uint8_t lun)
+int8_t STORAGE_IsReady_HS(uint8_t lun)
 {
   /* USER CODE BEGIN 4 */
-  return (USBD_OK);
+	if(!QSPI_Driver_state())
+	{
+		if(  QSPI_Driver_init() == QSPI_STATUS_OK)
+		{
+			//printf("OK\n");
+			return USBD_OK;
+		}
+
+		//printf("INIT FAILED\n");
+		return USBD_FAIL;
+	}
+	if(QSPI_Driver_locked())
+	{
+		//printf("LOCKED\n");
+		return USBD_FAIL;
+	}
+
+	//printf("OK\n");
+	return USBD_OK;
   /* USER CODE END 4 */
 }
 
@@ -215,7 +254,7 @@ int8_t STORAGE_IsReady_FS(uint8_t lun)
   * @param  lun: .
   * @retval USBD_OK if all operations are OK else USBD_FAIL
   */
-int8_t STORAGE_IsWriteProtected_FS(uint8_t lun)
+int8_t STORAGE_IsWriteProtected_HS(uint8_t lun)
 {
   /* USER CODE BEGIN 5 */
   return (USBD_OK);
@@ -227,10 +266,30 @@ int8_t STORAGE_IsWriteProtected_FS(uint8_t lun)
   * @param  lun: .
   * @retval USBD_OK if all operations are OK else USBD_FAIL
   */
-int8_t STORAGE_Read_FS(uint8_t lun, uint8_t *buf, uint32_t blk_addr, uint16_t blk_len)
+int8_t STORAGE_Read_HS(uint8_t lun, uint8_t *buf, uint32_t blk_addr, uint16_t blk_len)
 {
   /* USER CODE BEGIN 6 */
-  return (USBD_OK);
+	 if(QSPI_Driver_locked())
+	 {
+		 printf("QSPI LOCKED!!\n");
+		 return USBD_FAIL;
+	 }
+	 uint32_t bufferSize = (BLOCK_SIZE * blk_len);
+	 uint32_t address =  (blk_addr * BLOCK_SIZE);
+	 uint32_t data_read = 0;
+	 //printf("Reading sector 0x%X, %d sectors\n",(unsigned int)blk_addr,(unsigned int)blk_len);
+	 while(data_read < bufferSize)
+	 {
+		 uint32_t incr = bufferSize < MAX_READ_SIZE ? bufferSize : MAX_READ_SIZE;
+		 if(QSPI_Driver_read(&buf[data_read], address, incr) != QSPI_STATUS_OK)
+		 {
+			 printf("READ FAILED: 0x%X\n", (unsigned int)address);
+			 return USBD_FAIL;
+		 }
+		 data_read += incr;
+		 address += incr;
+	 }
+	 return USBD_OK;
   /* USER CODE END 6 */
 }
 
@@ -239,10 +298,35 @@ int8_t STORAGE_Read_FS(uint8_t lun, uint8_t *buf, uint32_t blk_addr, uint16_t bl
   * @param  lun: .
   * @retval USBD_OK if all operations are OK else USBD_FAIL
   */
-int8_t STORAGE_Write_FS(uint8_t lun, uint8_t *buf, uint32_t blk_addr, uint16_t blk_len)
+int8_t STORAGE_Write_HS(uint8_t lun, uint8_t *buf, uint32_t blk_addr, uint16_t blk_len)
 {
   /* USER CODE BEGIN 7 */
-  return (USBD_OK);
+	 if(QSPI_Driver_locked())
+	 {
+		 printf("QSPI LOCKED!!\n");
+		 return USBD_FAIL;
+	 }
+	 //erase subsectors
+	 uint32_t subsector_addr = blk_addr * BLOCK_SIZE;
+	 int i=0;
+	 for(i=0;i<blk_len;i++)
+	 {
+		 if(QSPI_Driver_erase_subsector(subsector_addr) != QSPI_STATUS_OK)
+		 {
+			 printf("ERASE FAILED: 0x%X\n", (unsigned int)subsector_addr);
+			 return USBD_FAIL;
+		 }
+		 subsector_addr += BLOCK_SIZE;
+	 }
+	 //write data
+	 uint32_t bufferSize = (BLOCK_SIZE * blk_len);
+	 uint32_t address =  (blk_addr * BLOCK_SIZE);
+	 if(QSPI_Driver_write(buf, address, bufferSize) != QSPI_STATUS_OK)
+	 {
+		 printf("WRITE FAILED: 0x%X\n", (unsigned int)address);
+		 return USBD_FAIL;
+	 }
+	 return USBD_OK;
   /* USER CODE END 7 */
 }
 
@@ -251,7 +335,7 @@ int8_t STORAGE_Write_FS(uint8_t lun, uint8_t *buf, uint32_t blk_addr, uint16_t b
   * @param  None
   * @retval .
   */
-int8_t STORAGE_GetMaxLun_FS(void)
+int8_t STORAGE_GetMaxLun_HS(void)
 {
   /* USER CODE BEGIN 8 */
   return (STORAGE_LUN_NBR - 1);
