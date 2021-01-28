@@ -184,7 +184,7 @@ void PendSV_Handler(void)
 /**
   * @brief This function handles System tick timer.
   */
-void SysTick_Handler(void)
+void SysTick_Handler_obsolete(void)
 {
   /* USER CODE BEGIN SysTick_IRQn 0 */
 

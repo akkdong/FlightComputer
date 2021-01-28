@@ -16,10 +16,9 @@
 #define HSEM_ID_0 (0U) /* HW semaphore 0*/
 #endif
 
-void SystemClock_Config(void);
 
 
-int main(void)
+int fc_main(void)
 {
 	int32_t timeout = 0xFFFF;
 	while((__HAL_RCC_GET_FLAG(RCC_FLAG_D2CKRDY) != RESET) && (timeout-- > 0));
@@ -62,7 +61,7 @@ int main(void)
 #if ENABLE_USB_HOST
 	MX_USB_HOST_Init();
 #endif
-	MX_ADC3_Init();
+//	MX_ADC3_Init();
 	MX_I2C1_Init();
 	MX_SPI4_Init();
 	MX_USART2_UART_Init();
@@ -93,7 +92,7 @@ int main(void)
 
 
 
-
+#if 0
 /**
   * @brief System Clock Configuration
   * @retval None
@@ -222,3 +221,5 @@ void assert_failed(uint8_t *file, uint32_t line)
   /* USER CODE END 6 */
 }
 #endif /* USE_FULL_ASSERT */
+
+#endif
