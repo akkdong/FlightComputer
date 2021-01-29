@@ -8,7 +8,58 @@ extern "C" {
 /*----------------------------------------------------------------------------
  *        Pins
  *----------------------------------------------------------------------------*/
-#include "PinNames.h"
+
+// Digtial pins alias
+enum DigitalPins
+{
+EINK_BUSY, // D0
+EINK_CMD, // D1
+EPD_CKV, // D2
+EPD_CL, // D3
+EPD_D0, // D4
+EPD_D1, // D5
+EPD_D2, // D6
+EPD_D3, // D7
+EPD_D4, // D8
+EPD_D5, // D9
+EPD_D6, // D10
+EPD_D7, // D11
+EPD_GMODE, // D12
+EPD_LE, // D13
+EPD_OE, // D14
+EPD_SPH, // D15
+EPD_SPV, // D16
+
+IMU_DRDY, // D17
+IMU_FSYNC, // D18
+IMU_nINT, // D19
+KEY_DOWN, // D20
+KEY_ENTER, // D21
+KEY_ESCAPE, // D22
+KEY_FUNC1, // D23
+KEY_FUNC2, // D24
+KEY_LEFT, // D25
+KEY_MENU, // D26
+KEY_RIGHT, // D27
+KEY_UP, // D28
+RPI_STATUS, // D29
+PMIC_PWRUP, // D30
+PMIC_VCOM, // D31
+PMIC_WAKEUP, // D32
+PWR_5V_EN, // D33
+PWR_EN_BATp, // D34
+PWR_EN_EXTRA = PWR_EN_BATp, // D34
+PWR_EN_PMIC = PWR_EN_BATp, // D34
+PWR_EN_PERIPH, // D35
+PWR_LED1, // D36
+PWR_LED2, // D37
+
+USB_OTG_FS_VBUS, // D38
+USB_OTG_HS_ID, // D39
+USB_OTG_HS_OVCR, // D40
+USB_OTG_HS_PWR_EN, // D41
+USB_OTG_HS_VBUS, // D42
+};
 
 
 // This must be a literal with the same value as PEND

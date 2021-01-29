@@ -46,6 +46,7 @@ void init(void)
 	//SDRAM_Do_InitializeSequence(&hsdram1);
 
 	// When system initialization is finished, Cortex-M7 will release Cortex-M4 by means of HSEM notification HW semaphore Clock enable
+	/*
 	__HAL_RCC_HSEM_CLK_ENABLE();
 	// Take HSEM
 	HAL_HSEM_FastTake(HSEM_ID_0);
@@ -58,74 +59,35 @@ void init(void)
 	{
 		Error_Handler();
 	}
+	*/
 }
 
 void setup(void)
 {
-#if 0
-	int32_t timeout = 0xFFFF;
-	while((__HAL_RCC_GET_FLAG(RCC_FLAG_D2CKRDY) != RESET) && (timeout-- > 0));
-	if ( timeout < 0 )
-	{
-		Error_Handler();
-	}
-
-	// Reset of all peripherals, Initializes the Flash interface and the Systick.
-	HAL_Init();
-
-
-	// Configure the system clock
-	SystemClock_Config();
-	// When system initialization is finished, Cortex-M7 will release Cortex-M4 by means of	HSEM notification
-	// HW semaphore Clock enable
-	__HAL_RCC_HSEM_CLK_ENABLE();
-	// Take HSEM
-	HAL_HSEM_FastTake(HSEM_ID_0);
-	// Release HSEM in order to notify the CPU2(CM4)
-	HAL_HSEM_Release(HSEM_ID_0,0);
-	// wait until CPU2 wakes up from stop mode
-	timeout = 0xFFFF;
-	while((__HAL_RCC_GET_FLAG(RCC_FLAG_D2CKRDY) == RESET) && (timeout-- > 0));
-	if ( timeout < 0 )
-	{
-		Error_Handler();
-	}
-
-
-	// Initialize all configured peripherals
-	MX_GPIO_Init();
-	MX_FMC_Init();
-	MX_I2C2_Init();
-	MX_QUADSPI_Init();
-	MX_SPI1_Init();
-	MX_USART1_UART_Init();
-	MX_USB_DEVICE_Init();
-	MX_FATFS_Init();
-#if ENABLE_USB_HOST
-	MX_USB_HOST_Init();
-#endif
-//	MX_ADC3_Init();
-	MX_I2C1_Init();
-	MX_SPI4_Init();
-	MX_USART2_UART_Init();
-	MX_USART3_UART_Init();
-
-	//HAL_GPIO_WritePin(PWR_EN_BAT__GPIO_Port, PWR_EN_BAT__Pin, GPIO_PIN_SET);
-	HAL_GPIO_WritePin(PWR_EN_PERIPH_GPIO_Port, PWR_EN_PERIPH_Pin, GPIO_PIN_SET);
-	HAL_Delay(100);
-#endif
+	pinMode(PWR_LED1, OUTPUT);
+	pinMode(PWR_LED2, OUTPUT);
+	digitalWrite(PWR_LED1, LOW);
+	digitalWrite(PWR_LED2, HIGH);
 
 	Serial1.begin(115200);
-	Serial2.begin(115200);
-	Serial3.begin(9600);
+	Serial2.begin(9600);
 	delay(100);
-
-	pinMode(SYS_WKUP1, OUTPUT);
-	TwoWire i2c1(PC_11, PD_1);
-	SPIClass spi1(PD_2, PC_1, PC_1);
-
 	Serial1.println("Hello world!\n");
-	while(1);
+
+	uint32_t tick = millis();
+	while(1)
+	{
+		if (Serial2.available())
+			Serial1.write(Serial2.read());
+
+		if ((millis() - tick) > 1000)
+		{
+			digitalToggle(PWR_LED1);
+			digitalToggle(PWR_LED2);
+
+			tick = millis();
+		}
+	}
 }
 
 void loop()
