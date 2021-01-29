@@ -40,7 +40,7 @@
   #include "stm32g0xx.h"
 #elif defined(STM32G4xx)
   #include "stm32g4xx.h"
-#elif STM32H7xx
+#elif defined(STM32H7xx)
   #include "stm32h7xx.h"
 #elif defined(STM32L0xx)
   #include "stm32l0xx.h"
@@ -80,8 +80,11 @@ extern "C" {
 void SystemClock_Config(void);
 
 void _Error_Handler(const char *, int);
-
+#if ERROR_HANDLER_ENABLED
 #define Error_Handler() _Error_Handler(__FILE__, __LINE__)
+#else
+void Error_Handler(void);
+#endif
 
 #ifdef __cplusplus
 } // extern "C"

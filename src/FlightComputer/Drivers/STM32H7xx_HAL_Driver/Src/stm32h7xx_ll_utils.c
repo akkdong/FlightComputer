@@ -917,6 +917,9 @@ ErrorStatus LL_SetFlashLatency(uint32_t HCLK_Frequency)
   *                             the configuration information for the PLL.
   * @retval PLL output frequency (in Hz)
   */
+
+uint32_t    LL_RCC_CalcPLLClockFreq(uint32_t PLLInputFreq, uint32_t M, uint32_t N, uint32_t FRACN, uint32_t PQR);
+
 static uint32_t UTILS_GetPLLOutputFrequency(uint32_t PLL_InputFrequency, LL_UTILS_PLLInitTypeDef *UTILS_PLLInitStruct)
 {
   uint32_t pllfreq;

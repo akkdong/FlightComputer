@@ -69,7 +69,6 @@ void hw_config_init(void)
 #if defined (STM32MP1xx)
   __HAL_RCC_HSEM_CLK_ENABLE();
 #endif
-
 }
 #ifdef __cplusplus
 }

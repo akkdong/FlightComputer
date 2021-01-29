@@ -1,78 +1,63 @@
-// Main.cpp
-//
+/*
+  main.cpp - Main loop for Arduino sketches
+  Copyright (c) 2005-2013 Arduino Team.  All right reserved.
 
-#include "stm32h7xx_hal.h"
+  This library is free software; you can redistribute it and/or
+  modify it under the terms of the GNU Lesser General Public
+  License as published by the Free Software Foundation; either
+  version 2.1 of the License, or (at your option) any later version.
 
+  This library is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+  Lesser General Public License for more details.
 
+  You should have received a copy of the GNU Lesser General Public
+  License along with this library; if not, write to the Free Software
+  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+*/
 
-////////////////////////////////////////////////////////////////////////////////////////
-//
+#define ARDUINO_MAIN
+#include "Arduino.h"
 
-
-/**
- * @brief  Initializes DWT_Clock_Cycle_Count for DWT_Delay_us function
- * @return Error DWT counter
- *         1: clock cycle counter not started
- *         0: clock cycle counter works
- */
-uint32_t DWT_Delay_Init(void) {
-	/* Disable TRC */
-	CoreDebug->DEMCR &= ~CoreDebug_DEMCR_TRCENA_Msk; // ~0x01000000;
-	/* Enable TRC */
-	CoreDebug->DEMCR |=  CoreDebug_DEMCR_TRCENA_Msk; // 0x01000000;
-
-	/* Disable clock cycle counter */
-	DWT->CTRL &= ~DWT_CTRL_CYCCNTENA_Msk; //~0x00000001;
-	/* Enable  clock cycle counter */
-	DWT->CTRL |=  DWT_CTRL_CYCCNTENA_Msk; //0x00000001;
-
-	/* Reset the clock cycle counter value */
-	DWT->CYCCNT = 0;
-
-	/* 3 NO OPERATION instructions */
-	__ASM volatile ("NOP");
-	__ASM volatile ("NOP");
-	__ASM volatile ("NOP");
-
-	/* Check if clock cycle counter has started */
-	if(DWT->CYCCNT)
-	{
-		return 0; /*clock cycle counter started*/
-	}
-	else
-	{
-		return 1; /*clock cycle counter not started*/
-	}
-}
-
-
-
-/**
- * @brief  This function provides a delay (in microseconds)
- * @param  microseconds: delay in microseconds
- */
-__STATIC_INLINE void DWT_Delay_us(volatile uint32_t microseconds)
+// Force init to be called *first*, i.e. before static object allocation.
+// Otherwise, statically allocated objects that need HAL may fail.
+__attribute__((constructor(101))) void premain()
 {
-	if (microseconds == 0)
-		return;
 
-	uint32_t clk_cycle_start = DWT->CYCCNT;
+  // Required by FreeRTOS, see http://www.freertos.org/RTOS-Cortex-M3-M4.html
+#ifdef NVIC_PRIORITYGROUP_4
+  HAL_NVIC_SetPriorityGrouping(NVIC_PRIORITYGROUP_4);
+#endif
+#if (__CORTEX_M == 0x07U)
+  // Defined in CMSIS core_cm7.h
+#ifndef I_CACHE_DISABLED
+  SCB_EnableICache();
+#endif
+#ifndef D_CACHE_DISABLED
+  SCB_EnableDCache();
+#endif
+#endif
 
-	/* Go to number of cycles for system */
-	microseconds *= (HAL_RCC_GetHCLKFreq() / 1000000);
-
-	/* Delay till end */
-	while ((DWT->CYCCNT - clk_cycle_start) < microseconds);
+  init();
 }
 
-
-
-extern int fc_main(void);
-
-
+/*
+ * \brief Main entry point of Arduino application
+ */
 int main(void)
 {
-	DWT_Delay_Init();
+  initVariant();
 
-	return fc_main();
+  setup();
+
+  for (;;) {
+#if defined(CORE_CALLBACK)
+    CoreCallback();
+#endif
+    loop();
+    serialEventRun();
+  }
+
+  return 0;
 }
