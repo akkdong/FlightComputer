@@ -2,6 +2,7 @@
 //
 
 #include "sdram_drv.h"
+#include "fmc.h"
 
 /**
   * @brief  Perform the SDRAM exernal memory inialization sequence
@@ -9,9 +10,10 @@
   * @param  &command: Pointer to SDRAM command structure
   * @retval None
   */
-void SDRAM_Do_InitializeSequence(SDRAM_HandleTypeDef *hsdram)
+HAL_StatusTypeDef SDRAM_Do_InitializeSequence()
 {
   FMC_SDRAM_CommandTypeDef command;
+  HAL_StatusTypeDef result;
   __IO uint32_t tmpmrd =0;
 
   /* Step 3:  Configure a clock configuration enable command */
@@ -21,7 +23,9 @@ void SDRAM_Do_InitializeSequence(SDRAM_HandleTypeDef *hsdram)
   command.ModeRegisterDefinition = 0;
 
   /* Send the command */
-  HAL_SDRAM_SendCommand(hsdram, &command, 0x1000);
+  result = HAL_SDRAM_SendCommand(&hsdram1, &command, 0x1000);
+  if (result != HAL_OK)
+	  return result;
 
   /* Step 4: Insert 100 ms delay */
   HAL_Delay(100);
@@ -33,7 +37,9 @@ void SDRAM_Do_InitializeSequence(SDRAM_HandleTypeDef *hsdram)
   command.ModeRegisterDefinition = 0;
 
   /* Send the command */
-  HAL_SDRAM_SendCommand(hsdram, &command, 0x1000);
+  result = HAL_SDRAM_SendCommand(&hsdram1, &command, 0x1000);
+  if (result != HAL_OK)
+	  return result;
 
   /* Step 6 : Configure a Auto-Refresh command */
   command.CommandMode 			 = FMC_SDRAM_CMD_AUTOREFRESH_MODE;
@@ -42,7 +48,9 @@ void SDRAM_Do_InitializeSequence(SDRAM_HandleTypeDef *hsdram)
   command.ModeRegisterDefinition = 0;
 
   /* Send the command */
-  HAL_SDRAM_SendCommand(hsdram, &command, 0x1000);
+  result = HAL_SDRAM_SendCommand(&hsdram1, &command, 0x1000);
+  if (result != HAL_OK)
+	  return result;
 
   /* Step 7: Program the external memory mode register */
   tmpmrd = (uint32_t)SDRAM_MODEREG_BURST_LENGTH_2          |
@@ -57,10 +65,16 @@ void SDRAM_Do_InitializeSequence(SDRAM_HandleTypeDef *hsdram)
   command.ModeRegisterDefinition = tmpmrd;
 
   /* Send the command */
-  HAL_SDRAM_SendCommand(hsdram, &command, 0x1000);
+  result = HAL_SDRAM_SendCommand(&hsdram1, &command, 0x1000);
+  if (result != HAL_OK)
+	  return result;
 
   /* Step 8: Set the refresh rate counter */
   /* (15.62 us x Freq) - 20 */
   /* Set the device refresh counter */
-  HAL_SDRAM_ProgramRefreshRate(hsdram, REFRESH_COUNT);
+  result = HAL_SDRAM_ProgramRefreshRate(&hsdram1, REFRESH_COUNT);
+  if (result != HAL_OK)
+	  return result;
+
+  return HAL_OK;
 }

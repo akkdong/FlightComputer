@@ -54,6 +54,10 @@ typedef enum
 } QSPI_STATUS;
 
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif
 
 QSPI_STATUS 	QSPI_Driver_init();
 uint8_t 		QSPI_Driver_state();
@@ -66,6 +70,11 @@ QSPI_STATUS 	QSPI_Driver_erase_subsector(uint32_t address);
 QSPI_STATUS 	QSPI_Driver_erase(uint32_t address, uint32_t size);
 
 //QSPI_STATUS 	QSPI_EnableMemoryMappedMode(void);
+
+
+#ifdef __cplusplus
+}
+#endif
 
 
 #endif

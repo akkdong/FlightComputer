@@ -169,94 +169,94 @@ HardwareSerial::HardwareSerial(void *peripheral, HalfDuplexMode_t halfDuplex)
 #if defined(PIN_SERIAL4_RX)
             setRx(PIN_SERIAL4_RX);
 #endif
-            setTx(PIN_SERIAL4_TX);
-          } else
+    setTx(PIN_SERIAL4_TX);
+  } else
 #endif
 #if defined(PIN_SERIAL5_TX) &&\
    (defined(USART5_BASE) || defined(UART5_BASE))
 #if defined(USART5_BASE)
-            if (peripheral == USART5)
+  if (peripheral == USART5)
 #elif defined(UART5_BASE)
-            if (peripheral == UART5)
+  if (peripheral == UART5)
 #endif
-            {
+  {
 #if defined(PIN_SERIAL5_RX)
-              setRx(PIN_SERIAL5_RX);
+    setRx(PIN_SERIAL5_RX);
 #endif
-              setTx(PIN_SERIAL5_TX);
-            } else
+    setTx(PIN_SERIAL5_TX);
+  } else
 #endif
 #if defined(PIN_SERIAL6_TX) && defined(USART6_BASE)
-              if (peripheral == USART6) {
+  if (peripheral == USART6) {
 #if defined(PIN_SERIAL6_RX)
-                setRx(PIN_SERIAL6_RX);
+    setRx(PIN_SERIAL6_RX);
 #endif
-                setTx(PIN_SERIAL6_TX);
-              } else
+    setTx(PIN_SERIAL6_TX);
+  } else
 #endif
 #if defined(PIN_SERIAL7_TX) &&\
    (defined(USART7_BASE) || defined(UART7_BASE))
 #if defined(USART7_BASE)
-                if (peripheral == USART7)
+  if (peripheral == USART7)
 #elif defined(UART7_BASE)
-                if (peripheral == UART7)
+  if (peripheral == UART7)
 #endif
-                {
+  {
 #if defined(PIN_SERIAL7_RX)
-                  setRx(PIN_SERIAL7_RX);
+    setRx(PIN_SERIAL7_RX);
 #endif
-                  setTx(PIN_SERIAL7_TX);
-                } else
+    setTx(PIN_SERIAL7_TX);
+  } else
 #endif
 #if defined(PIN_SERIAL8_TX) &&\
    (defined(USART8_BASE) || defined(UART8_BASE))
 #if defined(USART8_BASE)
-                  if (peripheral == USART8)
+  if (peripheral == USART8)
 #elif defined(UART8_BASE)
-                  if (peripheral == UART8)
+  if (peripheral == UART8)
 #endif
-                  {
+  {
 #if defined(PIN_SERIAL8_RX)
-                    setRx(PIN_SERIAL8_RX);
+    setRx(PIN_SERIAL8_RX);
 #endif
-                    setTx(PIN_SERIAL8_TX);
-                  } else
+    setTx(PIN_SERIAL8_TX);
+  } else
 #endif
 #if defined(PIN_SERIAL9_TX) && defined(UART9_BASE)
-                    if (peripheral == UART9) {
+  if (peripheral == UART9) {
 #if defined(PIN_SERIAL9_RX)
-                      setRx(PIN_SERIAL9_RX);
+    setRx(PIN_SERIAL9_RX);
 #endif
-                      setTx(PIN_SERIAL9_TX);
-                    } else
+    setTx(PIN_SERIAL9_TX);
+  } else
 #endif
 #if defined(PIN_SERIAL10_TX) &&\
    (defined(USART10_BASE) || defined(UART10_BASE))
 #if defined(USART10_BASE)
-                      if (peripheral == USART10)
+  if (peripheral == USART10)
 #elif defined(UART10_BASE)
-                      if (peripheral == UART10)
+  if (peripheral == UART10)
 #endif
-                      {
+  {
 #if defined(PIN_SERIAL10_RX)
-                        setRx(PIN_SERIAL10_RX);
+    setRx(PIN_SERIAL10_RX);
 #endif
-                        setTx(PIN_SERIAL10_TX);
-                      } else
+    setTx(PIN_SERIAL10_TX);
+  } else
 #endif
 #if defined(PIN_SERIALLP1_TX) && defined(LPUART1_BASE)
-                        if (peripheral == LPUART1) {
+  if (peripheral == LPUART1) {
 #if defined(PIN_SERIALLP1_RX)
-                          setRx(PIN_SERIALLP1_RX);
+    setRx(PIN_SERIALLP1_RX);
 #endif
-                          setTx(PIN_SERIALLP1_TX);
-                        } else
+    setTx(PIN_SERIALLP1_TX);
+  } else
 #endif
-                          // else get the pins of the first peripheral occurence in PinMap
-                        {
-                          _serial.pin_rx = pinmap_pin(peripheral, PinMap_UART_RX);
-                          _serial.pin_tx = pinmap_pin(peripheral, PinMap_UART_TX);
-                        }
+  // else get the pins of the first peripheral occurence in PinMap
+  {
+    _serial.pin_rx = pinmap_pin(peripheral, PinMap_UART_RX);
+    _serial.pin_tx = pinmap_pin(peripheral, PinMap_UART_TX);
+  }
   if (halfDuplex == HALF_DUPLEX_ENABLED) {
     _serial.pin_rx = NC;
   }

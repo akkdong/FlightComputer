@@ -6,7 +6,6 @@
 
 //
 #include "stm32h7xx_hal.h"
-#include "fmc.h"
 
 
 #define SDRAM_BANK_ADDR                 		 ((uint32_t)0xD0000000)
@@ -35,8 +34,15 @@
 
 
 //
-void SDRAM_Do_InitializeSequence(SDRAM_HandleTypeDef *hsdram);
+#ifdef __cplusplus
+extern "C" {
+#endif
 
+HAL_StatusTypeDef SDRAM_Do_InitializeSequence();
+
+#ifdef __cplusplus
+}
+#endif
 
 
 #endif // __SDRAM_DRV_H__

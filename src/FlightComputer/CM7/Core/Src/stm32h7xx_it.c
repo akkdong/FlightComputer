@@ -52,7 +52,7 @@
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-extern HCD_HandleTypeDef hhcd_USB_OTG_HS;
+extern PCD_HandleTypeDef hpcd_USB_OTG_HS;
 extern QSPI_HandleTypeDef hqspi;
 /* USER CODE END 0 */
 
@@ -205,7 +205,7 @@ void SysTick_Handler_obsolete(void)
 /**
   * @brief This function handles SPI1 global interrupt.
   */
-void SPI1_IRQHandler(void)
+void SPI1_IRQHandler_deprecated(void)
 {
   /* USER CODE BEGIN SPI1_IRQn 0 */
 
@@ -222,9 +222,15 @@ void SPI1_IRQHandler(void)
 void OTG_HS_IRQHandler(void)
 {
   /* USER CODE BEGIN OTG_HS_IRQn 0 */
-  //HAL_PCD_IRQHandler(&hpcd_USB_OTG_HS); <-- must be called on host mode only
   /* USER CODE END OTG_HS_IRQn 0 */
-  HAL_HCD_IRQHandler(&hhcd_USB_OTG_HS);
+  // if (run_as_host)
+  // {
+  //   HAL_HCD_IRQHandler(&hhcd_USB_OTG_HS); // <-- must be called on host mode only
+  // }
+  // else
+  // {
+  HAL_PCD_IRQHandler(&hpcd_USB_OTG_HS);
+  // }
   /* USER CODE BEGIN OTG_HS_IRQn 1 */
 
   /* USER CODE END OTG_HS_IRQn 1 */
