@@ -32,8 +32,8 @@ protected:
 
 private:
 	SPIClassEx		mComm;
-	EPaperDisplay&	mDisp;
 
+//	EPaperDisplay&	mDisp;
 //	EPaperFrameBuffer	mPrimary;
 //	EPaperFrameBuffer	mSecondary;
 };

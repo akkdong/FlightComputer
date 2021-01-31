@@ -8,75 +8,9 @@
 #include "Arduino.h"
 #include "SPIClassEx.h"
 
-#define SPI2_DISABLED
-#define SPI3_DISABLED
 
-class SPIClassEx;
-
-volatile SPIClassEx * _SPIClasses[] =
-{
-#if defined(SPI1) && !defined(SPI1_DISABLED)
-	nullptr,
-#endif
-#if defined(SPI2) && !defined(SPI2_DISABLED)
-	nullptr,
-#endif
-#if defined(SPI3) && !defined(SPI3_DISABLED)
-	nullptr,
-#endif
-#if defined(SPI4) && !defined(SPI4_DISABLED)
-	nullptr,
-#endif
-};
-
-enum SPIClassName
-{
-	SPI_NONE = -1,
-#if defined(SPI1) && !defined(SPI1_DISABLED)
-	SPI_1,
-#endif
-#if defined(SPI2) && !defined(SPI2_DISABLED)
-	SPI_2,
-#endif
-#if defined(SPI3) && !defined(SPI3_DISABLED)
-	SPI_3,
-#endif
-#if defined(SPI4) && !defined(SPI4_DISABLED)
-	SPI_4,
-#endif
-};
-
-#if defined(SPI1) && !defined(SPI1_DISABLED)
-extern "C" void SPI1_IRQHandler(void)
-{
-	if (_SPIClasses[SPI_1])
-		HAL_SPI_IRQHandler((SPI_HandleTypeDef *)_SPIClasses[SPI_1]);
-}
-#endif
-
-#if defined(SPI2) && !defined(SPI2_DISABLED)
-extern "C" void SPI2_IRQHandler(void)
-{
-	if (_SPIClasses[SPI_2])
-		HAL_SPI_IRQHandler((SPI_HandleTypeDef *)_SPIClasses[SPI_2]);
-}
-#endif
-
-#if defined(SPI3) && !defined(SPI3_DISABLED)
-extern "C" void SPI3_IRQHandler(void)
-{
-	if (_SPIClasses[SPI_3])
-		HAL_SPI_IRQHandler((SPI_HandleTypeDef *)_SPIClasses[SPI_3]);
-}
-#endif
-
-#if defined(SPI4) && !defined(SPI4_DISABLED)
-extern "C" void SPI4_IRQHandler(void)
-{
-	if (_SPIClasses[SPI_4])
-		HAL_SPI_IRQHandler((SPI_HandleTypeDef *)_SPIClasses[SPI_4]);
-}
-#endif
+///////////////////////////////////////////////////////////////////////////////
+//
 
 static SPIClassName getClassName(SPI_TypeDef* spi)
 {
@@ -96,22 +30,61 @@ static SPIClassName getClassName(SPI_TypeDef* spi)
 	if (spi == SPI4)
 		return SPI_4;
 #endif
-	return SPI_NONE;
+	return SPI_INVALID;
 }
 
-static void registerClass(SPIClassEx* spi)
-{
-	SPIClassName name = getClassName(spi->Instance);
-	if (name != SPI_NONE)
-		_SPIClasses[name] = spi;
-}
 
-static void unregisterClass(SPIClassEx* spi)
+///////////////////////////////////////////////////////////////////////////////
+//
+
+SPIClassEx * SPIClassEx::mInstanceMap[SPI_COUNT] =
 {
-	SPIClassName name = getClassName(spi->Instance);
-	if (name != SPI_NONE)
-		_SPIClasses[name] = nullptr;
+#if defined(SPI1) && !defined(SPI1_DISABLED)
+	nullptr,
+#endif
+#if defined(SPI2) && !defined(SPI2_DISABLED)
+	nullptr,
+#endif
+#if defined(SPI3) && !defined(SPI3_DISABLED)
+	nullptr,
+#endif
+#if defined(SPI4) && !defined(SPI4_DISABLED)
+	nullptr,
+#endif
+};
+
+
+#if defined(SPI1) && !defined(SPI1_DISABLED)
+extern "C" void SPI1_IRQHandler(void)
+{
+	if (SPIClassEx::mInstanceMap[SPI_1])
+		HAL_SPI_IRQHandler((SPI_HandleTypeDef *)SPIClassEx::mInstanceMap[SPI_1]);
 }
+#endif
+
+#if defined(SPI2) && !defined(SPI2_DISABLED)
+extern "C" void SPI2_IRQHandler(void)
+{
+	if (SPIClassEx::mInstanceMap[SPI_2])
+		HAL_SPI_IRQHandler((SPI_HandleTypeDef *)SPIClassEx::mInstanceMap[SPI_2]);
+}
+#endif
+
+#if defined(SPI3) && !defined(SPI3_DISABLED)
+extern "C" void SPI3_IRQHandler(void)
+{
+	if (SPIClassEx::mInstanceMap[SPI_3])
+		HAL_SPI_IRQHandler((SPI_HandleTypeDef *)SPIClassEx::mInstanceMap[SPI_3]);
+}
+#endif
+
+#if defined(SPI4) && !defined(SPI4_DISABLED)
+extern "C" void SPI4_IRQHandler(void)
+{
+	if (SPIClassEx::mInstanceMap[SPI_4])
+		HAL_SPI_IRQHandler((SPI_HandleTypeDef *)SPIClassEx::mInstanceMap[SPI_4]);
+}
+#endif
 
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -129,15 +102,25 @@ SPIClassEx::SPIClassEx(ISPIClassInterface* intf)
 void SPIClassEx::begin(void (* init)(SPIClassEx *))
 {
 	init(this);
-	registerClass(this);
+	registerInstance(this);
 	setState(READY);
+	setCallback();
 }
 
 void SPIClassEx::end(void (* deinit)(SPIClassEx *))
 {
-	unregisterClass(this);
+	unregisterInstance(this);
 	deinit(this);
 	setState(UNDEF);
+}
+
+void SPIClassEx::run()
+{
+	for (size_t i = 0; i < sizeof(mInstanceMap) / sizeof(mInstanceMap[0]); i++)
+	{
+		if (mInstanceMap[i])
+			mInstanceMap[i]->checkExpire();
+	}
 }
 
 uint8_t SPIClassEx::transfer(uint8_t data)
@@ -161,14 +144,14 @@ uint32_t SPIClassEx::transfer(uint32_t data)
 	return recv;
 }
 
-void SPIClassEx::transfer(void* sendPtr, size_t count)
+HAL_StatusTypeDef SPIClassEx::transfer(void* sendPtr, size_t count)
 {
-	HAL_SPI_Transmit(this, (uint8_t *)sendPtr, count, 1000);
+	return HAL_SPI_Transmit(this, (uint8_t *)sendPtr, count, 1000);
 }
 
-void SPIClassEx::transfer(void* sendPtr, void* recvPtr, size_t count)
+HAL_StatusTypeDef SPIClassEx::transfer(void* sendPtr, void* recvPtr, size_t count)
 {
-	HAL_SPI_TransmitReceive(this, (uint8_t *)sendPtr, (uint8_t *)recvPtr, count, 1000);
+	return HAL_SPI_TransmitReceive(this, (uint8_t *)sendPtr, (uint8_t *)recvPtr, count, 1000);
 }
 
 
@@ -190,72 +173,112 @@ uint32_t SPIClassEx::receive(uint32_t data)
 	return data;
 }
 
-void SPIClassEx::receive(void* sendPtr, size_t count)
+HAL_StatusTypeDef SPIClassEx::receive(void* sendPtr, size_t count)
 {
-	HAL_SPI_Receive(this, (uint8_t *)sendPtr, count, 1000);
+	return HAL_SPI_Receive(this, (uint8_t *)sendPtr, count, 1000);
 }
 
 
-void SPIClassEx::transfer_IT(uint8_t data, uint32_t timeout)
+HAL_StatusTypeDef SPIClassEx::transfer_IT(uint8_t data, uint32_t timeout)
 {
-	transfer_IT(&data, &mRecvData.data8, sizeof(data), timeout);
+	return transfer_IT(&data, &mRecvData.data8, sizeof(data), timeout);
 }
 
-void SPIClassEx::transfer_IT(uint16_t data, uint32_t timeout)
+HAL_StatusTypeDef SPIClassEx::transfer_IT(uint16_t data, uint32_t timeout)
 {
-	transfer_IT(&data, &mRecvData.data16, sizeof(data), timeout);
+	return transfer_IT(&data, &mRecvData.data16, sizeof(data), timeout);
 }
 
-void SPIClassEx::transfer_IT(uint32_t data, uint32_t timeout)
+HAL_StatusTypeDef SPIClassEx::transfer_IT(uint32_t data, uint32_t timeout)
 {
-	transfer_IT(&data, &mRecvData.data32, sizeof(data), timeout);
+	return transfer_IT(&data, &mRecvData.data32, sizeof(data), timeout);
 }
 
-void SPIClassEx::transfer_IT(void* sendPtr, size_t count, uint32_t timeout)
+HAL_StatusTypeDef SPIClassEx::transfer_IT(void* sendPtr, size_t count, uint32_t timeout)
 {
-	HAL_SPI_Transmit_IT(this, (uint8_t *)sendPtr, count);
+	HAL_StatusTypeDef status = HAL_SPI_Transmit_IT(this, (uint8_t *)sendPtr, count);
+	if (status == HAL_OK)
+	{
+		setState(SENDING);
+		setTimeout(timeout);
+	}
 
-	setState(SENDING);
-	setTimeout(timeout);
+	return status;
 }
 
-void SPIClassEx::transfer_IT(void* sendPtr, void* recvPtr, size_t count, uint32_t timeout)
+HAL_StatusTypeDef SPIClassEx::transfer_IT(void* sendPtr, void* recvPtr, size_t count, uint32_t timeout)
 {
-	HAL_SPI_TransmitReceive_IT(this, (uint8_t *)sendPtr, (uint8_t *)recvPtr, count);
+	HAL_StatusTypeDef status = HAL_SPI_TransmitReceive_IT(this, (uint8_t *)sendPtr, (uint8_t *)recvPtr, count);
+	if (status == HAL_OK)
+	{
+		setState(TRANSFER, recvPtr, count);
+		setTimeout(timeout);
+	}
 
-	setState(TRANSFER, recvPtr, count);
-	setTimeout(timeout);
+	return status;
 }
 
 
-void SPIClassEx::receive_IT(uint8_t data, uint32_t timeout)
+HAL_StatusTypeDef SPIClassEx::receive_IT(uint8_t data, uint32_t timeout)
 {
-	receive_IT(&data, sizeof(data), timeout);
+	return receive_IT(&data, sizeof(data), timeout);
 }
 
-void SPIClassEx::receive_IT(uint16_t data, uint32_t timeout)
+HAL_StatusTypeDef SPIClassEx::receive_IT(uint16_t data, uint32_t timeout)
 {
-	receive_IT(&data, sizeof(data), timeout);
+	return receive_IT(&data, sizeof(data), timeout);
 }
 
-void SPIClassEx::receive_IT(uint32_t data, uint32_t timeout)
+HAL_StatusTypeDef SPIClassEx::receive_IT(uint32_t data, uint32_t timeout)
 {
-	receive_IT(&data, sizeof(data));
+	return receive_IT(&data, sizeof(data));
 }
 
-void SPIClassEx::receive_IT(void* sendPtr, size_t count, uint32_t timeout)
+HAL_StatusTypeDef SPIClassEx::receive_IT(void* sendPtr, size_t count, uint32_t timeout)
 {
-	HAL_SPI_Receive_IT(this, (uint8_t *)sendPtr, count);
+	HAL_StatusTypeDef status = HAL_SPI_Receive_IT(this, (uint8_t *)sendPtr, count);
+	if (status == HAL_OK)
+	{
+		setState(RECEIVING, sendPtr, count);
+		setTimeout(timeout);
+	}
 
-	setState(RECEIVING, sendPtr, count);
-	setTimeout(timeout);
+	return status;
 }
 
+
+void SPIClassEx::registerInstance(SPIClassEx* spi)
+{
+	SPIClassName name = getClassName(spi->Instance);
+	if (name != SPI_INVALID)
+		SPIClassEx::mInstanceMap[name] = spi;
+}
+
+void SPIClassEx::unregisterInstance(SPIClassEx* spi)
+{
+	SPIClassName name = getClassName(spi->Instance);
+	if (name != SPI_INVALID)
+		mInstanceMap[name] = nullptr;
+}
 
 void SPIClassEx::setTimeout(uint32_t timeout)
 {
-
+	mTimestamp = millis();
+	mTimeout = timeout;
 }
+
+void SPIClassEx::setCallback()
+{
+    this->TxCpltCallback       = Callback_Complete;
+    this->RxCpltCallback       = Callback_Complete;
+    this->TxRxCpltCallback     = Callback_Complete;
+    this->TxHalfCpltCallback   = Callback_Complete;
+    this->RxHalfCpltCallback   = Callback_Complete;
+    this->TxRxHalfCpltCallback = Callback_Complete;
+    this->ErrorCallback        = Callback_Error;
+    this->AbortCpltCallback    = Callback_Abort;
+}
+
 
 void SPIClassEx::OnComplete(void* recvPtr, size_t recvLen, Error error)
 {
@@ -263,7 +286,7 @@ void SPIClassEx::OnComplete(void* recvPtr, size_t recvLen, Error error)
 		mIntf->OnComplete(recvPtr, recvLen, error);
 }
 
-void SPIClassEx::CompleteCallback()
+void SPIClassEx::Callback_Complete()
 {
 	if (mState == UNDEF)
 		return;
@@ -275,7 +298,7 @@ void SPIClassEx::CompleteCallback()
 	}
 }
 
-void SPIClassEx::ErrorCallback()
+void SPIClassEx::Callback_Error()
 {
 	if (mState == UNDEF)
 		return;
@@ -287,7 +310,7 @@ void SPIClassEx::ErrorCallback()
 	}
 }
 
-void SPIClassEx::AbortCpltCallback()
+void SPIClassEx::Callback_Abort()
 {
 	if (mState == UNDEF)
 		return;
@@ -299,53 +322,34 @@ void SPIClassEx::AbortCpltCallback()
 	}
 }
 
-
-
-
-//
-//
-//
-//
-
-void HAL_SPI_TxCpltCallback(SPI_HandleTypeDef *hspi)
+void SPIClassEx::Callback_Complete(SPI_HandleTypeDef *hspi)
 {
-	((SPIClassEx *)hspi)->CompleteCallback();
+	((SPIClassEx *)hspi)->Callback_Complete();
 }
 
-void HAL_SPI_RxCpltCallback(SPI_HandleTypeDef *hspi)
+void SPIClassEx::Callback_Error(SPI_HandleTypeDef *hspi)
 {
-	((SPIClassEx *)hspi)->CompleteCallback();
+	((SPIClassEx *)hspi)->Callback_Error();
 }
 
-void HAL_SPI_TxRxCpltCallback(SPI_HandleTypeDef *hspi)
+void SPIClassEx::Callback_Abort(SPI_HandleTypeDef *hspi)
 {
-	((SPIClassEx *)hspi)->CompleteCallback();
+	((SPIClassEx *)hspi)->Callback_Abort();
 }
 
-void HAL_SPI_TxHalfCpltCallback(SPI_HandleTypeDef *hspi)
+void SPIClassEx::checkExpire()
 {
-	((SPIClassEx *)hspi)->CompleteCallback();
+	if (mState == UNDEF)
+		return;
+
+	if (mState != READY)
+	{
+		if (millis() - mTimestamp > mTimeout)
+		{
+			OnComplete(mRecvPtr, mRecvLen, Error::ABORT);
+			setState(READY);
+
+			HAL_SPI_Abort_IT(this);
+		}
+	}
 }
-
-void HAL_SPI_RxHalfCpltCallback(SPI_HandleTypeDef *hspi)
-{
-	((SPIClassEx *)hspi)->CompleteCallback();
-}
-
-void HAL_SPI_TxRxHalfCpltCallback(SPI_HandleTypeDef *hspi)
-{
-	((SPIClassEx *)hspi)->CompleteCallback();
-}
-
-void HAL_SPI_ErrorCallback(SPI_HandleTypeDef *hspi)
-{
-	((SPIClassEx *)hspi)->ErrorCallback();
-}
-
-void HAL_SPI_AbortCpltCallback(SPI_HandleTypeDef *hspi)
-{
-	((SPIClassEx *)hspi)->AbortCpltCallback();
-}
-
-
-
