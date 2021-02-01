@@ -123,7 +123,8 @@ public:
 	HAL_StatusTypeDef	receive_IT(void* sendPtr, size_t count, uint32_t timeout = 1000);
 
 protected:
-	virtual void		OnComplete(void* recvPtr, size_t recvLen, Error error);
+	virtual void 		IRQHandler();
+	virtual void 		OnComplete(void* recvPtr, size_t recvLen, Error error);
 
 protected:
 	void 				Callback_Complete();

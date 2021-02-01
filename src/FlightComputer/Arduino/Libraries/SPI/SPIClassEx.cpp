@@ -58,7 +58,7 @@ SPIClassEx * SPIClassEx::mInstanceMap[SPI_COUNT] =
 extern "C" void SPI1_IRQHandler(void)
 {
 	if (SPIClassEx::mInstanceMap[SPI_1])
-		HAL_SPI_IRQHandler((SPI_HandleTypeDef *)SPIClassEx::mInstanceMap[SPI_1]);
+		SPIClassEx::mInstanceMap[SPI_1]->IRQHandler();
 }
 #endif
 
@@ -66,7 +66,7 @@ extern "C" void SPI1_IRQHandler(void)
 extern "C" void SPI2_IRQHandler(void)
 {
 	if (SPIClassEx::mInstanceMap[SPI_2])
-		HAL_SPI_IRQHandler((SPI_HandleTypeDef *)SPIClassEx::mInstanceMap[SPI_2]);
+		SPIClassEx::mInstanceMap[SPI_2]->IRQHandler();
 }
 #endif
 
@@ -74,7 +74,7 @@ extern "C" void SPI2_IRQHandler(void)
 extern "C" void SPI3_IRQHandler(void)
 {
 	if (SPIClassEx::mInstanceMap[SPI_3])
-		HAL_SPI_IRQHandler((SPI_HandleTypeDef *)SPIClassEx::mInstanceMap[SPI_3]);
+		SPIClassEx::mInstanceMap[SPI_3]->IRQHandler();
 }
 #endif
 
@@ -82,7 +82,7 @@ extern "C" void SPI3_IRQHandler(void)
 extern "C" void SPI4_IRQHandler(void)
 {
 	if (SPIClassEx::mInstanceMap[SPI_4])
-		HAL_SPI_IRQHandler((SPI_HandleTypeDef *)SPIClassEx::mInstanceMap[SPI_4]);
+		SPIClassEx::mInstanceMap[SPI_4]->IRQHandler();
 }
 #endif
 
@@ -246,6 +246,17 @@ HAL_StatusTypeDef SPIClassEx::receive_IT(void* sendPtr, size_t count, uint32_t t
 	return status;
 }
 
+void SPIClassEx::IRQHandler()
+{
+	HAL_SPI_IRQHandler((SPI_HandleTypeDef *)this);
+}
+
+void SPIClassEx::OnComplete(void* recvPtr, size_t recvLen, Error error)
+{
+	if (mIntf)
+		mIntf->OnComplete(recvPtr, recvLen, error);
+}
+
 
 void SPIClassEx::registerInstance(SPIClassEx* spi)
 {
@@ -279,12 +290,6 @@ void SPIClassEx::setCallback()
     this->AbortCpltCallback    = Callback_Abort;
 }
 
-
-void SPIClassEx::OnComplete(void* recvPtr, size_t recvLen, Error error)
-{
-	if (mIntf)
-		mIntf->OnComplete(recvPtr, recvLen, error);
-}
 
 void SPIClassEx::Callback_Complete()
 {

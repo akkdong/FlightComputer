@@ -65,6 +65,7 @@ void FlightComputer::setup(void)
 	delay(100);
 	Serial1.println("Hello world!\r\n");
 
+	epdc.begin();
 
 
 
