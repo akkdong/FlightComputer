@@ -176,6 +176,9 @@ void FlightComputer::loop()
 
 			tick = millis();
 		}
+
+		//
+		epdc.run();
 	}
 
 	/*

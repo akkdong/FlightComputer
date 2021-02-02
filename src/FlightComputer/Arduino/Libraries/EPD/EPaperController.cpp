@@ -8,7 +8,11 @@
 #include "Arduino.h"
 #include "EPaperController.h"
 
+#define EPD_SET_BUSY()			do { GPIOC->BSRR = (0b1000000000000000); } while (0)
+#define EPD_RESET_BUSY()		do { GPIOC->BSRR = (0b1000000000000000 << 16); } while (0)
 
+#define EPD_IS_COMMAND()		(GPIOC->IDR & 0b0100000000000000)
+#define EPD_IS_BUSY()			(GPIOC->IDR & 0b1000000000000000)
 
 
 
@@ -17,6 +21,10 @@
 
 EPaperController::EPaperController()
 	: mSPIDriver(this)
+//	, mDisp(DISPLAY_1BPP)
+	, mLastCommand(UNKNOWN)
+	, mState(UNINIT)
+	, mTimestamp(0)
 {
 }
 
@@ -24,32 +32,195 @@ EPaperController::EPaperController()
 
 void EPaperController::begin()
 {
+	EPD_SET_BUSY();
+	pinMode(EINK_BUSY, OUTPUT);
+	pinMode(EINK_CMD, INPUT);
+
+	Serial1.println("==== 1");
 	mSPIDriver.begin(SPI1_Init);
+	Serial1.println("==== 2");
 	mSPIDriver.receive_IT();
+	Serial1.println("==== 3");
+
+	mLastCommand = UNKNOWN;
+	mState = WAIT_COMMAND;
+	EPD_RESET_BUSY();
 }
 
 void EPaperController::end()
 {
+	EPD_SET_BUSY();
 	mSPIDriver.abort_IT();
 	mSPIDriver.end(SPI1_Deinit);
+
+	mState = UNINIT;
 }
 
 void EPaperController::run()
 {
+	if (mState == WAIT_COMMAND)
+	{
+		// NOP
+	}
+	else if (mState == PROCESSING)
+	{
+		switch (mLastCommand)
+		{
+		case POWER_ON : 			// 0xA1
+			// mDisp.powerOn();
+			mState = WAIT_COMMAND;
+			EPD_RESET_BUSY();
+			break;
+		case POWER_OFF : 			// 0xA2
+			// mDisp.powerOff();
+			mState = WAIT_COMMAND;
+			EPD_RESET_BUSY();
+			break;
+		case REFRESH : 				// 0xB1
+			// mDisp.refresh();
+			mState = WAIT_COMMAND;
+			EPD_RESET_BUSY();
+			break;
+		case CLEAR : 				// 0xB2
+			// mDisp.clear();
+			mState = WAIT_COMMAND;
+			EPD_RESET_BUSY();
+			break;
+		case GET_DISPLAY : 			// 0x21
+			// Fill display info to buffer
+			// set send buffer
+			mSPIDriver.pTxBuffPtr = (uint8_t *)"\x80\x70\x71\x72\x73";
+			mSPIDriver.TxXferCount = 5;
+			mTimestamp = millis();
+			mState = SENDING;
+			EPD_RESET_BUSY();
+			Serial1.println("start sending...");
+			break;
+		case SET_WINDOW : 			// 0x22
+			mRecvPtr = &mTemp[0];
+			mRecvLen = 0;
+			mRecvExpect = 5;
+			mTimestamp = millis();
+			mState = RECEIVING;
+			EPD_RESET_BUSY();
+			Serial1.println("start receiving...");
+			break;
+		case START_DATA_TRANSMIT : 	// 0x23
+			//mRecvPtr = allocFrameBuffer(w, h, bpp);
+			//mRecvLen = 0;
+			//mRecvExpect = size;
+			mTimestamp = millis();
+			mState = RECEIVING;
+			EPD_RESET_BUSY();
+			break;
+		case STOP_DATA_TRANSMIT : 	// 0x24
+			if (mState == RECEIVING)
+			{
+				// update display
+				// ...
+			}
 
+			mState = WAIT_COMMAND;
+			EPD_RESET_BUSY();
+			break;
+		default:
+			break;
+		}
+	}
+	else if (mState == RECEIVING)
+	{
+		if (mRecvLen < mRecvExpect)
+		{
+			// check timeout
+			if ((millis() - mTimestamp) > 1000)
+			{
+				mState = WAIT_COMMAND;
+				EPD_RESET_BUSY();
+				Serial1.println("receiving timeout!");
+			}
+		}
+		else
+		{
+			// DEBUG!!
+			for (uint32_t i = 0; i < mRecvLen; i++)
+				Serial1.println(mTemp[i]);
+
+			//
+			switch (mLastCommand)
+			{
+			case SET_WINDOW:
+				// update window-info
+				break;
+			case START_DATA_TRANSMIT:
+				// update display
+				break;
+			default:
+				break;
+			}
+
+			mState = WAIT_COMMAND;
+			EPD_RESET_BUSY();
+		}
+	}
+	else if (mState == SENDING)
+	{
+		// check timeout
+		if ((millis() - mTimestamp) > 1000)
+		{
+			mState = WAIT_COMMAND;
+			EPD_RESET_BUSY();
+			Serial1.println("sending timeout!");
+		}
+	}
 }
 
 
 void EPaperController::OnReceive(uint8_t data)
 {
-	if (data == 0x55)
+	if (EPD_IS_BUSY())
+		return; // IGNORE ALL
+
+	if (EPD_IS_COMMAND())
 	{
-		mSPIDriver.pTxBuffPtr = (uint8_t *)"hello";
-		mSPIDriver.TxXferCount = 5;
+		switch (data)
+		{
+		case POWER_ON : 			// 0xA1
+		case POWER_OFF : 			// 0xA2
+		case REFRESH : 				// 0xB1
+		case CLEAR : 				// 0xB2
+		case GET_DISPLAY : 			// 0x21
+		case SET_WINDOW : 			// 0x22
+		case START_DATA_TRANSMIT : 	// 0x23
+		case STOP_DATA_TRANSMIT : 	// 0x24
+			EPD_SET_BUSY();
+			mState = PROCESSING;
+			mLastCommand = static_cast<EPDC_Command>(data);
+			break;
+		default:
+			// NOP
+			break;
+		}
 	}
 	else
 	{
-		Serial1.write(data);
+		if (mState == RECEIVING && mRecvLen < mRecvExpect && mRecvPtr)
+		{
+			*mRecvPtr++ = data;
+			mRecvLen++;
+
+			if (mRecvLen == mRecvExpect)
+				EPD_SET_BUSY();
+		}
+	}
+}
+
+void EPaperController::OnSendComplete()
+{
+	if (mState == SENDING)
+	{
+		mState = WAIT_COMMAND;
+		EPD_RESET_BUSY();
+		Serial1.println("sending complete!");
 	}
 }
 
@@ -269,18 +440,24 @@ void EPaperController::SPIDriver::TxISR()
 {
 	SPI_HandleTypeDef* hspi = (SPI_HandleTypeDef *)this;
 
-	if (hspi->TxXferCount > 0 && hspi->pTxBuffPtr)
+	if (!EPD_IS_BUSY() && hspi->TxXferCount > 0 && hspi->pTxBuffPtr)
 	{
-		*(__IO uint8_t *)&hspi->Instance->TXDR = *((uint8_t *)hspi->pTxBuffPtr);
-		hspi->pTxBuffPtr += sizeof(uint8_t);
+		*(__IO uint8_t *)&hspi->Instance->TXDR = *((uint8_t *)hspi->pTxBuffPtr++);
+		Serial1.printf("<%d>\r\n", hspi->TxXferCount);
 		hspi->TxXferCount--;
 
 		if (hspi->TxXferCount == 0)
+		{
 			hspi->pTxBuffPtr = nullptr;
+			mControllerPtr->OnSendComplete();
+		}
 	}
 	else
 	{
-		// send emtpy-data
-		*(__IO uint8_t *)&hspi->Instance->TXDR = 0x00;
+		static uint8_t data = 0x01;
+		// send dummy-data
+		*(__IO uint8_t *)&hspi->Instance->TXDR = data;
+		Serial1.printf("[%02X]\r\n", data);
+		data++;
 	}
 }
