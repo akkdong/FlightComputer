@@ -260,35 +260,35 @@ void cmd_process(char* str)
 		if (mask & MASK_PMIC)
 		{
 			HAL_GPIO_WritePin(PWR_EN_BAT__GPIO_Port, PWR_EN_BAT__Pin, GPIO_PIN_SET);
-			UART_Printf(&UART1, "Port(PMIC) -> %d\n", HAL_GPIO_ReadPin(PWR_EN_BAT__GPIO_Port, PWR_EN_BAT__Pin));
+			UART_Printf(&UART1, "Port(PMIC) -> %d\r\n", HAL_GPIO_ReadPin(PWR_EN_BAT__GPIO_Port, PWR_EN_BAT__Pin));
 			HAL_Delay(20);
 		}
 		if (mask & MASK_PERIPH)
 		{
 			HAL_GPIO_WritePin(PWR_EN_PERIPH_GPIO_Port, PWR_EN_PERIPH_Pin, GPIO_PIN_SET);
-			UART_Printf(&UART1, "Port(PERIPH) -> %d\n", HAL_GPIO_ReadPin(PWR_EN_PERIPH_GPIO_Port, PWR_EN_PERIPH_Pin));
+			UART_Printf(&UART1, "Port(PERIPH) -> %d\r\n", HAL_GPIO_ReadPin(PWR_EN_PERIPH_GPIO_Port, PWR_EN_PERIPH_Pin));
 			HAL_Delay(20);
 		}
 		if (mask & MASK_WAKEUP)
 		{
 			HAL_GPIO_WritePin(PMIC_WAKEUP_GPIO_Port, PMIC_WAKEUP_Pin, GPIO_PIN_SET);
-			UART_Printf(&UART1, "Port(WAKEUP) -> %d\n", HAL_GPIO_ReadPin(PMIC_WAKEUP_GPIO_Port, PMIC_WAKEUP_Pin));
+			UART_Printf(&UART1, "Port(WAKEUP) -> %d\r\n", HAL_GPIO_ReadPin(PMIC_WAKEUP_GPIO_Port, PMIC_WAKEUP_Pin));
 			HAL_Delay(20);
 		}
 		if (mask & MASK_PWRUP)
 		{
 			HAL_GPIO_WritePin(PMIC_PWRUP_GPIO_Port, PMIC_PWRUP_Pin, GPIO_PIN_SET);
-			UART_Printf(&UART1, "Port(PWRUP) -> %d\n", HAL_GPIO_ReadPin(PMIC_PWRUP_GPIO_Port, PMIC_PWRUP_Pin));
+			UART_Printf(&UART1, "Port(PWRUP) -> %d\r\n", HAL_GPIO_ReadPin(PMIC_PWRUP_GPIO_Port, PMIC_PWRUP_Pin));
 			HAL_Delay(20);
 		}
 		if (mask & MASK_VCOM)
 		{
 			HAL_GPIO_WritePin(PMIC_VCOM_GPIO_Port, PMIC_VCOM_Pin, GPIO_PIN_SET);
-			UART_Printf(&UART1, "Port(VCOM) -> %d\n", HAL_GPIO_ReadPin(PMIC_VCOM_GPIO_Port, PMIC_VCOM_Pin));
+			UART_Printf(&UART1, "Port(VCOM) -> %d\r\n", HAL_GPIO_ReadPin(PMIC_VCOM_GPIO_Port, PMIC_VCOM_Pin));
 			HAL_Delay(20);
 		}
 		if (mask == 0x00)
-			UART_Printf(&UART1, "Invalid Port name: %s\n", param1);
+			UART_Printf(&UART1, "Invalid Port name: %s\r\n", param1);
 	}
 	else if (strcmp(cmd, "off") == 0)
 	{
@@ -310,35 +310,35 @@ void cmd_process(char* str)
 		if (mask & MASK_PMIC)
 		{
 			HAL_GPIO_WritePin(PWR_EN_BAT__GPIO_Port, PWR_EN_BAT__Pin, GPIO_PIN_RESET);
-			UART_Printf(&UART1, "Port(PMIC) -> %d\n", HAL_GPIO_ReadPin(PWR_EN_BAT__GPIO_Port, PWR_EN_BAT__Pin));
+			UART_Printf(&UART1, "Port(PMIC) -> %d\r\n", HAL_GPIO_ReadPin(PWR_EN_BAT__GPIO_Port, PWR_EN_BAT__Pin));
 			HAL_Delay(20);
 		}
 		if (mask & MASK_PERIPH)
 		{
 			HAL_GPIO_WritePin(PWR_EN_PERIPH_GPIO_Port, PWR_EN_PERIPH_Pin, GPIO_PIN_RESET);
-			UART_Printf(&UART1, "Port(PERIPH) -> %d\n", HAL_GPIO_ReadPin(PWR_EN_PERIPH_GPIO_Port, PWR_EN_PERIPH_Pin));
+			UART_Printf(&UART1, "Port(PERIPH) -> %d\r\n", HAL_GPIO_ReadPin(PWR_EN_PERIPH_GPIO_Port, PWR_EN_PERIPH_Pin));
 			HAL_Delay(20);
 		}
 		if (mask & MASK_WAKEUP)
 		{
 			HAL_GPIO_WritePin(PMIC_WAKEUP_GPIO_Port, PMIC_WAKEUP_Pin, GPIO_PIN_RESET);
-			UART_Printf(&UART1, "Port(WAKEUP) -> %d\n", HAL_GPIO_ReadPin(PMIC_WAKEUP_GPIO_Port, PMIC_WAKEUP_Pin));
+			UART_Printf(&UART1, "Port(WAKEUP) -> %d\r\n", HAL_GPIO_ReadPin(PMIC_WAKEUP_GPIO_Port, PMIC_WAKEUP_Pin));
 			HAL_Delay(20);
 		}
 		if (mask & MASK_PWRUP)
 		{
 			HAL_GPIO_WritePin(PMIC_PWRUP_GPIO_Port, PMIC_PWRUP_Pin, GPIO_PIN_RESET);
-			UART_Printf(&UART1, "Port(PWRUP) -> %d\n", HAL_GPIO_ReadPin(PMIC_PWRUP_GPIO_Port, PMIC_PWRUP_Pin));
+			UART_Printf(&UART1, "Port(PWRUP) -> %d\r\n", HAL_GPIO_ReadPin(PMIC_PWRUP_GPIO_Port, PMIC_PWRUP_Pin));
 			HAL_Delay(20);
 		}
 		if (mask & MASK_VCOM)
 		{
 			HAL_GPIO_WritePin(PMIC_VCOM_GPIO_Port, PMIC_VCOM_Pin, GPIO_PIN_RESET);
-			UART_Printf(&UART1, "Port(VCOM) -> %d\n", HAL_GPIO_ReadPin(PMIC_VCOM_GPIO_Port, PMIC_VCOM_Pin));
+			UART_Printf(&UART1, "Port(VCOM) -> %d\r\n", HAL_GPIO_ReadPin(PMIC_VCOM_GPIO_Port, PMIC_VCOM_Pin));
 			HAL_Delay(20);
 		}
 		if (mask == 0x00)
-			UART_Printf(&UART1, "Invalid Port name: %s\n", param1);
+			UART_Printf(&UART1, "Invalid Port name: %s\r\n", param1);
 	}
 	else if (strcmp(cmd, "read") == 0)
 	{
@@ -361,31 +361,31 @@ void cmd_process(char* str)
 
 			if (mask & MASK_PMIC)
 			{
-				UART_Printf(&UART1, "Port(PMIC) -> %d\n", HAL_GPIO_ReadPin(PWR_EN_BAT__GPIO_Port, PWR_EN_BAT__Pin));
+				UART_Printf(&UART1, "Port(PMIC) -> %d\r\n", HAL_GPIO_ReadPin(PWR_EN_BAT__GPIO_Port, PWR_EN_BAT__Pin));
 				HAL_Delay(20);
 			}
 			if (mask & MASK_PERIPH)
 			{
-				UART_Printf(&UART1, "Port(PERIPH) -> %d\n", HAL_GPIO_ReadPin(PWR_EN_PERIPH_GPIO_Port, PWR_EN_PERIPH_Pin));
+				UART_Printf(&UART1, "Port(PERIPH) -> %d\r\n", HAL_GPIO_ReadPin(PWR_EN_PERIPH_GPIO_Port, PWR_EN_PERIPH_Pin));
 				HAL_Delay(20);
 			}
 			if (mask & MASK_WAKEUP)
 			{
-				UART_Printf(&UART1, "Port(WAKEUP) -> %d\n", HAL_GPIO_ReadPin(PMIC_WAKEUP_GPIO_Port, PMIC_WAKEUP_Pin));
+				UART_Printf(&UART1, "Port(WAKEUP) -> %d\r\n", HAL_GPIO_ReadPin(PMIC_WAKEUP_GPIO_Port, PMIC_WAKEUP_Pin));
 				HAL_Delay(20);
 			}
 			if (mask & MASK_PWRUP)
 			{
-				UART_Printf(&UART1, "Port(PWRUP) -> %d\n", HAL_GPIO_ReadPin(PMIC_PWRUP_GPIO_Port, PMIC_PWRUP_Pin));
+				UART_Printf(&UART1, "Port(PWRUP) -> %d\r\n", HAL_GPIO_ReadPin(PMIC_PWRUP_GPIO_Port, PMIC_PWRUP_Pin));
 				HAL_Delay(20);
 			}
 			if (mask & MASK_VCOM)
 			{
-				UART_Printf(&UART1, "Port(VCOM) -> %d\n", HAL_GPIO_ReadPin(PMIC_VCOM_GPIO_Port, PMIC_VCOM_Pin));
+				UART_Printf(&UART1, "Port(VCOM) -> %d\r\n", HAL_GPIO_ReadPin(PMIC_VCOM_GPIO_Port, PMIC_VCOM_Pin));
 				HAL_Delay(20);
 			}
 			if (mask == 0x00)
-				UART_Printf(&UART1, "Invalid Port name: %s\n", param2);
+				UART_Printf(&UART1, "Invalid Port name: %s\r\n", param2);
 		}
 		else if (strncmp(param1, "reg", 3) == 0)
 		{
@@ -413,19 +413,19 @@ void cmd_process(char* str)
 					{
 						uint8_t data = 0xFF;
 						HAL_I2C_Mem_Read(&hi2c1, PMIC_ADDR, i, I2C_MEMADD_SIZE_8BIT, &data, 1, 1000);
-						UART_Printf(&UART1, "Reg(#%02X) -> %02X\n", i, data);
+						UART_Printf(&UART1, "Reg(#%02X) -> %02X\r\n", i, data);
 						HAL_Delay(20);
 					}
 				}
 			}
 			else
 			{
-				UART_Printf(&UART1, "Invalid Register number: %s\n", param2);
+				UART_Printf(&UART1, "Invalid Register number: %s\r\n", param2);
 			}
 		}
 		else
 		{
-			UART_Printf(&UART1, "Invalid read parameter: %s\n", param1);
+			UART_Printf(&UART1, "Invalid read parameter: %s\r\n", param1);
 		}
 	}
 	else if (strcmp(cmd, "write") == 0)
@@ -445,15 +445,15 @@ void cmd_process(char* str)
 		if (reg != (uint8_t)-1)
 		{
 			HAL_I2C_Mem_Write(&hi2c1, PMIC_ADDR, reg, I2C_MEMADD_SIZE_8BIT, &val, 1, 1000);
-			UART_Printf(&UART1, "Reg(#%02X) <-- %02X\n", reg, val);
+			UART_Printf(&UART1, "Reg(#%02X) <-- %02X\r\n", reg, val);
 
 			uint8_t data;
 			HAL_I2C_Mem_Read(&hi2c1, PMIC_ADDR, reg, I2C_MEMADD_SIZE_8BIT, &data, 1, 1000);
-			UART_Printf(&UART1, "Reg(#%02X) --> %02X\n", reg, val);
+			UART_Printf(&UART1, "Reg(#%02X) --> %02X\r\n", reg, val);
 		}
 		else
 		{
-			UART_Printf(&UART1, "Invalid Register number: %s, %s\n", param1 ? param1 : "(nil)", param2 ? param2 : "(nil)");
+			UART_Printf(&UART1, "Invalid Register number: %s, %s\r\n", param1 ? param1 : "(nil)", param2 ? param2 : "(nil)");
 		}
 	}
 	else if (strcmp(cmd, "test") == 0)
@@ -493,20 +493,20 @@ void cmd_process(char* str)
 		{
 			uint32_t lastTick = HAL_GetTick();
 			EPD_ClearScreen();
-			UART_Printf(&UART1, "clear done!: %u ms\n", HAL_GetTick() - lastTick);
+			UART_Printf(&UART1, "clear done!: %u ms\r\n", HAL_GetTick() - lastTick);
 			memset(imagePtrActive, 0, 800 / 8 * 600);
 		}
 		else if (strcmp(param1, "clear2") == 0)
 		{
 			epd_clearScreen();
 			//epd_clearScreen();
-			UART_Printf(&UART1, "clear done!\n");
+			UART_Printf(&UART1, "clear done!\r\n");
 		}
 		else if (strcmp(param1, "gray") == 0)
 		{
 			uint32_t lastTick = HAL_GetTick();
 			EPD_Draw16Gray(img_bytes);
-			UART_Printf(&UART1, "draw gray image done!: %u ms\n", HAL_GetTick() - lastTick);
+			UART_Printf(&UART1, "draw gray image done!: %u ms\r\n", HAL_GetTick() - lastTick);
 		}
 		else if (strcmp(param1, "mono") == 0)
 		{
@@ -517,7 +517,7 @@ void cmd_process(char* str)
 			uint32_t lastTick = HAL_GetTick();
 			EPD_DrawMono(imageDst);
 			imagePtrActive = imageDst;
-			UART_Printf(&UART1, "draw mono image done!: %u ms\n", HAL_GetTick() - lastTick);
+			UART_Printf(&UART1, "draw mono image done!: %u ms\r\n", HAL_GetTick() - lastTick);
 		}
 		else if (strcmp(param1, "mono2") == 0)
 		{
@@ -528,7 +528,7 @@ void cmd_process(char* str)
 			uint32_t lastTick = HAL_GetTick();
 			EPD_DrawTest2(imageDst);
 			imagePtrActive = imageDst;
-			UART_Printf(&UART1, "draw mono2 image done!: %u ms\n", HAL_GetTick() - lastTick);
+			UART_Printf(&UART1, "draw mono2 image done!: %u ms\r\n", HAL_GetTick() - lastTick);
 		}
 		else if (strcmp(param1, "fast") == 0)
 		{
@@ -538,7 +538,7 @@ void cmd_process(char* str)
 			uint32_t lastTick = HAL_GetTick();
 			EPD_DrawPartial(imageDst, imagePtrActive);
 			imagePtrActive = imageDst;
-			UART_Printf(&UART1, "draw fast done!: %u ms\n", HAL_GetTick() - lastTick);
+			UART_Printf(&UART1, "draw fast done!: %u ms\r\n", HAL_GetTick() - lastTick);
 		}
 		else if (strcmp(param1, "test") == 0)
 		{
@@ -547,7 +547,7 @@ void cmd_process(char* str)
 
 			uint32_t lastTick = HAL_GetTick();
 			EPD_DrawTest(data, count);
-			UART_Printf(&UART1, "draw test (%02X, %d) : %u ms\n", data, count, HAL_GetTick() - lastTick);
+			UART_Printf(&UART1, "draw test (%02X, %d) : %u ms\r\n", data, count, HAL_GetTick() - lastTick);
 		}
 		else
 		{
@@ -627,9 +627,10 @@ void cmd_process(char* str)
 			}
 
 			if (!ok)
-				UART_Printf(&UART1, "Invalid command or parameter: %s, %s\n", param1 ? param1 : "(nil)", param2 ? param2 : "(nil)");
+				UART_Printf(&UART1, "Invalid command or parameter: %s, %s\r\n", param1 ? param1 : "(nil)", param2 ? param2 : "(nil)");
 		}
 	}
+#if DISABLE_TF
 	else if (strcmp(cmd, "tf") == 0)
 	{
 		if (strcmp(param1, "test1") == 0)
@@ -648,7 +649,7 @@ void cmd_process(char* str)
 				QSPI_STATUS status = QSPI_Driver_read(dstAddr, srcAddr, size);
 				if (status != QSPI_STATUS_OK)
 				{
-					UART_Printf(&UART1, "Read failed at 0x%08X\n", srcAddr);
+					UART_Printf(&UART1, "Read failed at 0x%08X\r\n", srcAddr);
 					return;
 				}
 
@@ -657,12 +658,13 @@ void cmd_process(char* str)
 				sizeRemain -= size;
 			}
 
-			UART_Printf(&UART1, "Start tensorflow test2\n");
+			UART_Printf(&UART1, "Start tensorflow test2\r\n");
 			HAL_Delay(10);
 
 			tensorflow_test2((uint8_t *)(SDRAM_BANK_ADDR + 0x01000000));
 		}
 	}
+#endif
 }
 
 void main_loop_begin(void)
@@ -672,7 +674,7 @@ void main_loop_begin(void)
 	UART_Begin(&UART2, UART_Driver2, &huart2);
 #endif
 
-	UART_Printf(&UART1, "Start flight computer test...\n");
+	UART_Printf(&UART1, "Start flight computer test...\r\n");
 
 	cmd_buf[0] = '\0';
 	cmd_len = 0;
@@ -681,28 +683,28 @@ void main_loop_begin(void)
 #if USE_QSPIDRV
 	if (QSPI_Driver_locked())
 	{
-		UART_Printf(&UART1, "QSPI Driver locked\n");
+		UART_Printf(&UART1, "QSPI Driver locked\r\n");
 		return;
 	}
 
 	if(QSPI_Driver_state() == 1)
 	{
-		UART_Printf(&UART1, "QSPI Driver have been ready\n");
+		UART_Printf(&UART1, "QSPI Driver have been ready\r\n");
 		return;
 	}
 
 	if(  QSPI_Driver_init() == QSPI_STATUS_OK)
 	{
-		UART_Printf(&UART1, "QSPI Driver initialized\n");
+		UART_Printf(&UART1, "QSPI Driver initialized\r\n");
 	}
 	else
 	{
-		UART_Printf(&UART1, "QSPI Driver initialize failed!!\n");
+		UART_Printf(&UART1, "QSPI Driver initialize failed!!\r\n");
 	}
 
 	//if (QSPI_EnableMemoryMappedMode() != QSPI_STATUS_OK)
 	//{
-	//	UART_Printf(&UART1, "Memory mapped mode EANBLE FAILED!\n");
+	//	UART_Printf(&UART1, "Memory mapped mode EANBLE FAILED!\r\n");
 	//}
 #else
 	CSP_QUADSPI_Init();
@@ -740,7 +742,7 @@ void main_loop(void)
 		{
 			if (cmd_len > 0)
 			{
-				UART_Printf(&UART1, "CMD: %s\n", cmd_buf);
+				UART_Printf(&UART1, "CMD: %s\r\n", cmd_buf);
 				cmd_process(cmd_buf);
 			}
 
@@ -775,14 +777,14 @@ void main_loop_end(void)
 void test_sdram(void)
 {
 	volatile uint8_t* memPtr = (volatile uint8_t *)SDRAM_BANK_ADDR; // 0xD0000000
-	UART_Printf(&UART1, "Test SDRAM ====\n");
+	UART_Printf(&UART1, "Test SDRAM ====\r\n");
 	volatile uint8_t* tmpPtr = memPtr;
 	uint32_t data = 0x55;
 	{
 		uint32_t tickStart = HAL_GetTick();
 		for(uint32_t i = 0; i < 32 * 1024 * 1024; i++)
 			*tmpPtr++ = data;
-		UART_Printf(&UART1, "Clear All: elapsed %d msec\n", HAL_GetTick() - tickStart);
+		UART_Printf(&UART1, "Clear All: elapsed %d msec\r\n", HAL_GetTick() - tickStart);
 	}
 
 	UART_Printf(&UART1, "Write Data ");
@@ -795,7 +797,7 @@ void test_sdram(void)
 		*tmpPtr++ = data++;
 	}
 
-	UART_Printf(&UART1, "\nCompare Data ");
+	UART_Printf(&UART1, "\r\nCompare Data ");
 	tmpPtr = memPtr;
 	data = 0x55;
 	uint8_t memOk = 1;
@@ -808,7 +810,7 @@ void test_sdram(void)
 		uint8_t b = data;
 		if (a != b)
 		{
-			UART_Printf(&UART1, "\nMemory corrupt at %08X: %02X, %02X\n", (unsigned int)i, a, b);
+			UART_Printf(&UART1, "\r\nMemory corrupt at %08X: %02X, %02X\r\n", (unsigned int)i, a, b);
 			memOk = 0;
 			break;
 		}
@@ -816,7 +818,7 @@ void test_sdram(void)
 		data++;
 	}
 	if (memOk)
-		UART_Printf(&UART1, "\nMemory compare passed!!\n");
+		UART_Printf(&UART1, "\r\nMemory compare passed!!\r\n");
 }
 
 
@@ -854,7 +856,7 @@ void test_nor(void)
 	{
 		if (QSPI_Driver_erase(var * QSPI_SUBSECTOR_SIZE, QSPI_SUBSECTOR_SIZE) != QSPI_STATUS_OK)
 		{
-			UART_Printf(&UART1, "EraseSector(%X) FAILED!\n", var);
+			UART_Printf(&UART1, "EraseSector(%X) FAILED!\r\n", var);
 			return;
 		}
 
@@ -862,7 +864,7 @@ void test_nor(void)
 
 		if (QSPI_Driver_write(buffer_test, var * QSPI_SUBSECTOR_SIZE, sizeof(buffer_test)) != QSPI_STATUS_OK)
 		{
-			UART_Printf(&UART1, "WriteMemory(%X) FAILED!\n", var);
+			UART_Printf(&UART1, "WriteMemory(%X) FAILED!\r\n", var);
 			return;
 		}
 	}
@@ -870,7 +872,7 @@ void test_nor(void)
 	/*
 	if (QSPI_EnableMemoryMappedMode() != QSPI_STATUS_OK)
 	{
-		UART_Printf(&UART1, "Memory mapped mode EANBLE FAILED!\n");
+		UART_Printf(&UART1, "Memory mapped mode EANBLE FAILED!\r\n");
 		return;
 	}
 	*/
@@ -881,7 +883,7 @@ void test_nor(void)
 
 		if (memcmp(buffer_test, (uint8_t*) (QSPI_BANK_ADDR + var * QSPI_SUBSECTOR_SIZE), QSPI_SUBSECTOR_SIZE) != HAL_OK)
 		{
-			UART_Printf(&UART1, "MemoryTest(%X) FAILED!\n", var);
+			UART_Printf(&UART1, "MemoryTest(%X) FAILED!\r\n", var);
 			return;
 		}
 	}
@@ -894,25 +896,25 @@ void test_nor(void)
     {
         if (CSP_QSPI_EraseSector(var * MEMORY_SECTOR_SIZE, (var + 1) * MEMORY_SECTOR_SIZE - 1) != HAL_OK)
         {
-        	UART_Printf(&UART1, "EraseSector(%X) FAILED!\n", var);
+        	UART_Printf(&UART1, "EraseSector(%X) FAILED!\r\n", var);
         	return;
         }
         if (CSP_QSPI_WriteMemory(buffer_test, var * MEMORY_SECTOR_SIZE, sizeof(buffer_test)) != HAL_OK)
         {
-        	UART_Printf(&UART1, "WriteMemory(%X) FAILED!\n", var);
+        	UART_Printf(&UART1, "WriteMemory(%X) FAILED!\r\n", var);
         	return;
         }
     }
     if (CSP_QSPI_EnableMemoryMappedMode() != HAL_OK)
     {
-    	UART_Printf(&UART1, "Memory mapped mode EANBLE FAILED!\n");
+    	UART_Printf(&UART1, "Memory mapped mode EANBLE FAILED!\r\n");
     	return;
     }
     for (var = 0; var < SECTORS_COUNT; var++)
     {
         if (memcmp(buffer_test, (uint8_t*) (0x90000000 + var * MEMORY_SECTOR_SIZE), MEMORY_SECTOR_SIZE) != HAL_OK)
         {
-        	UART_Printf(&UART1, "MemoryTest(%X) FAILED!\n", var);
+        	UART_Printf(&UART1, "MemoryTest(%X) FAILED!\r\n", var);
         	return;
         }
     }
@@ -930,11 +932,11 @@ void test_dump(void)
 		UART_Printf(&UART1, "%02X ", buffer_test[i]);
 		if ((i % 16) == 15)
 		{
-			UART_Write(&UART1,'\n');
+			UART_Printf(&UART1,"\r\n");
 			HAL_Delay(10);
 		}
 	}
-	UART_Write(&UART1,'\n');
+	UART_Write(&UART1,'\r\n');
 
 	QSPI_Driver_read(buffer_test, 0x00001F0, 32);
 	for (int i = 0; i< 32; i++)
@@ -942,11 +944,11 @@ void test_dump(void)
 		UART_Printf(&UART1, "%02X ", buffer_test[i]);
 		if ((i % 16) == 15)
 		{
-			UART_Write(&UART1,'\n');
+			UART_Printf(&UART1,"\r\n");
 			HAL_Delay(10);
 		}
 	}
-	UART_Write(&UART1,'\n');
+	UART_Write(&UART1,'\r\n');
 
 	//
 	QSPI_Driver_read(buffer_test, 0x0000800, 32);
@@ -955,11 +957,11 @@ void test_dump(void)
 		UART_Printf(&UART1, "%02X ", buffer_test[i]);
 		if ((i % 16) == 15)
 		{
-			UART_Write(&UART1,'\n');
+			UART_Printf(&UART1,"\r\n");
 			HAL_Delay(10);
 		}
 	}
-	UART_Write(&UART1,'\n');
+	UART_Printf(&UART1,"\r\n");
 
 #else
 	if (CSP_QSPI_ReadMemory(buffer_test, 0x0000000, 0x200) == HAL_OK)
@@ -969,29 +971,29 @@ void test_dump(void)
 			UART_Printf(&UART1, "%02X ", buffer_test[i]);
 			if ((i % 16) == 15)
 			{
-				UART_Write(&UART1, '\n');
+				UART_Printf(&UART1,""\r\n");
 				HAL_Delay(10);
 			}
 		}
 
-		UART_Write(&UART1, '\n');
+		UART_Printf(&UART1,""\r\n");
 	}
 	else
 	{
-		UART_Printf(&UART1, "Bulk read FAILED!\n");
+		UART_Printf(&UART1, "Bulk read FAILED!\r\n");
 		HAL_Delay(10);
 	}
 
     if (CSP_QSPI_EnableMemoryMappedMode() != HAL_OK)
     {
-    	UART_Printf(&UART1, "Enable memory-mapped mode FAILED!\n");
+    	UART_Printf(&UART1, "Enable memory-mapped mode FAILED!\r\n");
     	return;
     }
 
 	for (uint32_t var = 0; var < SECTORS_COUNT; var++)
 	{
 		uint32_t* nor = (uint32_t*)(0x90000000 + var * QSPI_SUBSECTOR_SIZE);
-		UART_Printf(&UART1, "[%X]\n", (uint32_t)nor);
+		UART_Printf(&UART1, "[%X]\r\n", (uint32_t)nor);
 		HAL_Delay(10);
 
 		for (int i = 0; i < 4; i++)
@@ -1007,7 +1009,7 @@ void test_dump(void)
 			HAL_Delay(10);
 		}
 
-		UART_Printf(&UART1, "\n");
+		UART_Printf(&UART1, "\r\n");
 	}
 #endif
 }
@@ -1021,13 +1023,13 @@ void test_fatfs(const char* cmd)
 	{
 		if (f_opendir(&dir, cmd) == FR_OK) /* ex: "2:/" */
 		{
-			UART_Printf(&UART1, "DIR /\n");
+			UART_Printf(&UART1, "DIR /\r\n");
 			while (1)
 			{
 				if (f_readdir(&dir, &finfo) != FR_OK || !finfo.fname[0])
 					break;
 
-				UART_Printf(&UART1, "%s\n", finfo.fname);
+				UART_Printf(&UART1, "%s\r\n", finfo.fname);
 			}
 			f_closedir(&dir);
 		}
@@ -1036,29 +1038,29 @@ void test_fatfs(const char* cmd)
 
 void test_erase_subsector(uint32_t addr)
 {
-	UART_Printf(&UART1, "Erase: %08X\n", addr);
+	UART_Printf(&UART1, "Erase: %08X\r\n", addr);
 
 	addr = addr & 0x7FFFFFFF;
 	if (QSPI_Driver_erase_subsector(addr) == QSPI_STATUS_OK)
-		UART_Printf(&UART1, "    OK\n");
+		UART_Printf(&UART1, "    OK\r\n");
 	else
-		UART_Printf(&UART1, "    FAILED\n");
+		UART_Printf(&UART1, "    FAILED\r\n");
 }
 
 void test_write_subsector(uint32_t addr)
 {
-	UART_Printf(&UART1, "Write: %08X\n", addr);
+	UART_Printf(&UART1, "Write: %08X\r\n", addr);
 
 	addr = addr & 0x7FFFFFFF;
 	if (QSPI_Driver_write(&buffer_test[0], addr, 64) == QSPI_STATUS_OK)
-		UART_Printf(&UART1, "    OK\n");
+		UART_Printf(&UART1, "    OK\r\n");
 	else
-		UART_Printf(&UART1, "    FAILED\n");
+		UART_Printf(&UART1, "    FAILED\r\n");
 }
 
 void test_read_subsector(uint32_t addr)
 {
-	UART_Printf(&UART1, "Read: %08X\n", addr);
+	UART_Printf(&UART1, "Read: %08X\r\n", addr);
 
 	addr = addr & 0x7FFFFFFF;
 	if (QSPI_Driver_read(&buffer_test[0], addr, 64) == QSPI_STATUS_OK)
@@ -1068,13 +1070,13 @@ void test_read_subsector(uint32_t addr)
 			UART_Printf(&UART1, "%02X ", buffer_test[i]);
 			if ((i % 16) == 15)
 			{
-				UART_Write(&UART1,'\n');
+				UART_Printf(&UART1,"\r\n");
 				HAL_Delay(10);
 			}
 		}
 	}
 	else
-		UART_Printf(&UART1, "    FAILED\n");
+		UART_Printf(&UART1, "    FAILED\r\n");
 }
 
 

@@ -42,13 +42,14 @@ __attribute__((constructor(101))) void premain()
   init();
 }
 
+
 /*
  * \brief Main entry point of Arduino application
  */
+
 int main(void)
 {
   initVariant();
-
   setup();
 
   for (;;) {

@@ -73,7 +73,7 @@ class SPIClassEx : public SPI_HandleTypeDef
 public:
 	SPIClassEx(ISPIClassInterface* intf = nullptr);
 
-	enum State
+	enum SPIState
 	{
 		UNDEF = -1,
 		READY,
@@ -142,7 +142,7 @@ private:
 	static void 		registerInstance(SPIClassEx* spi);
 	static void 		unregisterInstance(SPIClassEx* spi);
 
-	void				setState(State state, void* ptr = nullptr, size_t len = 0) { mState = state; mRecvPtr = ptr; mRecvLen = len; }
+	void				setState(SPIState state, void* ptr = nullptr, size_t len = 0) { mState = state; mRecvPtr = ptr; mRecvLen = len; }
 	void				setTimeout(uint32_t timeout); // ms
 	void				setCallback();
 
@@ -150,7 +150,7 @@ private:
 	void *				mRecvPtr;
 	size_t				mRecvLen;
 
-	State				mState;		// UNDEF, READY, PENDING
+	SPIState			mState;		// UNDEF, READY, PENDING
 	uint32_t			mTimestamp;
 	uint32_t			mTimeout;
 

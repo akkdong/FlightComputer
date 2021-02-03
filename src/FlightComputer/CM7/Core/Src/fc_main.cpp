@@ -63,7 +63,7 @@ void FlightComputer::setup(void)
 	Serial2.begin(9600);
 	Serial3.begin(115200);
 	delay(100);
-	Serial1.println("Hello world!\r\n");
+	Serial1.println("Hello world!");
 
 	epdc.begin();
 
@@ -76,80 +76,35 @@ void FlightComputer::setup(void)
 		{
 			if(QSPI_Driver_init() == QSPI_STATUS_OK)
 			{
-				Serial1.println("QSPI Driver initialized\r\n");
+				Serial1.println("QSPI Driver initialized");
 			}
 			else
 			{
-				Serial1.println("QSPI Driver initialize failed!!\r\n");
+				Serial1.println("QSPI Driver initialize failed!!");
 			}
 		}
 		else
 		{
-			Serial1.println("QSPI Driver have been ready\r\n");
+			Serial1.println("QSPI Driver have been ready");
 		}
 	}
 	else
 	{
-		Serial1.println("QSPI Driver locked\r\n");
+		Serial1.println("QSPI Driver locked");
 	}
 
-
+	//
 	if (SDRAM_Do_InitializeSequence() == HAL_OK)
 	{
-		Serial1.println("SDRAM initialized\r\n");
+		Serial1.println("SDRAM initialized");
 	}
 	else
 	{
-		Serial1.println("SDRAM initialize failed!!\r\n");
+		Serial1.println("SDRAM initialize failed!!");
 	}
 	delay(100);
 
-	{
-		volatile uint8_t* memPtr = (volatile uint8_t *)SDRAM_BANK_ADDR; // 0xD0000000
-		Serial1.println("Test SDRAM ====\r\n");
-		volatile uint8_t* tmpPtr = memPtr;
-		uint32_t data = 0x55;
-		{
-			uint32_t tickStart = HAL_GetTick();
-			for(uint32_t i = 0; i < 32 * 1024 * 1024; i++)
-				*tmpPtr++ = data;
-			Serial1.printf("Clear All: elapsed %d msec\r\n", HAL_GetTick() - tickStart);
-		}
-
-		Serial1.println("Write Data ");
-		tmpPtr = memPtr;
-		data = 0x55;
-		for(uint32_t i = 0; i < 32 * 1024 * 1024; i++)
-		{
-			if ((i % (1024 * 1024)) == 0)
-				Serial1.print(".");
-			*tmpPtr++ = data++;
-		}
-
-		Serial1.println("\r\nCompare Data ");
-		tmpPtr = memPtr;
-		data = 0x55;
-		uint8_t memOk = 1;
-		for(uint32_t i = 0; i < 32 * 1024 * 1024; i++)
-		{
-			if ((i % (1024 * 1024)) == 0)
-				Serial1.print(".");
-
-			uint8_t a = *tmpPtr;
-			uint8_t b = data;
-			if (a != b)
-			{
-				Serial1.printf("\r\nMemory corrupt at %08X: %02X, %02X\r\n", (unsigned int)i, a, b);
-				memOk = 0;
-				break;
-			}
-			tmpPtr++;
-			data++;
-		}
-		if (memOk)
-			Serial1.println("\r\nMemory compare passed!!\r\n");
-	}
-
+	//
 	keyPad.begin();
 }
 
@@ -237,26 +192,39 @@ void init(void)
 	/* Configure the system clock */
 	SystemClock_Config();
 
+
 	#if defined (USBCON) && defined(USBD_USE_CDC)
 	USBD_CDC_init();
 	#endif
 
+	// enable all gpio clock
+	__HAL_RCC_GPIOA_CLK_ENABLE();
+	__HAL_RCC_GPIOB_CLK_ENABLE();
+	__HAL_RCC_GPIOC_CLK_ENABLE();
+	__HAL_RCC_GPIOD_CLK_ENABLE();
+	__HAL_RCC_GPIOE_CLK_ENABLE();
+	__HAL_RCC_GPIOF_CLK_ENABLE();
+	__HAL_RCC_GPIOG_CLK_ENABLE();
+	__HAL_RCC_GPIOH_CLK_ENABLE();
+	__HAL_RCC_GPIOJ_CLK_ENABLE();
+	__HAL_RCC_GPIOK_CLK_ENABLE();
+
+	// initialize each peripherals
 	MX_FMC_Init();
 	MX_QUADSPI_Init();
 	MX_USB_DEVICE_Init();
 	MX_FATFS_Init();
-	//MX_SPI1_Init();
 
-
-	// turn-on powers
+	// set default power state
 	digitalWrite(PWR_EN_EXTRA, LOW);
 	digitalWrite(PWR_EN_PERIPH, LOW);
+	// set power-pin as output
 	pinMode(PWR_EN_EXTRA, OUTPUT);
 	pinMode(PWR_EN_PERIPH, OUTPUT);
+	// turn-on peripheral power
 	//digitalWrite(PWR_EN_EXTRA, HIGH);
 	digitalWrite(PWR_EN_PERIPH, HIGH);
-	delay(10);
-
+	delay(100);
 
 	// When system initialization is finished, Cortex-M7 will release Cortex-M4 by means of HSEM notification HW semaphore Clock enable
 	/*

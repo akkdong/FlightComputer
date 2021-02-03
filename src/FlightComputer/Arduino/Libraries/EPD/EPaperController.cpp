@@ -36,14 +36,12 @@ void EPaperController::begin()
 	pinMode(EINK_BUSY, OUTPUT);
 	pinMode(EINK_CMD, INPUT);
 
-	Serial1.println("==== 1");
-	mSPIDriver.begin(SPI1_Init);
-	Serial1.println("==== 2");
-	mSPIDriver.receive_IT();
-	Serial1.println("==== 3");
-
 	mLastCommand = UNKNOWN;
 	mState = WAIT_COMMAND;
+
+	mSPIDriver.begin(SPI1_Init);
+	mSPIDriver.receive_IT();
+
 	EPD_RESET_BUSY();
 }
 
@@ -89,10 +87,9 @@ void EPaperController::run()
 		case GET_DISPLAY : 			// 0x21
 			// Fill display info to buffer
 			// set send buffer
-			mSPIDriver.pTxBuffPtr = (uint8_t *)"\x80\x70\x71\x72\x73";
-			mSPIDriver.TxXferCount = 5;
 			mTimestamp = millis();
 			mState = SENDING;
+			mSPIDriver.transmit_IT((uint8_t *)"\x80\x70\x71\x72\x73", 5);
 			EPD_RESET_BUSY();
 			Serial1.println("start sending...");
 			break;
@@ -139,11 +136,11 @@ void EPaperController::run()
 				Serial1.println("receiving timeout!");
 			}
 		}
-		else
+		else // receive complete
 		{
 			// DEBUG!!
 			for (uint32_t i = 0; i < mRecvLen; i++)
-				Serial1.println(mTemp[i]);
+				Serial1.printf("RX[%02x]\r\n", mTemp[i]);
 
 			//
 			switch (mLastCommand)
@@ -168,6 +165,7 @@ void EPaperController::run()
 		if ((millis() - mTimestamp) > 1000)
 		{
 			mState = WAIT_COMMAND;
+			mSPIDriver.stopTransmit();
 			EPD_RESET_BUSY();
 			Serial1.println("sending timeout!");
 		}
@@ -269,65 +267,63 @@ void EPaperController::SPI1_Deinit(SPIClassEx* spi)
 
 void EPaperController::SPIDriver::receive_IT()
 {
-	SPI_HandleTypeDef* hspi = (SPI_HandleTypeDef *)this;
+	this->State = HAL_SPI_STATE_BUSY_RX;
+	this->ErrorCode = HAL_SPI_ERROR_NONE;
+	this->pTxBuffPtr = nullptr;
+	this->TxXferSize = 0;
+	this->TxXferCount = 0;
+	this->TxISR = nullptr;
 
-	hspi->State = HAL_SPI_STATE_BUSY_TX_RX;
-	hspi->ErrorCode = HAL_SPI_ERROR_NONE;
-	hspi->pTxBuffPtr = nullptr;
-	hspi->TxXferSize = 0;
-	hspi->TxXferCount = 0;
-	hspi->TxISR = nullptr;
+	this->pRxBuffPtr = nullptr;
+	this->RxXferSize = 0;
+	this->RxXferCount = 0;
+	this->RxISR = nullptr;
 
-	hspi->pRxBuffPtr = nullptr;
-	hspi->RxXferSize = 0;
-	hspi->RxXferCount = 0;
-	hspi->RxISR = nullptr;
+	MODIFY_REG(this->Instance->CR2, SPI_CR2_TSIZE, 0);
+	__HAL_SPI_ENABLE(this);
+	__HAL_SPI_ENABLE_IT(this, (SPI_IT_RXP | SPI_IT_OVR));
 
-	MODIFY_REG(hspi->Instance->CR2, SPI_CR2_TSIZE, 0);
-	__HAL_SPI_ENABLE(hspi);
 	// Transmit_IT
-	//__HAL_SPI_ENABLE_IT(hspi, (SPI_IT_EOT | SPI_IT_TXP | SPI_IT_UDR | SPI_IT_FRE | SPI_IT_MODF | SPI_IT_TSERF));
+	//__HAL_SPI_ENABLE_IT(this, (SPI_IT_EOT | SPI_IT_TXP | SPI_IT_UDR | SPI_IT_FRE | SPI_IT_MODF | SPI_IT_TSERF));
 	// Receive_IT
-	//__HAL_SPI_ENABLE_IT(hspi, (SPI_IT_EOT | SPI_IT_RXP | SPI_IT_OVR | SPI_IT_FRE | SPI_IT_MODF | SPI_IT_TSERF));
+	//__HAL_SPI_ENABLE_IT(this, (SPI_IT_EOT | SPI_IT_RXP | SPI_IT_OVR | SPI_IT_FRE | SPI_IT_MODF | SPI_IT_TSERF));
 	// TransmitReceive_IT
-	__HAL_SPI_ENABLE_IT(hspi, (SPI_IT_EOT | SPI_IT_RXP | SPI_IT_TXP | SPI_IT_DXP | SPI_IT_UDR | SPI_IT_OVR | SPI_IT_FRE | SPI_IT_MODF | SPI_IT_TSERF));
+	//__HAL_SPI_ENABLE_IT(this, (SPI_IT_EOT | SPI_IT_RXP | SPI_IT_TXP | SPI_IT_DXP | SPI_IT_UDR | SPI_IT_OVR | SPI_IT_FRE | SPI_IT_MODF | SPI_IT_TSERF));
 }
 
 void EPaperController::SPIDriver::abort_IT()
 {
-	SPI_HandleTypeDef* hspi = (SPI_HandleTypeDef *)this;
-
-	hspi->State = HAL_SPI_STATE_ABORT;
+	this->State = HAL_SPI_STATE_ABORT;
 
 	/* Disable SPI peripheral */
-	__HAL_SPI_DISABLE(hspi);
+	__HAL_SPI_DISABLE(this);
 
 	/* Disable ITs */
-	__HAL_SPI_DISABLE_IT(hspi, (SPI_IT_EOT | SPI_IT_TXP | SPI_IT_RXP | SPI_IT_DXP | SPI_IT_UDR | SPI_IT_OVR | SPI_IT_FRE | SPI_IT_MODF));
+	__HAL_SPI_DISABLE_IT(this, (SPI_IT_EOT | SPI_IT_TXP | SPI_IT_RXP | SPI_IT_DXP | SPI_IT_UDR | SPI_IT_OVR | SPI_IT_FRE | SPI_IT_MODF));
 
 	/* Clear the Status flags in the SR register */
-	__HAL_SPI_CLEAR_EOTFLAG(hspi);
-	__HAL_SPI_CLEAR_TXTFFLAG(hspi);
+	__HAL_SPI_CLEAR_EOTFLAG(this);
+	__HAL_SPI_CLEAR_TXTFFLAG(this);
 
 	/* Disable Tx DMA Request */
-	CLEAR_BIT(hspi->Instance->CFG1, SPI_CFG1_TXDMAEN | SPI_CFG1_RXDMAEN);
+	CLEAR_BIT(this->Instance->CFG1, SPI_CFG1_TXDMAEN | SPI_CFG1_RXDMAEN);
 
 	/* Clear the Error flags in the SR register */
-	__HAL_SPI_CLEAR_OVRFLAG(hspi);
-	__HAL_SPI_CLEAR_UDRFLAG(hspi);
-	__HAL_SPI_CLEAR_FREFLAG(hspi);
-	__HAL_SPI_CLEAR_MODFFLAG(hspi);
-	__HAL_SPI_CLEAR_SUSPFLAG(hspi);
+	__HAL_SPI_CLEAR_OVRFLAG(this);
+	__HAL_SPI_CLEAR_UDRFLAG(this);
+	__HAL_SPI_CLEAR_FREFLAG(this);
+	__HAL_SPI_CLEAR_MODFFLAG(this);
+	__HAL_SPI_CLEAR_SUSPFLAG(this);
 
 	#if (USE_SPI_CRC != 0U)
-	__HAL_SPI_CLEAR_CRCERRFLAG(hspi);
+	__HAL_SPI_CLEAR_CRCERRFLAG(this);
 	#endif /* USE_SPI_CRC */
 
-	hspi->TxXferCount = (uint16_t)0UL;
-	hspi->RxXferCount = (uint16_t)0UL;
+	this->TxXferCount = (uint16_t)0UL;
+	this->RxXferCount = (uint16_t)0UL;
 
 	/* Check error during Abort procedure */
-	if (hspi->ErrorCode == HAL_SPI_ERROR_ABORT)
+	if (this->ErrorCode == HAL_SPI_ERROR_ABORT)
 	{
 		/* return HAL_Error in case of error during Abort procedure */
 		//uint32_t errorcode = HAL_ERROR;
@@ -335,20 +331,37 @@ void EPaperController::SPIDriver::abort_IT()
 	else
 	{
 		/* Reset errorCode */
-		hspi->ErrorCode = HAL_SPI_ERROR_NONE;
+		this->ErrorCode = HAL_SPI_ERROR_NONE;
 	}
 
-    hspi->State = HAL_SPI_STATE_READY;
+	this->State = HAL_SPI_STATE_READY;
+}
+
+void EPaperController::SPIDriver::transmit_IT(uint8_t* bufPtr, uint16_t bufLen)
+{
+	this->pTxBuffPtr = bufPtr;
+	this->TxXferSize = bufLen;
+	this->TxXferCount = bufLen;
+
+	__HAL_SPI_ENABLE_IT(this, (SPI_IT_TXP | SPI_IT_UDR));
+}
+
+void EPaperController::SPIDriver::stopTransmit()
+{
+	__HAL_SPI_DISABLE_IT(this, (SPI_IT_TXP | SPI_IT_UDR));
+
+	this->pTxBuffPtr = nullptr;
+	this->TxXferSize = 0;
+	this->TxXferCount = 0;
 }
 
 void EPaperController::SPIDriver::IRQHandler()
 {
-	SPI_HandleTypeDef* hspi = (SPI_HandleTypeDef *)this;
-
-	uint32_t itsource = hspi->Instance->IER;
-	uint32_t itflag   = hspi->Instance->SR;
+	uint32_t itsource = this->Instance->IER;
+	uint32_t itflag   = this->Instance->SR;
 	uint32_t trigger  = itsource & itflag;
 
+#if 0
 	/* SPI in mode Transmitter and Receiver ------------------------------------*/
 	if (HAL_IS_BIT_CLR(trigger, SPI_FLAG_OVR) && HAL_IS_BIT_CLR(trigger, SPI_FLAG_UDR) && HAL_IS_BIT_SET(trigger, SPI_FLAG_DXP))
 	{
@@ -370,7 +383,16 @@ void EPaperController::SPIDriver::IRQHandler()
 		this->TxISR();
 		return;
 	}
-
+#else
+	if (HAL_IS_BIT_SET(trigger, SPI_FLAG_RXP))
+	{
+		this->RxHandler();
+	}
+	if (HAL_IS_BIT_SET(trigger, SPI_FLAG_TXP))
+	{
+		this->TxHandler();
+	}
+#endif
 
 
 	/* SPI in Error Treatment --------------------------------------------------*/
@@ -379,29 +401,29 @@ void EPaperController::SPIDriver::IRQHandler()
 		/* SPI Overrun error interrupt occurred ----------------------------------*/
 		if ((trigger & SPI_FLAG_OVR) != 0UL)
 		{
-			SET_BIT(hspi->ErrorCode, HAL_SPI_ERROR_OVR);
-			__HAL_SPI_CLEAR_OVRFLAG(hspi);
+			SET_BIT(this->ErrorCode, HAL_SPI_ERROR_OVR);
+			__HAL_SPI_CLEAR_OVRFLAG(this);
 		}
 
 		/* SPI Mode Fault error interrupt occurred -------------------------------*/
 		if ((trigger & SPI_FLAG_MODF) != 0UL)
 		{
-			SET_BIT(hspi->ErrorCode, HAL_SPI_ERROR_MODF);
-			__HAL_SPI_CLEAR_MODFFLAG(hspi);
+			SET_BIT(this->ErrorCode, HAL_SPI_ERROR_MODF);
+			__HAL_SPI_CLEAR_MODFFLAG(this);
 		}
 
 		/* SPI Frame error interrupt occurred ------------------------------------*/
 		if ((trigger & SPI_FLAG_FRE) != 0UL)
 		{
-			SET_BIT(hspi->ErrorCode, HAL_SPI_ERROR_FRE);
-			__HAL_SPI_CLEAR_FREFLAG(hspi);
+			SET_BIT(this->ErrorCode, HAL_SPI_ERROR_FRE);
+			__HAL_SPI_CLEAR_FREFLAG(this);
 		}
 
 		/* SPI Underrun error interrupt occurred ------------------------------------*/
 		if ((trigger & SPI_FLAG_UDR) != 0UL)
 		{
-			SET_BIT(hspi->ErrorCode, HAL_SPI_ERROR_UDR);
-			__HAL_SPI_CLEAR_UDRFLAG(hspi);
+			SET_BIT(this->ErrorCode, HAL_SPI_ERROR_UDR);
+			__HAL_SPI_CLEAR_UDRFLAG(this);
 		}
 
 #if 0
@@ -427,37 +449,33 @@ void EPaperController::SPIDriver::IRQHandler()
 	}
 }
 
-void EPaperController::SPIDriver::RxISR()
+void EPaperController::SPIDriver::RxHandler()
 {
-	SPI_HandleTypeDef* hspi = (SPI_HandleTypeDef *)this;
-
 	/* Receive data in 8 Bit mode */
-	volatile uint8_t data = (*(__IO uint8_t *)&hspi->Instance->RXDR);
+	volatile uint8_t data = *((__IO uint8_t *)&this->Instance->RXDR);
 	mControllerPtr->OnReceive(data);
 }
 
-void EPaperController::SPIDriver::TxISR()
+void EPaperController::SPIDriver::TxHandler()
 {
-	SPI_HandleTypeDef* hspi = (SPI_HandleTypeDef *)this;
-
-	if (!EPD_IS_BUSY() && hspi->TxXferCount > 0 && hspi->pTxBuffPtr)
+	if (/*!EPD_IS_BUSY() &&*/ this->TxXferCount > 0 && this->pTxBuffPtr)
 	{
-		*(__IO uint8_t *)&hspi->Instance->TXDR = *((uint8_t *)hspi->pTxBuffPtr++);
-		Serial1.printf("<%d>\r\n", hspi->TxXferCount);
-		hspi->TxXferCount--;
+		uint8_t data = *((uint8_t *)this->pTxBuffPtr++);
+		*((__IO uint8_t *)&this->Instance->TXDR) = data;
+		Serial1.printf("<%d>: %02X\r\n", this->TxXferCount, data);
+		this->TxXferCount--;
 
-		if (hspi->TxXferCount == 0)
+		if (this->TxXferCount == 0)
 		{
-			hspi->pTxBuffPtr = nullptr;
+			this->stopTransmit();
 			mControllerPtr->OnSendComplete();
 		}
 	}
 	else
 	{
-		static uint8_t data = 0x01;
 		// send dummy-data
-		*(__IO uint8_t *)&hspi->Instance->TXDR = data;
+		uint8_t data = 0x00;
+		*((__IO uint8_t *)&this->Instance->TXDR) = data;
 		Serial1.printf("[%02X]\r\n", data);
-		data++;
 	}
 }

@@ -57,11 +57,14 @@ public:
 		void 			receive_IT();
 		void			abort_IT();
 
+		void			transmit_IT(uint8_t* bufPtr, uint16_t bufLen);
+		void			stopTransmit();
+
 	protected:
 		virtual void 	IRQHandler();
 
-		void			RxISR();
-		void			TxISR();
+		void			RxHandler();
+		void			TxHandler();
 
 	protected:
 		EPaperController*	mControllerPtr;

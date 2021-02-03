@@ -29,6 +29,7 @@
 #include "usb_host.h"
 #include "gpio.h"
 #include "fmc.h"
+#include "sdram_drv.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -134,14 +135,16 @@ Error_Handler();
   MX_USART1_UART_Init();
   MX_USB_DEVICE_Init();
   MX_FATFS_Init();
-  MX_ADC3_Init();
+  //MX_ADC3_Init();
   MX_I2C1_Init();
   MX_SPI4_Init();
   MX_USART2_UART_Init();
   MX_USART3_UART_Init();
   MX_USB_HOST_Init();
   /* USER CODE BEGIN 2 */
-
+  HAL_GPIO_WritePin(PWR_EN_PERIPH_GPIO_Port, PWR_EN_PERIPH_Pin, GPIO_PIN_SET);
+  HAL_Delay(100);
+  SDRAM_Do_InitializeSequence(&hsdram1);
   /* USER CODE END 2 */
 
   /* Infinite loop */
