@@ -74,35 +74,35 @@ public:
 
 
 public:
-	void				begin();
-	void				end();
+	void					begin();
+	void					end();
 
-	void				run();
-
-protected:
-	virtual void		OnReceive(uint8_t data);
-	virtual void		OnSendComplete();
-	virtual void		OnError(uint32_t error);
-
+	void					run();
 
 protected:
-	static void 		SPI1_Init(SPIClassEx* spi);
-	static void 		SPI1_Deinit(SPIClassEx* spi);
+	virtual void			OnReceive(uint8_t data);
+	virtual void			OnSendComplete();
+	virtual void			OnError(uint32_t error);
+
+
+protected:
+	static void 			SPI1_Init(SPIClassEx* spi);
+	static void 			SPI1_Deinit(SPIClassEx* spi);
 
 private:
-	SPIDriver			mSPIDriver;
-	EPaperDisplay		mDisp;
+	SPIDriver				mSPIDriver;
+	EPaperDisplay			mDisp;
 
-	volatile EPDC_Command mLastCommand;
-	volatile EPDC_State	mState;
-	uint32_t			mTimestamp;
+	volatile EPDC_Command	mLastCommand;
+	volatile EPDC_State		mState;
+	uint32_t				mTimestamp;
 
-	volatile uint8_t *	mRecvPtr;
-	volatile uint32_t	mRecvLen;
-	volatile uint32_t	mRecvExpect;
+	volatile uint8_t *		mRecvPtr;
+	volatile uint32_t		mRecvLen;
+	volatile uint32_t		mRecvExpect;
 
-	volatile uint8_t *	mSendPtr;
-	volatile uint32_t	mSendLen;
+	volatile uint8_t *		mSendPtr;
+	volatile uint32_t		mSendLen;
 
 	// Display
 	// WIDTH, HEIGHT, BPP
@@ -110,7 +110,7 @@ private:
 	// Window
 	// sx, sy, ex, ey
 	// addr, bytes
-	uint8_t				mTemp[10];
+	uint8_t					mTemp[10];
 };
 
 

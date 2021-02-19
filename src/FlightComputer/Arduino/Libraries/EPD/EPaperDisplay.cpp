@@ -11,6 +11,9 @@
 
 #define EPD_WIDTH     		800
 #define EPD_HEIGHT    		600
+#define BPP_MONO			1
+#define BPP_16GRAY			4
+
 #define CLK_DELAY_US  		0
 #define VCLK_DELAY_US 		1
 #define OUTPUT_DELAY_US   	2
@@ -20,16 +23,6 @@
 #define PIXEL2EPDCMD(x)		(((x) == 1) ? 0b00000010 : (((x) == 0) ? 0b00000001 : 0b00000011))
 
 
-
-
-
-/////////////////////////////////////////////////////////////////////////////////////////////////
-// class EPaperFrameBuffer
-
-EPaperFrameBuffer::EPaperFrameBuffer(int width, int height, int bpp)
-{
-
-}
 
 
 
@@ -127,19 +120,18 @@ const uint8_t sz_clear_cycles = sizeof(clear_cycles)/sizeof(uint8_t);
 // class EPaperDisplay
 
 EPaperDisplay::EPaperDisplay()
-	: mPrimary(800, 600, 1)
-	, mSecondary(800, 600, 1)
+	: mPrimary(EPD_WIDTH, EPD_HEIGHT, BPP_MONO)
+	, mSecondary(EPD_WIDTH, EPD_HEIGHT, BPP_MONO)
+	, mGrayscale(EPD_WIDTH, EPD_HEIGHT, BPP_16GRAY)
 {
-	uint8_t* ptr = mPrimary;
-	if (ptr)
-		ptr[0] = 0;
-
 	// DATA Pin: GPIOD [12, 11, 7, 6, 5, 4, 3, 2]
 	for (uint32_t i = 0; i < 256; i++)
 	{
 		uint32_t mask = ((i & 0b00111111) << 2) | (((i & 0b11000000) >> 6) << 11);
 		pinLUT[i] = (((~mask) & 0b0001100011111100) << GPIO_NUMBER) | mask;
 	}
+
+	mActivePtr = &mPrimary;
 }
 
 

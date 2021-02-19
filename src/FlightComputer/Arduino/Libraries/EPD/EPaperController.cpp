@@ -103,9 +103,9 @@ void EPaperController::run()
 			Serial1.println("start receiving...");
 			break;
 		case START_DATA_TRANSMIT : 	// 0x23
-			//mRecvPtr = allocFrameBuffer(w, h, bpp);
-			//mRecvLen = 0;
-			//mRecvExpect = size;
+			mRecvPtr = (volatile uint8_t *)mDisp.getOffline()->getPtr();
+			mRecvLen = mDisp.getOffline()->getSize();
+			mRecvExpect = mRecvLen;
 			mTimestamp = millis();
 			mState = RECEIVING;
 			EPD_RESET_BUSY();
@@ -138,18 +138,17 @@ void EPaperController::run()
 		}
 		else // receive complete
 		{
-			// DEBUG!!
-			for (uint32_t i = 0; i < mRecvLen; i++)
-				Serial1.printf("RX[%02x]\r\n", mTemp[i]);
-
 			//
 			switch (mLastCommand)
 			{
 			case SET_WINDOW:
 				// update window-info
+				for (uint32_t i = 0; i < mRecvLen; i++)
+					Serial1.printf("RX[%02x]\r\n", mTemp[i]);
 				break;
 			case START_DATA_TRANSMIT:
-				// update display
+				mDisp.swap(); // swap on/offline buffer & refresh
+				mDisp.refresh();
 				break;
 			default:
 				break;

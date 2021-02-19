@@ -8,10 +8,12 @@
 #ifndef LIBRARIES_EPD_EPAPERDISPLAY_H_
 #define LIBRARIES_EPD_EPAPERDISPLAY_H_
 
-
 #include "stm32h7xx_hal.h"
+#include "EPaperFrameBuffer.h"
+
 
 #define GPIO_NUMBER           (16U)
+
 
 
 ////////////////////////////////////////////////////////////////////////////////////////
@@ -40,26 +42,6 @@
 
 
 
-/////////////////////////////////////////////////////////////////////////////////////////////////
-// class EPaperFrameBuffer
-
-class EPaperFrameBuffer
-{
-public:
-	EPaperFrameBuffer(int width, int height, int bpp = 1);
-
-public:
-	operator uint8_t *() { return (uint8_t *)mBuffPtr; }
-
-private:
-	void *			mBuffPtr;
-	int				mBuffLen;
-
-	int				mWidth;
-	int				mHeight;
-	int				mBitPerPixel;
-};
-
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 // class EPaperDisplay
@@ -82,9 +64,15 @@ public:
 	void 					drawMono2(const uint8_t* img_bytes);
 	void 					drawPartial(const uint8_t* new_bytes, const uint8_t* old_bytes);
 
-	EPaperFrameBuffer&		getPrimary();
-	EPaperFrameBuffer&		getSecondary();
+	EPaperFrameBuffer &		getPrimary() { return mPrimary; }
+	EPaperFrameBuffer &		getSecondary() { return mSecondary; }
+	EPaperFrameBuffer &		getGrayscale() { return mGrayscale; }
 
+	EPaperFrameBuffer *		getOnline() { return mActivePtr; }
+	EPaperFrameBuffer *		getOffline() { return mActivePtr == &mPrimary ? &mSecondary : &mPrimary; }
+
+	void					swap() {}
+	void					refresh(bool fast = true) {}
 
 protected:
 
@@ -100,6 +88,9 @@ protected:
 protected:
 	EPaperFrameBuffer		mPrimary;
 	EPaperFrameBuffer		mSecondary;
+	EPaperFrameBuffer		mGrayscale;
+
+	EPaperFrameBuffer *		mActivePtr;
 };
 
 
