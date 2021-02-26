@@ -519,7 +519,7 @@ Wire Wire Line
 	3100 1500 2150 1500
 Wire Wire Line
 	3100 1600 2150 1600
-Text Label 2200 1500 0    50   ~ 0
+Text Label 10350 4200 2    50   ~ 0
 SPI1_NSS
 Text Label 2200 1600 0    50   ~ 0
 SPI1_SCK
@@ -689,7 +689,7 @@ Text Label 10300 1600 2    50   ~ 0
 SPI4_MISO
 Text Label 10300 1700 2    50   ~ 0
 SPI4_MOSI
-Text Label 10300 4200 2    50   ~ 0
+Text Label 10350 4400 2    50   ~ 0
 PMIC_WAKEUP
 Text Label 10300 4300 2    50   ~ 0
 PMIC_PWRUP
@@ -721,7 +721,7 @@ Text HLabel 2150 1300 0    50   Input ~ 0
 USART2_TX
 Text HLabel 2150 1400 0    50   Input ~ 0
 USART2_RX
-Text HLabel 2150 1500 0    50   Input ~ 0
+Text HLabel 10350 4200 2    50   Input ~ 0
 SPI1_nCS
 Text HLabel 2150 1600 0    50   Input ~ 0
 SPI1_SCLK
@@ -835,7 +835,7 @@ Text HLabel 10350 4700 2    50   Input ~ 0
 FMC_nCAS
 Text HLabel 10350 4300 2    50   Input ~ 0
 PMIC_PWRUP
-Text HLabel 10350 4200 2    50   Input ~ 0
+Text HLabel 10350 4400 2    50   Input ~ 0
 PMIC_WAKEUP
 Text HLabel 10350 4100 2    50   Input ~ 0
 PMIC_VCOM
@@ -1505,21 +1505,8 @@ Text Label 7600 6450 1    50   ~ 0
 PWR_LED1
 Text Label 8250 6450 1    50   ~ 0
 PWR_LED2
-$Comp
-L Connector:TestPoint_Alt TP?
-U 1 1 5FCA08F9
-P 10250 4400
-AR Path="/5F5976A1/5FCA08F9" Ref="TP?"  Part="1" 
-AR Path="/5F741CFB/5FCA08F9" Ref="TP25"  Part="1" 
-F 0 "TP25" V 10250 4600 50  0000 L CNN
-F 1 "PG12" V 10200 4200 50  0000 L CNN
-F 2 "TestPoint:TestPoint_Pad_D1.0mm" H 10450 4400 50  0001 C CNN
-F 3 "~" H 10450 4400 50  0001 C CNN
-	1    10250 4400
-	0    1    1    0   
-$EndComp
 Wire Wire Line
-	10250 4400 9600 4400
+	10350 4400 9600 4400
 Wire Wire Line
 	4700 4600 5600 4600
 Wire Wire Line
@@ -1643,6 +1630,8 @@ Wire Wire Line
 	9650 6100 8850 6100
 Wire Wire Line
 	9400 5500 8850 5500
+Text GLabel 2150 1500 0    50   Input ~ 0
+VARIO_BEEP
 Wire Bus Line
 	1800 7250 1800 7700
 Wire Bus Line
