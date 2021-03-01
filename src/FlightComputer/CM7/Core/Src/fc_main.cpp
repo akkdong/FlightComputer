@@ -25,6 +25,10 @@
 #define HSEM_ID_0 (0U) /* HW semaphore 0*/
 #endif
 
+HardwareSerial& Debug = Serial1;
+HardwareSerial& GPS = Serial2;
+HardwareSerial& RPI = Serial3;
+
 
 class FlightComputer
 {
@@ -44,7 +48,16 @@ protected:
 	EPaperController	epdc;
 
 	uint8_t				data[64];
+
+public:
+	static bool			flash_ok;
+	static bool			sdram_ok;
 };
+
+
+bool FlightComputer::flash_ok = false;
+bool FlightComputer::sdram_ok = false;
+
 
 FlightComputer::FlightComputer()
 {
@@ -59,52 +72,21 @@ void FlightComputer::setup(void)
 	digitalWrite(PWR_LED1, LOW);
 	digitalWrite(PWR_LED2, HIGH);
 
-	Serial1.begin(115200);
-	Serial2.begin(9600);
+	Debug.begin(115200);
+	GPS.begin(9600);
 	Serial3.begin(115200);
 	delay(100);
-	Serial1.println("Hello world!");
+	Debug.println("Start Flight computer");
 
+	// device check
+	if (!flash_ok)
+		Debug.println("[DEBUG] Flash initialization failed.");
+	if (!sdram_ok)
+		Debug.println("[DEBUG] SDRAM initialization failed.");
+
+
+	//
 	epdc.begin();
-
-
-
-	//
-	if (!QSPI_Driver_locked())
-	{
-		if(!QSPI_Driver_state())
-		{
-			if(QSPI_Driver_init() == QSPI_STATUS_OK)
-			{
-				Serial1.println("QSPI Driver initialized");
-			}
-			else
-			{
-				Serial1.println("QSPI Driver initialize failed!!");
-			}
-		}
-		else
-		{
-			Serial1.println("QSPI Driver have been ready");
-		}
-	}
-	else
-	{
-		Serial1.println("QSPI Driver locked");
-	}
-
-	//
-	if (SDRAM_Do_InitializeSequence() == HAL_OK)
-	{
-		Serial1.println("SDRAM initialized");
-	}
-	else
-	{
-		Serial1.println("SDRAM initialize failed!!");
-	}
-	delay(100);
-
-	//
 	keyPad.begin();
 }
 
@@ -113,15 +95,18 @@ void FlightComputer::loop()
 	uint32_t tick = millis();
 	while(1)
 	{
-		if (Serial1.available())
-			Serial1.write(Serial1.read());
-		//if (Serial2.available())
-		//	Serial1.write(Serial2.read());
-		if (Serial3.available())
+		// [TEST] echo Debug console
+		if (Debug.available())
+			Debug.write(Debug.read());
+		// [TEST] forward GPS to Debug console
+		//if (GPS.available())
+		//	Debug.write(GPS.read());
+		// [TEST] echo RPI & forward to Debug console
+		if (RPI.available())
 		{
-			int ch = Serial3.read();
-			Serial1.write(ch);
-			Serial3.write(ch);
+			int ch = RPI.read();
+			Debug.write(ch);
+			RPI.write(ch);
 		}
 
 		if ((millis() - tick) > 1000)
@@ -224,6 +209,45 @@ void init(void)
 	// turn-on peripheral power
 	//digitalWrite(PWR_EN_EXTRA, HIGH);
 	digitalWrite(PWR_EN_PERIPH, HIGH);
+	delay(100);
+
+	//Serial1.begin(115200);
+
+	// initialize Flash
+	if (!QSPI_Driver_locked())
+	{
+		if(!QSPI_Driver_state())
+		{
+			if(QSPI_Driver_init() == QSPI_STATUS_OK)
+			{
+				//Serial1.println("QSPI Driver initialized");
+				FlightComputer::flash_ok = true;
+			}
+			else
+			{
+				//Serial1.println("QSPI Driver initialize failed!!");
+			}
+		}
+		else
+		{
+			//Serial1.println("QSPI Driver have been ready");
+		}
+	}
+	else
+	{
+		//Serial1.println("QSPI Driver locked");
+	}
+
+	// initialize SDRAM
+	if (SDRAM_Do_InitializeSequence() == HAL_OK)
+	{
+		//Serial1.println("SDRAM initialized");
+		FlightComputer::sdram_ok = true;
+	}
+	else
+	{
+		//Serial1.println("SDRAM initialize failed!!");
+	}
 	delay(100);
 
 	// When system initialization is finished, Cortex-M7 will release Cortex-M4 by means of HSEM notification HW semaphore Clock enable
