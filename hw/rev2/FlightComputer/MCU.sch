@@ -1578,19 +1578,6 @@ Wire Wire Line
 Wire Wire Line
 	10200 5700 10200 5500
 $Comp
-L Jumper:SolderJumper_2_Open JP?
-U 1 1 603D9E50
-P 9800 5900
-AR Path="/5F741CFB/5F7A3EBB/603D9E50" Ref="JP?"  Part="1" 
-AR Path="/5F741CFB/603D9E50" Ref="JP15"  Part="1" 
-F 0 "JP15" H 9650 5950 50  0000 C CNN
-F 1 "BYPASS" H 10000 5950 50  0000 C CNN
-F 2 "FlightComputer_Library:Jumper_0402_1005Metric" H 9800 5900 50  0001 C CNN
-F 3 "~" H 9800 5900 50  0001 C CNN
-	1    9800 5900
-	1    0    0    -1  
-$EndComp
-$Comp
 L Device:R_US R?
 U 1 1 603DA538
 P 9800 6100
@@ -1607,8 +1594,6 @@ $EndComp
 Wire Wire Line
 	10550 6100 10200 6100
 Wire Wire Line
-	9950 5900 10200 5900
-Wire Wire Line
 	10200 5900 10200 6100
 Connection ~ 10200 6100
 Wire Wire Line
@@ -1617,8 +1602,6 @@ Wire Wire Line
 	9650 5700 9400 5700
 Wire Wire Line
 	9400 5700 9400 5900
-Wire Wire Line
-	9400 5900 9650 5900
 Wire Wire Line
 	9650 5500 9400 5500
 Wire Wire Line
@@ -1632,6 +1615,8 @@ Wire Wire Line
 	9400 5500 8850 5500
 Text GLabel 2150 1500 0    50   Input ~ 0
 VARIO_BEEP
+Wire Wire Line
+	9400 5900 10200 5900
 Wire Bus Line
 	1800 7250 1800 7700
 Wire Bus Line
