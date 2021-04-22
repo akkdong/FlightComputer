@@ -61,10 +61,10 @@ bool EPaperPMIC::init()
 
     mWire.beginTransmission(PMIC_ADDR);
     mWire.write(PMIC_REG_UPSEQ0);
-    mWire.write(B00011011); // Power up seq.
-    mWire.write(B00000000); // Power up delay (3mS per rail)
-    mWire.write(B00011011); // Power down seq.
-    mWire.write(B00000000); // Power down delay (6mS per rail)
+    mWire.write(0b00011011); // Power up seq.
+    mWire.write(0b00000000); // Power up delay (3mS per rail)
+    mWire.write(0b00011011); // Power down seq.
+    mWire.write(0b00000000); // Power down delay (6mS per rail)
     mWire.endTransmission();
     delay(10);
 
@@ -82,7 +82,7 @@ void EPaperPMIC::turnOnPower()
 
     mWire.beginTransmission(PMIC_ADDR);
     mWire.write(PMIC_REG_ENABLE);
-    mWire.write(B10111111);
+    mWire.write(0b10111111);
     mWire.endTransmission();
 }
 

@@ -489,7 +489,66 @@ void cmd_process(char* str)
 	}
 	else if (strcmp(cmd, "epd") == 0)
 	{
-		if (strcmp(param1, "clear") == 0)
+		if (strcmp(param1, "pmic") == 0)
+		{
+			if (strcmp(param2, "init") == 0)
+			{
+				HAL_GPIO_WritePin(PMIC_WAKEUP_GPIO_Port, PMIC_WAKEUP_Pin, GPIO_PIN_SET);
+			    HAL_Delay(10);
+
+			    // power up/down sequence
+				uint8_t reg = REG_UPSEQ0;
+				uint8_t val[] = { 0b00011011, 0b00000000, 0b00011011, 0b00000000 };
+				HAL_I2C_Mem_Write(&hi2c1, PMIC_ADDR, reg, I2C_MEMADD_SIZE_8BIT, &val[0], 4, 1000);
+				// vcom voltage: -1.5v
+				reg = REG_VCOM1;
+				val[0] = 0b10010110;
+				HAL_I2C_Mem_Write(&hi2c1, PMIC_ADDR, reg, I2C_MEMADD_SIZE_8BIT, &val[0], 1, 1000);
+
+				HAL_Delay(10);
+			    HAL_GPIO_WritePin(PMIC_WAKEUP_GPIO_Port, PMIC_WAKEUP_Pin, GPIO_PIN_RESET);
+			}
+			else if (strcmp(param2, "on") == 0)
+			{
+				HAL_GPIO_WritePin(PMIC_WAKEUP_GPIO_Port, PMIC_WAKEUP_Pin, GPIO_PIN_SET);
+				HAL_Delay(1);
+				HAL_GPIO_WritePin(PMIC_PWRUP_GPIO_Port, PMIC_PWRUP_Pin, GPIO_PIN_SET);
+
+				uint8_t reg = REG_ENABLE;
+				uint8_t val = 0b10111111;
+				HAL_I2C_Mem_Write(&hi2c1, PMIC_ADDR, reg, I2C_MEMADD_SIZE_8BIT, &val, 1, 1000);
+
+				HAL_GPIO_WritePin(PMIC_VCOM_GPIO_Port, PMIC_VCOM_Pin, GPIO_PIN_SET);
+
+				// check power good
+				uint8_t data = 0;
+				uint32_t lastTick = HAL_GetTick();
+
+				do
+				{
+					HAL_Delay(1);
+					HAL_I2C_Mem_Read(&hi2c1, PMIC_ADDR, REG_PG, I2C_MEMADD_SIZE_8BIT, &data, 1, 1000);
+					UART_Printf(&UART1, "Reg(#%02X) --> %02X\r\n", REG_PG, val);
+
+				} while (data != 0b11111010 && (HAL_GetTick() - lastTick) < 250);
+
+				UART_Printf(&UART1, "epd pimic on: %s\r\n", data == 0b11111010 ? "OK" : "FAILED");
+			}
+			else if (strcmp(param2, "off") == 0)
+			{
+				HAL_GPIO_WritePin(PMIC_VCOM_GPIO_Port, PMIC_VCOM_Pin, GPIO_PIN_RESET);
+				HAL_Delay(6);
+				HAL_GPIO_WritePin(PMIC_PWRUP_GPIO_Port, PMIC_PWRUP_Pin, GPIO_PIN_RESET);
+				HAL_GPIO_WritePin(PMIC_WAKEUP_GPIO_Port, PMIC_WAKEUP_Pin, GPIO_PIN_RESET);
+
+				UART_Printf(&UART1, "epd pmic off!\r\n");
+			}
+			else
+			{
+				UART_Printf(&UART1, "Unknown command: %s, %s, %s\r\n", cmd, param1, param2);
+			}
+		}
+		else if (strcmp(param1, "clear") == 0)
 		{
 			uint32_t lastTick = HAL_GetTick();
 			EPD_ClearScreen();
@@ -510,7 +569,7 @@ void cmd_process(char* str)
 		}
 		else if (strcmp(param1, "mono") == 0)
 		{
-			//
+			// param2: 0 ~ 5
 			int type = param2 ? parseNumber(param2) : 0;
 			uint8_t* imageDst = getOfflineImage(type);
 
@@ -521,7 +580,7 @@ void cmd_process(char* str)
 		}
 		else if (strcmp(param1, "mono2") == 0)
 		{
-			//
+			// param2: 0 ~ 5
 			int type = param2 ? parseNumber(param2) : 0;
 			uint8_t* imageDst = getOfflineImage(type);
 
@@ -532,6 +591,7 @@ void cmd_process(char* str)
 		}
 		else if (strcmp(param1, "fast") == 0)
 		{
+			// param2: 0 ~ 5
 			int type = param2 ? parseNumber(param2) : 0;
 			uint8_t* imageDst = getOfflineImage(type);
 
@@ -936,7 +996,7 @@ void test_dump(void)
 			HAL_Delay(10);
 		}
 	}
-	UART_Write(&UART1,'\r\n');
+	UART_Write(&UART1,"\r\n");
 
 	QSPI_Driver_read(buffer_test, 0x00001F0, 32);
 	for (int i = 0; i< 32; i++)
@@ -948,7 +1008,7 @@ void test_dump(void)
 			HAL_Delay(10);
 		}
 	}
-	UART_Write(&UART1,'\r\n');
+	UART_Write(&UART1,"\r\n");
 
 	//
 	QSPI_Driver_read(buffer_test, 0x0000800, 32);
@@ -971,12 +1031,12 @@ void test_dump(void)
 			UART_Printf(&UART1, "%02X ", buffer_test[i]);
 			if ((i % 16) == 15)
 			{
-				UART_Printf(&UART1,""\r\n");
+				UART_Printf(&UART1,"\r\n");
 				HAL_Delay(10);
 			}
 		}
 
-		UART_Printf(&UART1,""\r\n");
+		UART_Printf(&UART1,"\r\n");
 	}
 	else
 	{
