@@ -10,6 +10,7 @@
 
 #include "stm32h7xx_hal.h"
 #include "EPaperFrameBuffer.h"
+#include "EPaperPMIC.h"
 
 
 #define GPIO_NUMBER           (16U)
@@ -86,11 +87,15 @@ protected:
 
 
 protected:
+	//
 	EPaperFrameBuffer		mPrimary;
 	EPaperFrameBuffer		mSecondary;
 	EPaperFrameBuffer		mGrayscale;
 
 	EPaperFrameBuffer *		mActivePtr;
+
+	//
+	EPaperPMIC				mEPaperPMIC;
 };
 
 

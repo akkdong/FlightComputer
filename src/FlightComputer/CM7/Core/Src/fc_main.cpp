@@ -207,7 +207,7 @@ void init(void)
 	pinMode(PWR_EN_EXTRA, OUTPUT);
 	pinMode(PWR_EN_PERIPH, OUTPUT);
 	// turn-on peripheral power
-	//digitalWrite(PWR_EN_EXTRA, HIGH);
+	digitalWrite(PWR_EN_EXTRA, HIGH);
 	digitalWrite(PWR_EN_PERIPH, HIGH);
 	delay(100);
 

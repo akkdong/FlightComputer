@@ -137,6 +137,10 @@ EPaperDisplay::EPaperDisplay()
 
 void EPaperDisplay::begin(void)
 {
+	//
+	mEPaperPMIC.init();
+
+	//
 	EPD_Reset_GMODE();
 	EPD_Reset_CKV();
 	EPD_Reset_CL();
