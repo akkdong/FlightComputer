@@ -61,15 +61,21 @@ bool EPaperPMIC::init()
 
     mWire.beginTransmission(PMIC_ADDR);
     mWire.write(PMIC_REG_UPSEQ0);
-    mWire.write(0b00011011); // Power up seq.
+    mWire.write(0b11100100); // Power up seq.
     mWire.write(0b00000000); // Power up delay (3mS per rail)
     mWire.write(0b00011011); // Power down seq.
     mWire.write(0b00000000); // Power down delay (6mS per rail)
     mWire.endTransmission();
     delay(10);
 
-    digitalWrite(PMIC_WAKEUP, LOW);
+    mWire.beginTransmission(PMIC_ADDR);
+    mWire.write(PMIC_REG_VCOM1);
+    mWire.write(0b10010110); // vcom voltage: -1.5v, 150
+    mWire.endTransmission();
+    delay(10);
 
+    // suspend
+    digitalWrite(PMIC_WAKEUP, LOW);
 
     return true;
 }

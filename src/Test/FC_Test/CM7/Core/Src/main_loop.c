@@ -497,8 +497,10 @@ void cmd_process(char* str)
 			    HAL_Delay(10);
 
 			    // power up/down sequence
+			    // up: VNEG(-15) -> VEE(-20) -> VPOS(+15) -> VDD(+22)
+			    // dn: VDD(+22) -> VPOS(+15) -> VEE(-20) -> VNEG(-15)
 				uint8_t reg = REG_UPSEQ0;
-				uint8_t val[] = { 0b00011011, 0b00000000, 0b00011011, 0b00000000 };
+				uint8_t val[] = { 0b11100100, 0b00000000, 0b00011011, 0b00000000 };
 				HAL_I2C_Mem_Write(&hi2c1, PMIC_ADDR, reg, I2C_MEMADD_SIZE_8BIT, &val[0], 4, 1000);
 				// vcom voltage: -1.5v
 				reg = REG_VCOM1;
@@ -996,7 +998,7 @@ void test_dump(void)
 			HAL_Delay(10);
 		}
 	}
-	UART_Write(&UART1,"\r\n");
+	UART_Printf(&UART1,"\r\n");
 
 	QSPI_Driver_read(buffer_test, 0x00001F0, 32);
 	for (int i = 0; i< 32; i++)
@@ -1008,7 +1010,7 @@ void test_dump(void)
 			HAL_Delay(10);
 		}
 	}
-	UART_Write(&UART1,"\r\n");
+	UART_Printf(&UART1,"\r\n");
 
 	//
 	QSPI_Driver_read(buffer_test, 0x0000800, 32);
