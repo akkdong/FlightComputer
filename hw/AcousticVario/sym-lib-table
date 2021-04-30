@@ -1,0 +1,4 @@
+(sym_lib_table
+  (lib (name Local_Library)(type Legacy)(uri ${KIPRJMOD}/Local_Library.lib)(options "")(descr ""))
+  (lib (name FlightComputer)(type Legacy)(uri ${KIPRJMOD}/../lib/FlightComputer_Library.lib)(options "")(descr ""))
+)
