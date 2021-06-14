@@ -20,6 +20,8 @@
 #include "KeyPad/KeyPad.h"
 #include "EPD/EPaperController.h"
 #include "EPD/EPaperDisplay.h"
+#include "lv_port.h"
+
 
 #ifndef HSEM_ID_0
 #define HSEM_ID_0 (0U) /* HW semaphore 0*/
@@ -84,6 +86,12 @@ void FlightComputer::setup(void)
 	if (!sdram_ok)
 		Debug.println("[DEBUG] SDRAM initialization failed.");
 
+	//
+	lv_init();
+	//
+	hal_init();
+	//
+	app_init();
 
 	//
 	epdc.begin();
@@ -92,9 +100,12 @@ void FlightComputer::setup(void)
 
 void FlightComputer::loop()
 {
-	uint32_t tick = millis();
+	static uint32_t lastTick = millis();
+
 	while(1)
 	{
+		uint32_t tick = millis();
+
 		// [TEST] echo Debug console
 		if (Debug.available())
 			Debug.write(Debug.read());
@@ -114,11 +125,15 @@ void FlightComputer::loop()
 			digitalToggle(PWR_LED1);
 			digitalToggle(PWR_LED2);
 
-			tick = millis();
+			//tick = millis();
 		}
 
 		//
 		epdc.run();
+
+		//
+		lv_tick_inc(tick - lastTick);
+		lastTick = tick;
 	}
 
 	/*
