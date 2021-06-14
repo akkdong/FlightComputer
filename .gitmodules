@@ -19,3 +19,6 @@
 [submodule "src/Test/rpi_touch_driver"]
 	path = src/Test/rpi_touch_driver
 	url = https://github.com/bsteinsbo/rpi_touch_driver.git
+[submodule "src/FlightComputer/Arduino/Libraries/lvgl"]
+	path = src/FlightComputer/Arduino/Libraries/lvgl
+	url = https://github.com/littlevgl/lvgl.git
