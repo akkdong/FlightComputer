@@ -100,12 +100,8 @@ void FlightComputer::setup(void)
 
 void FlightComputer::loop()
 {
-	static uint32_t lastTick = millis();
-
 	while(1)
 	{
-		uint32_t tick = millis();
-
 		// [TEST] echo Debug console
 		if (Debug.available())
 			Debug.write(Debug.read());
@@ -120,20 +116,36 @@ void FlightComputer::loop()
 			RPI.write(ch);
 		}
 
-		if ((millis() - tick) > 1000)
-		{
-			digitalToggle(PWR_LED1);
-			digitalToggle(PWR_LED2);
+		// console
+		// CommandConsole console;
+		//
+		// console.SetInterface(Debug);
+		// console.SetClient(SerialShell);
 
-			//tick = millis();
+		// lvgl timer handler
+		{
+			static uint32_t tick = millis();
+			if ((millis() - tick) > 5)
+			{
+				lv_timer_handler();
+				tick = millis();
+			}
+		}
+
+		// debug purpose
+		{
+			static uint32_t tick = millis();
+			if ((millis() - tick) > 1000)
+			{
+				digitalToggle(PWR_LED1);
+				digitalToggle(PWR_LED2);
+
+				tick = millis();
+			}
 		}
 
 		//
 		epdc.run();
-
-		//
-		lv_tick_inc(tick - lastTick);
-		lastTick = tick;
 	}
 
 	/*
