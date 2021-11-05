@@ -582,21 +582,6 @@ F 3 "" H 8050 4725 50  0001 C CNN
 	1    8050 4725
 	1    0    0    -1  
 $EndComp
-$Comp
-L power:GND #PWR013
-U 1 1 5FCFCE43
-P 8050 5225
-F 0 "#PWR013" H 8050 4975 50  0001 C CNN
-F 1 "GND" H 8055 5052 50  0000 C CNN
-F 2 "" H 8050 5225 50  0001 C CNN
-F 3 "" H 8050 5225 50  0001 C CNN
-	1    8050 5225
-	1    0    0    -1  
-$EndComp
-Wire Wire Line
-	8025 5225 8025 5100
-Wire Wire Line
-	8025 5100 8200 5100
 Wire Wire Line
 	8050 4725 8050 4800
 Wire Wire Line
@@ -625,4 +610,19 @@ Wire Wire Line
 Wire Wire Line
 	8050 3775 8200 3775
 Connection ~ 7800 3675
+$Comp
+L power:GND #PWR?
+U 1 1 6185993B
+P 8050 5200
+F 0 "#PWR?" H 8050 4950 50  0001 C CNN
+F 1 "GND" H 8055 5027 50  0000 C CNN
+F 2 "" H 8050 5200 50  0001 C CNN
+F 3 "" H 8050 5200 50  0001 C CNN
+	1    8050 5200
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	8050 5200 8050 5100
+Wire Wire Line
+	8050 5100 8200 5100
 $EndSCHEMATC
