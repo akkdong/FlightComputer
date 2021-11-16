@@ -111,7 +111,7 @@ float MS4525DO::getTemperature(void)
 float MS4525DO::getAirSpeed(void)
 {
 	/* Velocity calculation from a pitot tube explanation */
-	/* +/- 1PSI, approximately 100 m/s */
+	/* +/- 1PSI, approximately 100 m/s 360000 m/h (360 Km/h) */
 	float rho = 1.225; // density of air 
 	// velocity = squareroot( (2*differential) / rho )
 	float velocity;
