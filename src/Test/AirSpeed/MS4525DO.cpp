@@ -63,19 +63,19 @@ int MS4525DO::measure(void)
 float MS4525DO::getPSI(void)
 {
 	// convert and store PSI
-	psi=(static_cast<float>(static_cast<int16_t>(P_dat) - MS4525ZeroCounts))/static_cast<float>(MS4525Span)*static_cast<float>(MS4525FullScaleRange);
+	//psi = (static_cast<float>(static_cast<int16_t>(P_dat) - MS4525ZeroCounts))/static_cast<float>(MS4525Span) * static_cast<float>(MS4525FullScaleRange);
 	
 	// apply PSI calibration data
-	// psi = psi + 0.007f;
+	//psi = psi + 0.007f;
 
 	/* Below code is Pixhawk code which doesnt seem to work correctly */
 	// Calculate differential pressure. As its centered around 8000
 	// and can go positive or negative
-	/*
+	//
 	const float P_min = -1.0f;
 	const float P_max = 1.0f;
 	const float PSI_to_Pa = 6894.757f;
-	*/ 
+	// 
 	/*
 	this equation is an inversion of the equation in the
 	pressure transfer function figure on page 4 of the datasheet
@@ -83,12 +83,12 @@ float MS4525DO::getPSI(void)
 	are generated when the bottom port is used as the static
 	port on the pitot and top port is used as the dynamic port
 	*/
-	/*
-	float diff_press_PSI = -((T_dat - 0.1f * 16383) * (P_max - P_min) / (0.8f * 16383) + P_min);
+	//
+	float diff_press_PSI = -((P_dat - 0.1f * 16383) * (P_max - P_min) / (0.8f * 16383) + P_min);
 	float diff_press_pa_raw = diff_press_PSI * PSI_to_Pa;
-	*/
+	//
 
-	return psi;	
+	return (psi = diff_press_PSI - 0.004);	
 }
 
 float MS4525DO::getTemperature(void)
@@ -112,18 +112,17 @@ float MS4525DO::getAirSpeed(void)
 {
 	/* Velocity calculation from a pitot tube explanation */
 	/* +/- 1PSI, approximately 100 m/s 360000 m/h (360 Km/h) */
+	float ps = psi * 6894.757f;
 	float rho = 1.225; // density of air 
-	// velocity = squareroot( (2*differential) / rho )
+	// velocity = squareroot( (2 * differential) / rho )
 	float velocity;
 	
-	if (psi < 0)
-		velocity = -sqrt(-(2 * psi) / rho);
+	if (ps < 0)
+		velocity = sqrt(-(2 * ps) / rho);
 	else
-		velocity = sqrt((2 * psi) / rho);
-	
-	velocity = velocity * 10;
+		velocity = sqrt((2 * ps) / rho);
 
-	return velocity;
+	return velocity * 3.6; // m/s --> km/h
 }
 
 int MS4525DO::calibrate(void)

@@ -5,7 +5,7 @@
 #include "MultiFuncShield.h"
 #include "MS4525DO.h"
 
-#define DAMPING_FACTOR		(0.2)
+#define DAMPING_FACTOR		(0.1)
 
 enum DISPLAY_TYPE {
 	DISP_RAWDATA,
@@ -21,7 +21,7 @@ enum DISPLAY_MODE {
 	MODE_TEMPERATURE,
 	MODE_SPEED,
 	MODE_ROTATE
-}
+};
 
 MS4525DO	ms4525;
 
@@ -31,30 +31,25 @@ float	filtered_p, filtered_t, filtered_s;
 
 //
 const unsigned long updatePeriod = 1000;
-int displayType = 0; // DISPLAY_TYPE
-int displayMode = 0; // DISPLAY_MODE
+int displayType = DISP_RAWDATA; // DISPLAY_TYPE
+int displayMode = MODE_ROTATE; // DISPLAY_MODE
 unsigned long lastUpdateTick;
 
 void displayData()
 {
-	float data = 0;
-	
 	switch (displayType)
 	{
-	case DIS_RAWDATA:
-		MFS.write(raw_data);
+	case DISP_RAWDATA:
+		MFS.write((int)raw_data);
 		break;
 	case DISP_PRESSURE: 
-		data = filtered_p;
-		MFS.write(data, 2);
+		MFS.write(filtered_p, 2);
 		break;
 	case DISP_TEMPERATURE: 
-		data = filtered_t;
+		MFS.write(filtered_t, 2);
 		break;
-		MFS.write(data, 2);
-	case DISP_SPEED: data = 
-		filtered_s;
-		MFS.write(data, 2);
+	case DISP_SPEED:
+		MFS.write(filtered_s, 2);
 		break;
 	}
 	
@@ -84,6 +79,7 @@ void setup()
 	delay(500);
 	MFS.writeLeds(LED_ALL, OFF);
 	
+	//
 	int retry = 0;
 	while (1)
 	{
@@ -106,7 +102,10 @@ void setup()
 	raw_data = ms4525.getRawPressure();
 	
 	lastUpdateTick = millis();
-	displayType = 0;
+	
+	//
+	displayType = DISP_RAWDATA;
+	displayMode = MODE_ROTATE;
 	
 	displayData();
 }
@@ -130,12 +129,15 @@ void loop()
 	unsigned long currentTick = millis();  
 	if (currentTick - lastUpdateTick >= updatePeriod)
 	{
-		if (displayMode == MODE_ROTATE)
-			displayType = (displayType + 1) % DISP_TYPECOUNT;
+		//
 		displayData();
 		
+		if (displayMode == MODE_ROTATE)
+			displayType = (displayType + 1) % DISP_TYPECOUNT;
+		
+		//
 		Serial.print("Raw pressure:"); Serial.println(raw_data);
-		Serial.print("Pressure:    "); Serial.println(filtered_p);
+		Serial.print("Pressure:    "); Serial.println(filtered_p, 8);
 		Serial.print("Temerature:  "); Serial.println(filtered_t);
 		Serial.print("Air speed:   "); Serial.println(filtered_s);
 		Serial.println("");		
