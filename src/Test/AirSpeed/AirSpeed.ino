@@ -6,6 +6,7 @@
 #include "MS4525DO.h"
 
 #define DAMPING_FACTOR		(0.1)
+#define UPDATE_PERIOD		(1000)
 
 enum DISPLAY_TYPE {
 	DISP_RAWDATA,
@@ -30,7 +31,7 @@ uint16_t raw_data;
 float	filtered_p, filtered_t, filtered_s;
 
 //
-const unsigned long updatePeriod = 1000;
+const unsigned long updatePeriod = UPDATE_PERIOD;
 int displayType = DISP_RAWDATA; // DISPLAY_TYPE
 int displayMode = MODE_ROTATE; // DISPLAY_MODE
 unsigned long lastUpdateTick;
@@ -49,7 +50,7 @@ void displayData()
 		MFS.write(filtered_t, 2);
 		break;
 	case DISP_SPEED:
-		MFS.write(filtered_s, 2);
+		MFS.write(fabs(filtered_s), 1);
 		break;
 	}
 	
@@ -113,12 +114,15 @@ void setup()
 void loop()
 {
 	// 
-	delay(200);
+	delay(100);
 	
 	//
 	int status = ms4525.measure();
 	if (status != 0)
-		return;
+	{
+		Serial.print("!! measure error: "); Serial.println(status);
+		return;		
+	}
 	
 	filtered_p = filtered_p * (1 - DAMPING_FACTOR) + ms4525.getPSI() * DAMPING_FACTOR;
 	filtered_t = filtered_t * (1 - DAMPING_FACTOR) + ms4525.getTemperature() * DAMPING_FACTOR;
@@ -139,7 +143,7 @@ void loop()
 		Serial.print("Raw pressure:"); Serial.println(raw_data);
 		Serial.print("Pressure:    "); Serial.println(filtered_p, 8);
 		Serial.print("Temerature:  "); Serial.println(filtered_t);
-		Serial.print("Air speed:   "); Serial.println(filtered_s);
+		Serial.print("Air speed:   "); Serial.println(fabs(filtered_s));
 		Serial.println("");		
 		
 		lastUpdateTick = currentTick;
@@ -156,7 +160,7 @@ void loop()
 	}
 	else if (btn == BUTTON_1_LONG_PRESSED)
 	{
-		// 
+		// display each values
 		displayMode = MODE_ROTATE;
 		// update display
 		displayData();

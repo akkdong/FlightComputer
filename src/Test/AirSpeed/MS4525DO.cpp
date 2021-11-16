@@ -7,6 +7,7 @@
 
 #define ADDRESS_MS4525DO    0x28 
 
+#define RANGE_1090			(1)
 
 
 // MS4525D sensor full scale range and units
@@ -84,19 +85,27 @@ float MS4525DO::getPSI(void)
 	port on the pitot and top port is used as the dynamic port
 	*/
 	//
-	float diff_press_PSI = -((P_dat - 0.1f * 16383) * (P_max - P_min) / (0.8f * 16383) + P_min);
+#if RANGE_1090
+	float diff_press_PSI = -((P_dat - MS4525MinScaleCounts/*0.1f * 16383*/) * (P_max - P_min) / (MS4525FullScaleCounts/*0.9f * 16383*/) + P_min);
+#else // RANGE_1080
+	float diff_press_PSI = -((P_dat - 0.1f * 16383) * (P_max - P_min) / 0.8f * 16383) + P_min);
+#endif
 	float diff_press_pa_raw = diff_press_PSI * PSI_to_Pa;
 	//
 
+#if RANGE_1090
+	return (psi = diff_press_PSI - 0.1145);	
+#else // RANGE_1080
 	return (psi = diff_press_PSI - 0.004);	
+#endif
 }
 
 float MS4525DO::getTemperature(void)
 {
 	// convert and store Temperature
-	temperature = (static_cast<float>(static_cast<int16_t>(T_dat)));
-	temperature = (temperature / 10);   // now in deg F
-	temperature = ((temperature -32) / 1.8f);   // now in deg C
+	//temperature = (static_cast<float>(static_cast<int16_t>(T_dat)));
+	//temperature = (temperature / 10);   // now in deg F
+	//temperature = ((temperature -32) / 1.8f);   // now in deg C
 
 	/* Below code is pixhawk version which DOES work correctly */
 	/*
@@ -104,6 +113,8 @@ float MS4525DO::getTemperature(void)
 	terminal.printf("PX4 Temperature: ");
 	terminal.printf("%0.1f\n", PX4temperature);
 	*/
+	
+	temperature = ((200.0f * T_dat) / 2047) - 50;
 
 	return temperature;
 }
@@ -118,7 +129,7 @@ float MS4525DO::getAirSpeed(void)
 	float velocity;
 	
 	if (ps < 0)
-		velocity = sqrt(-(2 * ps) / rho);
+		velocity = -sqrt(-(2 * ps) / rho);
 	else
 		velocity = sqrt((2 * ps) / rho);
 
