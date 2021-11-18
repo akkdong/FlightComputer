@@ -9,6 +9,8 @@
 #include "EPaperDisplay.h"
 
 
+#if MODEL_A
+
 #define EPD_WIDTH     		800
 #define EPD_HEIGHT    		600
 #define BPP_MONO			1
@@ -693,3 +695,7 @@ void EPaperDisplay::drawPartial(const uint8_t* img_bytes, const uint8_t* old_byt
 
 	powerOff();
 }
+
+
+#endif // MODEL_A
+

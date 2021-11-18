@@ -47,7 +47,8 @@ protected:
 
 	SPIClassEx			spi1;
 	KeyPad				keyPad;
-	EPaperController	epdc;
+	EPaperController	epdCont;
+	EPaperDisplay		epdDisp;
 
 	uint8_t				data[64];
 
@@ -94,8 +95,13 @@ void FlightComputer::setup(void)
 	app_init();
 
 	//
-	epdc.begin();
+	//epdCont.begin();
+	epdDisp.begin();
 	keyPad.begin();
+
+
+	epdDisp.clearDisplay();
+	epdDisp.display();
 }
 
 void FlightComputer::loop()
@@ -145,7 +151,7 @@ void FlightComputer::loop()
 		}
 
 		//
-		epdc.run();
+		//epdCont.run();
 	}
 
 	/*

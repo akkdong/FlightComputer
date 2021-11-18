@@ -103,8 +103,8 @@ void EPaperController::run()
 			Serial1.println("start receiving...");
 			break;
 		case START_DATA_TRANSMIT : 	// 0x23
-			mRecvPtr = (volatile uint8_t *)mDisp.getOffline()->getPtr();
-			mRecvLen = mDisp.getOffline()->getSize();
+			//mRecvPtr = (volatile uint8_t *)mDisp.getOffline()->getPtr();
+			//mRecvLen = mDisp.getOffline()->getSize();
 			mRecvExpect = mRecvLen;
 			mTimestamp = millis();
 			mState = RECEIVING;
@@ -147,8 +147,8 @@ void EPaperController::run()
 					Serial1.printf("RX[%02x]\r\n", mTemp[i]);
 				break;
 			case START_DATA_TRANSMIT:
-				mDisp.swap(); // swap on/offline buffer & refresh
-				mDisp.refresh();
+				//mDisp.swap(); // swap on/offline buffer & refresh
+				//mDisp.refresh();
 				break;
 			default:
 				break;

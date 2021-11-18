@@ -39,13 +39,16 @@
 #define EPD_Reset_OE()		do { GPIOK->BSRR = (0b0000000000000001 << GPIO_NUMBER); } while (0)
 #define EPD_Reset_GMODE() 	do { GPIOJ->BSRR = (0b0000010000000000 << GPIO_NUMBER); } while (0)
 
-#define EPD_Set_DATA(data)	do { GPIOD->BSRR = pinLUT[(data)]; } while (0)
+//#define EPD_Set_DATA(data)	do { GPIOD->BSRR = pinLUT[(data)]; } while (0)
 
-
+#define EPD_Set_DATA(data)	do { GPIOD->BSRR = data; } while (0)
+#define EPD_Reset_DATA()	do { GPIOD->BSRR = (0b0001100011111100 << GPIO_NUMBER); } while (0)
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 // class EPaperDisplay
+
+#if MODEL_A
 
 class EPaperDisplay
 {
@@ -97,6 +100,61 @@ protected:
 	//
 	EPaperPMIC				mEPaperPMIC;
 };
+
+#else // MODEL_B
+
+class EPaperDisplay
+{
+public:
+	EPaperDisplay();
+
+public:
+	void 					begin(void);
+	void 					end();
+
+	void					clearDisplay();
+	void					display(bool leaveOn = false);
+	void					partialUpdate(bool forced = false, bool leaveOn = false);
+
+	int						einkOn();
+	void					einkOff();
+	void					preloadScreen();
+	uint8_t					readPowerGood();
+	void					clean(uint8_t c, uint8_t rep);
+
+	void					display1b(bool leaveOn = false);
+	void					display3b(bool leaveOn = false);
+
+	void					vscan_start();
+	void					vscan_end();
+	void					hscan_start(uint32_t d = 0);
+	void					pinsZstate();
+	void					pinsAsOutputs();
+
+
+protected:
+
+
+protected:
+	//
+	EPaperFrameBuffer		mDispBuffer;
+	EPaperFrameBuffer		mBackBuffer;
+
+	//
+	EPaperPMIC				mEPaperPMIC;
+
+	//
+	uint32_t				mPinLUT[256];
+	uint32_t * 				mGlobalLUT;
+	uint32_t * 				mGlobalLUT2;
+
+    uint8_t *				DMemoryNew;
+    uint8_t *				_partial;
+    uint8_t *				DMemory4Bit;
+    uint8_t *				_pBuffer;
+};
+
+#endif
 
 
 #endif /* LIBRARIES_EPD_EPAPERDISPLAY_H_ */
