@@ -89,19 +89,13 @@ void FlightComputer::setup(void)
 
 	//
 	lv_init();
-	//
 	hal_init();
-	//
 	app_init();
 
 	//
 	//epdCont.begin();
 	epdDisp.begin();
 	keyPad.begin();
-
-
-	epdDisp.clearDisplay();
-	epdDisp.display();
 }
 
 void FlightComputer::loop()
@@ -152,6 +146,40 @@ void FlightComputer::loop()
 
 		//
 		//epdCont.run();
+
+
+		//
+		int key, state;
+		if (keyPad.keyState(key, state))
+		{
+			if (state && key == 1)
+			{
+				uint8_t* img_bytes = epdDisp.getGrayscale().getPtr();
+				uint8_t* ptr = img_bytes;
+
+				// draw check-pattern
+				for (int y = 0; y < 600; y++)
+					{
+						for (int x = 0; x < 100 /*800/8*/; x++)
+						{
+							int iy = y / 60; // 0 ~ 9
+							int ix = x / 10; // 0 ~ 9
+
+							*ptr++ = ((iy % 2) == (ix % 2)) ? 0xFF : 0x00;
+						}
+				}
+
+				uint32_t lastTick = millis();
+				epdDisp.drawMono(img_bytes);
+				Serial1.printf("clear done!: %u ms\r\n", millis() - lastTick);
+			}
+			else if (state && key == 2)
+			{
+				uint32_t lastTick = millis();
+				epdDisp.clearScreen();
+				Serial1.printf("clear mono image!: %u ms\r\n", millis() - lastTick);
+			}
+		}
 	}
 
 	/*

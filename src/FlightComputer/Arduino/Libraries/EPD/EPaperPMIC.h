@@ -16,20 +16,32 @@ class EPaperPMIC
 public:
 	EPaperPMIC();
 
+	enum State {
+		SLEEP,
+		STANDBY,
+		ACTIVE
+	};
+
 public:
 	bool		init();
 
-	void		turnOnPower();
-	void		turnOffPower();
+	int			wakeup(); 	// sleep --> standby
+	void		sleep();  	// standby/active --> sleep
 
-	void		turnOnVCOM();
-	void		turnOffVCOM();
+	int			powerOn();	// standby --> active
+	int			powerOff();	// active --> standby
 
-	bool		isPowerGood();
+protected:
+	uint8_t		getPowerGood();
 
+#ifdef DEBUG
+	void		DumpRegister();
+	void		DumpPort();
+#endif
 
 private:
 	TwoWire		mWire;
+	State		mState;
 };
 
 

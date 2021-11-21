@@ -17,6 +17,11 @@ public:
 	void begin();
 	void end();
 
+	int keyState(int& key, int& state);
+
+protected:
+	static int enter;
+	static int escape;
 
 protected:
 	static void Key_LEFT();

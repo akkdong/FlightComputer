@@ -35,6 +35,7 @@
 
 EPaperPMIC::EPaperPMIC()
 	: mWire(Wire)
+	, mState(SLEEP)
 {
 }
 
@@ -43,6 +44,7 @@ bool EPaperPMIC::init()
 {
 	//
 	mWire.begin();
+	mWire.setClock(1000000);
 
 	// set default state
 	digitalWrite(PMIC_WAKEUP, LOW);
@@ -53,69 +55,241 @@ bool EPaperPMIC::init()
 	pinMode(PMIC_WAKEUP, OUTPUT);
 	pinMode(PMIC_PWRUP, OUTPUT);
 	pinMode(PMIC_VCOM, OUTPUT);
-	delay(100);
 
+	/*
 	// wakeup
 	digitalWrite(PMIC_WAKEUP, HIGH);
+	delay(10);
+
+	mWire.beginTransmission(PMIC_ADDR);
+	mWire.write(PMIC_REG_UPSEQ0);
+	mWire.write(0b11100100); // Power up seq.
+	mWire.write(0b00000000); // Power up delay (3mS per rail)
+	mWire.write(0b00011011); // Power down seq.
+	mWire.write(0b00000000); // Power down delay (6mS per rail)
+	mWire.endTransmission();
+	delay(1);
+
+	mWire.beginTransmission(PMIC_ADDR);
+	mWire.write(PMIC_REG_VCOM1);
+	mWire.write(0b10010110); // vcom voltage: -1.5v, 150
+	mWire.endTransmission();
+	delay(1);
+
+#ifdef DEBUG
+	Serial1.println("Dump PMIC registers on EPaperPMIC::init()");
+    DumpRegister();
+#endif
+	 */
+
+	// suspend
+	digitalWrite(PMIC_WAKEUP, LOW);
 	delay(100);
 
-    mWire.beginTransmission(PMIC_ADDR);
-    mWire.write(PMIC_REG_UPSEQ0);
-    mWire.write(0b00011011); // Power up seq.
-    mWire.write(0b00000000); // Power up delay (3mS per rail)
-    mWire.write(0b00011011); // Power down seq.
-    mWire.write(0b00000000); // Power down delay (6mS per rail)
-    mWire.endTransmission();
-    delay(10);
-
-    mWire.beginTransmission(PMIC_ADDR);
-    mWire.write(PMIC_REG_VCOM1);
-    mWire.write(0b10010110); // vcom voltage: -1.5v, 150
-    mWire.endTransmission();
-    delay(10);
-
-    // suspend
-    digitalWrite(PMIC_WAKEUP, LOW);
+	//
+	mState = SLEEP;
 
     return true;
 }
 
-void EPaperPMIC::turnOnPower()
+int EPaperPMIC::wakeup()
 {
-	digitalWrite(PMIC_WAKEUP, HIGH);
-	delay(1);
-	digitalWrite(PMIC_PWRUP, HIGH);
+	if (mState == SLEEP)
+	{
+		digitalWrite(PMIC_WAKEUP, HIGH);
+		delay(10);
 
-    mWire.beginTransmission(PMIC_ADDR);
-    mWire.write(PMIC_REG_ENABLE);
-    mWire.write(0b10111111);
-    mWire.endTransmission();
+#if 0
+		mWire.beginTransmission(PMIC_ADDR);
+		mWire.write(PMIC_REG_UPSEQ0);
+		mWire.write(0b11100100); // Power up seq.
+		mWire.write(0b00000000); // Power up delay (3mS per rail)
+		mWire.write(0b00011011); // Power down seq.
+		mWire.write(0b00000000); // Power down delay (6mS per rail)
+		mWire.endTransmission();
+		delay(1);
+#endif
+
+#if 0
+		mWire.beginTransmission(PMIC_ADDR);
+		mWire.write(PMIC_REG_VCOM1);
+		mWire.write(0b10010110); // vcom voltage: -1.5v, 150
+		mWire.endTransmission();
+		delay(1);
+#endif
+
+#ifdef DEBUG
+		Serial1.println("Dump PMIC registers on EPpaperPMIC::wakeup()");
+		DumpRegister();
+		DumpPort();
+#endif
+
+		mState = STANDBY;
+	}
+
+    return (mState == STANDBY) ? 0 : -1;
 }
 
-void EPaperPMIC::turnOffPower()
+void EPaperPMIC::sleep()
 {
-	digitalWrite(PMIC_PWRUP, LOW);
-	digitalWrite(PMIC_WAKEUP, LOW);
+	if (mState != SLEEP)
+	{
+		powerOff();
+
+		// turn-Off WAKEUP pin
+		digitalWrite(PMIC_WAKEUP, LOW);
+
+		mState = SLEEP;
+	}
 }
 
-void EPaperPMIC::turnOnVCOM()
+int EPaperPMIC::powerOn()
 {
-	digitalWrite(PMIC_VCOM, HIGH);
+	if (mState == STANDBY)
+	{
+		/*
+		// setup power up/down sequence
+		mWire.beginTransmission(PMIC_ADDR);
+		mWire.write(PMIC_REG_UPSEQ0);
+		mWire.write(0b11100100); // Power up seq.
+		mWire.write(0b00000000); // Power up delay (3mS per rail)
+		mWire.write(0b00011011); // Power down seq.
+		mWire.write(0b00000000); // Power down delay (6mS per rail)
+		mWire.endTransmission();
+		delay(1);
+
+		// setup vcom voltage;
+		mWire.beginTransmission(PMIC_ADDR);
+		mWire.write(PMIC_REG_VCOM1);
+		mWire.write(0b10010110); // -1.5v -> 150
+		mWire.endTransmission();
+		delay(1);
+		*/
+
+		// enable all rails
+	    mWire.beginTransmission(PMIC_ADDR);
+	    mWire.write(PMIC_REG_ENABLE);
+	    mWire.write(0b10111111);
+	    mWire.endTransmission();
+	    delay(1);
+
+	    // turn-on VCOM
+		digitalWrite(PMIC_VCOM, HIGH);
+		delay(6);
+
+	    // wait power-good
+		uint32_t tick = millis();
+		do {
+			delay(1);
+#ifdef DEBUG
+			delay(49);
+#endif
+
+		} while (getPowerGood() != PWR_GOOD_OK && (millis() - tick) < 250);
+
+		if (millis() - tick >= 250)
+		{
+#ifdef DEBUG
+			Serial1.println("Dump PMIC registers on EPpaperPMIC::powerOn()");
+			DumpRegister();
+			DumpPort();
+#endif
+
+			digitalWrite(PMIC_WAKEUP, LOW);
+			digitalWrite(PMIC_VCOM, LOW);
+			digitalWrite(PMIC_PWRUP, LOW);
+
+			mState = SLEEP;
+		}
+		else
+		{
+#ifdef DEBUG
+			Serial1.println("PMIC Power OK!");
+#endif
+
+			// turn-on VCOM pin
+			//digitalWrite(PMIC_VCOM, HIGH);
+			//delay(6);
+
+			mState = ACTIVE;
+		}
+	}
+
+	return (mState == ACTIVE) ? 0 : -1;
 }
 
-void EPaperPMIC::turnOffVCOM()
+int EPaperPMIC::powerOff()
 {
-	digitalWrite(PMIC_VCOM, LOW);
-	delay(6);
+	if (mState == ACTIVE)
+	{
+		// turn-off VCOM pin
+		digitalWrite(PMIC_VCOM, LOW);
+		delay(6);
+
+		// disable all rails
+		mWire.beginTransmission(PMIC_ADDR);
+		mWire.write(PMIC_REG_ENABLE);
+		mWire.write(0b01000000); // disable all rails
+		mWire.endTransmission();
+
+		uint32_t tick = millis();
+		do {
+			delay(1);
+#ifdef DEBUG
+			delay(49);
+#endif
+		} while (getPowerGood() != 0x00 && (millis() - tick) < 250);
+
+		mState = STANDBY;
+	}
+
+#ifdef DEBUG
+	Serial1.println("PMIC Power Off!");
+#endif
+	return (mState == STANDBY) ? 0 : -1;
 }
 
-
-bool EPaperPMIC::isPowerGood()
+uint8_t EPaperPMIC::getPowerGood()
 {
+	uint8_t data;
+
     mWire.beginTransmission(PMIC_ADDR);
     mWire.write(PMIC_REG_PG);
     mWire.endTransmission();
 
     mWire.requestFrom(PMIC_ADDR, 1);
-    return mWire.read() == PWR_GOOD_OK;
+    data = mWire.read();
+    mWire.endTransmission();
+
+#ifdef DEBUG
+    Serial1.printf("PMIC PowerGood: %02X\r\n", data);
+#endif
+    return data;
 }
+
+
+
+#ifdef DEBUG
+void EPaperPMIC::DumpRegister()
+{
+    mWire.beginTransmission(PMIC_ADDR);
+    mWire.write(0x00);
+    mWire.endTransmission();
+
+    mWire.requestFrom(PMIC_ADDR, 0x11);
+    for (int i = 0; i <= 0x10; i++)
+    {
+    	uint8_t data = mWire.read();
+    	Serial1.printf("PMIC #%02X = %02X\r\n", i, data);
+    }
+    mWire.endTransmission();
+}
+
+void EPaperPMIC::DumpPort()
+{
+	Serial1.printf("PORT(WAKEUP) = %d\r\n", digitalRead(PMIC_WAKEUP));
+	Serial1.printf("PORT(POWERUP) = %d\r\n", digitalRead(PMIC_PWRUP));
+	Serial1.printf("PORT(VCOM) = %d\r\n", digitalRead(PMIC_VCOM));
+}
+
+#endif // DEBUG

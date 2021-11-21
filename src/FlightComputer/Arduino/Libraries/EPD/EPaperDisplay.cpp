@@ -9,7 +9,7 @@
 #include "EPaperDisplay.h"
 
 
-#if MODEL_A
+#if USE_MODEL_A
 
 #define EPD_WIDTH     		800
 #define EPD_HEIGHT    		600
@@ -24,7 +24,7 @@
 
 #define PIXEL2EPDCMD(x)		(((x) == 1) ? 0b00000010 : (((x) == 0) ? 0b00000001 : 0b00000011))
 
-
+#define MAP2PIN(x)			(LUTpin[(x)])
 
 
 
@@ -95,9 +95,16 @@ const uint8_t LUT_BW[16] =
 };
 
 
+const uint8_t _LUT2[16] = {0xAA, 0xA9, 0xA6, 0xA5, 0x9A, 0x99, 0x96, 0x95,
+                          0x6A, 0x69, 0x66, 0x65, 0x5A, 0x59, 0x56, 0x55};
+const uint8_t _LUTW[16] = {0xFF, 0xFE, 0xFB, 0xFA, 0xEF, 0xEE, 0xEB, 0xEA,
+                          0xBF, 0xBE, 0xBB, 0xBA, 0xAF, 0xAE, 0xAB, 0xAA};
+const uint8_t _LUTB[16] = {0xFF, 0xFD, 0xF7, 0xF5, 0xDF, 0xDD, 0xD7, 0xD5,
+                          0x7F, 0x7D, 0x77, 0x75, 0x5F, 0x5D, 0x57, 0x55};
+
 #endif
 
-uint32_t pinLUT[256];
+uint32_t LUTpin[256];
 
 
 /* Contrast cycles in order of contrast (Darkest first).  */
@@ -130,19 +137,61 @@ EPaperDisplay::EPaperDisplay()
 	for (uint32_t i = 0; i < 256; i++)
 	{
 		uint32_t mask = ((i & 0b00111111) << 2) | (((i & 0b11000000) >> 6) << 11);
-		pinLUT[i] = (((~mask) & 0b0001100011111100) << GPIO_NUMBER) | mask;
+		LUTpin[i] = (((~mask) & 0b0001100011111100) << GPIO_NUMBER) | mask;
 	}
 
 	mActivePtr = &mPrimary;
 }
 
 
-void EPaperDisplay::begin(void)
+int EPaperDisplay::begin(void)
 {
 	//
 	mEPaperPMIC.init();
 
-	//
+	// set all pins to low
+    digitalWrite(EPD_CKV, LOW);
+    digitalWrite(EPD_CL, LOW);
+    digitalWrite(EPD_GMODE, LOW);
+    digitalWrite(EPD_LE, LOW);
+    digitalWrite(EPD_OE, LOW);
+    digitalWrite(EPD_SPH, LOW);
+    digitalWrite(EPD_SPV, LOW);
+    digitalWrite(EPD_D0, LOW);
+    digitalWrite(EPD_D1, LOW);
+    digitalWrite(EPD_D2, LOW);
+    digitalWrite(EPD_D3, LOW);
+    digitalWrite(EPD_D4, LOW);
+    digitalWrite(EPD_D5, LOW);
+    digitalWrite(EPD_D6, LOW);
+    digitalWrite(EPD_D7, LOW);
+
+    // set all pins as output
+    pinMode(EPD_CKV, OUTPUT);
+    pinMode(EPD_CL, OUTPUT);
+    pinMode(EPD_GMODE, OUTPUT);
+    pinMode(EPD_LE, OUTPUT);
+    pinMode(EPD_OE, OUTPUT);
+    pinMode(EPD_SPH, OUTPUT);
+    pinMode(EPD_SPV, OUTPUT);
+    pinMode(EPD_D0, OUTPUT);
+    pinMode(EPD_D1, OUTPUT);
+    pinMode(EPD_D2, OUTPUT);
+    pinMode(EPD_D3, OUTPUT);
+    pinMode(EPD_D4, OUTPUT);
+    pinMode(EPD_D5, OUTPUT);
+    pinMode(EPD_D6, OUTPUT);
+    pinMode(EPD_D7, OUTPUT);
+
+    if (mEPaperPMIC.wakeup() < 0)
+    {
+#ifdef DEBUG
+    	Serial1.println("PMIC wakeup failed!");
+#endif
+    	return -1;
+    }
+
+	// set default state
 	EPD_Reset_GMODE();
 	EPD_Reset_CKV();
 	EPD_Reset_CL();
@@ -150,25 +199,56 @@ void EPaperDisplay::begin(void)
 	EPD_Set_SPV();
 	EPD_Reset_LE();
 	EPD_Reset_OE();
+	EPD_Reset_DATA();
 
-	EPD_Set_DATA(0);
+    return 0;
 }
 
 void EPaperDisplay::end()
 {
+    // set to high-z state: set all pins as input
+    pinMode(EPD_CKV, INPUT);
+    pinMode(EPD_CL, INPUT);
+    pinMode(EPD_GMODE, INPUT);
+    pinMode(EPD_LE, INPUT);
+    pinMode(EPD_OE, INPUT);
+    pinMode(EPD_SPH, INPUT);
+    pinMode(EPD_SPV, INPUT);
+    pinMode(EPD_D0, INPUT);
+    pinMode(EPD_D1, INPUT);
+    pinMode(EPD_D2, INPUT);
+    pinMode(EPD_D3, INPUT);
+    pinMode(EPD_D4, INPUT);
+    pinMode(EPD_D5, INPUT);
+    pinMode(EPD_D6, INPUT);
+    pinMode(EPD_D7, INPUT);
+
+    // sleep PMIC
+	mEPaperPMIC.sleep();
 }
 
 
-void EPaperDisplay::powerOn(void)
+int EPaperDisplay::powerOn(void)
 {
+	//
+	if (mEPaperPMIC.wakeup() < 0 || mEPaperPMIC.powerOn() < 0)
+		return -1;
+
+	//
     EPD_Set_GMODE();
     //EPD_Set_OE();
     delayMicroseconds(0);
+
+    return 0;
 }
 
 void EPaperDisplay::powerOff(void)
 {
 	EPD_Reset_GMODE();
+
+	//
+	mEPaperPMIC.powerOff();
+	//mEPaperPMIC.sleep();
 }
 
 void EPaperDisplay::clockPixel(void)
@@ -188,7 +268,7 @@ void EPaperDisplay::outputRow(void)
 	delayMicroseconds(5/*OUTPUT_DELAY_US*/);
     EPD_Reset_CKV();
     EPD_Reset_OE();
-    delayMicroseconds(200/*OUTPUT_DELAY_US*/);
+    delayMicroseconds(20/*OUTPUT_DELAY_US*/);
     // END OUTPUTROW
 
 #if 0
@@ -266,7 +346,7 @@ void EPaperDisplay::scanVEnd(void)
 {
 #if 0
     // VSCANEND
-	EPD_Set_DATA(0b00000000);
+	EPD_Set_DATA(MAP2PINS0b00000000));
 	EPD_HScanStart();
     for (int j = 0; j < 200; ++j)
     {
@@ -338,15 +418,16 @@ void EPaperDisplay::scanHEnd(void)
 }
 
 
-
 void EPaperDisplay::clearScreen(void)
 {
-	powerOn();
+	if (powerOn() < 0)
+		return;
 
+#if 0
     for (int k = 0; k < sz_clear_cycles; ++k)
     {
 		scanVStart();
-		EPD_Set_DATA(clear_cycles[k]);
+		EPD_Set_DATA(MAP2PIN(clear_cycles[k]));
 
 		// Height of the display
 		for (int i = 0; i < EPD_HEIGHT; ++i)
@@ -367,6 +448,10 @@ void EPaperDisplay::clearScreen(void)
 		scanVEnd();
 
     } // End loop of Refresh Cycles Size
+#else
+    memset(getOffline()->getPtr(), 0, EPD_HEIGHT * EPD_WIDTH / 8);
+    display();
+#endif
 
     powerOff();
 }
@@ -374,7 +459,8 @@ void EPaperDisplay::clearScreen(void)
 
 void EPaperDisplay::draw16Gray(const uint8_t* img_bytes) // 800x600 16gray
 {
-	powerOn();
+	if (powerOn() < 0)
+		return;
 
 	//for (int k = 0; k < 6; k++)
 	for (int k = 0; k < sz_contrast_cycles; ++k)
@@ -404,7 +490,7 @@ void EPaperDisplay::draw16Gray(const uint8_t* img_bytes) // 800x600 16gray
 					pixel |= (PIXEL2EPDCMD(pix3) << 2);
 					pixel |= (PIXEL2EPDCMD(pix4) << 0);
 
-					EPD_Set_DATA(pixel);
+					EPD_Set_DATA(MAP2PIN(pixel));
 					clockPixel();
 				}
 
@@ -423,8 +509,10 @@ void EPaperDisplay::draw16Gray(const uint8_t* img_bytes) // 800x600 16gray
 
 void EPaperDisplay::drawMono(const uint8_t* img_bytes)
 {
-	powerOn();
+	if (powerOn() < 0)
+		return;
 
+#if 0
     uint8_t data;
     uint8_t dram;
 
@@ -442,11 +530,11 @@ void EPaperDisplay::drawMono(const uint8_t* img_bytes)
 				dram = *(ptr--);
 
 				data = LUT_B[dram & 0x0F];
-				EPD_Set_DATA(data);
+				EPD_Set_DATA(MAP2PIN(data));
 				clockPixel();
 
 				data = LUT_B[dram >> 4];
-				EPD_Set_DATA(data);
+				EPD_Set_DATA(MAP2PIN(data));
 				clockPixel();
 			}
 
@@ -474,11 +562,11 @@ void EPaperDisplay::drawMono(const uint8_t* img_bytes)
 				dram = *(img_bytes + _pos);
 
 				data = LUT_W[dram & 0x0F];
-				EPD_Set_DATA(data);
+				EPD_Set_DATA(MAP2PIN(data));
 				clockPixel();
 
 				data = LUT_W[dram >> 4];
-				EPD_Set_DATA(data);
+				EPD_Set_DATA(MAP2PIN(data));
 				clockPixel();
 
 				--_pos;
@@ -505,11 +593,11 @@ void EPaperDisplay::drawMono(const uint8_t* img_bytes)
 			//dram = *(img_bytes + _pos);
 
 			data = 0;
-			EPD_Set_DATA(data);
+			EPD_Set_DATA(MAP2PIN(data));
 			EPD_ClockPixel();
 
 			data = 0;
-			EPD_Set_DATA(data);
+			EPD_Set_DATA(MAP2PIN(data));
 			EPD_ClockPixel();
 
 			//--_pos;
@@ -522,6 +610,10 @@ void EPaperDisplay::drawMono(const uint8_t* img_bytes)
 
 	EPD_VScanEnd();
 	*/
+#else
+    memcpy(getOffline()->getPtr(), img_bytes, EPD_HEIGHT * EPD_WIDTH / 8);
+    display();
+#endif
 
 	powerOff();
 }
@@ -529,7 +621,8 @@ void EPaperDisplay::drawMono(const uint8_t* img_bytes)
 
 void EPaperDisplay::drawMono2(const uint8_t* img_bytes)
 {
-	powerOn();
+	if (powerOn() < 0)
+		return;
 
     uint8_t data;
     uint8_t dram;
@@ -548,11 +641,11 @@ void EPaperDisplay::drawMono2(const uint8_t* img_bytes)
 				dram = *(ptr--);
 
 				data = LUT_W[dram & 0x0F];
-				EPD_Set_DATA(data);
+				EPD_Set_DATA(MAP2PIN(data));
 				clockPixel();
 
 				data = LUT_W[dram >> 4];
-				EPD_Set_DATA(data);
+				EPD_Set_DATA(MAP2PIN(data));
 				clockPixel();
 			}
 
@@ -580,11 +673,11 @@ void EPaperDisplay::drawMono2(const uint8_t* img_bytes)
 				dram = *(img_bytes + _pos);
 
 				data = LUT_B[dram & 0x0F];
-				EPD_Set_DATA(data);
+				EPD_Set_DATA(MAP2PIN(data));
 				clockPixel();
 
 				data = LUT_B[dram >> 4];
-				EPD_Set_DATA(data);
+				EPD_Set_DATA(MAP2PIN(data));
 				clockPixel();
 
 				--_pos;
@@ -640,12 +733,12 @@ void EPaperDisplay::drawPartial(const uint8_t* img_bytes, const uint8_t* old_byt
 			{
 				data = *(tempPtr + n);
 				n--;
-				EPD_Set_DATA(data);
+				EPD_Set_DATA(MAP2PIN(data));
 				EPD_ClockPixel();
 
 				data = *(tempPtr + n);
 				n--;
-				EPD_Set_DATA(data);
+				EPD_Set_DATA(MAP2PIN(data));
 				EPD_ClockPixel();
 			}
 
@@ -658,7 +751,8 @@ void EPaperDisplay::drawPartial(const uint8_t* img_bytes, const uint8_t* old_byt
 	}
 	*/
 
-	powerOn();
+	if (powerOn() < 0)
+		return;
 
 	uint8_t data;
 	uint8_t dram;
@@ -677,11 +771,11 @@ void EPaperDisplay::drawPartial(const uint8_t* img_bytes, const uint8_t* old_byt
 				dram = *(ptr--);
 
 				data = LUT_BW[dram & 0x0F];
-				EPD_Set_DATA(data);
+				EPD_Set_DATA(MAP2PIN(data));
 				clockPixel();
 
 				data = LUT_BW[dram >> 4];
-				EPD_Set_DATA(data);
+				EPD_Set_DATA(MAP2PIN(data));
 				clockPixel();
 			}
 
@@ -696,6 +790,147 @@ void EPaperDisplay::drawPartial(const uint8_t* img_bytes, const uint8_t* old_byt
 	powerOff();
 }
 
+void EPaperDisplay::clear(uint8_t c, uint8_t rep)
+{
+    uint8_t cmd = 0;
+    if (c == 0)
+    	cmd = B10101010;
+    else if (c == 1)
+    	cmd = B01010101;
+    else if (c == 2)
+    	cmd = B00000000;
+    else if (c == 3)
+    	cmd = B11111111;
 
-#endif // MODEL_A
+    uint32_t data = LUTpin[cmd];
+    for (int k = 0; k < rep; ++k)
+    {
+    	scanVStart();
+    	EPD_Set_DATA(data);
+
+    	for (int i = 0; i < 600; ++i)
+        {
+    		scanHStart();
+
+            for (int j = 0; j < 800 / 8; ++j)
+            {
+            	clockPixel();
+            	clockPixel();
+            }
+
+			scanHEnd();
+			latchRow();
+			outputRow();
+        }
+
+    	scanVEnd();
+    }
+}
+
+void EPaperDisplay::display()
+{
+    clear(0, 1);
+    clear(1, 11); // 21
+    clear(2, 1);
+    clear(0, 12); // 22
+    clear(2, 1);
+    clear(1, 21);
+    clear(2, 1);
+    clear(0, 12);
+
+	//
+	uint8_t* pDispBufferPtr = getOnline()->getPtr();
+	uint8_t* pBackBufferPtr = getOffline()->getPtr();
+	uint8_t data;
+	uint8_t dram;
+
+	memcpy(pDispBufferPtr, pBackBufferPtr, EPD_HEIGHT * EPD_WIDTH / 8);
+
+    for (int k = 0; k < 4; ++k)
+    {
+        uint8_t *DMemoryNewPtr = pDispBufferPtr + (EPD_WIDTH * EPD_HEIGHT / 8) - 1;
+        scanVStart();
+
+        for (int i = 0; i < EPD_HEIGHT; ++i)
+        {
+        	scanHStart();
+
+            for (int j = 0; j < ((EPD_WIDTH / 8) - 0); ++j)
+            {
+            	dram = *(DMemoryNewPtr--);
+
+            	data = _LUTB[dram >> 4];
+                EPD_Set_DATA(MAP2PIN(data));
+                clockPixel();
+
+            	data = _LUTB[dram & 0x0F];
+                EPD_Set_DATA(MAP2PIN(data));
+                clockPixel();
+            }
+
+			scanHEnd();
+			latchRow();
+			outputRow();
+        }
+
+        scanVEnd();
+    }
+
+    uint16_t _pos = (EPD_WIDTH * EPD_HEIGHT / 8) - 1;
+    {
+		scanVStart();
+
+		for (int i = 0; i < EPD_HEIGHT; ++i)
+		{
+			scanHStart();
+
+			for (int j = 0; j < ((EPD_WIDTH / 8) - 0); ++j)
+			{
+				dram = *(pDispBufferPtr + _pos);
+				_pos--;
+
+				data = _LUT2[dram >> 4];
+				EPD_Set_DATA(MAP2PIN(data));
+				clockPixel();
+
+				data = _LUT2[dram & 0x0F];
+				EPD_Set_DATA(MAP2PIN(data));
+				clockPixel();
+			}
+
+			scanHEnd();
+			latchRow();
+			outputRow();
+		}
+
+		scanVEnd();
+    }
+
+    {
+		scanVStart();
+
+		for (int i = 0; i < EPD_HEIGHT; ++i)
+		{
+			scanHStart();
+			data = 0;
+
+			for (int j = 0; j < ((EPD_WIDTH / 8) - 0); ++j)
+			{
+				EPD_Set_DATA(MAP2PIN(data));
+				clockPixel();
+
+				EPD_Set_DATA(MAP2PIN(data));
+				clockPixel();
+			}
+
+			scanHEnd();
+			latchRow();
+			outputRow();
+		}
+
+		scanVEnd();
+    }
+}
+
+#endif // USE_MODEL_A
 

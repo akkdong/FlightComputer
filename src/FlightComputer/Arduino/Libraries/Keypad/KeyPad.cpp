@@ -36,6 +36,30 @@ void KeyPad::end()
 	detachInterrupt(KEY_ESCAPE);
 }
 
+int KeyPad::keyState(int& key, int& state)
+{
+	if (enter != 0)
+	{
+		key = 1;
+		state = enter < 0 ? 0 : 1;
+		enter = 0;
+
+		return 1;
+	}
+	if (escape != 0)
+	{
+		key = 2;
+		state = escape < 0 ? 0 : 1;
+		escape = 0;
+
+		return 1;
+	}
+
+	return 0;
+}
+
+int KeyPad::enter = 0;
+int KeyPad::escape = 0;
 
 void KeyPad::Key_LEFT()
 {
@@ -59,7 +83,8 @@ void KeyPad::Key_DOWN()
 
 void KeyPad::Key_ENTER()
 {
-	Serial1.printf("ENTER: %s\r\n", digitalRead(KEY_ENTER) == LOW ? "RELEASE" : "PRESSED");
+	enter = (digitalRead(KEY_ENTER) == LOW) ? -1 : 1;
+	Serial1.printf("ENTER: %s\r\n", enter < 0 ? "RELEASE" : "PRESSED");
 }
 
 void KeyPad::Key_FUNC1()
@@ -79,5 +104,6 @@ void KeyPad::Key_MENU()
 
 void KeyPad::Key_ESCAPE()
 {
-	Serial1.printf("ESCAPE: %s\r\n", digitalRead(KEY_ESCAPE) == LOW ? "RELEASE" : "PRESSED");
+	escape = (digitalRead(KEY_ESCAPE) == LOW) ? -1 : 1;
+	Serial1.printf("ESCAPE: %s\r\n", escape < 0 ? "RELEASE" : "PRESSED");
 }

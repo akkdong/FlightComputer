@@ -514,10 +514,23 @@ void cmd_process(char* str)
 			{
 				HAL_GPIO_WritePin(PMIC_WAKEUP_GPIO_Port, PMIC_WAKEUP_Pin, GPIO_PIN_SET);
 				HAL_Delay(1);
+
+				{
+					// on/off power sequence
+					uint8_t reg = REG_UPSEQ0;
+					uint8_t val[] = { 0b11100100, 0b00000000, 0b00011011, 0b00000000 };
+					HAL_I2C_Mem_Write(&hi2c1, PMIC_ADDR, reg, I2C_MEMADD_SIZE_8BIT, &val[0], 4, 1000);
+
+					// vcom voltage: -1.5v
+					reg = REG_VCOM1;
+					val[0] = 0b10010110;
+					HAL_I2C_Mem_Write(&hi2c1, PMIC_ADDR, reg, I2C_MEMADD_SIZE_8BIT, &val[0], 1, 1000);
+				}
+
 				HAL_GPIO_WritePin(PMIC_PWRUP_GPIO_Port, PMIC_PWRUP_Pin, GPIO_PIN_SET);
 
 				uint8_t reg = REG_ENABLE;
-				uint8_t val = 0b10111111;
+				uint8_t val = 0b00111111;
 				HAL_I2C_Mem_Write(&hi2c1, PMIC_ADDR, reg, I2C_MEMADD_SIZE_8BIT, &val, 1, 1000);
 
 				HAL_GPIO_WritePin(PMIC_VCOM_GPIO_Port, PMIC_VCOM_Pin, GPIO_PIN_SET);
@@ -530,7 +543,7 @@ void cmd_process(char* str)
 				{
 					HAL_Delay(1);
 					HAL_I2C_Mem_Read(&hi2c1, PMIC_ADDR, REG_PG, I2C_MEMADD_SIZE_8BIT, &data, 1, 1000);
-					UART_Printf(&UART1, "Reg(#%02X) --> %02X\r\n", REG_PG, val);
+					UART_Printf(&UART1, "Reg(#%02X) --> %02X\r\n", REG_PG, data);
 
 				} while (data != 0b11111010 && (HAL_GetTick() - lastTick) < 250);
 

@@ -48,7 +48,7 @@
 /////////////////////////////////////////////////////////////////////////////////////////////////
 // class EPaperDisplay
 
-#if MODEL_A
+#if USE_MODEL_A
 
 class EPaperDisplay
 {
@@ -56,10 +56,10 @@ public:
 	EPaperDisplay();
 
 public:
-	void 					begin(void);
+	int 					begin(void);
 	void 					end();
 
-	void					powerOn();
+	int						powerOn();
 	void					powerOff();
 
 	void 					clearScreen(void);
@@ -79,6 +79,8 @@ public:
 	void					refresh(bool fast = true) {}
 
 protected:
+	void					clear(uint8_t c, uint8_t rep);
+	void					display();
 
 	void 					clockPixel(void);
 	void 					outputRow(void);
@@ -132,8 +134,16 @@ public:
 	void					pinsAsOutputs();
 
 
-protected:
+	uint8_t*				getDisplayBuffer() { return mBackBuffer.getPtr(); }
 
+protected:
+	int 					getPanelState() { return mPanelState; }
+	void 					setPanelState(int state) { mPanelState = state; }
+
+#ifdef DEBUG
+	void					DumpRegister();
+	void					DumpPort();
+#endif
 
 protected:
 	//
@@ -148,10 +158,12 @@ protected:
 	uint32_t * 				mGlobalLUT;
 	uint32_t * 				mGlobalLUT2;
 
-    uint8_t *				DMemoryNew;
-    uint8_t *				_partial;
-    uint8_t *				DMemory4Bit;
-    uint8_t *				_pBuffer;
+    //uint8_t *				DMemoryNew;
+    //uint8_t *				_partial;
+    //uint8_t *				DMemory4Bit;
+    //uint8_t *				_pBuffer;
+
+    int						mPanelState;
 };
 
 #endif
