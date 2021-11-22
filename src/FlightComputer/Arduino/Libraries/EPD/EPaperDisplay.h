@@ -68,9 +68,9 @@ public:
 	void 					drawMono2(const uint8_t* img_bytes);
 	void 					drawPartial(const uint8_t* new_bytes, const uint8_t* old_bytes);
 
-	EPaperFrameBuffer &		getPrimary() { return mPrimary; }
-	EPaperFrameBuffer &		getSecondary() { return mSecondary; }
-	EPaperFrameBuffer &		getGrayscale() { return mGrayscale; }
+	//EPaperFrameBuffer &	getPrimary() { return mPrimary; }
+	//EPaperFrameBuffer &	getSecondary() { return mSecondary; }
+	//EPaperFrameBuffer &	getGrayscale() { return mGrayscale; }
 
 	EPaperFrameBuffer *		getOnline() { return mActivePtr; }
 	EPaperFrameBuffer *		getOffline() { return mActivePtr == &mPrimary ? &mSecondary : &mPrimary; }
@@ -81,21 +81,22 @@ public:
 protected:
 	void					clear(uint8_t c, uint8_t rep);
 	void					display();
+	void					partialUpdate(bool forced = false);
 
 	void 					clockPixel(void);
 	void 					outputRow(void);
 	void 					latchRow(void);
-	void 					scanVStart(void);
-	void 					scanVEnd(void);
-	void 					scanHStart(void);
-	void 					scanHEnd(void);
+	void 					startVScan(void);
+	void 					endVScan(void);
+	void 					startHScan(void);
+	void 					endHScan(void);
 
 
 protected:
 	//
 	EPaperFrameBuffer		mPrimary;
 	EPaperFrameBuffer		mSecondary;
-	EPaperFrameBuffer		mGrayscale;
+	EPaperFrameBuffer		mBuffer;
 
 	EPaperFrameBuffer *		mActivePtr;
 

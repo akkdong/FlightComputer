@@ -182,7 +182,7 @@ int EPaperPMIC::powerOn()
 		do {
 			delay(1);
 #ifdef DEBUG
-			delay(49);
+			//delay(49);
 #endif
 
 		} while (getPowerGood() != PWR_GOOD_OK && (millis() - tick) < 250);
@@ -224,7 +224,7 @@ int EPaperPMIC::powerOff()
 	{
 		// turn-off VCOM pin
 		digitalWrite(PMIC_VCOM, LOW);
-		delay(6);
+		//delay(6);
 
 		// disable all rails
 		mWire.beginTransmission(PMIC_ADDR);
@@ -236,8 +236,9 @@ int EPaperPMIC::powerOff()
 		do {
 			delay(1);
 #ifdef DEBUG
-			delay(49);
+			//delay(49);
 #endif
+		//} while (getPowerGood() == PWR_GOOD_OK && (millis() - tick) < 250);
 		} while (getPowerGood() != 0x00 && (millis() - tick) < 250);
 
 		mState = STANDBY;
@@ -262,7 +263,7 @@ uint8_t EPaperPMIC::getPowerGood()
     mWire.endTransmission();
 
 #ifdef DEBUG
-    Serial1.printf("PMIC PowerGood: %02X\r\n", data);
+    //Serial1.printf("PMIC PowerGood: %02X\r\n", data);
 #endif
     return data;
 }

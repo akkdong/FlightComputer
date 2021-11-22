@@ -22,6 +22,9 @@
 #include "EPD/EPaperDisplay.h"
 #include "lv_port.h"
 
+#include "../../../../Test/FC_Test/CM7/Core/Inc/image_mono.h"
+#include "../../../../Test/FC_Test/CM7/Core/Inc/landscape.h"
+int image_type = 0;
 
 #ifndef HSEM_ID_0
 #define HSEM_ID_0 (0U) /* HW semaphore 0*/
@@ -149,31 +152,53 @@ void FlightComputer::loop()
 
 
 		//
-		int key, state;
-		if (keyPad.keyState(key, state))
+		int event = Key.getEvent();
+		if ((event & EVENT_STATE_MASK) == EVENT_PRESSED)
 		{
-			if (state && key == 1)
+			if ((event & EVENT_KEY_MASK) == KeyPad::ENTER)
 			{
-				uint8_t* img_bytes = epdDisp.getGrayscale().getPtr();
+				uint8_t* img_bytes = epdDisp.getOffline()->getPtr();
 				uint8_t* ptr = img_bytes;
 
-				// draw check-pattern
-				for (int y = 0; y < 600; y++)
+				if (image_type == 0)
+				{
+					const uint8_t* src = alien_bytes;
+					for (int y = 0; y < 600; y++)
 					{
 						for (int x = 0; x < 100 /*800/8*/; x++)
-						{
-							int iy = y / 60; // 0 ~ 9
-							int ix = x / 10; // 0 ~ 9
-
-							*ptr++ = ((iy % 2) == (ix % 2)) ? 0xFF : 0x00;
-						}
+							*ptr++ = ~(*src++);
+					}
 				}
+				else if (image_type == 1)
+				{
+					const uint8_t* src = landscape_bytes;
+					for (int y = 0; y < 600; y++)
+					{
+						for (int x = 0; x < 100 /*800/8*/; x++)
+							*ptr++ = ~(*src++);
+					}
+				}
+				else if (image_type == 2)
+				{
+					// draw check-pattern
+					for (int y = 0; y < 600; y++)
+						{
+							for (int x = 0; x < 100 /*800/8*/; x++)
+							{
+								int iy = y / 60; // 0 ~ 9
+								int ix = x / 10; // 0 ~ 9
+
+								*ptr++ = ((iy % 2) == (ix % 2)) ? 0xFF : 0x00;
+							}
+					}
+				}
+				image_type = (image_type + 1) % 3;
 
 				uint32_t lastTick = millis();
 				epdDisp.drawMono(img_bytes);
 				Serial1.printf("clear done!: %u ms\r\n", millis() - lastTick);
 			}
-			else if (state && key == 2)
+			else if ((event & EVENT_KEY_MASK) == KeyPad::ESCAPE)
 			{
 				uint32_t lastTick = millis();
 				epdDisp.clearScreen();
