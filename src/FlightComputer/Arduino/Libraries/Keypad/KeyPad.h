@@ -11,13 +11,14 @@
 #include "HardwareTimer.h"
 
 
-#define EVENT_KEY_MASK				(0x000F)
-#define EVENT_STATE_MASK			(0xF000)
-#define EVENT_NONE					(0x0000)
-#define EVENT_PRESSED				(0x1000)
-#define EVENT_RELEASED				(0x2000)
-#define EVENT_LPRESSED				(0x3000)
-#define EVENT_LRELEASED				(0x4000)
+#define EVENT_MASK_KEY				(0x000F)
+#define EVENT_MASK_STATE			(0xF000)
+
+#define EVENT_NOKEY					(0x0000)
+#define EVENT_KEYDOWN				(0x1000)
+#define EVENT_KEYUP					(0x2000)
+#define EVENT_LONGKEY				(0x4000)
+
 
 
 //////////////////////////////////////////////////////////////////////////
@@ -28,7 +29,7 @@ class KeyPad
 public:
 	KeyPad();
 
-	enum KEY_VALUE {
+	enum KEY_TYPE {
 		LEFT,
 		RIGHT,
 		UP,
@@ -68,7 +69,7 @@ protected:
 	static void 		ButtonHandler_FUNC2();
 	static void 		ButtonHandler_MENU();
 	static void 		ButtonHandler_ESCAPE();
-	static void 		ButtonHandler(KEY_VALUE key);
+	static void 		ButtonHandler(KEY_TYPE key);
 
 	static void 		TimerHanlder();
 
@@ -76,25 +77,13 @@ protected:
 protected:
 	HardwareTimer		mTimer;
 
-	uint32_t			mKeyState[COUNT];
-	uint32_t			mPressTick[COUNT];
+	uint32_t			mState[COUNT];
+	uint32_t			mEventTick[COUNT];
+	uint32_t			mEventQueue[16];
+	volatile int		mEventRear;
+	volatile int		mEventFront;
 
-	uint32_t			mKeyEvent[16];
-	volatile int		mRearEvent;
-	volatile int		mFrontEvent;
-
-	int					mKeyLUT[COUNT] = {
-							KEY_LEFT,
-							KEY_RIGHT,
-							KEY_UP,
-							KEY_DOWN,
-							KEY_ENTER,
-							KEY_FUNC1,
-							KEY_FUNC2,
-							KEY_MENU,
-							KEY_ESCAPE
-	                    };
-
+	static int			mKeyLUT[COUNT];
 };
 
 

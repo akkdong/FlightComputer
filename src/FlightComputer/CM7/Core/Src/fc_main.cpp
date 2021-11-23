@@ -153,56 +153,63 @@ void FlightComputer::loop()
 
 		//
 		int event = Key.getEvent();
-		if ((event & EVENT_STATE_MASK) == EVENT_PRESSED)
+		if (event != EVENT_NOKEY)
 		{
-			if ((event & EVENT_KEY_MASK) == KeyPad::ENTER)
-			{
-				uint8_t* img_bytes = epdDisp.getOffline()->getPtr();
-				uint8_t* ptr = img_bytes;
+#ifdef DEBUG
+			Debug.printf("Key event: %X\r\n", event);
+#endif
 
-				if (image_type == 0)
+			if ((event & EVENT_MASK_STATE) == EVENT_KEYUP)
+			{
+				if ((event & EVENT_MASK_KEY) == KeyPad::ENTER)
 				{
-					const uint8_t* src = alien_bytes;
-					for (int y = 0; y < 600; y++)
+					uint8_t* img_bytes = epdDisp.getOffline()->getPtr();
+					uint8_t* ptr = img_bytes;
+
+					if (image_type == 0)
 					{
-						for (int x = 0; x < 100 /*800/8*/; x++)
-							*ptr++ = ~(*src++);
-					}
-				}
-				else if (image_type == 1)
-				{
-					const uint8_t* src = landscape_bytes;
-					for (int y = 0; y < 600; y++)
-					{
-						for (int x = 0; x < 100 /*800/8*/; x++)
-							*ptr++ = ~(*src++);
-					}
-				}
-				else if (image_type == 2)
-				{
-					// draw check-pattern
-					for (int y = 0; y < 600; y++)
+						const uint8_t* src = alien_bytes;
+						for (int y = 0; y < 600; y++)
 						{
 							for (int x = 0; x < 100 /*800/8*/; x++)
-							{
-								int iy = y / 60; // 0 ~ 9
-								int ix = x / 10; // 0 ~ 9
-
-								*ptr++ = ((iy % 2) == (ix % 2)) ? 0xFF : 0x00;
-							}
+								*ptr++ = ~(*src++);
+						}
 					}
-				}
-				image_type = (image_type + 1) % 3;
+					else if (image_type == 1)
+					{
+						const uint8_t* src = landscape_bytes;
+						for (int y = 0; y < 600; y++)
+						{
+							for (int x = 0; x < 100 /*800/8*/; x++)
+								*ptr++ = ~(*src++);
+						}
+					}
+					else if (image_type == 2)
+					{
+						// draw check-pattern
+						for (int y = 0; y < 600; y++)
+							{
+								for (int x = 0; x < 100 /*800/8*/; x++)
+								{
+									int iy = y / 60; // 0 ~ 9
+									int ix = x / 10; // 0 ~ 9
 
-				uint32_t lastTick = millis();
-				epdDisp.drawMono(img_bytes);
-				Serial1.printf("clear done!: %u ms\r\n", millis() - lastTick);
-			}
-			else if ((event & EVENT_KEY_MASK) == KeyPad::ESCAPE)
-			{
-				uint32_t lastTick = millis();
-				epdDisp.clearScreen();
-				Serial1.printf("clear mono image!: %u ms\r\n", millis() - lastTick);
+									*ptr++ = ((iy % 2) == (ix % 2)) ? 0xFF : 0x00;
+								}
+						}
+					}
+					image_type = (image_type + 1) % 3;
+
+					uint32_t lastTick = millis();
+					epdDisp.drawMono(img_bytes);
+					Serial1.printf("clear done!: %u ms\r\n", millis() - lastTick);
+				}
+				else if ((event & EVENT_MASK_KEY) == KeyPad::ESCAPE)
+				{
+					uint32_t lastTick = millis();
+					epdDisp.clearScreen();
+					Serial1.printf("clear mono image!: %u ms\r\n", millis() - lastTick);
+				}
 			}
 		}
 	}

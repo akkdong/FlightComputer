@@ -9,16 +9,33 @@
 #include "Arduino.h"
 #include "KeyPad.h"
 
+#define TIMER_HZ			(20) 		// 1000 / 20 = 50ms interval
+#define DEBOUNCE_PERIOD		(20)		// 20ms
+#define LONGKEY_PERIOD		(2000)		// 2s
+
 
 //////////////////////////////////////////////////////////////////////////
 // class KeyPad
 
+int KeyPad::mKeyLUT[KeyPad::COUNT] = {
+	KEY_LEFT,
+	KEY_RIGHT,
+	KEY_UP,
+	KEY_DOWN,
+	KEY_ENTER,
+	KEY_FUNC1,
+	KEY_FUNC2,
+	KEY_MENU,
+	KEY_ESCAPE
+};
+
+
 KeyPad::KeyPad()
 	: mTimer(TIM4)
-	, mKeyState{ 0, 0, 0, 0, 0, 0, 0, 0, 0 }
-	, mPressTick{ 0, 0, 0, 0, 0, 0, 0, 0, 0 }
-	, mRearEvent(0)
-	, mFrontEvent(0)
+	, mState{ 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+	, mEventTick{ 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+	, mEventRear(0)
+	, mEventFront(0)
 {
 }
 
@@ -34,8 +51,9 @@ void KeyPad::begin()
 	attachInterrupt(KEY_MENU, ButtonHandler_MENU, RISING);
 	attachInterrupt(KEY_ESCAPE, ButtonHandler_ESCAPE, RISING);
 
-	//mTimer.setOverflow(val, format);
+	mTimer.setOverflow(TIMER_HZ, HERTZ_FORMAT);
 	mTimer.attachInterrupt(TimerHanlder);
+	mTimer.resume();
 }
 
 void KeyPad::end()
@@ -65,12 +83,12 @@ uint32_t KeyPad::getEvent()
 
 int KeyPad::push(uint32_t event)
 {
-	int next = (mFrontEvent + 1) & 0x0F;
-	if (next == mRearEvent)
+	int next = (mEventFront + 1) & 0x0F;
+	if (next == mEventRear)
 		return -1; // FULL!!!
 
-	mKeyEvent[mFrontEvent] = event;
-	mFrontEvent = next;
+	mEventQueue[mEventFront] = event;
+	mEventFront = next;
 
 	return 0;
 }
@@ -79,10 +97,10 @@ uint32_t KeyPad::pop()
 {
 	uint32_t event = 0;
 
-	if (mRearEvent != mFrontEvent)
+	if (mEventRear != mEventFront)
 	{
-		event = mKeyEvent[mRearEvent];
-		mRearEvent = (mRearEvent + 1) & 0x0F;
+		event = mEventQueue[mEventRear];
+		mEventRear = (mEventRear + 1) & 0x0F;
 	}
 
 	return event;
@@ -160,63 +178,63 @@ void KeyPad::ButtonHandler_ESCAPE()
 	ButtonHandler(ESCAPE);
 }
 
-void KeyPad::ButtonHandler(KEY_VALUE key)
+void KeyPad::ButtonHandler(KEY_TYPE key)
 {
-	if (Key.mKeyState[key] != RELEASED)
+	if (Key.mState[key] != RELEASED)
 		return;
 
-	Key.mKeyState[key] = DEBOUNCE;
-	Key.mPressTick[key] = millis();
+	Key.mState[key] = DEBOUNCE;
+	Key.mEventTick[key] = millis();
 }
 
 void KeyPad::TimerHanlder()
 {
 	for (int key = 0; key < COUNT; key++)
 	{
-		uint32_t state = Key.mKeyState[key];
+		uint32_t state = Key.mState[key];
 		if (state == RELEASED)
 			continue;
 
-		uint32_t elapse = millis() - Key.mPressTick[key];
-		int data = digitalRead(Key.mKeyLUT[key]);
+		uint32_t elapse = millis() - Key.mEventTick[key];
+		int data = digitalRead(mKeyLUT[key]);
 
 		if (state == DEBOUNCE)
 		{
-			if (elapse > 50)
+			if (elapse > DEBOUNCE_PERIOD)
 			{
 				if (data == LOW)
 				{
-					Key.push(EVENT_PRESSED | key);
-					Key.mKeyState[key] = PRESSED;
+					Key.push(EVENT_KEYDOWN | key);
+					Key.mState[key] = PRESSED;
 				}
 				else
 				{
-					Key.mKeyState[key] = RELEASED;
+					Key.mState[key] = RELEASED;
 				}
 			}
 		}
-		else // if (state == PRESSED)
+		else //if (state == PRESSED)
 		{
 			if (data == LOW)
 			{
-				if (elapse > 3000)
+				if (elapse > LONGKEY_PERIOD)
 				{
-					Key.push(EVENT_LPRESSED | key);
-					Key.mKeyState[key] = RELEASED;
+					Key.push(EVENT_LONGKEY | key);
+					Key.mState[key] = RELEASED;
 				}
 			}
 			else
 			{
-				if (elapse < 3000)
+				if (elapse < LONGKEY_PERIOD)
 				{
-					Key.push(EVENT_RELEASED | key);
+					Key.push(EVENT_KEYUP | key);
 				}
-				else
-				{
-					Key.push(EVENT_LRELEASED | key);
-				}
+				//else
+				//{
+				//	LONGKEY_UP
+				//}
 
-				Key.mKeyState[key] = RELEASED;
+				Key.mState[key] = RELEASED;
 			}
 		}
 	}
