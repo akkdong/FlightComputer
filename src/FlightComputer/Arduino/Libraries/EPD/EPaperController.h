@@ -11,10 +11,6 @@
 #include "SPI/SPIClassEx.h"
 #include "EPD/EPaperDisplay.h"
 
-#define EPD_WIDTH			800
-#define EPD_HEIGHT			600
-
-
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////

@@ -24,7 +24,10 @@
 
 #include "../../../../Test/FC_Test/CM7/Core/Inc/image_mono.h"
 #include "../../../../Test/FC_Test/CM7/Core/Inc/landscape.h"
+#include "Adafruit_GFX/Fonts/FreeSans24pt7b.h"
+
 int image_type = 0;
+
 
 #ifndef HSEM_ID_0
 #define HSEM_ID_0 (0U) /* HW semaphore 0*/
@@ -163,29 +166,18 @@ void FlightComputer::loop()
 			{
 				if ((event & EVENT_MASK_KEY) == KeyPad::ENTER)
 				{
-					uint8_t* img_bytes = epdDisp.getOffline()->getPtr();
-					uint8_t* ptr = img_bytes;
-
 					if (image_type == 0)
 					{
-						const uint8_t* src = alien_bytes;
-						for (int y = 0; y < 600; y++)
-						{
-							for (int x = 0; x < 100 /*800/8*/; x++)
-								*ptr++ = ~(*src++);
-						}
+						epdDisp.drawBitmapBM(alien_bytes,  0,  0,  EPD_WIDTH, EPD_HEIGHT, COLOR_WHITE, bm_invert);
 					}
 					else if (image_type == 1)
 					{
-						const uint8_t* src = landscape_bytes;
-						for (int y = 0; y < 600; y++)
-						{
-							for (int x = 0; x < 100 /*800/8*/; x++)
-								*ptr++ = ~(*src++);
-						}
+						epdDisp.drawBitmapBM(landscape_bytes,  0,  0,  EPD_WIDTH, EPD_HEIGHT, COLOR_WHITE, bm_invert);
 					}
 					else if (image_type == 2)
 					{
+						uint8_t* ptr = epdDisp.getCanvas();
+
 						// draw check-pattern
 						for (int y = 0; y < 600; y++)
 							{
@@ -198,17 +190,27 @@ void FlightComputer::loop()
 								}
 						}
 					}
+
 					image_type = (image_type + 1) % 3;
 
 					uint32_t lastTick = millis();
-					epdDisp.drawMono(img_bytes);
+					epdDisp.refresh();
 					Serial1.printf("clear done!: %u ms\r\n", millis() - lastTick);
 				}
 				else if ((event & EVENT_MASK_KEY) == KeyPad::ESCAPE)
 				{
 					uint32_t lastTick = millis();
 					epdDisp.clearScreen();
+					epdDisp.refresh();
 					Serial1.printf("clear mono image!: %u ms\r\n", millis() - lastTick);
+				}
+				else if ((event & EVENT_MASK_KEY) == KeyPad::FUNC1)
+				{
+					epdDisp.setFont(&FreeSans24pt7b);
+					epdDisp.setCursor(100, 100);
+					epdDisp.setTextColor(COLOR_BLACK);
+					epdDisp.print("Hello everyone!");
+					epdDisp.refresh();
 				}
 			}
 		}

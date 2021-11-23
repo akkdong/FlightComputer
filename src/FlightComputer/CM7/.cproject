@@ -102,6 +102,8 @@
                                     <listOptionValue builtIn="false" value="LV_CONF_INCLUDE_SIMPLE=1"/>
                                     									
                                     <listOptionValue builtIn="false" value="USE_MODEL_A=1"/>
+                                    									
+                                    <listOptionValue builtIn="false" value="ARDUINO=301"/>
                                     								
                                 </option>
                                 								
@@ -250,6 +252,8 @@
                                     <listOptionValue builtIn="false" value="LV_CONF_INCLUDE_SIMPLE=1"/>
                                     									
                                     <listOptionValue builtIn="false" value="USE_MODEL_A=1"/>
+                                    									
+                                    <listOptionValue builtIn="false" value="ARDUINO=301"/>
                                     								
                                 </option>
                                 								
@@ -393,7 +397,7 @@
                                 								
                                 <option id="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.assembler.option.debuglevel.962641847" name="Debug level" superClass="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.assembler.option.debuglevel" value="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.assembler.option.debuglevel.value.g0" valueType="enumerated"/>
                                 								
-                                <option IS_BUILTIN_EMPTY="false" IS_VALUE_EMPTY="false" id="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.assembler.option.definedsymbols.1725539507" superClass="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.assembler.option.definedsymbols" valueType="definedSymbols">
+                                <option IS_BUILTIN_EMPTY="false" IS_VALUE_EMPTY="false" id="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.assembler.option.definedsymbols.1725539507" name="Define symbols (-D)" superClass="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.assembler.option.definedsymbols" valueType="definedSymbols">
                                     									
                                     <listOptionValue builtIn="false" value="LV_CONF_INCLUDE_SIMPLE=1"/>
                                     								

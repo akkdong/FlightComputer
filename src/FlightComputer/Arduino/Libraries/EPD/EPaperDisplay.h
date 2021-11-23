@@ -12,9 +12,35 @@
 #include "EPaperFrameBuffer.h"
 #include "EPaperPMIC.h"
 
+#include "Adafruit_GFX/Adafruit_GFX.h"
 
-#define GPIO_NUMBER           (16U)
 
+#define GPIO_NUMBER			(16U)
+
+#define EPD_WIDTH     		(800)
+#define EPD_HEIGHT    		(600)
+#define BPP_MONO			(1)
+#define BPP_16GRAY			(4)
+
+#define COLOR_BLACK			(0xFF)
+#define COLOR_WHITE			(0x00)
+
+
+enum bm_mode //BM_ModeSet
+{
+	bm_normal = 0,
+	bm_default = 1, // for use for BitmapExamples
+	// these potentially can be combined
+	bm_invert = (1 << 1),
+	bm_flip_x = (1 << 2),
+	bm_flip_y = (1 << 3),
+	bm_r90 = (1 << 4),
+	bm_r180 = (1 << 5),
+	bm_r270 = bm_r90 | bm_r180,
+	bm_partial_update = (1 << 6),
+	bm_invert_red = (1 << 7),
+	bm_transparent = (1 << 8)
+};
 
 
 ////////////////////////////////////////////////////////////////////////////////////////
@@ -39,8 +65,6 @@
 #define EPD_Reset_OE()		do { GPIOK->BSRR = (0b0000000000000001 << GPIO_NUMBER); } while (0)
 #define EPD_Reset_GMODE() 	do { GPIOJ->BSRR = (0b0000010000000000 << GPIO_NUMBER); } while (0)
 
-//#define EPD_Set_DATA(data)	do { GPIOD->BSRR = pinLUT[(data)]; } while (0)
-
 #define EPD_Set_DATA(data)	do { GPIOD->BSRR = data; } while (0)
 #define EPD_Reset_DATA()	do { GPIOD->BSRR = (0b0001100011111100 << GPIO_NUMBER); } while (0)
 
@@ -50,7 +74,7 @@
 
 #if USE_MODEL_A
 
-class EPaperDisplay
+class EPaperDisplay : public Adafruit_GFX
 {
 public:
 	EPaperDisplay();
@@ -63,20 +87,35 @@ public:
 	void					powerOff();
 
 	void 					clearScreen(void);
+
+	void					drawBitmapBM(const uint8_t * bitmap, uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint16_t color, int16_t mode);
+
+
+#if OBSOLETE
 	void 					draw16Gray(const uint8_t* img_bytes);
 	void 					drawMono(const uint8_t* img_bytes);
 	void 					drawMono2(const uint8_t* img_bytes);
 	void 					drawPartial(const uint8_t* new_bytes, const uint8_t* old_bytes);
+#endif
 
-	//EPaperFrameBuffer &	getPrimary() { return mPrimary; }
-	//EPaperFrameBuffer &	getSecondary() { return mSecondary; }
-	//EPaperFrameBuffer &	getGrayscale() { return mGrayscale; }
+	uint8_t *				getCanvas() { return mCanvas.getPtr(); }
+	int						getCanvasSize() { return EPD_WIDTH / 8 * EPD_HEIGHT; }
 
-	EPaperFrameBuffer *		getOnline() { return mActivePtr; }
-	EPaperFrameBuffer *		getOffline() { return mActivePtr == &mPrimary ? &mSecondary : &mPrimary; }
 
-	void					swap() {}
-	void					refresh(bool fast = true) {}
+	void refresh(bool fast = false) {
+		if (fast)
+			partialUpdate();
+		else
+			display();
+	}
+
+
+	///  virtual drawPixel() function to draw to the screen/framebuffer/etc.
+	//   @param x X coordinate.
+	//   @param y Y coordinate.
+	//   @param color 16-bit pixel color.
+	virtual void 			drawPixel(int16_t x, int16_t y, uint16_t color);
+
 
 protected:
 	void					clear(uint8_t c, uint8_t rep);
@@ -92,13 +131,16 @@ protected:
 	void 					endHScan(void);
 
 
+	template <typename T> static inline void _swap_(T & a, T & b) { T t = a; a = b; b = t;  }
+	static inline uint16_t __max(uint16_t a, uint16_t b) { return (a > b ? a : b); }
+	static inline uint16_t __min(uint16_t a, uint16_t b) { return (a < b ? a : b); }
+
+
 protected:
 	//
-	EPaperFrameBuffer		mPrimary;
-	EPaperFrameBuffer		mSecondary;
+	EPaperFrameBuffer		mDisplay;
+	EPaperFrameBuffer		mCanvas;
 	EPaperFrameBuffer		mBuffer;
-
-	EPaperFrameBuffer *		mActivePtr;
 
 	//
 	EPaperPMIC				mEPaperPMIC;

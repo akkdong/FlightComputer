@@ -11,10 +11,6 @@
 
 #if USE_MODEL_A
 
-#define EPD_WIDTH     		800
-#define EPD_HEIGHT    		600
-#define BPP_MONO			1
-#define BPP_16GRAY			4
 
 #define CLK_DELAY_US  		0
 #define VCLK_DELAY_US 		1
@@ -119,10 +115,10 @@ const uint8_t _LUT2[16] =
 	0x56, 0x96, 0x66, 0xA6, // 08h:WBBB: 01010110, 09h:WBBW: 10010110, 0Ah:WBWB: 01100110, 0Bh:WBWW: 10100110
 	0x5A, 0x9A, 0x6A, 0xAA  // 0Ch:WWBB: 01011010, 0Dh:WWBW: 10011010, 0Eh:WWWB: 01101010, 0Fh:WWWW: 10101010
 #else
-	0xAA, 0x6A, 0x9A, 0x5A,
-	0xA6, 0x66, 0x96, 0x56,
-	0xA9, 0x69, 0x99, 0x59,
-	0xA5, 0x65, 0x95, 0x55
+	0xAA, 0x6A, 0x9A, 0x5A, // 00h:WWWW: 10101010, 01h:WWWB: 01101010, 02h:WWBW: 10011010, 03h:WWBB: 01011010
+	0xA6, 0x66, 0x96, 0x56, // 04h:WBWW: 10100110, 05h:WBWB: 01100110, 06h:WBBW: 10010110, 07h:WBBB: 01010110
+	0xA9, 0x69, 0x99, 0x59, // 08h:BWWW: 10101001, 09h:BWWB: 01101001, 0Ah:BWBW: 10011001, 0Bh:BWBB: 01011001
+	0xA5, 0x65, 0x95, 0x55  // 0Ch:BBWW: 10100101, 0Dh:BBWB: 01100101, 0Eh:BBBW: 10010101, 0Fh:BBBB: 01010101
 #endif
 };
 
@@ -136,7 +132,7 @@ const uint8_t _LUTW[16] =
 
 const uint8_t _LUTB[16] =
 {
-	0xFF, 0x7F, 0xDF, 0x5F,	// 00h:----: 11111111, 01h:---B: 10111111, 02h:--B-: 11011111, 03h:--BB: 01011111
+	0xFF, 0x7F, 0xDF, 0x5F,	// 00h:----: 11111111, 01h:---B: 01111111, 02h:--B-: 11011111, 03h:--BB: 01011111
 	0xF7, 0x77, 0xD7, 0x57, // 04h:-B--: 11110111, 05h:-B-B: 01110111, 06h:-BB-: 11010111, 07h:-BBB: 01010111
 	0xFD, 0x7D, 0xDD, 0x5D, // 08h:B---: 11111101, 09h:B--B: 01111101, 0Ah:B-B-: 11011101, 0Bh:B-BB: 01011101
 	0xF5, 0x75, 0xD5, 0x55  // 0Ch:BB--: 11110101, 0Dh:BB-B: 01110101, 0Eh:BBB-: 11010101, 0Fh:BBBB: 01010101
@@ -169,8 +165,9 @@ const uint8_t sz_clear_cycles = sizeof(clear_cycles)/sizeof(uint8_t);
 // class EPaperDisplay
 
 EPaperDisplay::EPaperDisplay()
-	: mPrimary(EPD_WIDTH, EPD_HEIGHT, BPP_MONO)
-	, mSecondary(EPD_WIDTH, EPD_HEIGHT, BPP_MONO)
+	: Adafruit_GFX(EPD_WIDTH, EPD_HEIGHT)
+	, mDisplay(EPD_WIDTH, EPD_HEIGHT, BPP_MONO)
+	, mCanvas(EPD_WIDTH, EPD_HEIGHT, BPP_MONO)
 	, mBuffer(EPD_WIDTH, EPD_HEIGHT * 2, BPP_MONO)
 {
 	// DATA Pin: GPIOD [12, 11, 7, 6, 5, 4, 3, 2]
@@ -179,8 +176,6 @@ EPaperDisplay::EPaperDisplay()
 		uint32_t mask = ((i & 0b00111111) << 2) | (((i & 0b11000000) >> 6) << 11);
 		LUTpin[i] = (((~mask) & 0b0001100011111100) << GPIO_NUMBER) | mask;
 	}
-
-	mActivePtr = &mPrimary;
 }
 
 
@@ -460,43 +455,74 @@ void EPaperDisplay::endHScan(void)
 
 void EPaperDisplay::clearScreen(void)
 {
-	if (powerOn() < 0)
-		return;
+	memset(mCanvas.getPtr(), COLOR_WHITE, EPD_HEIGHT * EPD_WIDTH / 8);
+}
 
-#if 0
-    for (int k = 0; k < sz_clear_cycles; ++k)
+void EPaperDisplay::drawBitmapBM(const uint8_t *bitmap, uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint16_t color, int16_t mode)
+{
+  uint16_t inverse_color = (color != COLOR_WHITE) ? COLOR_WHITE : COLOR_BLACK;
+  uint16_t fg_color = (mode & bm_invert) ? inverse_color : color;
+  uint16_t bg_color = (mode & bm_invert) ? color : inverse_color;
+  // taken from Adafruit_GFX.cpp, modified
+  int16_t byteWidth = (w + 7) / 8; // Bitmap scanline pad = whole byte
+  uint8_t byte = 0;
+  if (mode & bm_transparent)
+  {
+    for (int16_t j = 0; j < h; j++)
     {
-		startVScan();
-		EPD_Set_DATA(MAP2PIN(clear_cycles[k]));
-
-		// Height of the display
-		for (int i = 0; i < EPD_HEIGHT; ++i)
-		{
-			startHScan();
-
-			// Width of the display, 4 Pixels each.
-			for (int j = 0; j < (EPD_WIDTH / 4); ++j)
-			{
-				clockPixel();
-			}
-
-			endHScan();
-			latchRow();
-			outputRow();
-		}
-
-		endVScan();
-
-    } // End loop of Refresh Cycles Size
+      for (int16_t i = 0; i < w; i++ )
+      {
+        if (i & 7) byte <<= 1;
+        else
+        {
+#if defined(__AVR) || defined(ESP8266) || defined(ESP32)
+          byte = pgm_read_byte(&bitmap[j * byteWidth + i / 8]);
 #else
-    memset(getOffline()->getPtr(), 0, EPD_HEIGHT * EPD_WIDTH / 8);
-    display();
+          byte = bitmap[j * byteWidth + i / 8];
 #endif
-
-    powerOff();
+        }
+        // transparent mode
+        if (bool(mode & bm_invert) != bool(byte & 0x80))
+        //if (!(byte & 0x80))
+        {
+          uint16_t xd = x + i;
+          uint16_t yd = y + j;
+          if (mode & bm_flip_x) xd = x + w - i;
+          if (mode & bm_flip_y) yd = y + h - j;
+          drawPixel(xd, yd, color);
+        }
+      }
+    }
+  }
+  else
+  {
+    for (int16_t j = 0; j < h; j++)
+    {
+      for (int16_t i = 0; i < w; i++ )
+      {
+        if (i & 7) byte <<= 1;
+        else
+        {
+#if defined(__AVR) || defined(ESP8266) || defined(ESP32)
+          byte = pgm_read_byte(&bitmap[j * byteWidth + i / 8]);
+#else
+          byte = bitmap[j * byteWidth + i / 8];
+#endif
+        }
+        // keep using overwrite mode
+        uint16_t pixelcolor = (byte & 0x80) ? fg_color  : bg_color;
+        uint16_t xd = x + i;
+        uint16_t yd = y + j;
+        if (mode & bm_flip_x) xd = x + w - i;
+        if (mode & bm_flip_y) yd = y + h - j;
+        drawPixel(xd, yd, pixelcolor);
+      }
+    }
+  }
 }
 
 
+#if OBSOLETE
 void EPaperDisplay::draw16Gray(const uint8_t* img_bytes) // 800x600 16gray
 {
 	if (powerOn() < 0)
@@ -829,6 +855,7 @@ void EPaperDisplay::drawPartial(const uint8_t* img_bytes, const uint8_t* old_byt
 
 	powerOff();
 }
+#endif // OBSOLETE
 
 void EPaperDisplay::clear(uint8_t c, uint8_t rep)
 {
@@ -872,23 +899,23 @@ void EPaperDisplay::display()
     clear(0, 1);
     clear(1, 12); // 21
     clear(2, 1);
-    clear(0, 13); // 22
+    clear(0, 14); // 22
     clear(2, 1);
     clear(1, 12); // 21
     clear(2, 1);
-    clear(0, 14);
+    clear(0, 16);
 
 	//
-	uint8_t* pDispBufferPtr = getOnline()->getPtr();
-	uint8_t* pBackBufferPtr = getOffline()->getPtr();
+	uint8_t* pDisplayPtr = mDisplay.getPtr();
+	uint8_t* pCanvasPtr = mCanvas.getPtr();
 	uint8_t data;
 	uint8_t dram;
 
-	memcpy(pDispBufferPtr, pBackBufferPtr, EPD_HEIGHT * EPD_WIDTH / 8);
+	memcpy(pDisplayPtr, pCanvasPtr, EPD_HEIGHT * EPD_WIDTH / 8);
 
     for (int k = 0; k < 4; ++k)
     {
-        uint8_t* pDispPtr = pDispBufferPtr + (EPD_WIDTH * EPD_HEIGHT / 8) - 1;
+        uint8_t* pDispPtr = pDisplayPtr + (EPD_WIDTH * EPD_HEIGHT / 8) - 1;
         startVScan();
 
         for (int i = 0; i < EPD_HEIGHT; ++i)
@@ -917,7 +944,7 @@ void EPaperDisplay::display()
     }
 
     {
-    	uint8_t* pDispPtr = pDispBufferPtr + (EPD_WIDTH * EPD_HEIGHT / 8) - 1;
+    	uint8_t* pDispPtr = pDisplayPtr + (EPD_WIDTH * EPD_HEIGHT / 8) - 1;
 		startVScan();
 
 		for (int i = 0; i < EPD_HEIGHT; ++i)
@@ -987,8 +1014,8 @@ void EPaperDisplay::partialUpdate(bool forced)
 		return;
     }
 
-	uint8_t* pDispBufferPtr = getOnline()->getPtr();
-	uint8_t* pBackBufferPtr = getOffline()->getPtr();
+	uint8_t* pDisplayPtr = mDisplay.getPtr();
+	uint8_t* pCanvasPtr = mCanvas.getPtr();
 	uint8_t* pBufferPtr = mBuffer.getPtr();
 	uint8_t data;
     uint8_t diffw, diffb;
@@ -1000,9 +1027,10 @@ void EPaperDisplay::partialUpdate(bool forced)
     {
         for (int j = 0; j < EPD_WIDTH / 8; ++j)
         {
-            diffw = *(pDispBufferPtr + pos) & ~*(pBackBufferPtr + pos);
-            diffb = ~*(pDispBufferPtr + pos) & *(pBackBufferPtr + pos);
+            diffw = *(pDisplayPtr + pos) & ~*(pCanvasPtr + pos);
+            diffb = ~*(pDisplayPtr + pos) & *(pCanvasPtr + pos);
             pos--;
+
             *(pBufferPtr + n) = _LUTW[diffw >> 4] & (_LUTB[diffb >> 4]);
             n--;
             *(pBufferPtr + n) = _LUTW[diffw & 0x0F] & (_LUTB[diffb & 0x0F]);
@@ -1051,7 +1079,60 @@ void EPaperDisplay::partialUpdate(bool forced)
     clear(3, 1);
     //startVScan();
 
-    memcpy(pDispBufferPtr, pBackBufferPtr, EPD_WIDTH * EPD_HEIGHT / 8);
+    memcpy(pDisplayPtr, pCanvasPtr, EPD_WIDTH * EPD_HEIGHT / 8);
+}
+
+
+void EPaperDisplay::drawPixel(int16_t x, int16_t y, uint16_t color)
+{
+	if ((x < 0) || (x >= _width) || (y < 0) || (y >= _height))
+		return;
+
+//	if (_mirror)
+//		x = _width - x - 1;
+
+	// check rotation, move pixel around if necessary
+	switch (getRotation())
+	{
+	case 1:
+		_swap_(x, y);
+		x = _width - x - 1;
+		break;
+	case 2:
+		x = _width - x - 1;
+		y = _height - y - 1;
+		break;
+	case 3:
+		_swap_(x, y);
+		y = _height - y - 1;
+	break;
+	}
+
+	#if 0
+	// transpose partial window to 0,0
+	x -= _window_x;
+	y -= _window_y;
+
+	// clip to (partial) window
+	if ((x < 0) || (x >= _window_w) || (y < 0) || (y >= _window_h))
+		return;
+
+	if (_reverse)
+		y = _height - y - 1;
+
+	if ((y < 0) || (y >= _height))
+		return;
+
+	uint16_t i = x / 8 + y * (_window_w / 8);
+	#endif
+
+	uint8_t* _buffer = mCanvas.getPtr();
+	uint16_t i = x / 8 + y * (_width / 8);
+
+	if (color)
+		_buffer[i] = (_buffer[i] | (1 << (7 - (x % 8))));
+	else
+		_buffer[i] = (_buffer[i] & (~(1 << (7 - (x % 8)))));
 }
 
 
