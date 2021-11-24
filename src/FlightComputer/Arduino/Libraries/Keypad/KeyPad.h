@@ -52,6 +52,8 @@ public:
 	void 				begin();
 	void 				end();
 
+	void				run() { TimerHandler(); }
+
 	int					getEventCount();
 	uint32_t			getEvent();
 
@@ -71,7 +73,7 @@ protected:
 	static void 		ButtonHandler_ESCAPE();
 	static void 		ButtonHandler(KEY_TYPE key);
 
-	static void 		TimerHanlder();
+	static void 		TimerHandler();
 
 
 protected:

@@ -53,7 +53,7 @@ protected:
 
 	SPIClassEx			spi1;
 	KeyPad				keyPad;
-	EPaperController	epdCont;
+	//EPaperController	epdCont;
 	EPaperDisplay		epdDisp;
 
 	uint8_t				data[64];
@@ -155,6 +155,8 @@ void FlightComputer::loop()
 
 
 		//
+		Key.run();
+
 		int event = Key.getEvent();
 		if (event != EVENT_NOKEY)
 		{
@@ -166,13 +168,15 @@ void FlightComputer::loop()
 			{
 				if ((event & EVENT_MASK_KEY) == KeyPad::ENTER)
 				{
+					uint32_t lastTick = millis();
+
 					if (image_type == 0)
 					{
-						epdDisp.drawBitmapBM(alien_bytes,  0,  0,  EPD_WIDTH, EPD_HEIGHT, COLOR_WHITE, bm_invert);
+						epdDisp.drawBitmapBM(alien_bytes,  0,  0,  EPD_WIDTH, EPD_HEIGHT, COLOR_BLACK, bm_invert);
 					}
 					else if (image_type == 1)
 					{
-						epdDisp.drawBitmapBM(landscape_bytes,  0,  0,  EPD_WIDTH, EPD_HEIGHT, COLOR_WHITE, bm_invert);
+						epdDisp.drawBitmapBM(landscape_bytes,  0,  0,  EPD_WIDTH, EPD_HEIGHT, COLOR_BLACK, bm_invert);
 					}
 					else if (image_type == 2)
 					{
@@ -190,27 +194,47 @@ void FlightComputer::loop()
 								}
 						}
 					}
-
 					image_type = (image_type + 1) % 3;
 
-					uint32_t lastTick = millis();
 					epdDisp.refresh();
-					Serial1.printf("clear done!: %u ms\r\n", millis() - lastTick);
+					Serial1.printf("draw bitmap!: %u ms\r\n", millis() - lastTick);
 				}
 				else if ((event & EVENT_MASK_KEY) == KeyPad::ESCAPE)
 				{
 					uint32_t lastTick = millis();
 					epdDisp.clearScreen();
 					epdDisp.refresh();
-					Serial1.printf("clear mono image!: %u ms\r\n", millis() - lastTick);
+					Serial1.printf("clear screen!: %u ms\r\n", millis() - lastTick);
 				}
 				else if ((event & EVENT_MASK_KEY) == KeyPad::FUNC1)
 				{
+					uint32_t lastTick = millis();
+
 					epdDisp.setFont(&FreeSans24pt7b);
 					epdDisp.setCursor(100, 100);
 					epdDisp.setTextColor(COLOR_BLACK);
 					epdDisp.print("Hello everyone!");
-					epdDisp.refresh();
+					epdDisp.refresh(true);
+
+					Serial1.printf("fast update!: %u ms\r\n", millis() - lastTick);
+				}
+				else if ((event & EVENT_MASK_KEY) == KeyPad::UP)
+				{
+					uint32_t lastTick = millis();
+
+					epdDisp.fillScreen(COLOR_WHITE);
+					epdDisp.refresh(true);
+
+					Serial1.printf("fast fill white!: %u ms\r\n", millis() - lastTick);
+				}
+				else if ((event & EVENT_MASK_KEY) == KeyPad::DOWN)
+				{
+					uint32_t lastTick = millis();
+
+					epdDisp.fillScreen(COLOR_BLACK);
+					epdDisp.refresh(true);
+
+					Serial1.printf("fast fill black!: %u ms\r\n", millis() - lastTick);
 				}
 			}
 		}

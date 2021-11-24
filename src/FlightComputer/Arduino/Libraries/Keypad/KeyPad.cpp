@@ -51,9 +51,9 @@ void KeyPad::begin()
 	attachInterrupt(KEY_MENU, ButtonHandler_MENU, RISING);
 	attachInterrupt(KEY_ESCAPE, ButtonHandler_ESCAPE, RISING);
 
-	mTimer.setOverflow(TIMER_HZ, HERTZ_FORMAT);
-	mTimer.attachInterrupt(TimerHanlder);
-	mTimer.resume();
+	//mTimer.setOverflow(TIMER_HZ, HERTZ_FORMAT);
+	//mTimer.attachInterrupt(TimerHanlder);
+	//mTimer.resume();
 }
 
 void KeyPad::end()
@@ -187,7 +187,7 @@ void KeyPad::ButtonHandler(KEY_TYPE key)
 	Key.mEventTick[key] = millis();
 }
 
-void KeyPad::TimerHanlder()
+void KeyPad::TimerHandler()
 {
 	for (int key = 0; key < COUNT; key++)
 	{
@@ -202,7 +202,7 @@ void KeyPad::TimerHanlder()
 		{
 			if (elapse > DEBOUNCE_PERIOD)
 			{
-				if (data == LOW)
+				if (data != LOW)
 				{
 					Key.push(EVENT_KEYDOWN | key);
 					Key.mState[key] = PRESSED;
@@ -215,7 +215,7 @@ void KeyPad::TimerHanlder()
 		}
 		else //if (state == PRESSED)
 		{
-			if (data == LOW)
+			if (data != LOW)
 			{
 				if (elapse > LONGKEY_PERIOD)
 				{

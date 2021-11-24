@@ -102,12 +102,7 @@ public:
 	int						getCanvasSize() { return EPD_WIDTH / 8 * EPD_HEIGHT; }
 
 
-	void refresh(bool fast = false) {
-		if (fast)
-			partialUpdate();
-		else
-			display();
-	}
+	void 					refresh(bool fast = false);
 
 
 	///  virtual drawPixel() function to draw to the screen/framebuffer/etc.
@@ -138,9 +133,9 @@ protected:
 
 protected:
 	//
+	EPaperFrameBuffer		mBuffer;
 	EPaperFrameBuffer		mDisplay;
 	EPaperFrameBuffer		mCanvas;
-	EPaperFrameBuffer		mBuffer;
 
 	//
 	EPaperPMIC				mEPaperPMIC;

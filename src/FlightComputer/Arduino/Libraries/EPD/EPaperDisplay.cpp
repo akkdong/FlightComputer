@@ -27,7 +27,7 @@
 ////////////////////////////////////////////////////////////////////////////////////////
 //
 
-#if R2L
+#if R2L || 1
 
 const uint8_t LUT2[16] =
 {
@@ -166,9 +166,9 @@ const uint8_t sz_clear_cycles = sizeof(clear_cycles)/sizeof(uint8_t);
 
 EPaperDisplay::EPaperDisplay()
 	: Adafruit_GFX(EPD_WIDTH, EPD_HEIGHT)
+	, mBuffer(EPD_WIDTH, EPD_HEIGHT * 2, BPP_MONO)
 	, mDisplay(EPD_WIDTH, EPD_HEIGHT, BPP_MONO)
 	, mCanvas(EPD_WIDTH, EPD_HEIGHT, BPP_MONO)
-	, mBuffer(EPD_WIDTH, EPD_HEIGHT * 2, BPP_MONO)
 {
 	// DATA Pin: GPIOD [12, 11, 7, 6, 5, 4, 3, 2]
 	for (uint32_t i = 0; i < 256; i++)
@@ -857,6 +857,21 @@ void EPaperDisplay::drawPartial(const uint8_t* img_bytes, const uint8_t* old_byt
 }
 #endif // OBSOLETE
 
+
+void EPaperDisplay::refresh(bool fast)
+{
+	if (powerOn() < 0)
+			return;
+
+	if (fast)
+		partialUpdate();
+	else
+		display();
+
+	powerOff();
+}
+
+
 void EPaperDisplay::clear(uint8_t c, uint8_t rep)
 {
     uint8_t cmd = 0;
@@ -1008,63 +1023,93 @@ void EPaperDisplay::partialUpdate(bool forced)
     //if (getDisplayMode() == 1)
     //	return;
 
-    if (/*_blockPartial == 1 &&*/ !forced)
-    {
-		display();
-		return;
-    }
+    //if (/*_blockPartial == 1 &&*/ !forced)
+    //{
+	//	display();
+	//	return;
+    //}
 
 	uint8_t* pDisplayPtr = mDisplay.getPtr();
 	uint8_t* pCanvasPtr = mCanvas.getPtr();
-	uint8_t* pBufferPtr = mBuffer.getPtr();
-	uint8_t data;
-    uint8_t diffw, diffb;
+	//uint8_t* pBufferPtr = mBuffer.getPtr();
 
-    uint16_t pos = (EPD_WIDTH * EPD_HEIGHT / 8) - 1;
-    uint32_t n = (EPD_WIDTH * EPD_HEIGHT / 4) - 1;
+	uint32_t srcIndex = (EPD_WIDTH * EPD_HEIGHT / 8) - 1;
+    //uint32_t dstIndex = (EPD_WIDTH * EPD_HEIGHT / 4) - 1;
+    uint8_t data_o, data_n, diffw, diffb;
+    uint8_t output;
 
-    for (int i = 0; i < EPD_HEIGHT; ++i)
+#if 0
+    for (int i = 0; i < EPD_WIDTH * EPD_HEIGHT / 8; i++)
+    	pBufferPtr[i] = 0xFF;
+    uint8_t* next = pBufferPtr + (EPD_WIDTH * EPD_HEIGHT / 8);
+    for (int i = 0; i < EPD_WIDTH * EPD_HEIGHT / 8; i++)
+    	next[i] = 0xFF;
+
+    for (int i = 0; i < EPD_HEIGHT / 2; ++i)
     {
         for (int j = 0; j < EPD_WIDTH / 8; ++j)
         {
-            diffw = *(pDisplayPtr + pos) & ~*(pCanvasPtr + pos);
-            diffb = ~*(pDisplayPtr + pos) & *(pCanvasPtr + pos);
-            pos--;
+        	data_o = pDisplayPtr[srcIndex];
+        	data_n = pCanvasPtr[srcIndex];
+            diffw = data_o & (~data_n);
+            diffb = (~data_o) & data_n;
+            srcIndex--;
 
-            *(pBufferPtr + n) = _LUTW[diffw >> 4] & (_LUTB[diffb >> 4]);
-            n--;
-            *(pBufferPtr + n) = _LUTW[diffw & 0x0F] & (_LUTB[diffb & 0x0F]);
-            n--;
+            pBufferPtr[dstIndex] = _LUTW[diffw >> 4] & _LUTB[diffb >> 4];
+            dstIndex--;
+            pBufferPtr[dstIndex] = _LUTW[diffw & 0x0F] & _LUTB[diffb & 0x0F];
+            dstIndex--;
         }
     }
+    next = pBufferPtr + (EPD_WIDTH * EPD_HEIGHT / 8);
+    for (int i = 0; i < EPD_HEIGHT / 2; ++i)
+    {
+        for (int j = 0; j < EPD_WIDTH / 8; ++j)
+        {
+        	data_o = pDisplayPtr[srcIndex];
+        	data_n = pCanvasPtr[srcIndex];
+            diffw = data_o & (~data_n);
+            diffb = (~data_o) & data_n;
+            srcIndex--;
 
-#if 0
-	if (!einkOn())
-	{
-		return;
-	}
+            next[dstIndex] = _LUTW[diffw >> 4] & _LUTB[diffb >> 4];
+            dstIndex--;
+            next[dstIndex] = _LUTW[diffw & 0x0F] & _LUTB[diffb & 0x0F];
+            dstIndex--;
+        }
+    }
 #endif
 
     for (int k = 0; k < 5; ++k)
     {
+    	const uint8_t* pOldPtr = pDisplayPtr + (EPD_WIDTH * EPD_HEIGHT / 8) - 1;
+    	const uint8_t* pNewPtr = pCanvasPtr + (EPD_WIDTH * EPD_HEIGHT / 8) - 1;
+
+    	srcIndex = (EPD_WIDTH * EPD_HEIGHT / 8) - 1;
     	startVScan();
-        n = (EPD_WIDTH * EPD_HEIGHT / 4) - 1;
 
         for (int i = 0; i < EPD_HEIGHT; ++i)
         {
             startHScan();
 
-            for (int j = 0; j < ((EPD_WIDTH / 4) - 0); ++j)
+            for (int j = 0; j < EPD_WIDTH / 8; ++j)
             {
-                data = *(pBufferPtr + n);
-				EPD_Set_DATA(MAP2PIN(data));
-				clockPixel();
-				n--;
+            	data_o = *(pOldPtr++);
+            	data_n = *(pNewPtr++);
 
-                data = *(pBufferPtr + n);
-				EPD_Set_DATA(MAP2PIN(data));
+            	//data_o = *(pDisplayPtr + srcIndex); // pDisplayPtr[srcIndex];
+            	//data_n = *(pCanvasPtr + srcIndex); // pCanvasPtr[srcIndex];
+                diffw = data_o & (~data_n);
+                diffb = (~data_o) & data_n;
+                srcIndex--;
+
+                output = _LUTW[diffw & 0x0F] & _LUTB[diffb & 0x0F];
+				EPD_Set_DATA(MAP2PIN(output));
 				clockPixel();
-				n--;
+
+				output = _LUTW[diffw >> 4] & _LUTB[diffb >> 4];
+				EPD_Set_DATA(MAP2PIN(output));
+				clockPixel();
             }
 
 			endHScan();
@@ -1075,9 +1120,42 @@ void EPaperDisplay::partialUpdate(bool forced)
         endVScan();
     }
 
+#if 0
+	if (!einkOn())
+	{
+		return;
+	}
+#endif
+
+#if 0
+    for (int k = 0; k < 5; ++k)
+    {
+    	startVScan();
+    	dstIndex = (EPD_WIDTH * EPD_HEIGHT / 4) - 1;
+
+        for (int i = 0; i < EPD_HEIGHT; ++i)
+        {
+            startHScan();
+
+            for (int j = 0; j < EPD_WIDTH / 4; ++j)
+            {
+				EPD_Set_DATA(MAP2PIN(pBufferPtr[dstIndex]));
+				dstIndex--;
+
+				clockPixel();
+            }
+
+			endHScan();
+			latchRow();
+			outputRow();
+        }
+
+        endVScan();
+    }
+#endif
+
     clear(2, 2);
     clear(3, 1);
-    //startVScan();
 
     memcpy(pDisplayPtr, pCanvasPtr, EPD_WIDTH * EPD_HEIGHT / 8);
 }
