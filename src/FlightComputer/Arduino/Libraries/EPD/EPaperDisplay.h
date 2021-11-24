@@ -98,7 +98,7 @@ public:
 	void 					drawPartial(const uint8_t* new_bytes, const uint8_t* old_bytes);
 #endif
 
-	uint8_t *				getCanvas() { return mCanvas.getPtr(); }
+	volatile uint8_t *		getCanvas() { return mCanvas.getPtr(); }
 	int						getCanvasSize() { return EPD_WIDTH / 8 * EPD_HEIGHT; }
 
 
@@ -115,6 +115,7 @@ public:
 protected:
 	void					clear(uint8_t c, uint8_t rep);
 	void					display();
+	void					fastUpdate();
 	void					partialUpdate(bool forced = false);
 
 	void 					clockPixel(void);
@@ -133,9 +134,9 @@ protected:
 
 protected:
 	//
-	EPaperFrameBuffer		mBuffer;
 	EPaperFrameBuffer		mDisplay;
 	EPaperFrameBuffer		mCanvas;
+	EPaperFrameBuffer		mBuffer;
 
 	//
 	EPaperPMIC				mEPaperPMIC;

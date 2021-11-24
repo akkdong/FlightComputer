@@ -70,7 +70,7 @@ void hal_init(void)
 	static EPaperFrameBuffer buf_1(DISP_WIDTH, DISP_HEIGHT), buf_2(DISP_WIDTH, DISP_HEIGHT);
 	//static lv_color_t buf_1[DISP_BUF_SIZE], buf_2[DISP_BUF_SIZE];
 
-	lv_disp_draw_buf_init(&disp_buf, buf_1, buf_2, DISP_WIDTH * DISP_HEIGHT);
+	//lv_disp_draw_buf_init(&disp_buf, buf_1.getPtr(), buf_2.getPtr(), DISP_WIDTH * DISP_HEIGHT);
 
 
 	// initialize & register display driver

@@ -180,7 +180,7 @@ void FlightComputer::loop()
 					}
 					else if (image_type == 2)
 					{
-						uint8_t* ptr = epdDisp.getCanvas();
+						volatile uint8_t* ptr = epdDisp.getCanvas();
 
 						// draw check-pattern
 						for (int y = 0; y < 600; y++)

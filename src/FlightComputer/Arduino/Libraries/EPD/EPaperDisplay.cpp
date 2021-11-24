@@ -166,9 +166,9 @@ const uint8_t sz_clear_cycles = sizeof(clear_cycles)/sizeof(uint8_t);
 
 EPaperDisplay::EPaperDisplay()
 	: Adafruit_GFX(EPD_WIDTH, EPD_HEIGHT)
-	, mBuffer(EPD_WIDTH, EPD_HEIGHT * 2, BPP_MONO)
 	, mDisplay(EPD_WIDTH, EPD_HEIGHT, BPP_MONO)
 	, mCanvas(EPD_WIDTH, EPD_HEIGHT, BPP_MONO)
+	, mBuffer(EPD_WIDTH, EPD_HEIGHT * 2, BPP_MONO)
 {
 	// DATA Pin: GPIOD [12, 11, 7, 6, 5, 4, 3, 2]
 	for (uint32_t i = 0; i < 256; i++)
@@ -455,7 +455,13 @@ void EPaperDisplay::endHScan(void)
 
 void EPaperDisplay::clearScreen(void)
 {
+#if 0
 	memset(mCanvas.getPtr(), COLOR_WHITE, EPD_HEIGHT * EPD_WIDTH / 8);
+#else
+	volatile uint32_t* ptr = (volatile uint32_t *)mCanvas.getPtr();
+	for (int i = 0; i < EPD_HEIGHT * EPD_WIDTH / 8 / 4; i++)
+		*ptr++ = 0x00;
+#endif
 }
 
 void EPaperDisplay::drawBitmapBM(const uint8_t *bitmap, uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint16_t color, int16_t mode)
@@ -864,7 +870,7 @@ void EPaperDisplay::refresh(bool fast)
 			return;
 
 	if (fast)
-		partialUpdate();
+		fastUpdate();
 	else
 		display();
 
@@ -921,16 +927,23 @@ void EPaperDisplay::display()
     clear(0, 16);
 
 	//
-	uint8_t* pDisplayPtr = mDisplay.getPtr();
-	uint8_t* pCanvasPtr = mCanvas.getPtr();
+    volatile uint8_t* pDisplayPtr = mDisplay.getPtr();
+    volatile uint8_t* pCanvasPtr = mCanvas.getPtr();
 	uint8_t data;
 	uint8_t dram;
 
+#if 0
 	memcpy(pDisplayPtr, pCanvasPtr, EPD_HEIGHT * EPD_WIDTH / 8);
+#else
+	volatile uint32_t* srcPtr = (volatile uint32_t *)pCanvasPtr;
+	volatile uint32_t* dstPtr = (volatile uint32_t *)pDisplayPtr;
+	for (int i = 0; i < EPD_HEIGHT * EPD_WIDTH / 8 / 4; i++)
+		*dstPtr++ = *srcPtr++;
+#endif
 
     for (int k = 0; k < 4; ++k)
     {
-        uint8_t* pDispPtr = pDisplayPtr + (EPD_WIDTH * EPD_HEIGHT / 8) - 1;
+        volatile uint8_t* pDispPtr = pDisplayPtr + (EPD_WIDTH * EPD_HEIGHT / 8) - 1;
         startVScan();
 
         for (int i = 0; i < EPD_HEIGHT; ++i)
@@ -959,7 +972,7 @@ void EPaperDisplay::display()
     }
 
     {
-    	uint8_t* pDispPtr = pDisplayPtr + (EPD_WIDTH * EPD_HEIGHT / 8) - 1;
+    	volatile uint8_t* pDispPtr = pDisplayPtr + (EPD_WIDTH * EPD_HEIGHT / 8) - 1;
 		startVScan();
 
 		for (int i = 0; i < EPD_HEIGHT; ++i)
@@ -1018,74 +1031,19 @@ void EPaperDisplay::display()
 #endif
 }
 
-void EPaperDisplay::partialUpdate(bool forced)
+void EPaperDisplay::fastUpdate()
 {
-    //if (getDisplayMode() == 1)
-    //	return;
-
-    //if (/*_blockPartial == 1 &&*/ !forced)
-    //{
-	//	display();
-	//	return;
-    //}
-
-	uint8_t* pDisplayPtr = mDisplay.getPtr();
-	uint8_t* pCanvasPtr = mCanvas.getPtr();
-	//uint8_t* pBufferPtr = mBuffer.getPtr();
-
-	uint32_t srcIndex = (EPD_WIDTH * EPD_HEIGHT / 8) - 1;
-    //uint32_t dstIndex = (EPD_WIDTH * EPD_HEIGHT / 4) - 1;
-    uint8_t data_o, data_n, diffw, diffb;
-    uint8_t output;
-
-#if 0
-    for (int i = 0; i < EPD_WIDTH * EPD_HEIGHT / 8; i++)
-    	pBufferPtr[i] = 0xFF;
-    uint8_t* next = pBufferPtr + (EPD_WIDTH * EPD_HEIGHT / 8);
-    for (int i = 0; i < EPD_WIDTH * EPD_HEIGHT / 8; i++)
-    	next[i] = 0xFF;
-
-    for (int i = 0; i < EPD_HEIGHT / 2; ++i)
-    {
-        for (int j = 0; j < EPD_WIDTH / 8; ++j)
-        {
-        	data_o = pDisplayPtr[srcIndex];
-        	data_n = pCanvasPtr[srcIndex];
-            diffw = data_o & (~data_n);
-            diffb = (~data_o) & data_n;
-            srcIndex--;
-
-            pBufferPtr[dstIndex] = _LUTW[diffw >> 4] & _LUTB[diffb >> 4];
-            dstIndex--;
-            pBufferPtr[dstIndex] = _LUTW[diffw & 0x0F] & _LUTB[diffb & 0x0F];
-            dstIndex--;
-        }
-    }
-    next = pBufferPtr + (EPD_WIDTH * EPD_HEIGHT / 8);
-    for (int i = 0; i < EPD_HEIGHT / 2; ++i)
-    {
-        for (int j = 0; j < EPD_WIDTH / 8; ++j)
-        {
-        	data_o = pDisplayPtr[srcIndex];
-        	data_n = pCanvasPtr[srcIndex];
-            diffw = data_o & (~data_n);
-            diffb = (~data_o) & data_n;
-            srcIndex--;
-
-            next[dstIndex] = _LUTW[diffw >> 4] & _LUTB[diffb >> 4];
-            dstIndex--;
-            next[dstIndex] = _LUTW[diffw & 0x0F] & _LUTB[diffb & 0x0F];
-            dstIndex--;
-        }
-    }
-#endif
+	volatile uint8_t* pDisplayPtr = mDisplay.getPtr();
+	volatile uint8_t* pCanvasPtr = mCanvas.getPtr();
 
     for (int k = 0; k < 5; ++k)
     {
-    	const uint8_t* pOldPtr = pDisplayPtr + (EPD_WIDTH * EPD_HEIGHT / 8) - 1;
-    	const uint8_t* pNewPtr = pCanvasPtr + (EPD_WIDTH * EPD_HEIGHT / 8) - 1;
+    	volatile uint8_t* pOldPtr = pDisplayPtr + (EPD_WIDTH * EPD_HEIGHT / 8) - 1;
+    	volatile uint8_t* pNewPtr = pCanvasPtr + (EPD_WIDTH * EPD_HEIGHT / 8) - 1;
+    	uint8_t data_o, data_n;
+    	uint8_t diff_w, diff_b;
+    	uint8_t output;
 
-    	srcIndex = (EPD_WIDTH * EPD_HEIGHT / 8) - 1;
     	startVScan();
 
         for (int i = 0; i < EPD_HEIGHT; ++i)
@@ -1094,20 +1052,17 @@ void EPaperDisplay::partialUpdate(bool forced)
 
             for (int j = 0; j < EPD_WIDTH / 8; ++j)
             {
-            	data_o = *(pOldPtr++);
-            	data_n = *(pNewPtr++);
+            	data_o = *(pOldPtr--);
+            	data_n = *(pNewPtr--);
 
-            	//data_o = *(pDisplayPtr + srcIndex); // pDisplayPtr[srcIndex];
-            	//data_n = *(pCanvasPtr + srcIndex); // pCanvasPtr[srcIndex];
-                diffw = data_o & (~data_n);
-                diffb = (~data_o) & data_n;
-                srcIndex--;
+                diff_w = data_o & (~data_n);
+                diff_b = (~data_o) & data_n;
 
-                output = _LUTW[diffw & 0x0F] & _LUTB[diffb & 0x0F];
+                output = _LUTW[diff_w & 0x0F] & _LUTB[diff_b & 0x0F];
 				EPD_Set_DATA(MAP2PIN(output));
 				clockPixel();
 
-				output = _LUTW[diffw >> 4] & _LUTB[diffb >> 4];
+				output = _LUTW[diff_w >> 4] & _LUTB[diff_b >> 4];
 				EPD_Set_DATA(MAP2PIN(output));
 				clockPixel();
             }
@@ -1120,6 +1075,55 @@ void EPaperDisplay::partialUpdate(bool forced)
         endVScan();
     }
 
+    clear(2, 2);
+    clear(3, 1);
+
+#if 0
+    memcpy(pDisplayPtr, pCanvasPtr, EPD_WIDTH * EPD_HEIGHT / 8);
+#else
+	volatile uint8_t* srcPtr = pCanvasPtr;
+	volatile uint8_t* dstPtr = pDisplayPtr;
+	for (int i = 0; i < EPD_HEIGHT * EPD_WIDTH / 8; i++)
+		*dstPtr++ = *srcPtr++;
+#endif
+}
+
+void EPaperDisplay::partialUpdate(bool forced)
+{
+    //if (getDisplayMode() == 1)
+    //	return;
+
+    //if (/*_blockPartial == 1 &&*/ !forced)
+    //{
+	//	display();
+	//	return;
+    //}
+
+	volatile uint8_t* pDisplayPtr = mDisplay.getPtr();
+	volatile uint8_t* pCanvasPtr = mCanvas.getPtr();
+	volatile uint8_t* pBufferPtr = mBuffer.getPtr();
+
+	uint32_t srcIndex = (EPD_WIDTH * EPD_HEIGHT / 8) - 1;
+    uint32_t dstIndex = (EPD_WIDTH * EPD_HEIGHT / 4) - 1;
+    uint8_t data_o, data_n, diff_w, diff_b;
+
+    for (int i = 0; i < EPD_HEIGHT / 2; ++i)
+    {
+        for (int j = 0; j < EPD_WIDTH / 8; ++j)
+        {
+        	data_o = pDisplayPtr[srcIndex];
+        	data_n = pCanvasPtr[srcIndex];
+            diff_w = data_o & (~data_n);
+            diff_b = (~data_o) & data_n;
+            srcIndex--;
+
+            pBufferPtr[dstIndex] = _LUTW[diff_w >> 4] & _LUTB[diff_b >> 4];
+            dstIndex--;
+            pBufferPtr[dstIndex] = _LUTW[diff_w & 0x0F] & _LUTB[diff_b & 0x0F];
+            dstIndex--;
+        }
+    }
+
 #if 0
 	if (!einkOn())
 	{
@@ -1127,11 +1131,10 @@ void EPaperDisplay::partialUpdate(bool forced)
 	}
 #endif
 
-#if 0
     for (int k = 0; k < 5; ++k)
     {
-    	startVScan();
     	dstIndex = (EPD_WIDTH * EPD_HEIGHT / 4) - 1;
+    	startVScan();
 
         for (int i = 0; i < EPD_HEIGHT; ++i)
         {
@@ -1152,12 +1155,18 @@ void EPaperDisplay::partialUpdate(bool forced)
 
         endVScan();
     }
-#endif
 
     clear(2, 2);
     clear(3, 1);
 
+#if 0
     memcpy(pDisplayPtr, pCanvasPtr, EPD_WIDTH * EPD_HEIGHT / 8);
+#else
+	volatile uint32_t* srcPtr = (volatile uint32_t *)pCanvasPtr;
+	volatile uint32_t* dstPtr = (volatile uint32_t *)pDisplayPtr;
+	for (int i = 0; i < EPD_HEIGHT * EPD_WIDTH / 8 / 4; i++)
+		*dstPtr++ = *srcPtr++;
+#endif
 }
 
 
@@ -1204,7 +1213,7 @@ void EPaperDisplay::drawPixel(int16_t x, int16_t y, uint16_t color)
 	uint16_t i = x / 8 + y * (_window_w / 8);
 	#endif
 
-	uint8_t* _buffer = mCanvas.getPtr();
+	volatile uint8_t* _buffer = mCanvas.getPtr();
 	uint16_t i = x / 8 + y * (_width / 8);
 
 	if (color)

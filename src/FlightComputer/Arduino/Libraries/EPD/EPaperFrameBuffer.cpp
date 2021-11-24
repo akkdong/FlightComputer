@@ -28,18 +28,18 @@ EPaperFrameBuffer::EPaperFrameBuffer(size_t width, size_t height, size_t bpp)
 	mBitPerPixel = bpp;
 }
 
-uint8_t * EPaperFrameBuffer::mBaseAddrPtr	= (uint8_t *)BASE_DISPBUFFER;
-uint8_t * EPaperFrameBuffer::mNextAddrPtr 	= (uint8_t *)BASE_DISPBUFFER;
+volatile uint8_t * EPaperFrameBuffer::mBaseAddrPtr	= (volatile uint8_t *)BASE_DISPBUFFER;
+volatile uint8_t * EPaperFrameBuffer::mNextAddrPtr 	= (volatile uint8_t *)BASE_DISPBUFFER;
 
 size_t EPaperFrameBuffer::mMemTotalSize		= SIZE_DISPBUFFER;
 
-uint8_t * EPaperFrameBuffer::alloc(size_t size)
+volatile uint8_t * EPaperFrameBuffer::alloc(size_t size)
 {
 	size = ((size + 3) / 4) * 4; // alignment
-	if (size < capacity())
+	if (size > capacity())
 		return nullptr;
 
-	uint8_t * allocPtr = mNextAddrPtr;
+	volatile uint8_t * allocPtr = mNextAddrPtr;
 	mNextAddrPtr += size;
 
 	return allocPtr;

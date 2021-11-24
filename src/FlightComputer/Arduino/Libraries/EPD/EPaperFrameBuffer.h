@@ -21,28 +21,28 @@ public:
 	EPaperFrameBuffer(size_t width, size_t height, size_t bpp = 1);
 
 public:
-	uint8_t * getPtr() { return mBuffPtr; }
-	int	getSize() { return mBuffLen; }
+	volatile uint8_t * getPtr() { return mBuffPtr; }
+	int	getSize() 				{ return mBuffLen; }
 
-	operator uint8_t *() { return getPtr(); }
+	operator volatile uint8_t *() { return getPtr(); }
 
 protected:
-	static uint8_t *	alloc(size_t size);
-	static size_t		capacity();
+	static volatile uint8_t *	alloc(size_t size);
+	static size_t				capacity();
 
 private:
-	uint8_t *			mBuffPtr;
-	size_t				mBuffLen;
+	volatile uint8_t *			mBuffPtr;
+	size_t						mBuffLen;
 
-	size_t				mWidth;
-	size_t				mHeight;
-	size_t				mBitPerPixel;
+	size_t						mWidth;
+	size_t						mHeight;
+	size_t						mBitPerPixel;
 
 	//
 protected:
-	static uint8_t *	mBaseAddrPtr;
-	static uint8_t *	mNextAddrPtr;
-	static size_t		mMemTotalSize;
+	static volatile uint8_t *	mBaseAddrPtr;
+	static volatile uint8_t *	mNextAddrPtr;
+	static size_t				mMemTotalSize;
 };
 
 
