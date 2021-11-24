@@ -22,3 +22,6 @@
 [submodule "src/FlightComputer/Arduino/Libraries/lvgl"]
 	path = src/FlightComputer/Arduino/Libraries/lvgl
 	url = https://github.com/littlevgl/lvgl.git
+[submodule "src/Test/stm32h7-dual-core-inter-cpu-async-communication"]
+	path = src/Test/stm32h7-dual-core-inter-cpu-async-communication
+	url = https://github.com/MaJerle/stm32h7-dual-core-inter-cpu-async-communication.git
