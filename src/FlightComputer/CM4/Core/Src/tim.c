@@ -59,7 +59,7 @@ void MX_TIM2_Init(void)
 
 }
 
-void HAL_TIM_OC_MspInit(TIM_HandleTypeDef* tim_ocHandle)
+void HAL_TIM_OC_MspInit_obsolete(TIM_HandleTypeDef* tim_ocHandle)
 {
 
   if(tim_ocHandle->Instance==TIM2)
@@ -79,7 +79,7 @@ void HAL_TIM_OC_MspInit(TIM_HandleTypeDef* tim_ocHandle)
   }
 }
 
-void HAL_TIM_OC_MspDeInit(TIM_HandleTypeDef* tim_ocHandle)
+void HAL_TIM_OC_MspDeInit_obsolete(TIM_HandleTypeDef* tim_ocHandle)
 {
 
   if(tim_ocHandle->Instance==TIM2)
