@@ -13,6 +13,10 @@
 #define DEBOUNCE_PERIOD		(20)		// 20ms
 #define LONGKEY_PERIOD		(2000)		// 2s
 
+#ifdef DEBUG
+#undef DEBUG
+#endif
+
 
 //////////////////////////////////////////////////////////////////////////
 // class KeyPad

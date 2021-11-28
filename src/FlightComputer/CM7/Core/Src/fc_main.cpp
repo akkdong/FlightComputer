@@ -21,6 +21,7 @@
 #include "EPD/EPaperController.h"
 #include "EPD/EPaperDisplay.h"
 #include "lv_port.h"
+#include "common.h"
 
 #include "../../../../Test/FC_Test/CM7/Core/Inc/image_mono.h"
 #include "../../../../Test/FC_Test/CM7/Core/Inc/landscape.h"
@@ -33,10 +34,17 @@ int image_type = 0;
 #define HSEM_ID_0 (0U) /* HW semaphore 0*/
 #endif
 
+/* Ringbuffer variables */
+LWRB_VOLATILE lwrb_t* rb_cm4_to_cm7 = (LWRB_VOLATILE lwrb_t *)BUFF_CM4_TO_CM7_ADDR;
+LWRB_VOLATILE lwrb_t* rb_cm7_to_cm4 = (LWRB_VOLATILE lwrb_t *)BUFF_CM7_TO_CM4_ADDR;
+
 HardwareSerial& Debug = Serial1;
-HardwareSerial& GPS = Serial2;
+//HardwareSerial& GPS = Serial2;
 HardwareSerial& RPI = Serial3;
 
+
+/////////////////////////////////////////////////////////////////////////////////////
+// class FlightComputer
 
 class FlightComputer
 {
@@ -81,11 +89,11 @@ void FlightComputer::setup(void)
 	digitalWrite(PWR_LED1, LOW);
 	digitalWrite(PWR_LED2, HIGH);
 
-	Debug.begin(115200);
-	GPS.begin(9600);
-	Serial3.begin(115200);
-	delay(100);
-	Debug.println("Start Flight computer");
+	//Debug.begin(115200);
+	//GPS.begin(9600);
+	//RPI.begin(115200);
+	//delay(100);
+	//Debug.println("Start Flight computer");
 
 	// device check
 	if (!flash_ok)
@@ -115,12 +123,12 @@ void FlightComputer::loop()
 		//if (GPS.available())
 		//	Debug.write(GPS.read());
 		// [TEST] echo RPI & forward to Debug console
-		if (RPI.available())
-		{
-			int ch = RPI.read();
-			Debug.write(ch);
-			RPI.write(ch);
-		}
+		//if (RPI.available())
+		//{
+		//	int ch = RPI.read();
+		//	Debug.write(ch);
+		//	RPI.write(ch);
+		//}
 
 		// console
 		// CommandConsole console;
@@ -197,14 +205,14 @@ void FlightComputer::loop()
 					image_type = (image_type + 1) % 3;
 
 					epdDisp.refresh();
-					Serial1.printf("draw bitmap!: %u ms\r\n", millis() - lastTick);
+					Debug.printf("draw bitmap!: %u ms\r\n", millis() - lastTick);
 				}
 				else if ((event & EVENT_MASK_KEY) == KeyPad::ESCAPE)
 				{
 					uint32_t lastTick = millis();
 					epdDisp.clearScreen();
 					epdDisp.refresh();
-					Serial1.printf("clear screen!: %u ms\r\n", millis() - lastTick);
+					Debug.printf("clear screen!: %u ms\r\n", millis() - lastTick);
 				}
 				else if ((event & EVENT_MASK_KEY) == KeyPad::FUNC1)
 				{
@@ -216,7 +224,7 @@ void FlightComputer::loop()
 					epdDisp.print("Hello everyone!");
 					epdDisp.refresh(true);
 
-					Serial1.printf("fast update!: %u ms\r\n", millis() - lastTick);
+					Debug.printf("fast update!: %u ms\r\n", millis() - lastTick);
 				}
 				else if ((event & EVENT_MASK_KEY) == KeyPad::UP)
 				{
@@ -225,7 +233,7 @@ void FlightComputer::loop()
 					epdDisp.fillScreen(COLOR_WHITE);
 					epdDisp.refresh(true);
 
-					Serial1.printf("fast fill white!: %u ms\r\n", millis() - lastTick);
+					Debug.printf("fast fill white!: %u ms\r\n", millis() - lastTick);
 				}
 				else if ((event & EVENT_MASK_KEY) == KeyPad::DOWN)
 				{
@@ -234,11 +242,45 @@ void FlightComputer::loop()
 					epdDisp.fillScreen(COLOR_BLACK);
 					epdDisp.refresh(true);
 
-					Serial1.printf("fast fill black!: %u ms\r\n", millis() - lastTick);
+					Debug.printf("fast fill black!: %u ms\r\n", millis() - lastTick);
+				}
+				else if ((event & EVENT_MASK_KEY) == KeyPad::MENU)
+				{
+					Debug.printf("[D] D2CKDRY: %d\r\n", __HAL_RCC_GET_FLAG(RCC_FLAG_D2CKRDY));
+				}
+				else if ((event & EVENT_MASK_KEY) == KeyPad::FUNC2)
+				{
+					// Take HSEM
+					HAL_HSEM_FastTake(HSEM_ID_0);
+					// Release HSEM in order to notify the CPU2(CM4)
+					HAL_HSEM_Release(HSEM_ID_0,0);
+					//
+					delay(1);
+					Debug.printf("[D] D2CKDRY: %d\r\n", __HAL_RCC_GET_FLAG(RCC_FLAG_D2CKRDY));
 				}
 			}
 		}
+
+
+		//
+	    /* Check if CPU2 sent some data to CPU1 core */
+		{
+			size_t len;
+			void* addr;
+			while ((len = lwrb_get_linear_block_read_length(rb_cm4_to_cm7)) > 0)
+			{
+
+				addr = lwrb_get_linear_block_read_address(rb_cm4_to_cm7);
+
+				/* Transmit data */
+				Debug.write((const char *)addr, len);
+
+				/* Mark buffer as read */
+				lwrb_skip(rb_cm4_to_cm7, len);
+			}
+		}
 	}
+
 
 	/*
 	SPIClass spi(SPI4_MOSI, SPI4_MISO, SPI4_SCLK);
@@ -266,6 +308,8 @@ void FlightComputer::loop()
 FlightComputer	fc;
 
 
+char msg1[64];
+char msg2[64];
 
 
 
@@ -277,12 +321,22 @@ extern "C" void loop(void);
 void init(void)
 {
 	// Wait until CPU2 boots and enters in stop mode or timeout
+	//
+	__HAL_RCC_HSEM_CLK_ENABLE();
 	int32_t timeout = 0xFFFF;
+	sprintf(msg1, "[0] D2CKDRY: %d\r\n", __HAL_RCC_GET_FLAG(RCC_FLAG_D2CKRDY));
 	while((__HAL_RCC_GET_FLAG(RCC_FLAG_D2CKRDY) != RESET) && (timeout-- > 0));
 	if ( timeout < 0 )
 	{
 		Error_Handler();
 	}
+	sprintf(msg2, "[1] D2CKDRY: %d\r\n", __HAL_RCC_GET_FLAG(RCC_FLAG_D2CKRDY));
+
+	//
+	/*
+    HAL_RCCEx_EnableBootCore(RCC_BOOT_C2);
+    WAIT_COND_WITH_TIMEOUT(__HAL_RCC_GET_FLAG(RCC_FLAG_D2CKRDY) != RESET, 0xFFFF);
+    */
 
 	//
 	/* Init DWT if present */
@@ -296,22 +350,21 @@ void init(void)
 	/* Configure the system clock */
 	SystemClock_Config();
 
-
 	#if defined (USBCON) && defined(USBD_USE_CDC)
 	USBD_CDC_init();
 	#endif
 
 	// enable all gpio clock
-	__HAL_RCC_GPIOA_CLK_ENABLE();
-	__HAL_RCC_GPIOB_CLK_ENABLE();
-	__HAL_RCC_GPIOC_CLK_ENABLE();
-	__HAL_RCC_GPIOD_CLK_ENABLE();
-	__HAL_RCC_GPIOE_CLK_ENABLE();
-	__HAL_RCC_GPIOF_CLK_ENABLE();
-	__HAL_RCC_GPIOG_CLK_ENABLE();
-	__HAL_RCC_GPIOH_CLK_ENABLE();
-	__HAL_RCC_GPIOJ_CLK_ENABLE();
-	__HAL_RCC_GPIOK_CLK_ENABLE();
+	//__HAL_RCC_GPIOA_CLK_ENABLE();
+	//__HAL_RCC_GPIOB_CLK_ENABLE();
+	//__HAL_RCC_GPIOC_CLK_ENABLE();
+	//__HAL_RCC_GPIOD_CLK_ENABLE();
+	//__HAL_RCC_GPIOE_CLK_ENABLE();
+	//__HAL_RCC_GPIOF_CLK_ENABLE();
+	//__HAL_RCC_GPIOG_CLK_ENABLE();
+	//__HAL_RCC_GPIOH_CLK_ENABLE();
+	//__HAL_RCC_GPIOJ_CLK_ENABLE();
+	//__HAL_RCC_GPIOK_CLK_ENABLE();
 
 	// initialize each peripherals
 	MX_FMC_Init();
@@ -330,7 +383,8 @@ void init(void)
 	digitalWrite(PWR_EN_PERIPH, HIGH);
 	delay(100);
 
-	//Serial1.begin(115200);
+	Debug.begin(115200);
+	Debug.println("Start Flight computer!");
 
 	// initialize Flash
 	if (!QSPI_Driver_locked())
@@ -339,38 +393,49 @@ void init(void)
 		{
 			if(QSPI_Driver_init() == QSPI_STATUS_OK)
 			{
-				//Serial1.println("QSPI Driver initialized");
+				Debug.println("QSPI Driver initialized");
 				FlightComputer::flash_ok = true;
 			}
 			else
 			{
-				//Serial1.println("QSPI Driver initialize failed!!");
+				//Debug.println("QSPI Driver initialize failed!!");
 			}
 		}
 		else
 		{
-			//Serial1.println("QSPI Driver have been ready");
+			//Debug.println("QSPI Driver have been ready");
 		}
 	}
 	else
 	{
-		//Serial1.println("QSPI Driver locked");
+		//Debug.println("QSPI Driver locked");
 	}
 
 	// initialize SDRAM
 	if (SDRAM_Do_InitializeSequence() == HAL_OK)
 	{
-		//Serial1.println("SDRAM initialized");
+		Debug.println("SDRAM initialized");
 		FlightComputer::sdram_ok = true;
 	}
 	else
 	{
-		//Serial1.println("SDRAM initialize failed!!");
+		//Debug.println("SDRAM initialize failed!!");
 	}
 	delay(100);
 
+
+    /* Initialize buffers that are used as shared memory */
+    lwrb_init(rb_cm7_to_cm4, (void *)BUFFDATA_CM7_TO_CM4_ADDR, BUFFDATA_CM7_TO_CM4_LEN);
+    lwrb_init(rb_cm4_to_cm7, (void *)BUFFDATA_CM4_TO_CM7_ADDR, BUFFDATA_CM4_TO_CM7_LEN);
+
+#if 1
+#ifdef DEBUG
+	Debug.print(msg1);
+	Debug.print(msg2);
+	Debug.printf("[2] D2CKDRY: %d\r\n", __HAL_RCC_GET_FLAG(RCC_FLAG_D2CKRDY));
+#endif
+
 	// When system initialization is finished, Cortex-M7 will release Cortex-M4 by means of HSEM notification HW semaphore Clock enable
-	/*
 	__HAL_RCC_HSEM_CLK_ENABLE();
 	// Take HSEM
 	HAL_HSEM_FastTake(HSEM_ID_0);
@@ -378,12 +443,28 @@ void init(void)
 	HAL_HSEM_Release(HSEM_ID_0,0);
 	// Wait until CPU2 wakes up from stop mode
 	timeout = 0xFFFF;
+
 	while((__HAL_RCC_GET_FLAG(RCC_FLAG_D2CKRDY) == RESET) && (timeout-- > 0));
 	if ( timeout < 0 )
 	{
 		Error_Handler();
+		while(1);
 	}
-	*/
+#ifdef DEBUG
+	Debug.printf("[3] D2CKDRY: %d\r\n", __HAL_RCC_GET_FLAG(RCC_FLAG_D2CKRDY));
+#endif
+#endif
+
+#if 0
+    /* Wakeup CPU2 */
+    __HAL_RCC_HSEM_CLK_ENABLE();
+    HSEM_TAKE_RELEASE(HSEM_WAKEUP_CPU2);
+    WAIT_COND_WITH_TIMEOUT(__HAL_RCC_GET_FLAG(RCC_FLAG_D2CKRDY) == RESET, 0xFFFF);
+#endif
+
+#if 0
+    HAL_RCCEx_EnableBootCore(RCC_BOOT_C2);
+#endif
 }
 
 
@@ -398,8 +479,12 @@ void loop()
 }
 
 
+
+#include "core_debug.h"
+
 extern "C" void Error_Handler()
 {
-	_Error_Handler(__FILE__, __LINE__);
+	//_Error_Handler(__FILE__, __LINE__);
+	core_debug("Error: %s (%i)\n", __FILE__, __LINE__);
 }
 

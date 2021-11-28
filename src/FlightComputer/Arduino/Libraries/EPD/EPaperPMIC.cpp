@@ -30,6 +30,7 @@
 #define PWR_GOOD_OK            	(0b11111010)
 
 
+
 ////////////////////////////////////////////////////////////////////////////////////////
 // class EPaperPMIC
 
@@ -120,8 +121,8 @@ int EPaperPMIC::wakeup()
 
 #ifdef DEBUG
 		Serial1.println("Dump PMIC registers on EPpaperPMIC::wakeup()");
-		DumpRegister();
-		DumpPort();
+		//DumpRegister();
+		//DumpPort();
 #endif
 
 		mState = STANDBY;
