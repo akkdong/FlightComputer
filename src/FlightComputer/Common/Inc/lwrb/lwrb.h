@@ -83,7 +83,7 @@ struct lwrb;
  * \param[in]       evt: Event type
  * \param[in]       bp: Number of bytes written or read (when used), depends on event type
  */
-typedef void (*lwrb_evt_fn)(LWRB_VOLATILE struct lwrb* buff, lwrb_evt_type_t evt, size_t bp);
+typedef void (*lwrb_evt_fn)(struct lwrb* buff, lwrb_evt_type_t evt, size_t bp);
 
 /**
  * \brief           Buffer structure
@@ -103,30 +103,30 @@ typedef struct lwrb {
 #endif /* LWRB_USE_MAGIC */
 } lwrb_t;
 
-uint8_t     lwrb_init(LWRB_VOLATILE lwrb_t* buff, void* buffdata, size_t size);
-uint8_t     lwrb_is_ready(LWRB_VOLATILE lwrb_t* buff);
-void        lwrb_free(LWRB_VOLATILE lwrb_t* buff);
-void        lwrb_reset(LWRB_VOLATILE lwrb_t* buff);
-void        lwrb_set_evt_fn(LWRB_VOLATILE lwrb_t* buff, lwrb_evt_fn fn);
+uint8_t     lwrb_init(lwrb_t* buff, void* buffdata, size_t size);
+uint8_t     lwrb_is_ready(lwrb_t* buff);
+void        lwrb_free(lwrb_t* buff);
+void        lwrb_reset(lwrb_t* buff);
+void        lwrb_set_evt_fn(lwrb_t* buff, lwrb_evt_fn fn);
 
 /* Read/Write functions */
-size_t      lwrb_write(LWRB_VOLATILE lwrb_t* buff, const void* data, size_t btw);
-size_t      lwrb_read(LWRB_VOLATILE lwrb_t* buff, void* data, size_t btr);
-size_t      lwrb_peek(LWRB_VOLATILE lwrb_t* buff, size_t skip_count, void* data, size_t btp);
+size_t      lwrb_write(lwrb_t* buff, const void* data, size_t btw);
+size_t      lwrb_read(lwrb_t* buff, void* data, size_t btr);
+size_t      lwrb_peek(lwrb_t* buff, size_t skip_count, void* data, size_t btp);
 
 /* Buffer size information */
-size_t      lwrb_get_free(LWRB_VOLATILE lwrb_t* buff);
-size_t      lwrb_get_full(LWRB_VOLATILE lwrb_t* buff);
+size_t      lwrb_get_free(lwrb_t* buff);
+size_t      lwrb_get_full(lwrb_t* buff);
 
 /* Read data block management */
-void*       lwrb_get_linear_block_read_address(LWRB_VOLATILE lwrb_t* buff);
-size_t      lwrb_get_linear_block_read_length(LWRB_VOLATILE lwrb_t* buff);
-size_t      lwrb_skip(LWRB_VOLATILE lwrb_t* buff, size_t len);
+void*       lwrb_get_linear_block_read_address(lwrb_t* buff);
+size_t      lwrb_get_linear_block_read_length(lwrb_t* buff);
+size_t      lwrb_skip(lwrb_t* buff, size_t len);
 
 /* Write data block management */
-void*       lwrb_get_linear_block_write_address(LWRB_VOLATILE lwrb_t* buff);
-size_t      lwrb_get_linear_block_write_length(LWRB_VOLATILE lwrb_t* buff);
-size_t      lwrb_advance(LWRB_VOLATILE lwrb_t* buff, size_t len);
+void*       lwrb_get_linear_block_write_address(lwrb_t* buff);
+size_t      lwrb_get_linear_block_write_length(lwrb_t* buff);
+size_t      lwrb_advance(lwrb_t* buff, size_t len);
 
 /**
  * \}

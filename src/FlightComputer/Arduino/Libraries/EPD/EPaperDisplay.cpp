@@ -919,11 +919,11 @@ void EPaperDisplay::clear(uint8_t c, uint8_t rep)
 void EPaperDisplay::display()
 {
     clear(0, 1);
-    clear(1, 12); // 21
+    clear(1, 16); // 21
     clear(2, 1);
-    clear(0, 14); // 22
+    clear(0, 18); // 22
     clear(2, 1);
-    clear(1, 12); // 21
+    clear(1, 16); // 21
     clear(2, 1);
     clear(0, 16);
 

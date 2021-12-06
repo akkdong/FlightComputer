@@ -6,6 +6,8 @@
 
 #include "stm32h7xx.h"
 #include "lwrb/lwrb.h"
+#include "lwshell/lwshell.h"
+
 
 /* Align X to 4 bytes */
 #define MEM_ALIGN(x)                        (((x) + 0x00000003) & ~0x00000003)

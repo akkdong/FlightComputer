@@ -35,12 +35,22 @@ int image_type = 0;
 #endif
 
 /* Ringbuffer variables */
-LWRB_VOLATILE lwrb_t* rb_cm4_to_cm7 = (LWRB_VOLATILE lwrb_t *)BUFF_CM4_TO_CM7_ADDR;
-LWRB_VOLATILE lwrb_t* rb_cm7_to_cm4 = (LWRB_VOLATILE lwrb_t *)BUFF_CM7_TO_CM4_ADDR;
+lwrb_t* rb_cm4_to_cm7 = (lwrb_t *)BUFF_CM4_TO_CM7_ADDR;
+lwrb_t* rb_cm7_to_cm4 = (lwrb_t *)BUFF_CM7_TO_CM4_ADDR;
 
 HardwareSerial& Debug = Serial1;
 //HardwareSerial& GPS = Serial2;
 HardwareSerial& RPI = Serial3;
+
+
+
+int32_t shell_hello(int32_t argc, char** argv)
+{
+	Debug.println("Hi~");
+
+	return 0;
+}
+
 
 
 /////////////////////////////////////////////////////////////////////////////////////
@@ -110,6 +120,11 @@ void FlightComputer::setup(void)
 	//epdCont.begin();
 	epdDisp.begin();
 	keyPad.begin();
+
+	//
+	lwshell_init();
+
+	lwshell_register_cmd("hello", shell_hello, "Answer me!");
 }
 
 void FlightComputer::loop()
@@ -117,8 +132,12 @@ void FlightComputer::loop()
 	while(1)
 	{
 		// [TEST] echo Debug console
-		if (Debug.available())
-			Debug.write(Debug.read());
+		while (Debug.available())
+		{
+			int ch = Debug.read();
+			lwshell_input(&ch, 1);
+		}
+
 		// [TEST] forward GPS to Debug console
 		//if (GPS.available())
 		//	Debug.write(GPS.read());
@@ -273,7 +292,7 @@ void FlightComputer::loop()
 				addr = lwrb_get_linear_block_read_address(rb_cm4_to_cm7);
 
 				/* Transmit data */
-				Debug.write((const char *)addr, len);
+				//Debug.write((const char *)addr, len);
 
 				/* Mark buffer as read */
 				lwrb_skip(rb_cm4_to_cm7, len);

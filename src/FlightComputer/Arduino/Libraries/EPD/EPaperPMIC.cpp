@@ -100,7 +100,7 @@ int EPaperPMIC::wakeup()
 		digitalWrite(PMIC_WAKEUP, HIGH);
 		delay(10);
 
-#if 0
+#if 1
 		mWire.beginTransmission(PMIC_ADDR);
 		mWire.write(PMIC_REG_UPSEQ0);
 		mWire.write(0b11100100); // Power up seq.
@@ -111,10 +111,16 @@ int EPaperPMIC::wakeup()
 		delay(1);
 #endif
 
-#if 0
+#if 1
 		mWire.beginTransmission(PMIC_ADDR);
 		mWire.write(PMIC_REG_VCOM1);
-		mWire.write(0b10010110); // vcom voltage: -1.5v, 150
+		mWire.write(0b10010001); // 1.45
+//		mWire.write(0b10010110); // vcom voltage: -1.5v, 150
+//		mWire.write(0b10111001); // 1.85
+//		mWire.write(0b11010001); // 2.09
+		// 2.27
+
+
 		mWire.endTransmission();
 		delay(1);
 #endif
@@ -172,11 +178,13 @@ int EPaperPMIC::powerOn()
 	    mWire.write(PMIC_REG_ENABLE);
 	    mWire.write(0b10111111);
 	    mWire.endTransmission();
-	    delay(1);
+	    delay(20);
 
+#if 1
 	    // turn-on VCOM
 		digitalWrite(PMIC_VCOM, HIGH);
-		delay(6);
+		delay(1);
+#endif
 
 	    // wait power-good
 		uint32_t tick = millis();
@@ -204,6 +212,13 @@ int EPaperPMIC::powerOn()
 		}
 		else
 		{
+#if 0
+			// turn-on VCOM
+			digitalWrite(PMIC_VCOM, HIGH);
+			delay(6);
+#endif
+
+
 #ifdef DEBUG
 			Serial1.println("PMIC Power OK!");
 #endif
@@ -225,7 +240,7 @@ int EPaperPMIC::powerOff()
 	{
 		// turn-off VCOM pin
 		digitalWrite(PMIC_VCOM, LOW);
-		//delay(6);
+		delay(6);
 
 		// disable all rails
 		mWire.beginTransmission(PMIC_ADDR);

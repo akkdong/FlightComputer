@@ -14,8 +14,8 @@
 #endif
 
 //
-LWRB_VOLATILE lwrb_t* rb_cm4_to_cm7 = (LWRB_VOLATILE lwrb_t *)BUFF_CM4_TO_CM7_ADDR;
-LWRB_VOLATILE lwrb_t* rb_cm7_to_cm4 = (LWRB_VOLATILE lwrb_t *)BUFF_CM7_TO_CM4_ADDR;
+lwrb_t* rb_cm4_to_cm7 = (lwrb_t *)BUFF_CM4_TO_CM7_ADDR;
+lwrb_t* rb_cm7_to_cm4 = (lwrb_t *)BUFF_CM7_TO_CM4_ADDR;
 
 
 void init(void)
