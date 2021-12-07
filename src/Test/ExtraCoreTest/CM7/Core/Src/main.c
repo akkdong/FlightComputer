@@ -240,9 +240,9 @@
 
 
 
-#define ENABLE_QSPI_TEST				(1)
-#define ENABLE_SDRAM_TEST				(1)
-#define ENABLE_NOR_TEST					(1)
+#define ENABLE_QSPI_TEST				(0)
+#define ENABLE_SDRAM_TEST				(0)
+#define ENABLE_NOR_TEST					(0)
 
 
 /* USER CODE END PM */
@@ -333,8 +333,9 @@ int main(void)
 	  __IO uint8_t step = 0;
 #endif
 
+#if ENABLE_NOR_TEST
   MPU_Config();
-
+#endif
 
   /* USER CODE END 1 */
 /* USER CODE BEGIN Boot_Mode_Sequence_0 */
@@ -394,8 +395,12 @@ Error_Handler();
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
+#if ENABLE_SDRAM_TEST || ENABLE_NOR_TEST
   MX_FMC_Init();
+#endif
+#if ENABLE_QUADSPI_TEST
   MX_QUADSPI_Init();
+#endif
   MX_LPUART1_UART_Init();
   MX_I2C1_Init();
   /* USER CODE BEGIN 2 */
@@ -531,6 +536,18 @@ Error_Handler();
 #endif
 
 #endif
+
+#ifdef DATA_IN_ExtSDRAM
+  {
+	  char buf[4];
+	  uint32_t uwTabAddr = (uint32_t)buf; /* should be above 0xD0000000 */
+	  uint32_t MSPValue = __get_MSP(); /* should be above 0xD0000000 */
+
+	  printf("uwTabAddr = %X\r\n", uwTabAddr);
+	  printf("MSPValue = %X\r\n", MSPValue);
+  }
+#endif
+
 
 #if ENABLE_NOR_TEST
   {
@@ -1233,6 +1250,7 @@ static void MX_GPIO_Init(void)
 
 /* USER CODE BEGIN 4 */
 
+#if ENABLE_QSPI_TEST
 
 /**
   * @brief  Command completed callbacks.
@@ -1402,7 +1420,7 @@ static void QSPI_DummyCyclesCfg(QSPI_HandleTypeDef *hqspi)
   }
 }
 
-
+#endif
 
 /**
   * @brief  Fills buffer with user predefined data.
