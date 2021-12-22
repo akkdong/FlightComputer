@@ -71,7 +71,7 @@
                                     									
                                     <listOptionValue builtIn="false" value="DEBUG"/>
                                     									
-                                    <listOptionValue builtIn="false" value="DATA_IN_ExtSDRAM=1"/>
+                                    <listOptionValue builtIn="false" value="DATA_IN_ExtSDRAM=0"/>
                                     									
                                     <listOptionValue builtIn="false" value="CORE_CM7"/>
                                     									
@@ -109,7 +109,7 @@
                             							
                             <tool id="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.c.linker.970772222" name="MCU GCC Linker" superClass="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.c.linker">
                                 								
-                                <option id="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.c.linker.option.script.201656472" name="Linker Script (-T)" superClass="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.c.linker.option.script" useByScannerDiscovery="false" value="${workspace_loc:/${ProjName}/STM32H745XIHX_FLASH_SDRAM.ld}" valueType="string"/>
+                                <option id="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.c.linker.option.script.201656472" name="Linker Script (-T)" superClass="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.c.linker.option.script" useByScannerDiscovery="false" value="${workspace_loc:/${ProjName}/STM32H745XIHX_FLASH.ld}" valueType="string"/>
                                 								
                                 <inputType id="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.c.linker.input.364556039" superClass="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.c.linker.input">
                                     									
@@ -143,9 +143,9 @@
                         					
                     </folderInfo>
                     					
-                    <fileInfo id="com.st.stm32cube.ide.mcu.gnu.managedbuild.config.exe.debug.576570735.2062153327" name="startup_stm32h745xihx.s" rcbsApplicability="disable" resourcePath="Core/Startup/startup_stm32h745xihx.s" toolsToInvoke="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.assembler.1745442463.1682802876">
+                    <fileInfo id="com.st.stm32cube.ide.mcu.gnu.managedbuild.config.exe.debug.576570735.814969294" name="startup_stm32h745xihx.s" rcbsApplicability="disable" resourcePath="Core/Startup/startup_stm32h745xihx.s" toolsToInvoke="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.assembler.1745442463.618154107">
                         						
-                        <tool id="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.assembler.1745442463.1682802876" name="MCU GCC Assembler" superClass="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.assembler.1745442463"/>
+                        <tool id="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.assembler.1745442463.618154107" name="MCU GCC Assembler" superClass="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.assembler.1745442463"/>
                         					
                     </fileInfo>
                     					
@@ -153,7 +153,7 @@
                         						
                         <entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Common"/>
                         						
-                        <entry excluding="Startup/startup_stm32h745xihx.s|Startup/startup_stm32h745xxx_cm7_sdram.s" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Core"/>
+                        <entry excluding="Startup/startup_stm32h745xxx_cm7_sdram.s" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Core"/>
                         						
                         <entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Drivers"/>
                         					

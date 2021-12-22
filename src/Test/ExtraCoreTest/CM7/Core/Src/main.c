@@ -290,9 +290,12 @@ static void MX_LPUART1_UART_Init(void);
 static void MX_I2C1_Init(void);
 static void MX_LTDC_Init(void);
 /* USER CODE BEGIN PFP */
+
+#if ENABLE_QSPI_TEST
 static void QSPI_WriteEnable(QSPI_HandleTypeDef *hqspi);
 static void QSPI_AutoPollingMemReady(QSPI_HandleTypeDef *hqspi);
 static void QSPI_DummyCyclesCfg(QSPI_HandleTypeDef *hqspi);
+#endif
 
 static void Fill_Buffer(uint32_t *pBuffer, uint32_t uwBufferLength, uint16_t uwOffset);
 
@@ -333,7 +336,7 @@ int main(void)
 	  __IO uint8_t step = 0;
 #endif
 
-#if ENABLE_NOR_TEST
+#if ENABLE_NOR_TEST || 1
   MPU_Config();
 #endif
 
@@ -543,8 +546,8 @@ Error_Handler();
 	  uint32_t uwTabAddr = (uint32_t)buf; /* should be above 0xD0000000 */
 	  uint32_t MSPValue = __get_MSP(); /* should be above 0xD0000000 */
 
-	  printf("uwTabAddr = %X\r\n", uwTabAddr);
-	  printf("MSPValue = %X\r\n", MSPValue);
+	  printf("uwTabAddr = %x\r\n", (unsigned int)uwTabAddr);
+	  printf("MSPValue = %x\r\n", (unsigned int)MSPValue);
   }
 #endif
 
@@ -909,10 +912,10 @@ void PeriphCommonClock_Config(void)
   */
   PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_FMC|RCC_PERIPHCLK_QSPI;
   PeriphClkInitStruct.PLL2.PLL2M = 5;
-  PeriphClkInitStruct.PLL2.PLL2N = 192;
+  PeriphClkInitStruct.PLL2.PLL2N = 160;
   PeriphClkInitStruct.PLL2.PLL2P = 2;
   PeriphClkInitStruct.PLL2.PLL2Q = 2;
-  PeriphClkInitStruct.PLL2.PLL2R = 10;
+  PeriphClkInitStruct.PLL2.PLL2R = 8;
   PeriphClkInitStruct.PLL2.PLL2RGE = RCC_PLL2VCIRANGE_2;
   PeriphClkInitStruct.PLL2.PLL2VCOSEL = RCC_PLL2VCOWIDE;
   PeriphClkInitStruct.PLL2.PLL2FRACN = 0;
@@ -1044,9 +1047,9 @@ static void MX_LTDC_Init(void)
   hltdc.Init.VerticalSync = 3;
   hltdc.Init.AccumulatedHBP = 14;
   hltdc.Init.AccumulatedVBP = 5;
-  hltdc.Init.AccumulatedActiveW = 654;
+  hltdc.Init.AccumulatedActiveW = 814;
   hltdc.Init.AccumulatedActiveH = 485;
-  hltdc.Init.TotalWidth = 660;
+  hltdc.Init.TotalWidth = 820;
   hltdc.Init.TotalHeigh = 487;
   hltdc.Init.Backcolor.Blue = 0;
   hltdc.Init.Backcolor.Green = 0;
@@ -1065,7 +1068,7 @@ static void MX_LTDC_Init(void)
   pLayerCfg.BlendingFactor1 = LTDC_BLENDING_FACTOR1_CA;
   pLayerCfg.BlendingFactor2 = LTDC_BLENDING_FACTOR2_CA;
   pLayerCfg.FBStartAdress = 0xD0000000;
-  pLayerCfg.ImageWidth = 2400;
+  pLayerCfg.ImageWidth = 800;
   pLayerCfg.ImageHeight = 480;
   pLayerCfg.Backcolor.Blue = 255;
   pLayerCfg.Backcolor.Green = 255;
