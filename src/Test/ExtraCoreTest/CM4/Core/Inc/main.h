@@ -58,6 +58,7 @@ void Error_Handler(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
+void   MX_RTC_Init(void);
 /* USER CODE BEGIN Private defines */
 
 /* USER CODE END Private defines */
