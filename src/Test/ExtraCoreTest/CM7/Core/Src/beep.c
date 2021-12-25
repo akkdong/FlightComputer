@@ -65,31 +65,38 @@ static int beep_on = 0;
 
 void beep_setFreq(int freq)
 {
-	// set CCR
-	TIM4->ARR = beep_GetTimerTick(freq);
-
-	if (beep_on == 0)
+	if (freq <= 0)
 	{
-		// start PWM
-		HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_3);
-		HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_4);
+		beep_mute();
+	}
+	else
+	{
+		// set CCR
+		TIM4->ARR = beep_GetTimerTick(freq);
 
-		// start timer
-		HAL_TIM_OC_Start(&htim4, TIM_CHANNEL_1);
-		HAL_TIM_OC_Start(&htim4, TIM_CHANNEL_2);
-		// start DMA
-		HAL_DMA_Start_IT(&hdma_tim4_ch1, (uint32_t)Wave_LUT, DestAddressCH3, NS);
-		HAL_DMA_Start_IT(&hdma_tim4_ch2, (uint32_t)Wave_LUT, DestAddressCH4, NS);
-		// enable DMA
-		__HAL_TIM_ENABLE_DMA(&htim4, TIM_DMA_CC1);
-		__HAL_TIM_ENABLE_DMA(&htim4, TIM_DMA_CC2);
+		if (beep_on == 0)
+		{
+			// start PWM
+			HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_3);
+			HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_4);
 
-		//
-		beep_on = 1;
+			// start timer
+			HAL_TIM_OC_Start(&htim4, TIM_CHANNEL_1);
+			HAL_TIM_OC_Start(&htim4, TIM_CHANNEL_2);
+			// start DMA
+			HAL_DMA_Start_IT(&hdma_tim4_ch1, (uint32_t)Wave_LUT, DestAddressCH3, NS);
+			HAL_DMA_Start_IT(&hdma_tim4_ch2, (uint32_t)Wave_LUT, DestAddressCH4, NS);
+			// enable DMA
+			__HAL_TIM_ENABLE_DMA(&htim4, TIM_DMA_CC1);
+			__HAL_TIM_ENABLE_DMA(&htim4, TIM_DMA_CC2);
+
+			//
+			beep_on = 1;
+		}
 	}
 }
 
-void beep_setNode(NOTE note)
+void beep_setNote(NOTE note)
 {
 
 }

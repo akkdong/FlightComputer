@@ -61,6 +61,7 @@ void DMA1_Stream1_IRQHandler(void);
 void TIM3_IRQHandler(void);
 void TIM4_IRQHandler(void);
 void QUADSPI_IRQHandler(void);
+void LPUART1_IRQHandler(void);
 /* USER CODE BEGIN EFP */
 
 /* USER CODE END EFP */

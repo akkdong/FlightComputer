@@ -36,6 +36,11 @@
 #ifndef HSEM_ID_0
 #define HSEM_ID_0 (0U) /* HW semaphore 0*/
 #endif
+
+#ifndef HSEM_ID_1
+#define HSEM_ID_1 (1U) /* HW semaphore 1*/
+#endif
+
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -48,7 +53,7 @@
 RTC_HandleTypeDef hrtc;
 
 /* USER CODE BEGIN PV */
-
+volatile uint32_t Notif_Sleep;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -75,8 +80,14 @@ int main(void)
 /* USER CODE BEGIN Boot_Mode_Sequence_1 */
   /*HW semaphore Clock enable*/
   __HAL_RCC_HSEM_CLK_ENABLE();
+
+  /* Configure the NVIC HSEM notification interrupt for CM4 */
+  HAL_NVIC_SetPriority(HSEM2_IRQn, 0x0, 0);
+  HAL_NVIC_EnableIRQ(HSEM2_IRQn);
+
   /* Activate HSEM notification for Cortex-M4*/
   HAL_HSEM_ActivateNotification(__HAL_HSEM_SEMID_TO_MASK(HSEM_ID_0));
+
   /*
   Domain D2 goes to STOP mode (Cortex-M4 in deep-sleep) waiting for Cortex-M7 to
   perform system initialization (system clock config, external memory configuration.. )
@@ -85,6 +96,7 @@ int main(void)
   HAL_PWREx_EnterSTOPMode(PWR_MAINREGULATOR_ON, PWR_STOPENTRY_WFE, PWR_D2_DOMAIN);
   /* Clear HSEM flag */
   __HAL_HSEM_CLEAR_FLAG(__HAL_HSEM_SEMID_TO_MASK(HSEM_ID_0));
+  HAL_HSEM_DeactivateNotification(__HAL_HSEM_SEMID_TO_MASK(HSEM_ID_0)); // ???
 
 /* USER CODE END Boot_Mode_Sequence_1 */
   /* MCU Configuration--------------------------------------------------------*/
@@ -108,11 +120,30 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
+  // Enable HSEM Interrupt
+  HAL_NVIC_SetPriority(HSEM2_IRQn, 10, 0);
+  HAL_NVIC_EnableIRQ(HSEM2_IRQn);
+
+  Notif_Sleep = 0;
+  HAL_HSEM_ActivateNotification(__HAL_HSEM_SEMID_TO_MASK(HSEM_ID_1));
+
   while (1)
   {
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
+	  if (Notif_Sleep != 0)
+	  {
+		  HAL_HSEM_DeactivateNotification(__HAL_HSEM_SEMID_TO_MASK(HSEM_ID_1));
+
+		  HAL_PWREx_ClearPendingEvent();
+		  // Enter D3 to DStandby mode
+		  HAL_PWREx_EnterSTANDBYMode(PWR_D3_DOMAIN);
+		  // Enter D2 to DStandby mode
+		  HAL_PWREx_EnterSTANDBYMode(PWR_D2_DOMAIN);
+	  }
+
+	  HAL_Delay(1);
   }
   /* USER CODE END 3 */
 }
@@ -164,7 +195,10 @@ static void MX_DMA_Init(void)
 }
 
 /* USER CODE BEGIN 4 */
-
+void HAL_HSEM_FreeCallback(uint32_t SemMask)
+{
+	Notif_Sleep = 1;
+}
 /* USER CODE END 4 */
 
 /**

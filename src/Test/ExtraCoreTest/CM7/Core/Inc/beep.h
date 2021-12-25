@@ -24,7 +24,7 @@ typedef enum
 void beep_init(void);
 
 void beep_setFreq(int freq);
-void beep_setNode(NOTE note);
+void beep_setNote(NOTE note);
 void beep_mute();
 
 

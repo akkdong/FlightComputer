@@ -67,7 +67,13 @@ void Error_Handler(void);
 #define LCD_BL_Pin GPIO_PIN_10
 #define LCD_BL_GPIO_Port GPIOF
 /* USER CODE BEGIN Private defines */
+#ifndef HSEM_ID_0
+#define HSEM_ID_0 (0U) /* HW semaphore 0*/
+#endif
 
+#ifndef HSEM_ID_1
+#define HSEM_ID_1 (1U) /* HW semaphore 1*/
+#endif
 /* USER CODE END Private defines */
 
 #ifdef __cplusplus

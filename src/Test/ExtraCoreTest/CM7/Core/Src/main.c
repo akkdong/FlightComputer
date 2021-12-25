@@ -29,8 +29,10 @@
 #include "quadspi.h"
 #include "nor.h"
 #include "beep.h"
+#include "serial.h"
+#include "shell.h"
 
-
+#include "lwshell/lwshell.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -44,6 +46,11 @@
 #ifndef HSEM_ID_0
 #define HSEM_ID_0 (0U) /* HW semaphore 0*/
 #endif
+
+#ifndef HSEM_ID_1
+#define HSEM_ID_1 (1U) /* HW semaphore 1*/
+#endif
+
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -53,6 +60,8 @@
 #define ENABLE_SDRAM_TEST				(1)
 #define ENABLE_NOR_TEST					(1)
 
+#define PWR_WAKEUP_FLAGS  (PWR_WAKEUP_FLAG1 | PWR_WAKEUP_FLAG2 | PWR_WAKEUP_FLAG3 | \
+                           PWR_WAKEUP_FLAG4 | PWR_WAKEUP_FLAG5 | PWR_WAKEUP_FLAG6)
 
 /* USER CODE END PM */
 
@@ -99,10 +108,18 @@ static void MPU_Config(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-int __io_putchar(int ch)
+//int __io_putchar(int ch)
+//{
+//	//HAL_UART_Transmit(&hlpuart1, (uint8_t *)&ch, 1, 100);
+//	serial_write(ch);
+//	return 1;
+//}
+int _write(int file, char *ptr, int len)
 {
-	HAL_UART_Transmit(&hlpuart1, (uint8_t *)&ch, 1, 100);
-	return 1;
+	for (int i = 0; i < len; i++)
+		serial_write(ptr[i]);
+
+	return len;
 }
 /* USER CODE END 0 */
 
@@ -170,6 +187,13 @@ Error_Handler();
 
   /* USER CODE BEGIN SysInit */
 
+	/* Check and handle if the system was resumed from StandBy mode */
+	if(__HAL_PWR_GET_FLAG(PWR_FLAG_SB) != RESET)
+	{
+	  /* Clear system Standby flag */
+	  __HAL_PWR_CLEAR_FLAG(PWR_FLAG_SB);
+	}
+
   /* USER CODE END SysInit */
 
   /* Initialize all configured peripherals */
@@ -183,6 +207,33 @@ Error_Handler();
   MX_TIM4_Init();
   MX_RTC_Init();
   /* USER CODE BEGIN 2 */
+  serial_init(&hlpuart1);
+
+
+  /* The Following Wakeup sequence is highly recommended prior to each Standby mode entry
+    mainly  when using more than one wakeup source this is to not miss any wakeup event.
+    - Disable all used wakeup sources,
+    - Clear all related wakeup flags,
+    - Re-enable all used wakeup sources,
+    - Enter the Standby mode.
+  */
+  /* Disable all used wakeup sources*/
+  HAL_PWREx_DisableWakeUpPin(PWR_WAKEUP_PIN4);
+
+  /* Re-enable all used wakeup sources*/
+  /* Configure Wakeup pin */
+  PWREx_WakeupPinTypeDef sPinParams;
+  sPinParams.WakeUpPin    = PWR_WAKEUP_PIN4;
+  sPinParams.PinPolarity  = PWR_PIN_POLARITY_LOW;
+  sPinParams.PinPull      = PWR_PIN_NO_PULL;
+  HAL_PWREx_EnableWakeUpPin(&sPinParams);
+
+  /* Clear all related wakeup flags */
+  HAL_StatusTypeDef ret = HAL_PWREx_ClearWakeupFlag(PWR_WAKEUP_FLAGS);
+  if(ret != HAL_OK)
+  {
+    Error_Handler();
+  }
 
   /* USER CODE END 2 */
 
@@ -191,7 +242,7 @@ Error_Handler();
 
   //
   uint32_t count = 0;
-  while (count++ < 20)
+  while (count++ < 10)
   {
 	  HAL_GPIO_TogglePin(LED1_GPIO_Port, LED1_Pin);
 	  HAL_Delay(100);
@@ -201,36 +252,55 @@ Error_Handler();
   printf("STM32H745 CoreBoard....\r\n");
 
   beep_init();
-//beep_setNote(C2);
-//beep_mute();
+  shell_init();
 
-  uint32_t tone[] = { 230, 320, 400, 0, 600, 0 };
-  uint32_t delay[] = { 200, 100, 200, 100, 100, 100 };
+#if DEPRECATED || 1
+  uint32_t tone[] = { 240, 320, 470, 0, 600, 0 };
+  uint32_t delay[] = { 200, 200, 200, 100, 400, 100 };
+#if 0
   uint32_t tick = HAL_GetTick();
   int i = 0;
-
   beep_setFreq(tone[i]);
-  printf("beep %d Hz\n", (int)tone[i]);
+#else
+  for (int i = 0; i < sizeof(tone) / sizeof(tone[0]); i++)
+  {
+	  beep_setFreq(tone[i]);
+	  HAL_Delay(delay[i]);
+  }
+#endif
+#endif
+
+  uint32_t blinkTick = HAL_GetTick();
+  int blinkType = 0;
+
 
   while (1)
   {
+	  shell_process();
+
+#if DEPRECATED || 0
 	  if (HAL_GetTick() - tick > delay[i])
 	  {
+		  tick = HAL_GetTick();
+
 		  i = (i + 1) % (sizeof(delay) / sizeof(delay[0]));
 		  if (tone[i])
 			  beep_setFreq(tone[i]);
 		  else
 			  beep_mute();
-		  printf("beep %d Hz\n", (int)tone[i]);
-		  tick = HAL_GetTick();
+		  //printf("beep %d Hz   %ld\r\n", (int)tone[i], tick);
 	  }
+#endif
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-	HAL_GPIO_TogglePin(LED1_GPIO_Port, LED1_Pin);
-	HAL_Delay(800);
-	HAL_GPIO_TogglePin(LED1_GPIO_Port, LED1_Pin);
-	HAL_Delay(200);
+	  uint32_t blinkDelay = (blinkType == 0) ? 800 : 200;
+	  if (HAL_GetTick() - blinkTick > blinkDelay)
+	  {
+		  blinkTick = HAL_GetTick();
+		  HAL_GPIO_TogglePin(LED1_GPIO_Port, LED1_Pin);
+		  blinkType = (1 - blinkType);
+	  }
   }
   /* USER CODE END 3 */
 }
@@ -293,6 +363,7 @@ void SystemClock_Config(void)
     Error_Handler();
   }
 
+#if 0
   /*
   Note : The activation of the I/O Compensation Cell is recommended with communication  interfaces
   (GPIO, SPI, FMC, QSPI ...)  when  operating at  high frequencies(please refer to product datasheet)
@@ -310,6 +381,7 @@ void SystemClock_Config(void)
 
   /* Enables the I/O Compensation Cell */
   HAL_EnableCompensationCell();
+#endif
 }
 
 /**
@@ -701,10 +773,10 @@ static void MX_DMA_Init(void)
 
   /* DMA interrupt init */
   /* DMA1_Stream0_IRQn interrupt configuration */
-  HAL_NVIC_SetPriority(DMA1_Stream0_IRQn, 0, 0);
+  HAL_NVIC_SetPriority(DMA1_Stream0_IRQn, 1, 0);
   HAL_NVIC_EnableIRQ(DMA1_Stream0_IRQn);
   /* DMA1_Stream1_IRQn interrupt configuration */
-  HAL_NVIC_SetPriority(DMA1_Stream1_IRQn, 0, 0);
+  HAL_NVIC_SetPriority(DMA1_Stream1_IRQn, 1, 0);
   HAL_NVIC_EnableIRQ(DMA1_Stream1_IRQn);
 
 }
