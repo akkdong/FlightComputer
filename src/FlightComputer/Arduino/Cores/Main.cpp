@@ -30,6 +30,7 @@
 
 extern "C" {
 
+#if (__CORTEX_M == 0x07U)
 	static void MPU_Config(void)
 	{
 	  MPU_Region_InitTypeDef MPU_InitStruct;
@@ -55,6 +56,7 @@ extern "C" {
 	  /* Enable the MPU */
 	  HAL_MPU_Enable(MPU_PRIVILEGED_DEFAULT);
 	}
+#endif
 }
 
 // Force init to be called *first*, i.e. before static object allocation.

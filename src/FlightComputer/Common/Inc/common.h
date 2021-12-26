@@ -30,6 +30,27 @@
 
 
 /* Define semaphores */
+#ifndef HSEM_ID_0
+#define HSEM_ID_0 (0U) /* HW semaphore 0 */
+#endif
+
+#ifndef HSEM_ID_1
+#define HSEM_ID_1 (1U) /* HW semaphore 1 */
+#endif
+
+#ifndef HSEM_ID_2
+#define HSEM_ID_2 (2U) /* HW semaphore 2 */
+#endif
+
+#ifndef HSEM_ID_3
+#define HSEM_ID_3 (3U) /* HW semaphore 3 */
+#endif
+
+#ifndef HSEM_ID_4
+#define HSEM_ID_4 (4U) /* HW semaphore 4 */
+#endif
+
+
 #define HSEM_TAKE_RELEASE(_id_)             do { HAL_HSEM_FastTake((_id_)); HAL_HSEM_Release((_id_), 0); } while (0)
 #define HSEM_WAKEUP_CPU2                    0
 #define HSEM_WAKEUP_CPU2_MASK               __HAL_HSEM_SEMID_TO_MASK(HSEM_WAKEUP_CPU2)

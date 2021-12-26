@@ -101,11 +101,24 @@ static int32_t cmdproc_power(int32_t argc, char** argv)
 
     	// signal
     	HAL_HSEM_FastTake(HSEM_ID_1);
-    	HAL_HSEM_Release(HSEM_ID_1, 0);
+    	//HAL_HSEM_Release(HSEM_ID_1, 0);
 
     	// wait Core2 standby
-    	while(__HAL_RCC_GET_FLAG(RCC_FLAG_D2CKRDY));
-    	//HAL_Delay(100);
+    	serial_println("wait Core2 standby");
+    	int wait = 10;
+    	while(__HAL_RCC_GET_FLAG(RCC_FLAG_D2CKRDY) && wait > 0)
+    	{
+    		HAL_Delay(100);
+    		--wait;
+    	}
+    	serial_printf("wait: %d\r\n", wait);
+    	HAL_Delay(1000);
+    	for (int i = 0; i < 10; i++)
+    	{
+    		HAL_GPIO_TogglePin(LED1_GPIO_Port, LED1_Pin);
+    		HAL_Delay(200);
+    	}
+    	HAL_GPIO_WritePin(LED1_GPIO_Port, LED1_Pin, GPIO_PIN_SET);
 
     	// enter standby mode
     	HAL_PWREx_EnterSTANDBYMode(PWR_D1_DOMAIN);

@@ -111,6 +111,7 @@ void        lwrb_set_evt_fn(lwrb_t* buff, lwrb_evt_fn fn);
 
 /* Read/Write functions */
 size_t      lwrb_write(lwrb_t* buff, const void* data, size_t btw);
+size_t		lwrb_write_string(lwrb_t* buff, const char* str);
 size_t      lwrb_read(lwrb_t* buff, void* data, size_t btr);
 size_t      lwrb_peek(lwrb_t* buff, size_t skip_count, void* data, size_t btp);
 

@@ -168,6 +168,22 @@ lwrb_write(lwrb_t* buff, const void* data, size_t btw) {
 }
 
 /**
+ * \brief           Write string to buffer.
+ * Copies data from `string: null terminated array` to buffer
+ *
+ * \param[in]       buff: Buffer handle
+ * \param[in]       str: Pointer to string to write into buffer
+ * \return          Number of bytes written to buffer.
+ *                      When returned value is less than `btw`, there was no enough memory available
+ *                      to copy full data array
+ */
+size_t
+lwrb_write_string(lwrb_t* buff, const char* str) {
+	int len = strlen(str);
+	return lwrb_write(buff, str, len);
+}
+
+/**
  * \brief           Read data from buffer.
  * Copies data from buffer to `data` array and marks buffer as free for maximum `btr` number of bytes
  *

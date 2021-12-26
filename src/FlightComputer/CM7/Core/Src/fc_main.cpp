@@ -42,6 +42,7 @@ HardwareSerial& Debug = Serial1;
 //HardwareSerial& GPS = Serial2;
 HardwareSerial& RPI = Serial3;
 
+volatile int Notif_Sleep = 0;
 
 
 int32_t shell_hello(int32_t argc, char** argv)
@@ -123,14 +124,45 @@ void FlightComputer::setup(void)
 
 	//
 	lwshell_init();
-
 	lwshell_register_cmd("hello", shell_hello, "Answer me!");
+
+	//
+	epdDisp.clearScreen();
+	epdDisp.setFont(&FreeSans24pt7b);
+	epdDisp.setCursor(100, 100);
+	epdDisp.setTextColor(COLOR_BLACK);
+	epdDisp.print("Welcome!");
+	epdDisp.refresh(false);
 }
 
 void FlightComputer::loop()
 {
+	int enter_standby = 0;
+
 	while(1)
 	{
+		if (enter_standby)
+		{
+			Debug.println("Enter standby mode\r\n");
+			epdDisp.clearScreen();
+			epdDisp.setFont(&FreeSans24pt7b);
+			epdDisp.setCursor(100, 100);
+			epdDisp.setTextColor(COLOR_BLACK);
+			epdDisp.print("Press Enter To Wakeup!");
+			epdDisp.refresh(false);
+			HAL_Delay(200);
+
+			// wakeup pin 1
+			PWREx_WakeupPinTypeDef sPinParams;
+			sPinParams.WakeUpPin    = PWR_WAKEUP_PIN1;
+			sPinParams.PinPolarity  = PWR_PIN_POLARITY_LOW;
+			sPinParams.PinPull      = PWR_PIN_NO_PULL;
+			HAL_PWREx_EnableWakeUpPin(&sPinParams);
+
+			// enter standby mode
+			HAL_PWREx_EnterSTANDBYMode(PWR_D1_DOMAIN);
+		}
+
 		// [TEST] echo Debug console
 		while (Debug.available())
 		{
@@ -233,7 +265,7 @@ void FlightComputer::loop()
 					epdDisp.refresh();
 					Debug.printf("clear screen!: %u ms\r\n", millis() - lastTick);
 				}
-				else if ((event & EVENT_MASK_KEY) == KeyPad::FUNC1)
+				else if ((event & EVENT_MASK_KEY) == KeyPad::MENU)
 				{
 					uint32_t lastTick = millis();
 
@@ -263,19 +295,28 @@ void FlightComputer::loop()
 
 					Debug.printf("fast fill black!: %u ms\r\n", millis() - lastTick);
 				}
-				else if ((event & EVENT_MASK_KEY) == KeyPad::MENU)
+				else if ((event & EVENT_MASK_KEY) == KeyPad::FUNC1)
 				{
-					Debug.printf("[D] D2CKDRY: %d\r\n", __HAL_RCC_GET_FLAG(RCC_FLAG_D2CKRDY));
+					HAL_HSEM_FastTake(HSEM_ID_0);
+					HAL_HSEM_Release(HSEM_ID_0, 0);
+
+					volatile uint32_t cr = RCC->CR;
+					Debug.printf("[D] D2CKDRY: %x\r\n", (unsigned int)cr);
 				}
 				else if ((event & EVENT_MASK_KEY) == KeyPad::FUNC2)
 				{
-					// Take HSEM
-					HAL_HSEM_FastTake(HSEM_ID_0);
-					// Release HSEM in order to notify the CPU2(CM4)
-					HAL_HSEM_Release(HSEM_ID_0,0);
-					//
-					delay(1);
-					Debug.printf("[D] D2CKDRY: %d\r\n", __HAL_RCC_GET_FLAG(RCC_FLAG_D2CKRDY));
+					//volatile uint32_t cr = RCC->CR;
+					//Debug.printf("[D0] D2CKDRY: %u\r\n", (unsigned int)cr);
+
+					// signal to CM4
+					HAL_HSEM_FastTake(HSEM_ID_1);
+					HAL_HSEM_Release(HSEM_ID_1, 0);
+
+					// test purpose only
+					HAL_HSEM_FastTake(HSEM_ID_2);
+					HAL_HSEM_Release(HSEM_ID_2, 0);
+
+					enter_standby = 1;
 				}
 			}
 		}
@@ -292,7 +333,7 @@ void FlightComputer::loop()
 				addr = lwrb_get_linear_block_read_address(rb_cm4_to_cm7);
 
 				/* Transmit data */
-				//Debug.write((const char *)addr, len);
+				Debug.write((const char *)addr, len);
 
 				/* Mark buffer as read */
 				lwrb_skip(rb_cm4_to_cm7, len);
@@ -331,7 +372,6 @@ char msg1[64];
 char msg2[64];
 
 
-
 extern "C" void init(void);
 extern "C" void setup(void);
 extern "C" void loop(void);
@@ -339,9 +379,11 @@ extern "C" void loop(void);
 
 void init(void)
 {
+	// enable HSEM clock
+	__HAL_RCC_HSEM_CLK_ENABLE();
+
 	// Wait until CPU2 boots and enters in stop mode or timeout
 	//
-	__HAL_RCC_HSEM_CLK_ENABLE();
 	int32_t timeout = 0xFFFF;
 	sprintf(msg1, "[0] D2CKDRY: %d\r\n", __HAL_RCC_GET_FLAG(RCC_FLAG_D2CKRDY));
 	while((__HAL_RCC_GET_FLAG(RCC_FLAG_D2CKRDY) != RESET) && (timeout-- > 0));
@@ -368,6 +410,19 @@ void init(void)
 
 	/* Configure the system clock */
 	SystemClock_Config();
+
+	// Check and handle if the system was resumed from StandBy mode
+	if(__HAL_PWR_GET_FLAG(PWR_FLAG_SB) != RESET)
+	{
+		// Clear system Standby flag
+		__HAL_PWR_CLEAR_FLAG(PWR_FLAG_SB);
+
+		Debug.println("Wakeup from standby mode");
+	}
+
+	/* Disable all used wakeup sources*/
+	HAL_PWREx_DisableWakeUpPin(PWR_WAKEUP_PIN1);
+
 
 	#if defined (USBCON) && defined(USBD_USE_CDC)
 	USBD_CDC_init();
@@ -459,7 +514,7 @@ void init(void)
 	// Take HSEM
 	HAL_HSEM_FastTake(HSEM_ID_0);
 	// Release HSEM in order to notify the CPU2(CM4)
-	HAL_HSEM_Release(HSEM_ID_0,0);
+	HAL_HSEM_Release(HSEM_ID_0, 0);
 	// Wait until CPU2 wakes up from stop mode
 	timeout = 0xFFFF;
 
@@ -507,3 +562,7 @@ extern "C" void Error_Handler()
 	core_debug("Error: %s (%i)\n", __FILE__, __LINE__);
 }
 
+extern "C" void HAL_HSEM_FreeCallback(uint32_t SemMask)
+{
+	Notif_Sleep = 1;
+}

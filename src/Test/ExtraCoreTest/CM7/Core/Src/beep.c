@@ -6,7 +6,7 @@
 
 
 #define NS       	128
-#define TIMER_CLK  	66000000
+#define TIMER_CLK  	100000000
 #define FREQ 		1500
 
 
