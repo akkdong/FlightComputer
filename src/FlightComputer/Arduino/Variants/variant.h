@@ -154,16 +154,18 @@
   #define SERIAL_UART_INSTANCE  1
 #endif
 
-#define ENABLE_HWSERIAL1
+#define HAVE_HWSERIALLP1
 #define ENABLE_HWSERIAL2
 #define ENABLE_HWSERIAL3
 
 // Serial pin used for console
+#if 0
 #ifndef PIN_SERIAL_RX
 #define PIN_SERIAL_RX           PA10
 #endif
 #ifndef PIN_SERIAL_TX
 #define PIN_SERIAL_TX           PA9
+#endif
 #endif
 
 // SPI pin used for EPD controller
@@ -315,5 +317,5 @@ enum PinNumberAlias
 	UART3_RX = PC11,			// PC_11
 	UART3_TX = PC10,			// PC_10
 
-	BAT_POWER = PC2_C			// PC_2C
+	BAT_POWER = PC3_C			// PC_2C
 };

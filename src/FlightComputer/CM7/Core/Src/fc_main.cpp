@@ -297,17 +297,11 @@ void FlightComputer::loop()
 				}
 				else if ((event & EVENT_MASK_KEY) == KeyPad::FUNC1)
 				{
-					HAL_HSEM_FastTake(HSEM_ID_0);
-					HAL_HSEM_Release(HSEM_ID_0, 0);
-
-					volatile uint32_t cr = RCC->CR;
-					Debug.printf("[D] D2CKDRY: %x\r\n", (unsigned int)cr);
+					//HAL_HSEM_FastTake(HSEM_ID_0);
+					//HAL_HSEM_Release(HSEM_ID_0, 0);
 				}
 				else if ((event & EVENT_MASK_KEY) == KeyPad::FUNC2)
 				{
-					//volatile uint32_t cr = RCC->CR;
-					//Debug.printf("[D0] D2CKDRY: %u\r\n", (unsigned int)cr);
-
 					// signal to CM4
 					HAL_HSEM_FastTake(HSEM_ID_1);
 					HAL_HSEM_Release(HSEM_ID_1, 0);
@@ -368,10 +362,6 @@ void FlightComputer::loop()
 FlightComputer	fc;
 
 
-char msg1[64];
-char msg2[64];
-
-
 extern "C" void init(void);
 extern "C" void setup(void);
 extern "C" void loop(void);
@@ -385,13 +375,11 @@ void init(void)
 	// Wait until CPU2 boots and enters in stop mode or timeout
 	//
 	int32_t timeout = 0xFFFF;
-	sprintf(msg1, "[0] D2CKDRY: %d\r\n", __HAL_RCC_GET_FLAG(RCC_FLAG_D2CKRDY));
 	while((__HAL_RCC_GET_FLAG(RCC_FLAG_D2CKRDY) != RESET) && (timeout-- > 0));
 	if ( timeout < 0 )
 	{
-		Error_Handler();
+		//Error_Handler();
 	}
-	sprintf(msg2, "[1] D2CKDRY: %d\r\n", __HAL_RCC_GET_FLAG(RCC_FLAG_D2CKRDY));
 
 	//
 	/*
@@ -416,7 +404,6 @@ void init(void)
 	{
 		// Clear system Standby flag
 		__HAL_PWR_CLEAR_FLAG(PWR_FLAG_SB);
-
 		Debug.println("Wakeup from standby mode");
 	}
 
@@ -502,13 +489,6 @@ void init(void)
     lwrb_init(rb_cm7_to_cm4, (void *)BUFFDATA_CM7_TO_CM4_ADDR, BUFFDATA_CM7_TO_CM4_LEN);
     lwrb_init(rb_cm4_to_cm7, (void *)BUFFDATA_CM4_TO_CM7_ADDR, BUFFDATA_CM4_TO_CM7_LEN);
 
-#if 1
-#ifdef DEBUG
-	Debug.print(msg1);
-	Debug.print(msg2);
-	Debug.printf("[2] D2CKDRY: %d\r\n", __HAL_RCC_GET_FLAG(RCC_FLAG_D2CKRDY));
-#endif
-
 	// When system initialization is finished, Cortex-M7 will release Cortex-M4 by means of HSEM notification HW semaphore Clock enable
 	__HAL_RCC_HSEM_CLK_ENABLE();
 	// Take HSEM
@@ -524,17 +504,6 @@ void init(void)
 		Error_Handler();
 		while(1);
 	}
-#ifdef DEBUG
-	Debug.printf("[3] D2CKDRY: %d\r\n", __HAL_RCC_GET_FLAG(RCC_FLAG_D2CKRDY));
-#endif
-#endif
-
-#if 0
-    /* Wakeup CPU2 */
-    __HAL_RCC_HSEM_CLK_ENABLE();
-    HSEM_TAKE_RELEASE(HSEM_WAKEUP_CPU2);
-    WAIT_COND_WITH_TIMEOUT(__HAL_RCC_GET_FLAG(RCC_FLAG_D2CKRDY) == RESET, 0xFFFF);
-#endif
 
 #if 0
     HAL_RCCEx_EnableBootCore(RCC_BOOT_C2);

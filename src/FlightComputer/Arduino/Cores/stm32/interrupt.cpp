@@ -36,9 +36,8 @@
   ******************************************************************************
   */
 #include "interrupt.h"
-#if defined(STM32MP1xx)
-  #include "lock_resource.h"
-#endif
+#include "lock_resource.h"
+#include "stm32yyxx_ll_exti.h"
 #if !defined(HAL_EXTI_MODULE_DISABLED)
 
 /* Private Types */
@@ -71,7 +70,7 @@ static gpio_irq_conf_str gpio_irq_conf[NB_EXTI] = {
   {.irqnb = EXTI4_15_IRQn,  .callback = NULL}, //GPIO_PIN_13
   {.irqnb = EXTI4_15_IRQn,  .callback = NULL}, //GPIO_PIN_14
   {.irqnb = EXTI4_15_IRQn,  .callback = NULL}  //GPIO_PIN_15
-#elif defined (STM32MP1xx)
+#elif defined (STM32MP1xx) || defined (STM32L5xx) || defined (STM32U5xx)
   {.irqnb = EXTI0_IRQn,     .callback = NULL}, //GPIO_PIN_0
   {.irqnb = EXTI1_IRQn,     .callback = NULL}, //GPIO_PIN_1
   {.irqnb = EXTI2_IRQn,     .callback = NULL}, //GPIO_PIN_2
@@ -108,6 +107,13 @@ static gpio_irq_conf_str gpio_irq_conf[NB_EXTI] = {
 #endif
 };
 
+
+static const uint32_t ll_exti_lines[NB_EXTI] = {
+  LL_EXTI_LINE_0,  LL_EXTI_LINE_1,  LL_EXTI_LINE_2,  LL_EXTI_LINE_3,
+  LL_EXTI_LINE_4,  LL_EXTI_LINE_5,  LL_EXTI_LINE_6,  LL_EXTI_LINE_7,
+  LL_EXTI_LINE_8,  LL_EXTI_LINE_9,  LL_EXTI_LINE_10, LL_EXTI_LINE_11,
+  LL_EXTI_LINE_12, LL_EXTI_LINE_13, LL_EXTI_LINE_14, LL_EXTI_LINE_15
+};
 /* Private Functions */
 /**
   * @brief  This function returns the pin ID function of the HAL PIN definition
@@ -179,15 +185,11 @@ void stm32_interrupt_enable(GPIO_TypeDef *port, uint16_t pin, callback_function_
 
   GPIO_InitStruct.Speed     = GPIO_SPEED_FREQ_HIGH;
 
-#if defined(STM32MP1xx)
-  PERIPH_LOCK(port);
-#endif
+  hsem_lock(CFG_HW_GPIO_SEMID, HSEM_LOCK_DEFAULT_RETRY);
 
   HAL_GPIO_Init(port, &GPIO_InitStruct);
 
-#if defined(STM32MP1xx)
-  PERIPH_UNLOCK(port);
-#endif
+  hsem_unlock(CFG_HW_GPIO_SEMID);
 
   gpio_irq_conf[id].callback = callback;
 
@@ -229,6 +231,8 @@ void stm32_interrupt_disable(GPIO_TypeDef *port, uint16_t pin)
       return;
     }
   }
+
+  LL_EXTI_DisableIT_0_31(ll_exti_lines[id]);
   HAL_NVIC_DisableIRQ(gpio_irq_conf[id].irqnb);
 }
 
@@ -246,7 +250,7 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
   }
 }
 
-#if defined (STM32G0xx) || defined (STM32MP1xx)
+#if defined(STM32G0xx) || defined(STM32MP1xx) || defined(STM32L5xx) || defined(STM32U5xx)
 /**
   * @brief  EXTI line detection callback.
   * @param  GPIO_Pin Specifies the port pin connected to corresponding EXTI line.
@@ -369,7 +373,7 @@ void EXTI4_IRQHandler(void)
   HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_4);
 }
 
-#if !defined(STM32MP1xx)
+#if !defined(STM32MP1xx) && !defined(STM32L5xx) && !defined(STM32U5xx)
 /**
   * @brief This function handles external line 5 to 9 interrupt request.
   * @param  None
@@ -395,7 +399,7 @@ void EXTI15_10_IRQHandler(void)
     HAL_GPIO_EXTI_IRQHandler(pin);
   }
 }
-#else /* STM32MP1xx */
+#else /* STM32MP1xx && STM32L5xx && STM32U5xx */
 
 /**
   * @brief This function handles external line 5 interrupt request.
@@ -507,7 +511,7 @@ void EXTI15_IRQHandler(void)
   HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_15);
 }
 
-#endif /* !STM32MP1xx */
+#endif /* !STM32MP1xx && !STM32L5xx */
 #ifdef __cplusplus
 }
 #endif

@@ -64,6 +64,9 @@ void setup(void)
 	//pinMode(PWR_LED2, OUTPUT);
 	//digitalWrite(PWR_LED2, HIGH);
 
+	//pinMode(A26, INPUT_ANALOG);
+	//pinMode(A27, INPUT_ANALOG);
+
 	lwrb_write_string(rb_cm4_to_cm7, "CM4 Notify\r\n");
 
 	HAL_NVIC_SetPriority(HSEM2_IRQn, 4, 0);
@@ -74,6 +77,9 @@ void setup(void)
 	HAL_HSEM_ActivateNotification(__HAL_HSEM_SEMID_TO_MASK(HSEM_ID_2));
 }
 
+
+uint32_t lastTick = millis();
+char buf[32];
 
 void loop(void)
 {
@@ -101,6 +107,19 @@ void loop(void)
 		}
 
 		Notif_Sleep = 0;
+	}
+
+	if (0 && millis() - lastTick > 2000)
+	{
+		lastTick = millis();
+
+		uint32_t adc1 = analogRead(A26);
+		uint32_t adc2 = analogRead(A27);
+
+		sprintf(buf, "adc1: %d\r\n", (unsigned int)adc1);
+		lwrb_write_string(rb_cm4_to_cm7, buf);
+		sprintf(buf, "adc2: %d\r\n", (unsigned int)adc2);
+		lwrb_write_string(rb_cm4_to_cm7, buf);
 	}
 }
 
