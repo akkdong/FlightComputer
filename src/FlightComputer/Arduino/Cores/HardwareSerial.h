@@ -33,7 +33,7 @@
 // using a ring buffer (I think), in which head is the index of the location
 // to which to write the next incoming character and tail is the index of the
 // location from which to read.
-// NOTE: a "power of 2" buffer size is reccomended to dramatically
+// NOTE: a "power of 2" buffer size is recommended to dramatically
 //       optimize all the modulo operations for ring buffers.
 // WARNING: When buffer sizes are increased to > 256, the buffer index
 // variables are automatically increased in size, but the extra
@@ -143,7 +143,8 @@ class HardwareSerial : public Stream {
     {
       return write((uint8_t)n);
     }
-    using Print::write; // pull in write(str) and write(buf, size) from Print
+    size_t write(const uint8_t *buffer, size_t size);
+    using Print::write; // pull in write(str) from Print
     operator bool()
     {
       return true;
@@ -206,5 +207,7 @@ class HardwareSerial : public Stream {
 #if defined(LPUART1)
   extern HardwareSerial SerialLP1;
 #endif
-
+#if defined(LPUART2)
+  extern HardwareSerial SerialLP2;
+#endif
 #endif

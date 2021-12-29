@@ -104,6 +104,8 @@
                                     <listOptionValue builtIn="false" value="USE_MODEL_A=1"/>
                                     									
                                     <listOptionValue builtIn="false" value="ARDUINO=301"/>
+                                    									
+                                    <listOptionValue builtIn="false" value="ARDUINO_GENERIC_H745IITX"/>
                                     								
                                 </option>
                                 								
@@ -254,6 +256,8 @@
                                     <listOptionValue builtIn="false" value="USE_MODEL_A=1"/>
                                     									
                                     <listOptionValue builtIn="false" value="ARDUINO=301"/>
+                                    									
+                                    <listOptionValue builtIn="false" value="ARDUINO_GENERIC_H745IITX"/>
                                     								
                                 </option>
                                 								

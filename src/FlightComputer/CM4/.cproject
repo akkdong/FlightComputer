@@ -100,6 +100,8 @@
                                     <listOptionValue builtIn="false" value="STM32H7xx"/>
                                     									
                                     <listOptionValue builtIn="false" value="LV_CONF_INCLUDE_SIMPLE=1"/>
+                                    									
+                                    <listOptionValue builtIn="false" value="ARDUINO_GENERIC_H745IITX"/>
                                     								
                                 </option>
                                 								
@@ -190,6 +192,8 @@
                                     <listOptionValue builtIn="false" value="LV_CONF_INCLUDE_SIMPLE=1"/>
                                     									
                                     <listOptionValue builtIn="false" value="USE_MODEL_A=1"/>
+                                    									
+                                    <listOptionValue builtIn="false" value="ARDUINO_GENERIC_H745IITX"/>
                                     								
                                 </option>
                                 								
@@ -247,23 +251,13 @@
                         					
                     </folderInfo>
                     					
-                    <fileInfo id="com.st.stm32cube.ide.mcu.gnu.managedbuild.config.exe.debug.2133903286.560559100" name="startup_stm32h745iitx.s" rcbsApplicability="disable" resourcePath="Core/Startup/startup_stm32h745iitx.s" toolsToInvoke="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.assembler.1030699630.702320003">
-                        						
-                        <tool id="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.assembler.1030699630.702320003" name="MCU GCC Assembler" superClass="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.assembler.1030699630">
-                            							
-                            <inputType id="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.assembler.input.877329745" superClass="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.assembler.input"/>
-                            						
-                        </tool>
-                        					
-                    </fileInfo>
-                    					
                     <sourceEntries>
                         						
-                        <entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Arduino"/>
+                        <entry excluding="Cores/stm32/startup_stm32yyxx.S" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Arduino"/>
                         						
                         <entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Common"/>
                         						
-                        <entry excluding="Startup/startup_stm32h745iitx.s|Src/adc.c" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Core"/>
+                        <entry excluding="Src/adc.c" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Core"/>
                         						
                         <entry flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name="Drivers"/>
                         					

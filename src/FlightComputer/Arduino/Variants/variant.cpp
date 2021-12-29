@@ -1,97 +1,174 @@
+/*
+ *******************************************************************************
+ * Copyright (c) 2020-2021, STMicroelectronics
+ * All rights reserved.
+ *
+ * This software component is licensed by ST under BSD 3-Clause license,
+ * the "License"; You may not use this file except in compliance with the
+ * License. You may obtain a copy of the License at:
+ *                        opensource.org/licenses/BSD-3-Clause
+ *
+ *******************************************************************************
+ */
+#if defined(ARDUINO_GENERIC_H745IGTX) || defined(ARDUINO_GENERIC_H745IITX) ||\
+    defined(ARDUINO_GENERIC_H755IITX)
 #include "pins_arduino.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-// Pin number
+// Digital PinName array
 const PinName digitalPin[] = {
- PC_15, // D0, EINK_BUSY
- PC_14, // D1, EINK_CMD
-
- PJ_8,	// D2, EPD_CKV
- PJ_9,	// D3, EPD_CL
- PD_2,	// D4, EPD_D0
- PD_3,	// D5, EPD_D1
- PD_4,	// D6, EPD_D2
- PD_5,	// D7, EPD_D3
- PD_6,	// D8, EPD_D4
- PD_7,	// D9, EPD_D5
- PD_11,	// D10, EPD_D6
- PD_12,	// D11, EPD_D7
- PJ_10,	// D12, EPD_GMODE
- PJ_11,	// D13, EPD_LE
- PK_0,	// D14, EPD_OE
- PK_1,	// D15, EPD_SPH
- PK_2,	// D16, EPD_SPV
-
- PB_0,	// D17, IMU_DRDY
- PB_1,	// D18, IMU_FSYNC
- PB_2,	// D19, IMU_nINT
-
- PC_7,	// D20, KEY_DOWN
- PA_0,	// D21, KEY_ENTER, PWR_WKUP0
- PC_13,	// D22, KEY_ESCAPE, PWR_WKUP2
- PC_8,	// D23, KEY_FUNC1
- PC_9,	// D24, KEY_FUNC2
- PC_4,	// D25, KEY_LEFT
- PA_1,	// D26, KEY_MENU
- PC_5,	// D27, KEY_RIGHT
- PC_6,	// D28, KEY_UP
-
- PC_1,	// D29, RPI_STATUS
-
- PG_11,	// D30, PMIC_PWRUP
- PG_9,	// D31, PMIC_VCOM
- PG_10,	// D32, PMIC_WAKEUP
-
- PB_9,	// D33, PWR_5V_EN
- PG_3,	// D34, PWR_EN_BAT+
- PG_7,	// D35, PWR_EN_PERIPH
-
- PG_14,	// D36, PWR_LED1
- PG_13,	// D37, PWR_LED2
-
- PC_12, // D38, USB_OTG_FS_VBUS
- PB_12, // D39, USB_OTG_HS_ID
- PA_8,  // D40, USB_OTG_HS_OVCR
- PD_13, // D41, USB_OTG_HS_PWR_EN
- PB_13, // D42, USB_OTG_HS_VBUS
-
- PB_7,	// D43, I2C1_SDA
- PB_8,	// D44, I2C1_SCL
- PB_11,	// D45, I2C2_SDA
- PB_10,	// D46, I2C2_SCL
-
- PA_7,	// D47, SPI1_MOSI
- PA_6,	// D48, SPI1_MISO
- PA_5,	// D49, SPI1_SCLK
- PA_4,	// D50, SPI1_CSEL
-
- PE_6,	// D51, SPI4_MOSI
- PE_5,	// D52, SPI4_MISO
- PE_2,	// D53, SPI4_SCLK
-
- PA_10,	// D54, UART1_RX
- PA_9,	// D55, UART1_TX
- PA_3,	// D56, UART2_RX
- PA_2,	// D57, UART2_TX
- PC_11,	// D58, UART3_RX
- PC_10,	// D59, UART3_TX
+  PA_0,   // D0/A0
+  PA_1,   // D1/A1
+  PA_2,   // D2/A2
+  PA_3,   // D3/A3
+  PA_4,   // D4/A4
+  PA_5,   // D5/A5
+  PA_6,   // D6/A6
+  PA_7,   // D7/A7
+  PA_8,   // D8
+  PA_9,   // D9
+  PA_10,  // D10
+  PA_11,  // D11
+  PA_12,  // D12
+  PA_13,  // D13
+  PA_14,  // D14
+  PA_15,  // D15
+  PB_0,   // D16/A8
+  PB_1,   // D17/A9
+  PB_2,   // D18
+  PB_3,   // D19
+  PB_4,   // D20
+  PB_5,   // D21
+  PB_6,   // D22
+  PB_7,   // D23
+  PB_8,   // D24
+  PB_9,   // D25
+  PB_10,  // D26
+  PB_11,  // D27
+  PB_12,  // D28
+  PB_13,  // D29
+  PB_14,  // D30
+  PB_15,  // D31
+  PC_0,   // D32/A10
+  PC_1,   // D33/A11
+  PC_4,   // D34/A12
+  PC_5,   // D35/A13
+  PC_6,   // D36
+  PC_7,   // D37
+  PC_8,   // D38
+  PC_9,   // D39
+  PC_10,  // D40
+  PC_11,  // D41
+  PC_12,  // D42
+  PC_13,  // D43
+  PC_14,  // D44
+  PC_15,  // D45
+  PD_0,   // D46
+  PD_1,   // D47
+  PD_2,   // D48
+  PD_3,   // D49
+  PD_4,   // D50
+  PD_5,   // D51
+  PD_6,   // D52
+  PD_7,   // D53
+  PD_8,   // D54
+  PD_9,   // D55
+  PD_10,  // D56
+  PD_11,  // D57
+  PD_12,  // D58
+  PD_13,  // D59
+  PD_14,  // D60
+  PD_15,  // D61
+  PE_0,   // D62
+  PE_1,   // D63
+  PE_2,   // D64
+  PE_3,   // D65
+  PE_4,   // D66
+  PE_5,   // D67
+  PE_6,   // D68
+  PE_7,   // D69
+  PE_8,   // D70
+  PE_9,   // D71
+  PE_10,  // D72
+  PE_11,  // D73
+  PE_12,  // D74
+  PE_13,  // D75
+  PE_14,  // D76
+  PE_15,  // D77
+  PF_0,   // D78
+  PF_1,   // D79
+  PF_2,   // D80
+  PF_3,   // D81/A14
+  PF_4,   // D82/A15
+  PF_5,   // D83/A16
+  PF_6,   // D84/A17
+  PF_7,   // D85/A18
+  PF_8,   // D86/A19
+  PF_9,   // D87/A20
+  PF_10,  // D88/A21
+  PF_11,  // D89/A22
+  PF_12,  // D90/A23
+  PF_13,  // D91/A24
+  PF_14,  // D92/A25
+  PF_15,  // D93
+  PG_0,   // D94
+  PG_1,   // D95
+  PG_2,   // D96
+  PG_3,   // D97
+  PG_4,   // D98
+  PG_5,   // D99
+  PG_6,   // D100
+  PG_7,   // D101
+  PG_8,   // D102
+  PG_9,   // D103
+  PG_10,  // D104
+  PG_11,  // D105
+  PG_12,  // D106
+  PG_13,  // D107
+  PG_14,  // D108
+  PG_15,  // D109
+  PH_0,   // D110
+  PH_1,   // D111
+  PJ_8,   // D112
+  PJ_9,   // D113
+  PJ_10,  // D114
+  PJ_11,  // D115
+  PK_0,   // D116
+  PK_1,   // D117
+  PK_2,   // D118
+  PC_2C, // D119/A26
+  PC_3C  // D120/A27
 };
 
-#ifdef __cplusplus
-}
-#endif
+// Analog (Ax) pin number array
+const uint32_t analogInputPin[] = {
+  0,  // A0,  PA0
+  1,  // A1,  PA1
+  2,  // A2,  PA2
+  3,  // A3,  PA3
+  4,  // A4,  PA4
+  5,  // A5,  PA5
+  6,  // A6,  PA6
+  7,  // A7,  PA7
+  16, // A8,  PB0
+  17, // A9,  PB1
+  32, // A10, PC0
+  33, // A11, PC1
+  34, // A12, PC4
+  35, // A13, PC5
+  81, // A14, PF3
+  82, // A15, PF4
+  83, // A16, PF5
+  84, // A17, PF6
+  85, // A18, PF7
+  86, // A19, PF8
+  87, // A20, PF9
+  88, // A21, PF10
+  89, // A22, PF11
+  90, // A23, PF12
+  91, // A24, PF13
+  92, // A25, PF14
+  119, // A26, PC2_C
+  120 // A27, PC3_C
+};
 
-// ----------------------------------------------------------------------------
-
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-
-
-#ifdef __cplusplus
-}
-#endif
+#endif /* ARDUINO_GENERIC_* */

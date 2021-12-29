@@ -554,12 +554,11 @@ void loop()
 
 
 
-#include "core_debug.h"
+extern "C" void _Error_Handler(const char* err, int code);
 
 extern "C" void Error_Handler()
 {
-	//_Error_Handler(__FILE__, __LINE__);
-	core_debug("Error: %s (%i)\n", __FILE__, __LINE__);
+	_Error_Handler(__FILE__, __LINE__);
 }
 
 extern "C" void HAL_HSEM_FreeCallback(uint32_t SemMask)
