@@ -154,18 +154,16 @@
   #define SERIAL_UART_INSTANCE  1
 #endif
 
-#define HAVE_HWSERIALLP1
+#define ENABLE_HWSERIAL1
 #define ENABLE_HWSERIAL2
 #define ENABLE_HWSERIAL3
 
 // Serial pin used for console
-#if 0
 #ifndef PIN_SERIAL_RX
 #define PIN_SERIAL_RX           PA10
 #endif
 #ifndef PIN_SERIAL_TX
 #define PIN_SERIAL_TX           PA9
-#endif
 #endif
 
 // SPI pin used for EPD controller

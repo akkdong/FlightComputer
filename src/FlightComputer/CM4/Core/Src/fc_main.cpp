@@ -75,6 +75,38 @@ void setup(void)
 	Notif_Sleep = 0;
 	HAL_HSEM_ActivateNotification(__HAL_HSEM_SEMID_TO_MASK(HSEM_ID_1));
 	HAL_HSEM_ActivateNotification(__HAL_HSEM_SEMID_TO_MASK(HSEM_ID_2));
+
+
+	// Sinewave PWM test code
+#if 1
+	HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_3);
+	HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_4);
+
+	HAL_TIM_OC_Start(&htim4, TIM_CHANNEL_1);
+	HAL_TIM_OC_Start(&htim4, TIM_CHANNEL_2);
+
+	HAL_DMA_Start_IT(&hdma_tim4_ch1, (uint32_t)Wave_LUT, DestAddressCH3, NS);
+	HAL_DMA_Start_IT(&hdma_tim4_ch2, (uint32_t)Wave_LUT, DestAddressCH4, NS);
+
+	__HAL_TIM_ENABLE_DMA(&htim4, TIM_DMA_CC1);
+	__HAL_TIM_ENABLE_DMA(&htim4, TIM_DMA_CC2);
+#endif
+
+#if 1
+	// stop PWM
+	HAL_TIM_PWM_Stop(&htim3, TIM_CHANNEL_3);
+	HAL_TIM_PWM_Stop(&htim3, TIM_CHANNEL_4);
+
+	// disable DMA
+	__HAL_TIM_DISABLE_DMA(&htim4, TIM_DMA_CC1);
+	__HAL_TIM_DISABLE_DMA(&htim4, TIM_DMA_CC2);
+	// abort DMA
+	HAL_DMA_Abort_IT(&hdma_tim4_ch1);
+	HAL_DMA_Abort_IT(&hdma_tim4_ch2);
+	// stop timer
+	HAL_TIM_OC_Stop(&htim4, TIM_CHANNEL_1);
+	HAL_TIM_OC_Stop(&htim4, TIM_CHANNEL_2);
+#endif
 }
 
 

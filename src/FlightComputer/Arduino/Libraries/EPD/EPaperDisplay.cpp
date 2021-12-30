@@ -222,7 +222,7 @@ int EPaperDisplay::begin(void)
     if (mEPaperPMIC.wakeup() < 0)
     {
 #ifdef DEBUG
-    	Serial1.println("PMIC wakeup failed!");
+    	Serial.println("PMIC wakeup failed!");
 #endif
     	return -1;
     }

@@ -38,7 +38,7 @@ int image_type = 0;
 lwrb_t* rb_cm4_to_cm7 = (lwrb_t *)BUFF_CM4_TO_CM7_ADDR;
 lwrb_t* rb_cm7_to_cm4 = (lwrb_t *)BUFF_CM7_TO_CM4_ADDR;
 
-HardwareSerial& Debug = Serial1;
+HardwareSerial& Debug = Serial;
 //HardwareSerial& GPS = Serial2;
 HardwareSerial& RPI = Serial3;
 

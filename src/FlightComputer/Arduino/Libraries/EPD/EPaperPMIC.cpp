@@ -78,7 +78,7 @@ bool EPaperPMIC::init()
 	delay(1);
 
 #ifdef DEBUG
-	Serial1.println("Dump PMIC registers on EPaperPMIC::init()");
+	Serial.println("Dump PMIC registers on EPaperPMIC::init()");
     DumpRegister();
 #endif
 	 */
@@ -126,7 +126,7 @@ int EPaperPMIC::wakeup()
 #endif
 
 #ifdef DEBUG
-		Serial1.println("Dump PMIC registers on EPpaperPMIC::wakeup()");
+		Serial.println("Dump PMIC registers on EPpaperPMIC::wakeup()");
 		//DumpRegister();
 		//DumpPort();
 #endif
@@ -199,7 +199,7 @@ int EPaperPMIC::powerOn()
 		if (millis() - tick >= 250)
 		{
 #ifdef DEBUG
-			Serial1.println("Dump PMIC registers on EPpaperPMIC::powerOn()");
+			Serial.println("Dump PMIC registers on EPpaperPMIC::powerOn()");
 			DumpRegister();
 			DumpPort();
 #endif
@@ -220,7 +220,7 @@ int EPaperPMIC::powerOn()
 
 
 #ifdef DEBUG
-			Serial1.println("PMIC Power OK!");
+			Serial.println("PMIC Power OK!");
 #endif
 
 			// turn-on VCOM pin
@@ -261,7 +261,7 @@ int EPaperPMIC::powerOff()
 	}
 
 #ifdef DEBUG
-	Serial1.println("PMIC Power Off!");
+	Serial.println("PMIC Power Off!");
 #endif
 	return (mState == STANDBY) ? 0 : -1;
 }
@@ -279,7 +279,7 @@ uint8_t EPaperPMIC::getPowerGood()
     mWire.endTransmission();
 
 #ifdef DEBUG
-    //Serial1.printf("PMIC PowerGood: %02X\r\n", data);
+    //Serial.printf("PMIC PowerGood: %02X\r\n", data);
 #endif
     return data;
 }
@@ -297,16 +297,16 @@ void EPaperPMIC::DumpRegister()
     for (int i = 0; i <= 0x10; i++)
     {
     	uint8_t data = mWire.read();
-    	Serial1.printf("PMIC #%02X = %02X\r\n", i, data);
+    	Serial.printf("PMIC #%02X = %02X\r\n", i, data);
     }
     mWire.endTransmission();
 }
 
 void EPaperPMIC::DumpPort()
 {
-	Serial1.printf("PORT(WAKEUP) = %d\r\n", digitalRead(PMIC_WAKEUP));
-	Serial1.printf("PORT(POWERUP) = %d\r\n", digitalRead(PMIC_PWRUP));
-	Serial1.printf("PORT(VCOM) = %d\r\n", digitalRead(PMIC_VCOM));
+	Serial.printf("PORT(WAKEUP) = %d\r\n", digitalRead(PMIC_WAKEUP));
+	Serial.printf("PORT(POWERUP) = %d\r\n", digitalRead(PMIC_PWRUP));
+	Serial.printf("PORT(VCOM) = %d\r\n", digitalRead(PMIC_VCOM));
 }
 
 #endif // DEBUG
