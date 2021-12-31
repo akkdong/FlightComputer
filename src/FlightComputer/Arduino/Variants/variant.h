@@ -307,6 +307,8 @@ enum PinNumberAlias
 	SPI4_MOSI = PE6,			// PE_6
 	SPI4_MISO = PE5,			// PE_5
 	SPI4_SCLK = PE2,			// PE_2
+	SPI4_CS1 = PE3,
+	SPI4_CS2 = PE4,
 
 	UART1_RX = PA10,			// PA_10
 	UART1_TX = PA9,				// PA_9
@@ -315,5 +317,5 @@ enum PinNumberAlias
 	UART3_RX = PC11,			// PC_11
 	UART3_TX = PC10,			// PC_10
 
-	BAT_POWER = PC3_C			// PC_2C
+//	BAT_POWER = PC3_C			// PC_2C
 };

@@ -56,6 +56,11 @@ struct spi_s {
   PinName pin_mosi;
   PinName pin_sclk;
   PinName pin_ssel;
+#if defined(SPI_IFCR_EOTC)
+  // Delay before disabling SPI.
+  // See https://github.com/stm32duino/Arduino_Core_STM32/issues/1294
+  uint32_t disable_delay;
+#endif
 };
 
 typedef struct spi_s spi_t;
@@ -73,7 +78,7 @@ typedef struct spi_s spi_t;
 #define SPI_SPEED_CLOCK_DIV128_MHZ  ((uint32_t)128)
 #define SPI_SPEED_CLOCK_DIV256_MHZ  ((uint32_t)256)
 
-///@brief speficies the SPI mode to use
+///@brief specifies the SPI mode to use
 //Mode          Clock Polarity (CPOL)       Clock Phase (CPHA)
 //SPI_MODE0             0                         0
 //SPI_MODE1             0                         1

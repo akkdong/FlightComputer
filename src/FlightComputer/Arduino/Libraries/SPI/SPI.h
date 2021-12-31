@@ -114,7 +114,12 @@ class SPISettings {
 class SPIClass {
   public:
     SPIClass();
-    SPIClass(uint8_t mosi, uint8_t miso, uint8_t sclk, uint8_t ssel = (uint8_t)NC);
+    SPIClass(uint32_t mosi, uint32_t miso, uint32_t sclk, uint32_t ssel = PNUM_NOT_DEFINED);
+
+	//
+    SPI_HandleTypeDef* getHandle() {
+    	return &_spi.handle;
+    }
 
     // setMISO/MOSI/SCLK/SSEL have to be called before begin()
     void setMISO(uint32_t miso)
@@ -248,7 +253,7 @@ class SPIClass {
     {
       uint8_t i;
 
-      if (_pin > NUM_DIGITAL_PINS) {
+      if ((_pin > NUM_DIGITAL_PINS) && (!digitalPinIsValid(_pin))) {
         return NB_SPI_SETTINGS;
       }
 
@@ -271,7 +276,7 @@ class SPIClass {
 
     void RemovePin(uint8_t _pin)
     {
-      if (_pin > NUM_DIGITAL_PINS) {
+      if ((_pin > NUM_DIGITAL_PINS) && (!digitalPinIsValid(_pin))) {
         return;
       }
 

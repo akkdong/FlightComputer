@@ -44,8 +44,10 @@ extern "C" {
 #endif
 
 /* Private Defines */
-/// @brief I2C timout in tick unit
+/// @brief I2C timeout in tick unit
+#ifndef I2C_TIMEOUT_TICK
 #define I2C_TIMEOUT_TICK        100
+#endif
 
 #define SLAVE_MODE_TRANSMIT     0
 #define SLAVE_MODE_RECEIVE      1
@@ -187,187 +189,243 @@ static I2C_HandleTypeDef *i2c_handles[I2C_NUM];
 static uint32_t i2c_getClkFreq(I2C_TypeDef *i2c)
 {
   uint32_t clkSrcFreq = 0;
-#if !defined(STM32MP1xx)
 #ifdef STM32H7xx
   PLL3_ClocksTypeDef PLL3_Clocks;
 #endif
-#if defined I2C1_BASE
+#if defined(I2C1_BASE)
   if (i2c == I2C1) {
-    switch (__HAL_RCC_GET_I2C1_SOURCE()) {
-      case RCC_I2C1CLKSOURCE_HSI:
-        clkSrcFreq = HSI_VALUE;
-        break;
+#if defined(RCC_PERIPHCLK_I2C1) || defined(RCC_PERIPHCLK_I2C12)
+#ifdef RCC_PERIPHCLK_I2C1
+    clkSrcFreq = HAL_RCCEx_GetPeriphCLKFreq(RCC_PERIPHCLK_I2C1);
+#else
+    clkSrcFreq = HAL_RCCEx_GetPeriphCLKFreq(RCC_PERIPHCLK_I2C12);
+#endif
+    if (clkSrcFreq == 0)
+#endif
+    {
+#ifdef __HAL_RCC_GET_I2C1_SOURCE
+      switch (__HAL_RCC_GET_I2C1_SOURCE()) {
+#ifdef RCC_I2C1CLKSOURCE_HSI
+        case RCC_I2C1CLKSOURCE_HSI:
+          clkSrcFreq = HSI_VALUE;
+          break;
+#endif
 #ifdef RCC_I2C1CLKSOURCE_SYSCLK
-      case RCC_I2C1CLKSOURCE_SYSCLK:
-        clkSrcFreq = SystemCoreClock;
-        break;
+        case RCC_I2C1CLKSOURCE_SYSCLK:
+          clkSrcFreq = SystemCoreClock;
+          break;
 #endif
 #if defined(RCC_I2C1CLKSOURCE_PCLK1) || defined(RCC_I2C1CLKSOURCE_D2PCLK1)
 #ifdef RCC_I2C1CLKSOURCE_PCLK1
-      case RCC_I2C1CLKSOURCE_PCLK1:
+        case RCC_I2C1CLKSOURCE_PCLK1:
 #endif
 #ifdef RCC_I2C1CLKSOURCE_D2PCLK1
-      case RCC_I2C1CLKSOURCE_D2PCLK1:
+        case RCC_I2C1CLKSOURCE_D2PCLK1:
 #endif
-        clkSrcFreq = HAL_RCC_GetPCLK1Freq();
-        break;
+          clkSrcFreq = HAL_RCC_GetPCLK1Freq();
+          break;
 #endif
 #ifdef RCC_I2C1CLKSOURCE_CSI
-      case RCC_I2C1CLKSOURCE_CSI:
-        clkSrcFreq = CSI_VALUE;
-        break;
+        case RCC_I2C1CLKSOURCE_CSI:
+          clkSrcFreq = CSI_VALUE;
+          break;
 #endif
 #ifdef RCC_I2C1CLKSOURCE_PLL3
-      case RCC_I2C1CLKSOURCE_PLL3:
-        HAL_RCCEx_GetPLL3ClockFreq(&PLL3_Clocks);
-        clkSrcFreq = PLL3_Clocks.PLL3_R_Frequency;
-        break;
+        case RCC_I2C1CLKSOURCE_PLL3:
+          HAL_RCCEx_GetPLL3ClockFreq(&PLL3_Clocks);
+          clkSrcFreq = PLL3_Clocks.PLL3_R_Frequency;
+          break;
 #endif
-      default:
-        Error_Handler();
+        default:
+          Error_Handler();
+      }
+#else
+      Error_Handler();
+#endif
     }
   }
 #endif // I2C1_BASE
-#if defined I2C2_BASE
+#if defined(I2C2_BASE)
   if (i2c == I2C2) {
+#if defined(RCC_PERIPHCLK_I2C2) || defined(RCC_PERIPHCLK_I2C12)
+#ifdef RCC_PERIPHCLK_I2C2
+    clkSrcFreq = HAL_RCCEx_GetPeriphCLKFreq(RCC_PERIPHCLK_I2C2);
+#else
+    clkSrcFreq = HAL_RCCEx_GetPeriphCLKFreq(RCC_PERIPHCLK_I2C12);
+#endif
+    if (clkSrcFreq == 0)
+#endif
+    {
 #ifdef __HAL_RCC_GET_I2C2_SOURCE
-    switch (__HAL_RCC_GET_I2C2_SOURCE()) {
-      case RCC_I2C2CLKSOURCE_HSI:
-        clkSrcFreq = HSI_VALUE;
-        break;
+      switch (__HAL_RCC_GET_I2C2_SOURCE()) {
+        case RCC_I2C2CLKSOURCE_HSI:
+          clkSrcFreq = HSI_VALUE;
+          break;
 #ifdef RCC_I2C2CLKSOURCE_SYSCLK
-      case RCC_I2C2CLKSOURCE_SYSCLK:
-        clkSrcFreq = SystemCoreClock;
-        break;
+        case RCC_I2C2CLKSOURCE_SYSCLK:
+          clkSrcFreq = SystemCoreClock;
+          break;
 #endif
 #if defined(RCC_I2C2CLKSOURCE_PCLK1) || defined(RCC_I2C2CLKSOURCE_D2PCLK1)
 #ifdef RCC_I2C2CLKSOURCE_PCLK1
-      case RCC_I2C2CLKSOURCE_PCLK1:
+        case RCC_I2C2CLKSOURCE_PCLK1:
 #endif
 #ifdef RCC_I2C2CLKSOURCE_D2PCLK1
-      case RCC_I2C2CLKSOURCE_D2PCLK1:
+        case RCC_I2C2CLKSOURCE_D2PCLK1:
 #endif
-        clkSrcFreq = HAL_RCC_GetPCLK1Freq();
-        break;
+          clkSrcFreq = HAL_RCC_GetPCLK1Freq();
+          break;
 #endif
 #ifdef RCC_I2C2CLKSOURCE_CSI
-      case RCC_I2C2CLKSOURCE_CSI:
-        clkSrcFreq = CSI_VALUE;
-        break;
+        case RCC_I2C2CLKSOURCE_CSI:
+          clkSrcFreq = CSI_VALUE;
+          break;
 #endif
 #ifdef RCC_I2C2CLKSOURCE_PLL3
-      case RCC_I2C2CLKSOURCE_PLL3:
-        HAL_RCCEx_GetPLL3ClockFreq(&PLL3_Clocks);
-        clkSrcFreq = PLL3_Clocks.PLL3_R_Frequency;
-        break;
+        case RCC_I2C2CLKSOURCE_PLL3:
+          HAL_RCCEx_GetPLL3ClockFreq(&PLL3_Clocks);
+          clkSrcFreq = PLL3_Clocks.PLL3_R_Frequency;
+          break;
 #endif
-      default:
-        Error_Handler();
-    }
+        default:
+          Error_Handler();
+      }
 #else
-    /* STM32 L0/G0 I2C2 has no independent clock */
-    clkSrcFreq = HAL_RCC_GetPCLK1Freq();
+      /* STM32 L0/G0 I2C2 has no independent clock */
+      clkSrcFreq = HAL_RCC_GetPCLK1Freq();
 #endif
+    }
   }
 #endif // I2C2_BASE
-#if defined I2C3_BASE
+#if defined(I2C3_BASE)
   if (i2c == I2C3) {
-    switch (__HAL_RCC_GET_I2C3_SOURCE()) {
-      case RCC_I2C3CLKSOURCE_HSI:
-        clkSrcFreq = HSI_VALUE;
-        break;
+#if defined(RCC_PERIPHCLK_I2C3) || defined(RCC_PERIPHCLK_I2C35)
+#ifdef RCC_PERIPHCLK_I2C3
+    clkSrcFreq = HAL_RCCEx_GetPeriphCLKFreq(RCC_PERIPHCLK_I2C3);
+#else
+    clkSrcFreq = HAL_RCCEx_GetPeriphCLKFreq(RCC_PERIPHCLK_I2C35);
+#endif
+    if (clkSrcFreq == 0)
+#endif
+    {
+#if defined(__HAL_RCC_GET_I2C3_SOURCE)
+      switch (__HAL_RCC_GET_I2C3_SOURCE()) {
+        case RCC_I2C3CLKSOURCE_HSI:
+          clkSrcFreq = HSI_VALUE;
+          break;
 #ifdef RCC_I2C3CLKSOURCE_SYSCLK
-      case RCC_I2C3CLKSOURCE_SYSCLK:
-        clkSrcFreq = SystemCoreClock;
-        break;
+        case RCC_I2C3CLKSOURCE_SYSCLK:
+          clkSrcFreq = SystemCoreClock;
+          break;
 #endif
 #if defined(RCC_I2C3CLKSOURCE_PCLK1) || defined(RCC_I2C3CLKSOURCE_D2PCLK1)
 #ifdef RCC_I2C3CLKSOURCE_PCLK1
-      case RCC_I2C3CLKSOURCE_PCLK1:
+        case RCC_I2C3CLKSOURCE_PCLK1:
 #endif
 #ifdef RCC_I2C3CLKSOURCE_D2PCLK1
-      case RCC_I2C3CLKSOURCE_D2PCLK1:
+        case RCC_I2C3CLKSOURCE_D2PCLK1:
 #endif
-        clkSrcFreq = HAL_RCC_GetPCLK1Freq();
-        break;
+          clkSrcFreq = HAL_RCC_GetPCLK1Freq();
+          break;
 #endif
 #ifdef RCC_I2C3CLKSOURCE_CSI
-      case RCC_I2C3CLKSOURCE_CSI:
-        clkSrcFreq = CSI_VALUE;
-        break;
+        case RCC_I2C3CLKSOURCE_CSI:
+          clkSrcFreq = CSI_VALUE;
+          break;
 #endif
 #ifdef RCC_I2C3CLKSOURCE_PLL3
-      case RCC_I2C3CLKSOURCE_PLL3:
-        HAL_RCCEx_GetPLL3ClockFreq(&PLL3_Clocks);
-        clkSrcFreq = PLL3_Clocks.PLL3_R_Frequency;
-        break;
+        case RCC_I2C3CLKSOURCE_PLL3:
+          HAL_RCCEx_GetPLL3ClockFreq(&PLL3_Clocks);
+          clkSrcFreq = PLL3_Clocks.PLL3_R_Frequency;
+          break;
 #endif
-      default:
-        Error_Handler();
+        default:
+          Error_Handler();
+      }
+#else
+      /* STM32 G0 I2C3 has no independent clock */
+      clkSrcFreq = HAL_RCC_GetPCLK1Freq();
+#endif
     }
   }
 #endif // I2C3_BASE
-#if defined I2C4_BASE
+#if defined(I2C4_BASE)
   if (i2c == I2C4) {
-    switch (__HAL_RCC_GET_I2C4_SOURCE()) {
-      case RCC_I2C4CLKSOURCE_HSI:
-        clkSrcFreq = HSI_VALUE;
-        break;
+#if defined(RCC_PERIPHCLK_I2C4) || defined(RCC_PERIPHCLK_I2C46)
+#ifdef RCC_PERIPHCLK_I2C4
+    clkSrcFreq = HAL_RCCEx_GetPeriphCLKFreq(RCC_PERIPHCLK_I2C4);
+#else
+    clkSrcFreq = HAL_RCCEx_GetPeriphCLKFreq(RCC_PERIPHCLK_I2C46);
+#endif
+    if (clkSrcFreq == 0)
+#endif
+    {
+#if defined(__HAL_RCC_GET_I2C4_SOURCE)
+      switch (__HAL_RCC_GET_I2C4_SOURCE()) {
+#ifdef RCC_I2C4CLKSOURCE_HSI
+        case RCC_I2C4CLKSOURCE_HSI:
+          clkSrcFreq = HSI_VALUE;
+          break;
+#endif
 #ifdef RCC_I2C4CLKSOURCE_SYSCLK
-      case RCC_I2C4CLKSOURCE_SYSCLK:
-        clkSrcFreq = SystemCoreClock;
-        break;
+        case RCC_I2C4CLKSOURCE_SYSCLK:
+          clkSrcFreq = SystemCoreClock;
+          break;
 #endif
 #ifdef RCC_I2C4CLKSOURCE_PCLK1
-      case RCC_I2C4CLKSOURCE_PCLK1:
-        clkSrcFreq = HAL_RCC_GetPCLK1Freq();
-        break;
+        case RCC_I2C4CLKSOURCE_PCLK1:
+          clkSrcFreq = HAL_RCC_GetPCLK1Freq();
+          break;
 #endif
 #ifdef RCC_I2C4CLKSOURCE_D3PCLK1
-      case RCC_I2C4CLKSOURCE_D3PCLK1:
-        clkSrcFreq = HAL_RCCEx_GetD3PCLK1Freq();
-        break;
+        case RCC_I2C4CLKSOURCE_D3PCLK1:
+          clkSrcFreq = HAL_RCCEx_GetD3PCLK1Freq();
+          break;
 #endif
 #ifdef RCC_I2C4CLKSOURCE_CSI
-      case RCC_I2C4CLKSOURCE_CSI:
-        clkSrcFreq = CSI_VALUE;
-        break;
+        case RCC_I2C4CLKSOURCE_CSI:
+          clkSrcFreq = CSI_VALUE;
+          break;
 #endif
 #ifdef RCC_I2C4CLKSOURCE_PLL3
-      case RCC_I2C4CLKSOURCE_PLL3:
-        HAL_RCCEx_GetPLL3ClockFreq(&PLL3_Clocks);
-        clkSrcFreq = PLL3_Clocks.PLL3_R_Frequency;
-        break;
+        case RCC_I2C4CLKSOURCE_PLL3:
+          HAL_RCCEx_GetPLL3ClockFreq(&PLL3_Clocks);
+          clkSrcFreq = PLL3_Clocks.PLL3_R_Frequency;
+          break;
 #endif
-      default:
-        Error_Handler();
+        default:
+          Error_Handler();
+      }
+#else
+      Error_Handler();
+#endif
     }
   }
 #endif // I2C4_BASE
-
-#elif defined(STM32MP1xx)
-  if (i2c == I2C1) {
-    clkSrcFreq = HAL_RCCEx_GetPeriphCLKFreq(RCC_PERIPHCLK_I2C12);
-  }
-  if (i2c == I2C2) {
-    clkSrcFreq = HAL_RCCEx_GetPeriphCLKFreq(RCC_PERIPHCLK_I2C12);
-  }
-  if (i2c == I2C3) {
-    clkSrcFreq = HAL_RCCEx_GetPeriphCLKFreq(RCC_PERIPHCLK_I2C35);
-  }
-  if (i2c == I2C4) {
-    clkSrcFreq = HAL_RCCEx_GetPeriphCLKFreq(RCC_PERIPHCLK_I2C46);
-  }
-#endif // STM32MP1xx
-
-#if defined I2C5_BASE
+#if defined(I2C5_BASE)
   if (i2c == I2C5) {
+#if defined(RCC_PERIPHCLK_I2C5) || defined(RCC_PERIPHCLK_I2C35)
+#ifdef RCC_PERIPHCLK_I2C5
+    clkSrcFreq = HAL_RCCEx_GetPeriphCLKFreq(RCC_PERIPHCLK_I2C5);
+#else
     clkSrcFreq = HAL_RCCEx_GetPeriphCLKFreq(RCC_PERIPHCLK_I2C35);
+#endif
+    if (clkSrcFreq == 0)
+#endif
+    {
+      clkSrcFreq = HAL_RCCEx_GetPeriphCLKFreq(RCC_PERIPHCLK_I2C35);
+    }
   }
 #endif // I2C5_BASE
-#if defined I2C6_BASE
+#if defined(I2C6_BASE)
   if (i2c == I2C6) {
+#if defined(RCC_PERIPHCLK_I2C6) || defined(RCC_PERIPHCLK_I2C46)
+#ifdef RCC_PERIPHCLK_I2C6
+    clkSrcFreq = HAL_RCCEx_GetPeriphCLKFreq(RCC_PERIPHCLK_I2C6);
+#else
     clkSrcFreq = HAL_RCCEx_GetPeriphCLKFreq(RCC_PERIPHCLK_I2C46);
+#endif
+#endif
   }
 #endif // I2C6_BASE
   return clkSrcFreq;
@@ -646,7 +704,7 @@ void i2c_custom_init(i2c_t *obj, uint32_t timing, uint32_t addressingMode, uint3
           __HAL_RCC_I2C3_FORCE_RESET();
           __HAL_RCC_I2C3_RELEASE_RESET();
           obj->irq = I2C3_EV_IRQn;
-#if !defined(STM32L0xx)
+#if !defined(STM32G0xx) && !defined(STM32L0xx)
           obj->irqER = I2C3_ER_IRQn;
 #endif /* !STM32L0xx */
           i2c_handles[I2C3_INDEX] = handle;
@@ -692,7 +750,7 @@ void i2c_custom_init(i2c_t *obj, uint32_t timing, uint32_t addressingMode, uint3
 
         handle->Instance             = obj->i2c;
 #ifdef I2C_TIMING
-        handle->Init.Timing      = i2c_getTiming(obj, timing);
+        handle->Init.Timing          = i2c_getTiming(obj, timing);
 #else
         handle->Init.ClockSpeed      = i2c_getTiming(obj, timing);
         /* Standard mode (sm) is up to 100kHz, then it's Fast mode (fm)     */
@@ -704,7 +762,7 @@ void i2c_custom_init(i2c_t *obj, uint32_t timing, uint32_t addressingMode, uint3
         }
 #endif
         handle->Init.OwnAddress1     = ownAddress;
-        handle->Init.OwnAddress2     = 0xFF;
+        handle->Init.OwnAddress2     = 0;
         handle->Init.AddressingMode  = addressingMode;
         handle->Init.DualAddressMode = I2C_DUALADDRESS_DISABLE;
         handle->Init.GeneralCallMode = (obj->generalCall == 0) ? I2C_GENERALCALL_DISABLE : I2C_GENERALCALL_ENABLE;
@@ -846,10 +904,10 @@ i2c_status_e i2c_slave_write_IT(i2c_t *obj, uint8_t *data, uint16_t size)
   } else {
     // Check the communication status
     for (i = 0; i < size; i++) {
-      obj->i2cTxRxBuffer[i] = *(data + i);
+      obj->i2cTxRxBuffer[obj->i2cTxRxBufferSize + i] = *(data + i);
     }
 
-    obj->i2cTxRxBufferSize = size;
+    obj->i2cTxRxBufferSize += size;
   }
   return ret;
 }
@@ -980,35 +1038,29 @@ void i2c_attachSlaveTxEvent(i2c_t *obj, void (*function)(i2c_t *))
 void HAL_I2C_AddrCallback(I2C_HandleTypeDef *hi2c, uint8_t TransferDirection, uint16_t AddrMatchCode)
 {
   i2c_t *obj = get_i2c_obj(hi2c);
+  if ((obj->slaveMode == SLAVE_MODE_RECEIVE) && (obj->slaveRxNbData != 0)) {
+    obj->i2c_onSlaveReceive(obj);
+    obj->slaveMode = SLAVE_MODE_LISTEN;
+    obj->slaveRxNbData = 0;
+  }
 
   if (AddrMatchCode == hi2c->Init.OwnAddress1) {
     if (TransferDirection == I2C_DIRECTION_RECEIVE) {
       obj->slaveMode = SLAVE_MODE_TRANSMIT;
 
       if (obj->i2c_onSlaveTransmit != NULL) {
+        obj->i2cTxRxBufferSize = 0;
         obj->i2c_onSlaveTransmit(obj);
       }
-#if defined(STM32F0xx) || defined(STM32F1xx) || defined(STM32F2xx) || defined(STM32F3xx) ||\
-    defined(STM32F4xx) || defined(STM32L0xx) || defined(STM32L1xx) || defined(STM32MP1xx)
       HAL_I2C_Slave_Seq_Transmit_IT(hi2c, (uint8_t *) obj->i2cTxRxBuffer,
                                     obj->i2cTxRxBufferSize, I2C_LAST_FRAME);
-#else
-      HAL_I2C_Slave_Sequential_Transmit_IT(hi2c, (uint8_t *) obj->i2cTxRxBuffer,
-                                           obj->i2cTxRxBufferSize, I2C_LAST_FRAME);
-#endif
     } else {
       obj->slaveRxNbData = 0;
       obj->slaveMode = SLAVE_MODE_RECEIVE;
       /*  We don't know in advance how many bytes will be sent by master so
        *  we'll fetch one by one until master ends the sequence */
-#if defined(STM32F0xx) || defined(STM32F1xx) || defined(STM32F2xx) || defined(STM32F3xx) ||\
-    defined(STM32F4xx) || defined(STM32L0xx) || defined(STM32L1xx) || defined(STM32MP1xx)
       HAL_I2C_Slave_Seq_Receive_IT(hi2c, (uint8_t *) & (obj->i2cTxRxBuffer[obj->slaveRxNbData]),
                                    1, I2C_NEXT_FRAME);
-#else
-      HAL_I2C_Slave_Sequential_Receive_IT(hi2c, (uint8_t *) & (obj->i2cTxRxBuffer[obj->slaveRxNbData]),
-                                          1, I2C_NEXT_FRAME);
-#endif
     }
   }
 }
@@ -1050,14 +1102,8 @@ void HAL_I2C_SlaveRxCpltCallback(I2C_HandleTypeDef *hi2c)
   }
   /* Restart interrupt mode for next Byte */
   if (obj->slaveMode == SLAVE_MODE_RECEIVE) {
-#if defined(STM32F0xx) || defined(STM32F1xx) || defined(STM32F2xx) || defined(STM32F3xx) ||\
-    defined(STM32F4xx) || defined(STM32L0xx) || defined(STM32L1xx) || defined(STM32MP1xx)
     HAL_I2C_Slave_Seq_Receive_IT(hi2c, (uint8_t *) & (obj->i2cTxRxBuffer[obj->slaveRxNbData]),
                                  1, I2C_NEXT_FRAME);
-#else
-    HAL_I2C_Slave_Sequential_Receive_IT(hi2c, (uint8_t *) & (obj->i2cTxRxBuffer[obj->slaveRxNbData]),
-                                        1, I2C_NEXT_FRAME);
-#endif
   }
 }
 
@@ -1130,11 +1176,25 @@ void I2C1_ER_IRQHandler(void)
 */
 void I2C2_EV_IRQHandler(void)
 {
+#if defined(I2C3_BASE) && defined(STM32G0xx)
+  /* I2C2_3_IRQHandler */
+  I2C_HandleTypeDef *handle2 = i2c_handles[I2C2_INDEX];
+  I2C_HandleTypeDef *handle3 = i2c_handles[I2C3_INDEX];
+  if (handle2) {
+    HAL_I2C_EV_IRQHandler(handle2);
+    HAL_I2C_ER_IRQHandler(handle2);
+  }
+  if (handle3) {
+    HAL_I2C_EV_IRQHandler(handle3);
+    HAL_I2C_ER_IRQHandler(handle3);
+  }
+#else
   I2C_HandleTypeDef *handle = i2c_handles[I2C2_INDEX];
   HAL_I2C_EV_IRQHandler(handle);
 #if defined(STM32F0xx) || defined(STM32G0xx) || defined(STM32L0xx)
   HAL_I2C_ER_IRQHandler(handle);
 #endif /* STM32F0xx || STM32G0xx || STM32L0xx */
+#endif
 }
 
 #if !defined(STM32F0xx) && !defined(STM32G0xx) && !defined(STM32L0xx)
@@ -1151,7 +1211,7 @@ void I2C2_ER_IRQHandler(void)
 #endif /* !STM32F0xx && !STM32G0xx && !STM32L0xx */
 #endif // I2C2_BASE
 
-#if defined(I2C3_BASE)
+#if defined(I2C3_BASE) && !defined(STM32G0xx)
 /**
 * @brief  This function handles I2C3 interrupt.
 * @param  None
@@ -1178,7 +1238,7 @@ void I2C3_ER_IRQHandler(void)
   HAL_I2C_ER_IRQHandler(handle);
 }
 #endif /* !STM32L0xx */
-#endif // I2C3_BASE
+#endif /* I2C3_BASE && ! STM32G0xx */
 
 #if defined(I2C4_BASE)
 /**

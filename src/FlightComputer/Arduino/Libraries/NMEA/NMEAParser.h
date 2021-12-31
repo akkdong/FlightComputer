@@ -8,11 +8,25 @@
 #ifndef NMEA_NMEAPARSER_H_
 #define NMEA_NMEAPARSER_H_
 
+#include "Arduino.h"
+#include "lwgps/lwgps.h"
 
-class NMEAParser
+
+/////////////////////////////////////////////////////////////////////////////////////////////
+//
+
+class NMEAParser : public lwgps_t
 {
 public:
-	NMEAParser();
+	NMEAParser(HardwareSerial& serial);
+
+public:
+	int			begin();
+	void		update();
+	void		end();
+
+protected:
+	HardwareSerial& gps;
 };
 
 

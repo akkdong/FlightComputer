@@ -96,9 +96,7 @@ void FlightComputer::setup(void)
 {
 	//
 	pinMode(PWR_LED1, OUTPUT);
-	pinMode(PWR_LED2, OUTPUT);
 	digitalWrite(PWR_LED1, LOW);
-	digitalWrite(PWR_LED2, HIGH);
 
 	//Debug.begin(115200);
 	//GPS.begin(9600);
@@ -203,8 +201,6 @@ void FlightComputer::loop()
 			if ((millis() - tick) > 1000)
 			{
 				digitalToggle(PWR_LED1);
-				digitalToggle(PWR_LED2);
-
 				tick = millis();
 			}
 		}
@@ -522,13 +518,6 @@ void loop()
 }
 
 
-
-extern "C" void _Error_Handler(const char* err, int code);
-
-extern "C" void Error_Handler()
-{
-	_Error_Handler(__FILE__, __LINE__);
-}
 
 extern "C" void HAL_HSEM_FreeCallback(uint32_t SemMask)
 {
