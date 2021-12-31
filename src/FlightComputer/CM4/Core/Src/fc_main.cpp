@@ -15,15 +15,12 @@
 #include "Variometer/Variometer.h"
 
 
-#ifndef HSEM_ID_0
-#define HSEM_ID_0 (0U) /* HW semaphore 0*/
-#endif
 
 //
+volatile int notify_cm7 = 0;
+
 lwrb_t* rb_cm4_to_cm7 = (lwrb_t *)BUFF_CM4_TO_CM7_ADDR;
 lwrb_t* rb_cm7_to_cm4 = (lwrb_t *)BUFF_CM7_TO_CM4_ADDR;
-
-volatile int Notif_Sleep = 0;
 
 
 //
@@ -35,7 +32,7 @@ KalmanFilter kalman(bmp/*, mpu*/);
 
 Variometer vario(kalman, nmea);
 
-
+//
 enum UpdateType
 {
 	BAT,
@@ -55,20 +52,21 @@ char line_buf[128];
 
 void init(void)
 {
-#if CM4_DEBUG || 1
 	/*HW semaphore Clock enable*/
 	__HAL_RCC_HSEM_CLK_ENABLE();
 	/* Activate HSEM notification for Cortex-M4*/
-	HAL_HSEM_ActivateNotification(__HAL_HSEM_SEMID_TO_MASK(HSEM_ID_0));
+	__HAL_HSEM_ENABLE_IT(HSEM_WAKEUP_CPU2_MASK); // HAL_HSEM_ActivateNotification(HSEM_WAKEUP_CPU2_MASK);
+#if CM4_DEBUG || 1
 	/*
 	Domain D2 goes to STOP mode (Cortex-M4 in deep-sleep) waiting for Cortex-M7 to
 	perform system initialization (system clock config, external memory configuration.. )
 	*/
 	HAL_PWREx_ClearPendingEvent();
 	HAL_PWREx_EnterSTOPMode(PWR_MAINREGULATOR_ON, PWR_STOPENTRY_WFE, PWR_D2_DOMAIN);
+
 	/* Clear HSEM flag & Deativate HSEM notification*/
-	__HAL_HSEM_CLEAR_FLAG(__HAL_HSEM_SEMID_TO_MASK(HSEM_ID_0));
-	HAL_HSEM_DeactivateNotification(__HAL_HSEM_SEMID_TO_MASK(HSEM_ID_0));
+	__HAL_HSEM_CLEAR_FLAG(HSEM_WAKEUP_CPU2_MASK);
+	__HAL_HSEM_DISABLE_IT(HSEM_WAKEUP_CPU2_MASK); // HAL_HSEM_DeactivateNotification(HSEM_WAKEUP_CPU2_MASK);
 #endif
 
 	/* MCU Configuration--------------------------------------------------------*/
@@ -102,10 +100,10 @@ void setup(void)
 
 
 	//
-	HAL_NVIC_SetPriority(HSEM2_IRQn, 4, 0);
+	HAL_NVIC_SetPriority(HSEM2_IRQn, 1, 0);
 	HAL_NVIC_EnableIRQ(HSEM2_IRQn);
-	Notif_Sleep = 0;
-	HAL_HSEM_ActivateNotification(__HAL_HSEM_SEMID_TO_MASK(HSEM_ID_1));
+	notify_cm7 = 0;
+	HAL_HSEM_ActivateNotification(HSEM_GOTO_STANDBY_MASK);
 
 	//
 	lwrb_write_string(rb_cm4_to_cm7, "CM4 Started...\r\n");
@@ -113,6 +111,43 @@ void setup(void)
 
 void loop(void)
 {
+	// go to sleep ?
+	if (notify_cm7)
+	{
+		char sz[64];
+		sprintf(sz, "[CM4] HSEM1 signaled: %d\r\n", notify_cm7);
+		lwrb_write_string(rb_cm4_to_cm7, sz);
+
+		if (notify_cm7 & HSEM_GOTO_STANDBY_MASK)
+		{
+			lwrb_write_string(rb_cm4_to_cm7, "[CM4] Enter StandBy\r\n");
+
+			vario.end();
+			spi.end();
+			Serial2.end();
+
+			digitalWrite(PWR_LED2, LOW);
+			//pinMode(A27, INPUT);
+			//pinMode(SPI4_CS1, INPUT);
+			//pinMode(SPI4_CS2, INPUT);
+			//pinMode(PWR_LED2, INPUT);
+			//HAL_NVIC_DisableIRQ(HSEM2_IRQn);
+
+			HAL_SuspendTick();
+			HAL_PWREx_ClearPendingEvent();
+			// Enter D3 to DStandby mode
+			HAL_PWREx_EnterSTANDBYMode(PWR_D3_DOMAIN);
+			// Enter D2 to DStandby mode
+			HAL_PWREx_EnterSTANDBYMode(PWR_D2_DOMAIN);
+
+			//while(1);
+			lwrb_write_string(rb_cm4_to_cm7, "[CM4] wakeup! standby failed!!\r\n");
+		}
+
+		notify_cm7 = 0;
+		HAL_HSEM_ActivateNotification(HSEM_GOTO_STANDBY_MASK);
+	}
+
 #if 0
 	while (Serial2.available())
 	{
@@ -154,10 +189,10 @@ void loop(void)
 	// update gps
 	if (now - updateTick[GPS] > 2000)
 	{
-		if (nmea.is_valid)
-			sprintf(line_buf, "[G] N/A\r\n");
-		else
+		if (nmea.is_valid && nmea.fix != 0)
 			sprintf(line_buf, "[G] [%.5f, %.5f] %.0f\r\n", nmea.latitude, nmea.longitude, nmea.speed);
+		else
+			sprintf(line_buf, "[G] N/A\r\n");
 		lwrb_write_string(rb_cm4_to_cm7, line_buf);
 
 		updateTick[GPS] = now;
@@ -171,30 +206,10 @@ void loop(void)
 
 		updateTick[LED] = now;
 	}
-
-
-	// go to sleep ?
-	if (Notif_Sleep)
-	{
-		char sz[64];
-		sprintf(sz, "HSEM1 signaled: %d\r\n", Notif_Sleep);
-		lwrb_write_string(rb_cm4_to_cm7, sz);
-
-		if (Notif_Sleep & (1 << HSEM_ID_1))
-		{
-			  HAL_PWREx_ClearPendingEvent();
-			  // Enter D3 to DStandby mode
-			  HAL_PWREx_EnterSTANDBYMode(PWR_D3_DOMAIN);
-			  // Enter D2 to DStandby mode
-			  HAL_PWREx_EnterSTANDBYMode(PWR_D2_DOMAIN);
-		}
-
-		Notif_Sleep = 0;
-	}
 }
 
 
 extern "C" void HAL_HSEM_FreeCallback(uint32_t SemMask)
 {
-	Notif_Sleep |= SemMask;
+	notify_cm7 |= SemMask;
 }
