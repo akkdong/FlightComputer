@@ -40,6 +40,7 @@
 #define __ANALOG_H
 
 /* Includes ------------------------------------------------------------------*/
+#include "variant.h"
 #include "stm32_def.h"
 #include "PeripheralPins.h"
 #include "HardwareTimer.h"

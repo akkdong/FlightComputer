@@ -55,7 +55,7 @@ float Variometer::getVerticalSpeed()
 
 float Variometer::getPressure()
 {
-	imu.getPressure();
+	return imu.getPressure();
 }
 
 float Variometer::getTemperature()

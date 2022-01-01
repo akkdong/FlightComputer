@@ -190,6 +190,9 @@
 #define PIN_WIRE_SCL			PB8
 #endif
 
+#define ADC_SAMPLINGTIME		ADC_SAMPLETIME_810CYCLES_5
+#define ADC_CLOCK_DIV			ADC_CLOCK_ASYNC_DIV2
+
 
 // Extra HAL modules
 #if !defined(HAL_DAC_MODULE_DISABLED)
