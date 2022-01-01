@@ -10,9 +10,9 @@
 INA219 ina219;
 
 #define R_SHUNT 			0.002
-#define V_SHUNT_MAX 		0.075
+#define V_SHUNT_MAX 		0.004
 #define V_BUS_MAX 			16
-#define I_MAX_EXPECTED 		20
+#define I_MAX_EXPECTED 		2
 
 #define UPDATE_PERIOD		(1000)
 
@@ -128,7 +128,7 @@ void loop()
 		Serial.print("Bat Voltage:   "); Serial.print(batvoltage,3); Serial.println(" V");
 		Serial.print("Current:       "); Serial.print(current_A,3); Serial.println(" A");
 		Serial.print("Power:         "); Serial.print(power,3); Serial.println(" W");
-		Serial.print("Ah:         ");    Serial.print(Ah,3); Serial.println(" Ah");
+		Serial.print("Ah:            "); Serial.print(Ah,3); Serial.println(" Ah");
 		Serial.println("");		
 		
 		lastUpdateTick = currentTick;
@@ -160,17 +160,17 @@ void readCurrent() {
 //  Serial.println("waiting data ready");
 
 	// reads busVoltage
-	busvoltage = ina219.busVoltage();
+	busvoltage = ina219.busVoltage() + 0.035;
 	// waits for conversion ready
 	while(!ina219.ready() && count < 500) {
 		count++;
 		delay(1);
-		busvoltage = ina219.busVoltage();  
+		busvoltage = ina219.busVoltage() + 0.0;  
 	}
 
 	// read the other values
-	shuntvoltage = ina219.shuntVoltage() * 1000;
-	current_A = ina219.shuntCurrent();
+	shuntvoltage = ina219.shuntVoltage() * 1000 + 0.02;
+	current_A = ina219.shuntCurrent() + 0.001;
 	batvoltage = busvoltage + (shuntvoltage / 1000);
 	power = ina219.busPower();
 	
