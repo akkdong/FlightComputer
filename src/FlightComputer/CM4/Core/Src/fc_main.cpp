@@ -126,13 +126,6 @@ void loop(void)
 			spi.end();
 			Serial2.end();
 
-			digitalWrite(PWR_LED2, LOW);
-			//pinMode(A27, INPUT);
-			//pinMode(SPI4_CS1, INPUT);
-			//pinMode(SPI4_CS2, INPUT);
-			//pinMode(PWR_LED2, INPUT);
-			//HAL_NVIC_DisableIRQ(HSEM2_IRQn);
-
 			HAL_SuspendTick();
 			HAL_PWREx_ClearPendingEvent();
 			// Enter D3 to DStandby mode
@@ -140,8 +133,9 @@ void loop(void)
 			// Enter D2 to DStandby mode
 			HAL_PWREx_EnterSTANDBYMode(PWR_D2_DOMAIN);
 
-			//while(1);
-			lwrb_write_string(rb_cm4_to_cm7, "[CM4] wakeup! standby failed!!\r\n");
+			// never comes here!
+			while(1);
+			//lwrb_write_string(rb_cm4_to_cm7, "[CM4] wakeup! standby failed!!\r\n");
 		}
 
 		notify_cm7 = 0;

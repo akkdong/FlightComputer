@@ -8,7 +8,10 @@
 #ifndef INC_VARIO_STATE_H_
 #define INC_VARIO_STATE_H_
 
-#define MAX_TRACK_HISTORY				(30)
+#include <stdint.h>
+#include <time.h>
+
+#define MAX_VARIO_HISTORY				(30)
 
 
 typedef struct
@@ -74,6 +77,19 @@ typedef struct
 //	time_t			timeFly;
 
 } vario_t;
+
+
+
+#if __cplusplus
+extern "C"
+{
+#endif
+
+void vario_reset(vario_t* state);
+
+#if __cplusplus
+}
+#endif
 
 
 #endif /* INC_VARIO_STATE_H_ */

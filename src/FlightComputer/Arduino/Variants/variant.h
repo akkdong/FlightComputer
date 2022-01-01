@@ -159,11 +159,13 @@
 #define ENABLE_HWSERIAL3
 
 // Serial pin used for console
+#if USE_PREDEFINED_SERIALNO
 #ifndef PIN_SERIAL_RX
 #define PIN_SERIAL_RX           PA10
 #endif
 #ifndef PIN_SERIAL_TX
 #define PIN_SERIAL_TX           PA9
+#endif
 #endif
 
 // SPI pin used for EPD controller

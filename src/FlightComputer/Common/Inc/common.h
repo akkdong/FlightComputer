@@ -8,6 +8,8 @@
 #include "lwrb/lwrb.h"
 #include "lwgps/lwgps.h"
 #include "lwshell/lwshell.h"
+#include "vario_state.h"
+#include "debug.h"
 
 
 /* Align X to 4 bytes */

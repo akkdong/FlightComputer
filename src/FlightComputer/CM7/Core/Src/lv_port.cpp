@@ -5,6 +5,7 @@
  *      Author: akkdong
  */
 
+#if SUPPORT_LVGL
 
 #include "lv_port.h"
 #include "EPD/EPaperFrameBuffer.h"
@@ -99,3 +100,6 @@ void app_init(void)
 	lv_obj_t * label1 = lv_label_create(lv_scr_act());
 	lv_label_set_text(label1, LV_SYMBOL_OK);
 }
+
+#endif // SUPPORT_LVGL
+

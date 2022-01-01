@@ -1,16 +1,6 @@
 // flight_computer.cpp
 //
 
-#if 0
-#include "adc.h"
-#include "i2c.h"
-#include "spi.h"
-#include "usart.h"
-#include "gpio.h"
-#include "hw_config.h"
-#include "Wire/Wire.h"
-#endif
-
 #include "main.h"
 #include "quadspi.h"
 #include "fmc.h"
@@ -30,8 +20,6 @@
 // CM4 notify
 volatile int notify_cm4 = 0;
 
-lwrb_t* rb_cm4_to_cm7 = (lwrb_t *)BUFF_CM4_TO_CM7_ADDR;
-lwrb_t* rb_cm7_to_cm4 = (lwrb_t *)BUFF_CM7_TO_CM4_ADDR;
 
 
 //
@@ -90,18 +78,6 @@ extern "C" void init(void)
 	USBD_CDC_init();
 	#endif
 
-	// enable all gpio clock
-	//__HAL_RCC_GPIOA_CLK_ENABLE();
-	//__HAL_RCC_GPIOB_CLK_ENABLE();
-	//__HAL_RCC_GPIOC_CLK_ENABLE();
-	//__HAL_RCC_GPIOD_CLK_ENABLE();
-	//__HAL_RCC_GPIOE_CLK_ENABLE();
-	//__HAL_RCC_GPIOF_CLK_ENABLE();
-	//__HAL_RCC_GPIOG_CLK_ENABLE();
-	//__HAL_RCC_GPIOH_CLK_ENABLE();
-	//__HAL_RCC_GPIOJ_CLK_ENABLE();
-	//__HAL_RCC_GPIOK_CLK_ENABLE();
-
 	// initialize each peripherals
 	MX_FMC_Init();
 	MX_QUADSPI_Init();
@@ -129,8 +105,8 @@ extern "C" void init(void)
 		{
 			if(QSPI_Driver_init() == QSPI_STATUS_OK)
 			{
-				TRACE("QSPI Driver initialized\r\n");
 				FlightComputer::flash_ok = true;
+				TRACE("QSPI Driver initialized\r\n");
 			}
 			else
 			{
@@ -150,8 +126,8 @@ extern "C" void init(void)
 	// initialize SDRAM
 	if (SDRAM_Do_InitializeSequence() == HAL_OK)
 	{
-		TRACE("SDRAM initialized\r\n");
 		FlightComputer::sdram_ok = true;
+		TRACE("SDRAM initialized\r\n");
 	}
 	else
 	{
@@ -160,17 +136,22 @@ extern "C" void init(void)
 	delay(100);
 
 
-    /* Initialize buffers that are used as shared memory */
-    lwrb_init(rb_cm7_to_cm4, (void *)BUFFDATA_CM7_TO_CM4_ADDR, BUFFDATA_CM7_TO_CM4_LEN);
+    // Initialize buffers that are used as shared memory
+	lwrb_t* rb_cm4_to_cm7 = (lwrb_t *)BUFF_CM4_TO_CM7_ADDR;
     lwrb_init(rb_cm4_to_cm7, (void *)BUFFDATA_CM4_TO_CM7_ADDR, BUFFDATA_CM4_TO_CM7_LEN);
 
+	lwrb_t* rb_cm7_to_cm4 = (lwrb_t *)BUFF_CM7_TO_CM4_ADDR;
+    lwrb_init(rb_cm7_to_cm4, (void *)BUFFDATA_CM7_TO_CM4_ADDR, BUFFDATA_CM7_TO_CM4_LEN);
+
+    // Initialize vario-state buffer: CM7 initialize only the first time, and then just read.
+    vario_t* varioState = (vario_t *)BUFF_VARIO_STATE_ADDR;
+    vario_reset(varioState);
+
+
 	// When system initialization is finished, Cortex-M7 will release Cortex-M4 by means of HSEM notification HW semaphore Clock enable
-	//__HAL_RCC_HSEM_CLK_ENABLE();
-	// Take HSEM
 	HAL_HSEM_FastTake(HSEM_WAKEUP_CPU2);
-	// Release HSEM in order to notify the CPU2(CM4)
 	HAL_HSEM_Release(HSEM_WAKEUP_CPU2, 0);
-	// Wait until CPU2 wakes up from stop mode
+
 	timeout = 0xFFFFF;
 	while((__HAL_RCC_GET_FLAG(RCC_FLAG_D2CKRDY) == RESET) && (timeout-- > 0));
 	if ( timeout < 0 )
@@ -183,7 +164,9 @@ extern "C" void init(void)
     HAL_RCCEx_EnableBootCore(RCC_BOOT_C2);
 #endif
 
+    // wait update-event
     HAL_HSEM_ActivateNotification(HSEM_VAIO_UPDATE_MASK);
+    HAL_HSEM_ActivateNotification(HSEM_GPS_UPDATE_MASK);
 }
 
 
@@ -200,8 +183,15 @@ extern "C" void loop()
 	{
 		notify_cm4 &= ~HSEM_VAIO_UPDATE_MASK;
 
-		// fc.updateVario();
+		fc.updateVario();
 		HAL_HSEM_ActivateNotification(HSEM_VAIO_UPDATE_MASK);
+	}
+	else if (notify_cm4 & HSEM_GPS_UPDATE_MASK)
+	{
+		notify_cm4 &= ~HSEM_GPS_UPDATE_MASK;
+
+		fc.updateGPS();
+		HAL_HSEM_ActivateNotification(HSEM_GPS_UPDATE_MASK);
 	}
 }
 
