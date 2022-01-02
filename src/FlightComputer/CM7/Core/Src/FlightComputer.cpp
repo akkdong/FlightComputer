@@ -14,9 +14,8 @@
 #include "debug.h"
 
 
-#include "Adafruit_GFX/Fonts/FreeSans24pt7b.h"
-#include "Adafruit_GFX/Fonts/FreeSans18pt7b.h"
-
+#include "Adafruit_GFX/Fonts/FreeSans16pt7b.h"
+#include "Adafruit_GFX/Fonts/FreeSans10pt7b.h"
 
 
 /////////////////////////////////////////////////////////////////////////////////////
@@ -88,6 +87,10 @@ void FlightComputer::setup(void)
 	//
 	lwshell_init();
 	lwshell_register_cmd("hello", shell_hello, "Answer me!");
+
+	//
+	line_len = 0;
+	disp_front = disp_rear = 0;
 
 	//
 	drawVarioState();
@@ -230,7 +233,29 @@ void FlightComputer::procDebugShell()
 
 void FlightComputer::procInterProcess()
 {
-	// Check if CM4 sent some data to CM7 core
+#if FETCH_LINE || 1
+	//
+	while (lwrb_get_full(rb_cm4_to_cm7) > 0)
+	{
+		uint8_t data;
+
+		if (lwrb_read(rb_cm4_to_cm7, &data, 1) == 0)
+			break;
+
+		line_buf[line_len++] = data;
+		if (line_len == sizeof(line_buf) || data == '\n')
+		{
+			Serial.write((const char *)line_buf, line_len);
+			line_len = 0;
+		}
+
+		disp_buf[disp_front] = data;
+		disp_front = (disp_front + 1) & 0x7FF;
+		if (disp_rear == disp_front)
+			disp_rear = (disp_rear + 1) & 0x7FF;
+	}
+#else
+	//
 	size_t len;
 	void* addr;
 
@@ -245,6 +270,7 @@ void FlightComputer::procInterProcess()
 		// mark buffer as read
 		lwrb_skip(rb_cm4_to_cm7, len);
 	}
+#endif
 }
 
 void FlightComputer::procKeyboard()
@@ -341,7 +367,7 @@ void FlightComputer::procLVGL()
 
 void FlightComputer::updateScreen(bool fast)
 {
-	displayUpdateCount = fast ? (displayUpdateCount + 1) % 50 : 0;
+	displayUpdateCount = fast ? (displayUpdateCount + 1) % 100 : 0;
 	displayUpdateTick = millis();
 
 	epdDisp.refresh(displayUpdateCount == 0 ? false : true);
@@ -351,11 +377,11 @@ void FlightComputer::updateScreen(bool fast)
 void FlightComputer::drawStandby()
 {
 	epdDisp.clearScreen();
-	epdDisp.setFont(&FreeSans24pt7b);
+	epdDisp.setFont(&FreeSans16pt7b);
 	epdDisp.setTextColor(COLOR_BLACK);
 
 	int x = 16;
-	int y = FreeSans24pt7b.yAdvance;
+	int y = FreeSans16pt7b.yAdvance;
 	epdDisp.setCursor(x, y);
 	epdDisp.print("Press ENTER to wake-up!");
 }
@@ -363,42 +389,54 @@ void FlightComputer::drawStandby()
 void FlightComputer::drawVarioState()
 {
 	epdDisp.clearScreen();
-	epdDisp.setFont(&FreeSans24pt7b);
+	epdDisp.setFont(&FreeSans16pt7b);
 	epdDisp.setTextColor(COLOR_BLACK);
 
 	int x = 16;
-	int y = FreeSans24pt7b.yAdvance;
+	int y = FreeSans16pt7b.yAdvance;
 	epdDisp.setCursor(x, y);
 	epdDisp.print("Flight computer Sensor TEST");
 
-	epdDisp.setFont(&FreeSans18pt7b);
+	epdDisp.setFont(&FreeSans10pt7b);
 
-	y += FreeSans24pt7b.yAdvance + 8;
+	y += FreeSans16pt7b.yAdvance + 4;
 	epdDisp.setCursor(x, y);
 	epdDisp.printf("Altitude(Baro): %.1f m", varioState->altitudeBaro);
-	y += FreeSans18pt7b.yAdvance;
+	y += FreeSans10pt7b.yAdvance;
 	epdDisp.setCursor(x, y);
 	epdDisp.printf("Altitude(GPS): %.1f m", varioState->altitudeGPS);
-	y += FreeSans18pt7b.yAdvance;
+	y += FreeSans10pt7b.yAdvance;
 	epdDisp.setCursor(x, y);
 	epdDisp.printf("Latitude: %.3f", varioState->latitude);
-	y += FreeSans18pt7b.yAdvance;
+	y += FreeSans10pt7b.yAdvance;
 	epdDisp.setCursor(x, y);
 	epdDisp.printf("Longitude: %.3f", varioState->longitude);
-	y += FreeSans18pt7b.yAdvance;
+	y += FreeSans10pt7b.yAdvance;
 	epdDisp.setCursor(x, y);
-	epdDisp.printf("Vertical speed: %.2f cm/s", varioState->speedVertActive * 10);
-	y += FreeSans18pt7b.yAdvance;
+	epdDisp.printf("Vertical speed: %.2f m/s", varioState->speedVertActive);
+	y += FreeSans10pt7b.yAdvance;
 	epdDisp.setCursor(x, y);
 	epdDisp.printf("Ground speed: %.3f km/h", varioState->speedGround);
 
-	y += FreeSans18pt7b.yAdvance + 8;
+	y += FreeSans10pt7b.yAdvance + 4;
 	epdDisp.setCursor(x, y);
-	epdDisp.printf("Battery power: %.3f V", varioState->batteryVoltage);
-	y += FreeSans18pt7b.yAdvance;
+	epdDisp.printf("Battery power: %.1f V", varioState->batteryVoltage);
+	y += FreeSans10pt7b.yAdvance;
 	epdDisp.setCursor(x, y);
 	epdDisp.printf("Pressure: %.2f hPa", varioState->pressure);
-	y += FreeSans18pt7b.yAdvance;
+	y += FreeSans10pt7b.yAdvance;
 	epdDisp.setCursor(x, y);
 	epdDisp.printf("Temperature: %.1f C", varioState->temperature);
+
+
+	y += FreeSans10pt7b.yAdvance + 8;
+	x = 0;
+	epdDisp.setCursor(x, y);
+
+	int rear = disp_rear;
+	while (rear != disp_front && epdDisp.getCursorY() < epdDisp.height())
+	{
+		epdDisp.write(disp_buf[rear]);
+		rear = (rear + 1) & 0x7FF;
+	}
 }

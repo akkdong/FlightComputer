@@ -199,9 +199,10 @@ int EPaperPMIC::powerOn()
 		if (millis() - tick >= 250)
 		{
 #ifdef DEBUG
-			Serial.println("Dump PMIC registers on EPpaperPMIC::powerOn()");
-			DumpRegister();
-			DumpPort();
+			//Serial.println("Dump PMIC registers on EPpaperPMIC::powerOn()");
+			//DumpRegister();
+			//DumpPort();
+			Serial.println("PMIC Power FAILED!");
 #endif
 
 			digitalWrite(PMIC_WAKEUP, LOW);

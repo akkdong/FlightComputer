@@ -155,6 +155,8 @@ void loop(void)
 
 	//
 	vario.loop();
+	// forward nmea sentence to cm7
+	nmea.fetchData(rb_cm4_to_cm7);
 
 	//
 	uint32_t now = millis();

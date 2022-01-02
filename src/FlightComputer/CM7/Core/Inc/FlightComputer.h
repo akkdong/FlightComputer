@@ -72,7 +72,12 @@ protected:
 	//EPaperController	epdCont;
 	EPaperDisplay		epdDisp;
 
-	uint8_t				data[64];
+	uint8_t				line_buf[256];
+	int					line_len;
+
+	uint8_t				disp_buf[0x7FF];
+	int					disp_front, disp_rear;
+
 
 	//
 	lwrb_t* 			rb_cm4_to_cm7;

@@ -10,6 +10,9 @@
 
 #include "Arduino.h"
 #include "lwgps/lwgps.h"
+#include "lwrb/lwrb.h"
+
+#define MAX_BUFSIZE		(4095)	// 0x0FFFF
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////
@@ -25,8 +28,14 @@ public:
 	void		update();
 	void		end();
 
+	void		fetchData(lwrb_t* rb);
+
 protected:
 	HardwareSerial& gps;
+
+	char		nmea_buf[MAX_BUFSIZE];
+	int			front, rear;
+	int			has_line;
 };
 
 
