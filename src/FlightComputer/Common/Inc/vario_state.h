@@ -76,6 +76,10 @@ typedef struct
 //	time_t			timeStart;
 //	time_t			timeFly;
 
+
+	//
+	float			batteryVoltage;
+
 } vario_t;
 
 

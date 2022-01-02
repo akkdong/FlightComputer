@@ -32,7 +32,7 @@ public:
 	float					getPressure() { return baro.measurement.pressure; }
 	float					getTemperature() { return baro.measurement.temperature; }
 	float					getAltitude2() { return z_; }
-	float					getAltitude() { return baro.measurement.altitude; }
+	float					getAltitude() { return baroAltitude; }
 	float					getCalibratedAltitude() { return baro.measurement.altitude; }
 	float					getVelocity() { return v_; }
 

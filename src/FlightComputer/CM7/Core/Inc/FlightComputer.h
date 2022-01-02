@@ -32,16 +32,18 @@ public:
 	};
 
 public:
+	//
 	void 				setup();
 	void 				loop();
 
-	void				setEvent(Event event);
-	void				updateVario();
-	void				updateGPS();
+	//
+	void				OnUpdateVario();
+	void				OnUpdateGPS();
 
 protected:
 	void				standby();
 
+	//
 	void				procDebugShell();
 	void				procInterProcess();
 	void				procKeyboard();
@@ -49,8 +51,12 @@ protected:
 	void				procLVGL();
 #endif
 
+	//
 	void				updateScreen(bool fast = true);
 
+	//
+	void				drawStandby();
+	void				drawVarioState();
 
 public:
 	static bool			flash_ok;
@@ -72,14 +78,12 @@ protected:
 	lwrb_t* 			rb_cm4_to_cm7;
 	lwrb_t* 			rb_cm7_to_cm4;
 
-	vario_t*			varioState;
+	volatile vario_t*	varioState;
 
 	//
+	uint32_t			displayUpdateTick;
 	int					displayUpdateCount;
 	int					enterStandby;
-
-	// test-only
-	int					imageType;
 };
 
 

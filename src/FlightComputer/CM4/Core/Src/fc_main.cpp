@@ -22,6 +22,9 @@ volatile int notify_cm7 = 0;
 lwrb_t* rb_cm4_to_cm7 = (lwrb_t *)BUFF_CM4_TO_CM7_ADDR;
 lwrb_t* rb_cm7_to_cm4 = (lwrb_t *)BUFF_CM7_TO_CM4_ADDR;
 
+volatile vario_t* varioState = (vario_t *)BUFF_VARIO_STATE_ADDR;
+
+
 
 //
 SPIClass spi(SPI4_MOSI, SPI4_MISO, SPI4_SCLK);
@@ -168,6 +171,7 @@ void loop(void)
 		sprintf(line_buf, "[A] measure: %d voltage: %f\r\n", (unsigned int)measure, voltage);
 		lwrb_write_string(rb_cm4_to_cm7, line_buf);
 
+		varioState->batteryVoltage = voltage;
 		updateTick[BAT] = now;
 	}
 
@@ -177,7 +181,16 @@ void loop(void)
 		sprintf(line_buf, "[V] v: %.2f, p:%.2f, t:%.0f\r\n", vario.getVerticalSpeed(), vario.getPressure(), vario.getTemperature());
 		lwrb_write_string(rb_cm4_to_cm7, line_buf);
 
+		varioState->altitudeBaro = vario.getAltitude();
+		varioState->speedVertActive = vario.getVerticalSpeed();
+		varioState->temperature = vario.getTemperature();
+		varioState->pressure = vario.getPressure();
+
 		updateTick[VARIO] = now;
+
+		// signal udpate
+		HAL_HSEM_FastTake(HSEM_VAIO_UPDATE);
+		HAL_HSEM_Release(HSEM_VAIO_UPDATE, 0);
 	}
 
 	// update gps
@@ -188,6 +201,11 @@ void loop(void)
 		else
 			sprintf(line_buf, "[G] N/A\r\n");
 		lwrb_write_string(rb_cm4_to_cm7, line_buf);
+
+		varioState->altitudeGPS = nmea.altitude;
+		varioState->latitude = nmea.latitude;
+		varioState->longitude = nmea.longitude;
+		varioState->speedGround = nmea.speed;
 
 		updateTick[GPS] = now;
 	}

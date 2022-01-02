@@ -14,9 +14,8 @@
 #include "debug.h"
 
 
-#include "../../../../Test/FC_Test/CM7/Core/Inc/image_mono.h"
-#include "../../../../Test/FC_Test/CM7/Core/Inc/landscape.h"
 #include "Adafruit_GFX/Fonts/FreeSans24pt7b.h"
+#include "Adafruit_GFX/Fonts/FreeSans18pt7b.h"
 
 
 
@@ -50,7 +49,6 @@ FlightComputer::FlightComputer()
 	, varioState((vario_t *)BUFF_VARIO_STATE_ADDR)
 	, displayUpdateCount(0)
 	, enterStandby(0)
-	, imageType(0)
 {
 	// mm.registerClient(&debug);
 }
@@ -92,11 +90,7 @@ void FlightComputer::setup(void)
 	lwshell_register_cmd("hello", shell_hello, "Answer me!");
 
 	//
-	epdDisp.clearScreen();
-	epdDisp.setFont(&FreeSans24pt7b);
-	epdDisp.setCursor(100, 100);
-	epdDisp.setTextColor(COLOR_BLACK);
-	epdDisp.print("Welcome!");
+	drawVarioState();
 	updateScreen(false);
 }
 
@@ -119,7 +113,8 @@ void FlightComputer::loop()
 #endif
 
 	// update sreen
-	//updateScreen();
+	if (millis() - displayUpdateTick > 1000)
+		updateScreen();
 
 	// debug purpose: blink LED
 	{
@@ -176,12 +171,20 @@ void FlightComputer::loop()
 }
 
 
-void FlightComputer::updateVario()
+void FlightComputer::OnUpdateVario()
 {
+	TRACE("OnUpdateVario\r\n");
+
+	drawVarioState();
+	updateScreen();
 }
 
-void FlightComputer::updateGPS()
+void FlightComputer::OnUpdateGPS()
 {
+	TRACE("OnUpdateGPS\r\n");
+
+	drawVarioState();
+	updateScreen();
 }
 
 void FlightComputer::standby()
@@ -189,15 +192,11 @@ void FlightComputer::standby()
 	TRACE("Enter standby mode\r\n");
 	// flush cm4 message during 1s
 	uint32_t tick = millis();
-	while (millis() - tick < 1000)
+	while (millis() - tick < 500)
 		procInterProcess();
 
 	// show standby-screen
-	epdDisp.clearScreen();
-	epdDisp.setFont(&FreeSans24pt7b);
-	epdDisp.setCursor(100, 100);
-	epdDisp.setTextColor(COLOR_BLACK);
-	epdDisp.print("Press Enter To Wakeup!");
+	drawStandby();
 	updateScreen(false);
 	HAL_Delay(200);
 
@@ -264,6 +263,7 @@ void FlightComputer::procKeyboard()
 	{
 		if ((event & EVENT_MASK_KEY) == KeyPad::ENTER)
 		{
+#if 0 // bitmap drawing examples
 			uint32_t lastTick = millis();
 
 			if (imageType == 0)
@@ -294,48 +294,25 @@ void FlightComputer::procKeyboard()
 
 			updateScreen();
 			TRACE("draw bitmap!: %u ms\r\n", millis() - lastTick);
+#endif
 		}
 		else if ((event & EVENT_MASK_KEY) == KeyPad::ESCAPE)
 		{
-			uint32_t lastTick = millis();
-			epdDisp.clearScreen();
+			// refresh screen
 			updateScreen(false);
-			TRACE("clear screen!: %u ms\r\n", millis() - lastTick);
 		}
 		else if ((event & EVENT_MASK_KEY) == KeyPad::MENU)
 		{
-			uint32_t lastTick = millis();
 
-			epdDisp.setFont(&FreeSans24pt7b);
-			epdDisp.setCursor(100, 100);
-			epdDisp.setTextColor(COLOR_BLACK);
-			epdDisp.print("Hello everyone!");
-			updateScreen();
-
-			TRACE("fast update!: %u ms\r\n", millis() - lastTick);
 		}
 		else if ((event & EVENT_MASK_KEY) == KeyPad::UP)
 		{
-			uint32_t lastTick = millis();
-
-			epdDisp.fillScreen(COLOR_WHITE);
-			updateScreen();
-
-			TRACE("fast fill white!: %u ms\r\n", millis() - lastTick);
 		}
 		else if ((event & EVENT_MASK_KEY) == KeyPad::DOWN)
 		{
-			uint32_t lastTick = millis();
-
-			epdDisp.fillScreen(COLOR_BLACK);
-			updateScreen();
-
-			TRACE("fast fill black!: %u ms\r\n", millis() - lastTick);
 		}
 		else if ((event & EVENT_MASK_KEY) == KeyPad::FUNC1)
 		{
-			//HAL_HSEM_FastTake(HSEM_ID_0);
-			//HAL_HSEM_Release(HSEM_ID_0, 0);
 		}
 		else if ((event & EVENT_MASK_KEY) == KeyPad::FUNC2)
 		{
@@ -343,6 +320,7 @@ void FlightComputer::procKeyboard()
 			HAL_HSEM_FastTake(HSEM_GOTO_STANDBY);
 			HAL_HSEM_Release(HSEM_GOTO_STANDBY, 0);
 
+			// now turn-on standby flag
 			enterStandby = 1;
 		}
 	}
@@ -363,7 +341,64 @@ void FlightComputer::procLVGL()
 
 void FlightComputer::updateScreen(bool fast)
 {
-	displayUpdateCount = fast ? (displayUpdateCount + 1) % 10 : 0;
+	displayUpdateCount = fast ? (displayUpdateCount + 1) % 50 : 0;
+	displayUpdateTick = millis();
 
 	epdDisp.refresh(displayUpdateCount == 0 ? false : true);
+	TRACE("[D] screen updated (%d)\r\n", displayUpdateCount);
+}
+
+void FlightComputer::drawStandby()
+{
+	epdDisp.clearScreen();
+	epdDisp.setFont(&FreeSans24pt7b);
+	epdDisp.setTextColor(COLOR_BLACK);
+
+	int x = 16;
+	int y = FreeSans24pt7b.yAdvance;
+	epdDisp.setCursor(x, y);
+	epdDisp.print("Press ENTER to wake-up!");
+}
+
+void FlightComputer::drawVarioState()
+{
+	epdDisp.clearScreen();
+	epdDisp.setFont(&FreeSans24pt7b);
+	epdDisp.setTextColor(COLOR_BLACK);
+
+	int x = 16;
+	int y = FreeSans24pt7b.yAdvance;
+	epdDisp.setCursor(x, y);
+	epdDisp.print("Flight computer Sensor TEST");
+
+	epdDisp.setFont(&FreeSans18pt7b);
+
+	y += FreeSans24pt7b.yAdvance + 8;
+	epdDisp.setCursor(x, y);
+	epdDisp.printf("Altitude(Baro): %.1f m", varioState->altitudeBaro);
+	y += FreeSans18pt7b.yAdvance;
+	epdDisp.setCursor(x, y);
+	epdDisp.printf("Altitude(GPS): %.1f m", varioState->altitudeGPS);
+	y += FreeSans18pt7b.yAdvance;
+	epdDisp.setCursor(x, y);
+	epdDisp.printf("Latitude: %.3f", varioState->latitude);
+	y += FreeSans18pt7b.yAdvance;
+	epdDisp.setCursor(x, y);
+	epdDisp.printf("Longitude: %.3f", varioState->longitude);
+	y += FreeSans18pt7b.yAdvance;
+	epdDisp.setCursor(x, y);
+	epdDisp.printf("Vertical speed: %.2f cm/s", varioState->speedVertActive * 10);
+	y += FreeSans18pt7b.yAdvance;
+	epdDisp.setCursor(x, y);
+	epdDisp.printf("Ground speed: %.3f km/h", varioState->speedGround);
+
+	y += FreeSans18pt7b.yAdvance + 8;
+	epdDisp.setCursor(x, y);
+	epdDisp.printf("Battery power: %.3f V", varioState->batteryVoltage);
+	y += FreeSans18pt7b.yAdvance;
+	epdDisp.setCursor(x, y);
+	epdDisp.printf("Pressure: %.2f hPa", varioState->pressure);
+	y += FreeSans18pt7b.yAdvance;
+	epdDisp.setCursor(x, y);
+	epdDisp.printf("Temperature: %.1f C", varioState->temperature);
 }

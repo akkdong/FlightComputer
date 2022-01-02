@@ -53,6 +53,11 @@ float Variometer::getVerticalSpeed()
 	return imu.getVelocity();
 }
 
+float Variometer::getAltitude()
+{
+	return imu.getAltitude();
+}
+
 float Variometer::getPressure()
 {
 	return imu.getPressure();

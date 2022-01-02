@@ -28,6 +28,7 @@ public:
 	void		end();
 
 	float		getVerticalSpeed();
+	float		getAltitude();
 	float		getPressure();
 	float		getTemperature();
 

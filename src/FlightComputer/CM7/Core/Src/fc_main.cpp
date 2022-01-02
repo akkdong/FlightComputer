@@ -165,6 +165,9 @@ extern "C" void init(void)
 #endif
 
     // wait update-event
+	HAL_NVIC_SetPriority(HSEM1_IRQn, 1, 0);
+	HAL_NVIC_EnableIRQ(HSEM1_IRQn);
+	notify_cm4 = 0;
     HAL_HSEM_ActivateNotification(HSEM_VAIO_UPDATE_MASK);
     HAL_HSEM_ActivateNotification(HSEM_GPS_UPDATE_MASK);
 }
@@ -183,14 +186,14 @@ extern "C" void loop()
 	{
 		notify_cm4 &= ~HSEM_VAIO_UPDATE_MASK;
 
-		fc.updateVario();
+		fc.OnUpdateVario();
 		HAL_HSEM_ActivateNotification(HSEM_VAIO_UPDATE_MASK);
 	}
 	else if (notify_cm4 & HSEM_GPS_UPDATE_MASK)
 	{
 		notify_cm4 &= ~HSEM_GPS_UPDATE_MASK;
 
-		fc.updateGPS();
+		fc.OnUpdateGPS();
 		HAL_HSEM_ActivateNotification(HSEM_GPS_UPDATE_MASK);
 	}
 }
