@@ -179,7 +179,7 @@ void FlightComputer::OnUpdateVario()
 	TRACE("OnUpdateVario\r\n");
 
 	drawVarioState();
-	updateScreen();
+	//updateScreen();
 }
 
 void FlightComputer::OnUpdateGPS()
@@ -187,7 +187,7 @@ void FlightComputer::OnUpdateGPS()
 	TRACE("OnUpdateGPS\r\n");
 
 	drawVarioState();
-	updateScreen();
+	//updateScreen();
 }
 
 void FlightComputer::standby()
@@ -246,13 +246,19 @@ void FlightComputer::procInterProcess()
 		if (line_len == sizeof(line_buf) || data == '\n')
 		{
 			Serial.write((const char *)line_buf, line_len);
+			if (line_buf[0] == '$')
+			{
+				for (int i = 0; i < line_len; i++)
+				{
+					disp_buf[disp_front] = line_buf[i];
+					disp_front = (disp_front + 1) & 0x7FF;
+					if (disp_rear == disp_front)
+						disp_rear = (disp_rear + 1) & 0x7FF;
+				}
+			}
+
 			line_len = 0;
 		}
-
-		disp_buf[disp_front] = data;
-		disp_front = (disp_front + 1) & 0x7FF;
-		if (disp_rear == disp_front)
-			disp_rear = (disp_rear + 1) & 0x7FF;
 	}
 #else
 	//
