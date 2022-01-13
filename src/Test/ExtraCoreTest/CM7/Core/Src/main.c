@@ -67,6 +67,8 @@
 
 /* Private variables ---------------------------------------------------------*/
 
+DMA2D_HandleTypeDef hdma2d;
+
 I2C_HandleTypeDef hi2c1;
 
 UART_HandleTypeDef hlpuart1;
@@ -102,6 +104,7 @@ static void MX_LTDC_Init(void);
 static void MX_TIM3_Init(void);
 static void MX_TIM4_Init(void);
 static void MX_RTC_Init(void);
+static void MX_DMA2D_Init(void);
 /* USER CODE BEGIN PFP */
 static void MPU_Config(void);
 /* USER CODE END PFP */
@@ -150,7 +153,7 @@ int main(void)
   while((__HAL_RCC_GET_FLAG(RCC_FLAG_D2CKRDY) != RESET) && (timeout-- > 0));
   if ( timeout < 0 )
   {
-  Error_Handler();
+	  Error_Handler();
   }
 /* USER CODE END Boot_Mode_Sequence_1 */
   /* MCU Configuration--------------------------------------------------------*/
@@ -165,25 +168,25 @@ int main(void)
   /* Configure the system clock */
   SystemClock_Config();
 
-/* Configure the peripherals common clocks */
-  PeriphCommonClock_Config();
-/* USER CODE BEGIN Boot_Mode_Sequence_2 */
-/* When system initialization is finished, Cortex-M7 will release Cortex-M4 by means of
-HSEM notification */
-/*HW semaphore Clock enable*/
-__HAL_RCC_HSEM_CLK_ENABLE();
-/*Take HSEM */
-HAL_HSEM_FastTake(HSEM_ID_0);
-/*Release HSEM in order to notify the CPU2(CM4)*/
-HAL_HSEM_Release(HSEM_ID_0,0);
-/* wait until CPU2 wakes up from stop mode */
-timeout = 0xFFFF;
-while((__HAL_RCC_GET_FLAG(RCC_FLAG_D2CKRDY) == RESET) && (timeout-- > 0));
-if ( timeout < 0 )
-{
-Error_Handler();
-}
-/* USER CODE END Boot_Mode_Sequence_2 */
+	/* Configure the peripherals common clocks */
+	  PeriphCommonClock_Config();
+	/* USER CODE BEGIN Boot_Mode_Sequence_2 */
+	/* When system initialization is finished, Cortex-M7 will release Cortex-M4 by means of
+	HSEM notification */
+	/*HW semaphore Clock enable*/
+	__HAL_RCC_HSEM_CLK_ENABLE();
+	/*Take HSEM */
+	HAL_HSEM_FastTake(HSEM_ID_0);
+	/*Release HSEM in order to notify the CPU2(CM4)*/
+	HAL_HSEM_Release(HSEM_ID_0,0);
+	/* wait until CPU2 wakes up from stop mode */
+	timeout = 0xFFFF;
+	while((__HAL_RCC_GET_FLAG(RCC_FLAG_D2CKRDY) == RESET) && (timeout-- > 0));
+	if ( timeout < 0 )
+	{
+		Error_Handler();
+	}
+	/* USER CODE END Boot_Mode_Sequence_2 */
 
   /* USER CODE BEGIN SysInit */
 
@@ -203,13 +206,16 @@ Error_Handler();
   MX_QUADSPI_Init();
   MX_LPUART1_UART_Init();
   MX_I2C1_Init();
+  MX_LTDC_Init();
   MX_TIM3_Init();
   MX_TIM4_Init();
   MX_RTC_Init();
+  MX_DMA2D_Init();
   /* USER CODE BEGIN 2 */
+
   serial_init(&hlpuart1);
 
-
+#if 0
   /* The Following Wakeup sequence is highly recommended prior to each Standby mode entry
     mainly  when using more than one wakeup source this is to not miss any wakeup event.
     - Disable all used wakeup sources,
@@ -234,6 +240,7 @@ Error_Handler();
   {
     Error_Handler();
   }
+#endif
 
   /* USER CODE END 2 */
 
@@ -272,6 +279,26 @@ Error_Handler();
 
   uint32_t blinkTick = HAL_GetTick();
   int blinkType = 0;
+
+  HAL_GPIO_WritePin(LCD_BL_GPIO_Port, LCD_BL_Pin, GPIO_PIN_SET);
+
+  //
+  volatile unsigned char* lcd = (volatile unsigned char *)(0xD0000000);
+  for (int i = 0; i < 800 * 480 / 3; i++ )
+  {
+	  *lcd++ = 0xF8;
+	  *lcd++ = 0x00;
+  }
+  for (int i = 0; i < 800 * 480 / 3; i++ )
+  {
+	  *lcd++ = 0x07;
+	  *lcd++ = 0xE0;
+  }
+  for (int i = 0; i < 800 * 480 / 3; i++ )
+  {
+	  *lcd++ = 0x00;
+	  *lcd++ = 0x1F;
+  }
 
 
   while (1)
@@ -362,26 +389,6 @@ void SystemClock_Config(void)
   {
     Error_Handler();
   }
-
-#if 0
-  /*
-  Note : The activation of the I/O Compensation Cell is recommended with communication  interfaces
-  (GPIO, SPI, FMC, QSPI ...)  when  operating at  high frequencies(please refer to product datasheet)
-  The I/O Compensation Cell activation  procedure requires :
-  - The activation of the CSI clock
-  - The activation of the SYSCFG clock
-  - Enabling the I/O Compensation Cell : setting bit[0] of register SYSCFG_CCCSR
-  */
-
-  /*activate CSI clock mondatory for I/O Compensation Cell*/
-  __HAL_RCC_CSI_ENABLE() ;
-
-  /* Enable SYSCFG clock mondatory for I/O Compensation Cell */
-  __HAL_RCC_SYSCFG_CLK_ENABLE() ;
-
-  /* Enables the I/O Compensation Cell */
-  HAL_EnableCompensationCell();
-#endif
 }
 
 /**
@@ -409,6 +416,46 @@ void PeriphCommonClock_Config(void)
   {
     Error_Handler();
   }
+}
+
+/**
+  * @brief DMA2D Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_DMA2D_Init(void)
+{
+
+  /* USER CODE BEGIN DMA2D_Init 0 */
+
+  /* USER CODE END DMA2D_Init 0 */
+
+  /* USER CODE BEGIN DMA2D_Init 1 */
+
+  /* USER CODE END DMA2D_Init 1 */
+  hdma2d.Instance = DMA2D;
+  hdma2d.Init.Mode = DMA2D_M2M;
+  hdma2d.Init.ColorMode = DMA2D_OUTPUT_ARGB8888;
+  hdma2d.Init.OutputOffset = 0;
+  hdma2d.LayerCfg[1].InputOffset = 0;
+  hdma2d.LayerCfg[1].InputColorMode = DMA2D_INPUT_ARGB8888;
+  hdma2d.LayerCfg[1].AlphaMode = DMA2D_NO_MODIF_ALPHA;
+  hdma2d.LayerCfg[1].InputAlpha = 0;
+  hdma2d.LayerCfg[1].AlphaInverted = DMA2D_REGULAR_ALPHA;
+  hdma2d.LayerCfg[1].RedBlueSwap = DMA2D_RB_REGULAR;
+  hdma2d.LayerCfg[1].ChromaSubSampling = DMA2D_NO_CSS;
+  if (HAL_DMA2D_Init(&hdma2d) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  if (HAL_DMA2D_ConfigLayer(&hdma2d, 1) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN DMA2D_Init 2 */
+
+  /* USER CODE END DMA2D_Init 2 */
+
 }
 
 /**
@@ -525,16 +572,16 @@ static void MX_LTDC_Init(void)
   hltdc.Instance = LTDC;
   hltdc.Init.HSPolarity = LTDC_HSPOLARITY_AL;
   hltdc.Init.VSPolarity = LTDC_VSPOLARITY_AL;
-  hltdc.Init.DEPolarity = LTDC_DEPOLARITY_AL;
+  hltdc.Init.DEPolarity = LTDC_VSPOLARITY_AL;
   hltdc.Init.PCPolarity = LTDC_PCPOLARITY_IPC;
-  hltdc.Init.HorizontalSync = 7;
-  hltdc.Init.VerticalSync = 3;
-  hltdc.Init.AccumulatedHBP = 14;
-  hltdc.Init.AccumulatedVBP = 5;
-  hltdc.Init.AccumulatedActiveW = 814;
-  hltdc.Init.AccumulatedActiveH = 485;
-  hltdc.Init.TotalWidth = 820;
-  hltdc.Init.TotalHeigh = 487;
+  hltdc.Init.HorizontalSync = 88;
+  hltdc.Init.VerticalSync = 32;
+  hltdc.Init.AccumulatedHBP = 135;
+  hltdc.Init.AccumulatedVBP = 34;
+  hltdc.Init.AccumulatedActiveW = 935;
+  hltdc.Init.AccumulatedActiveH = 514;
+  hltdc.Init.TotalWidth = 975;
+  hltdc.Init.TotalHeigh = 527;
   hltdc.Init.Backcolor.Blue = 0;
   hltdc.Init.Backcolor.Green = 0;
   hltdc.Init.Backcolor.Red = 0;
@@ -543,20 +590,20 @@ static void MX_LTDC_Init(void)
     Error_Handler();
   }
   pLayerCfg.WindowX0 = 0;
-  pLayerCfg.WindowX1 = 799;
+  pLayerCfg.WindowX1 = 800;
   pLayerCfg.WindowY0 = 0;
-  pLayerCfg.WindowY1 = 479;
-  pLayerCfg.PixelFormat = LTDC_PIXEL_FORMAT_RGB888;
-  pLayerCfg.Alpha = 0;
+  pLayerCfg.WindowY1 = 480;
+  pLayerCfg.PixelFormat = LTDC_PIXEL_FORMAT_RGB565;
+  pLayerCfg.Alpha = 255;
   pLayerCfg.Alpha0 = 0;
-  pLayerCfg.BlendingFactor1 = LTDC_BLENDING_FACTOR1_CA;
-  pLayerCfg.BlendingFactor2 = LTDC_BLENDING_FACTOR2_CA;
+  pLayerCfg.BlendingFactor1 = LTDC_BLENDING_FACTOR1_PAxCA;
+  pLayerCfg.BlendingFactor2 = LTDC_BLENDING_FACTOR2_PAxCA;
   pLayerCfg.FBStartAdress = 0xD0000000;
   pLayerCfg.ImageWidth = 800;
   pLayerCfg.ImageHeight = 480;
-  pLayerCfg.Backcolor.Blue = 255;
-  pLayerCfg.Backcolor.Green = 255;
-  pLayerCfg.Backcolor.Red = 255;
+  pLayerCfg.Backcolor.Blue = 0;
+  pLayerCfg.Backcolor.Green = 0;
+  pLayerCfg.Backcolor.Red = 0;
   if (HAL_LTDC_ConfigLayer(&hltdc, &pLayerCfg, 0) != HAL_OK)
   {
     Error_Handler();
@@ -657,7 +704,7 @@ static void MX_TIM3_Init(void)
 
   /* USER CODE END TIM3_Init 1 */
   htim3.Instance = TIM3;
-  htim3.Init.Prescaler = 1;
+  htim3.Init.Prescaler = 2;
   htim3.Init.CounterMode = TIM_COUNTERMODE_UP;
   htim3.Init.Period = 1023;
   htim3.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
@@ -720,9 +767,9 @@ static void MX_TIM4_Init(void)
 
   /* USER CODE END TIM4_Init 1 */
   htim4.Instance = TIM4;
-  htim4.Init.Prescaler = 1;
+  htim4.Init.Prescaler = 2;
   htim4.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim4.Init.Period = beep_GetTimerTick(500);
+  htim4.Init.Period = 99;
   htim4.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
   htim4.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_ENABLE;
   if (HAL_TIM_Base_Init(&htim4) != HAL_OK)
@@ -809,7 +856,7 @@ void MX_FMC_Init(void)
   hnor1.Init.WaitSignalPolarity = FMC_WAIT_SIGNAL_POLARITY_LOW;
   hnor1.Init.WaitSignalActive = FMC_WAIT_TIMING_BEFORE_WS;
   hnor1.Init.WriteOperation = FMC_WRITE_OPERATION_ENABLE;
-  hnor1.Init.WaitSignal = FMC_WAIT_SIGNAL_ENABLE; // FMC_WAIT_SIGNAL_DISABLE;
+  hnor1.Init.WaitSignal = FMC_WAIT_SIGNAL_DISABLE;
   hnor1.Init.ExtendedMode = FMC_EXTENDED_MODE_DISABLE;
   hnor1.Init.AsynchronousWait = FMC_ASYNCHRONOUS_WAIT_ENABLE;
   hnor1.Init.WriteBurst = FMC_WRITE_BURST_DISABLE;
@@ -818,12 +865,12 @@ void MX_FMC_Init(void)
   hnor1.Init.PageSize = FMC_PAGE_SIZE_NONE;
   /* Timing */
   Timing.AddressSetupTime = 9;
-  Timing.AddressHoldTime = 1; // 15;
+  Timing.AddressHoldTime = 15;
   Timing.DataSetupTime = 5;
   Timing.BusTurnAroundDuration = 4;
-  Timing.CLKDivision = 4; //16;
-  Timing.DataLatency = 2; //17;
-  Timing.AccessMode = FMC_ACCESS_MODE_B; // FMC_ACCESS_MODE_A;
+  Timing.CLKDivision = 16;
+  Timing.DataLatency = 17;
+  Timing.AccessMode = FMC_ACCESS_MODE_A;
   /* ExtTiming */
 
   if (HAL_NOR_Init(&hnor1, &Timing, NULL) != HAL_OK)
@@ -860,7 +907,22 @@ void MX_FMC_Init(void)
   }
 
   /* USER CODE BEGIN FMC_Init 2 */
-
+  SDRAM_Do_InitializeSequence();
+  {
+	  volatile uint32_t* dst = (volatile uint32_t *)0xD0000000;
+	  for (int i = 0; i < 100; i++)
+	  {
+		  dst[i] = 0x12345678 + i;
+	  }
+	  for (int i = 0; i < 100; i++)
+	  {
+		  if (dst[i] != 0x12345678 + i)
+		  {
+			  Error_Handler();
+			  while(1);
+		  }
+	  }
+  }
   /* USER CODE END FMC_Init 2 */
 }
 
@@ -967,10 +1029,10 @@ void Error_Handler(void)
 {
   /* USER CODE BEGIN Error_Handler_Debug */
   /* User can add his own implementation to report the HAL error return state */
-  __disable_irq();
-  while (1)
-  {
-  }
+  //__disable_irq();
+  //while (1)
+  //{
+  //}
   /* USER CODE END Error_Handler_Debug */
 }
 
