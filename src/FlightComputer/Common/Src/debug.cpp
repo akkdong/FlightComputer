@@ -11,10 +11,16 @@
 #include <stdio.h>
 #include <stdarg.h>
 
-#ifdef DEBUG
+#if defined(DEBUG) && ENABLE_TRACE
 
 static HardwareSerial& debug = Serial;
 static char output_buf[1024];
+
+
+void TraceInit()
+{
+	Serial.begin(115200);
+}
 
 int Trace(const char* format, ...)
 {

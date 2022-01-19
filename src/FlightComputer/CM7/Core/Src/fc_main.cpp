@@ -95,7 +95,7 @@ extern "C" void init(void)
 	digitalWrite(PWR_EN_PERIPH, HIGH);
 	delay(100);
 
-	Serial.begin(115200);
+	TRACE_INIT();
 	TRACE("Start Flight computer!\r\n");
 
 	// initialize Flash

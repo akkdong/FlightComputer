@@ -31,6 +31,8 @@ public:
 	int			powerOn();	// standby --> active
 	int			powerOff();	// active --> standby
 
+	State		getState() { return mState; }
+
 protected:
 	uint8_t		getPowerGood();
 

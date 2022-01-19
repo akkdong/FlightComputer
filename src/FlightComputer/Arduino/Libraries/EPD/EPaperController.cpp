@@ -7,6 +7,8 @@
 
 #include "Arduino.h"
 #include "EPaperController.h"
+#include "debug.h"
+
 
 #define EPD_SET_BUSY()			do { GPIOC->BSRR = (0b1000000000000000); } while (0)
 #define EPD_RESET_BUSY()		do { GPIOC->BSRR = (0b1000000000000000 << 16); } while (0)
@@ -91,7 +93,7 @@ void EPaperController::run()
 			mState = SENDING;
 			mSPIDriver.transmit_IT((uint8_t *)"\x80\x70\x71\x72\x73", 5);
 			EPD_RESET_BUSY();
-			Serial1.println("start sending...");
+			TRACE("start sending...\r\n");
 			break;
 		case SET_WINDOW : 			// 0x22
 			mRecvPtr = &mTemp[0];
@@ -100,7 +102,7 @@ void EPaperController::run()
 			mTimestamp = millis();
 			mState = RECEIVING;
 			EPD_RESET_BUSY();
-			Serial1.println("start receiving...");
+			TRACE("start receiving...\r\n");
 			break;
 		case START_DATA_TRANSMIT : 	// 0x23
 			//mRecvPtr = (volatile uint8_t *)mDisp.getOffline()->getPtr();
@@ -133,7 +135,7 @@ void EPaperController::run()
 			{
 				mState = WAIT_COMMAND;
 				EPD_RESET_BUSY();
-				Serial1.println("receiving timeout!");
+				TRACE("receiving timeout!\r\n");
 			}
 		}
 		else // receive complete
@@ -144,7 +146,7 @@ void EPaperController::run()
 			case SET_WINDOW:
 				// update window-info
 				for (uint32_t i = 0; i < mRecvLen; i++)
-					Serial1.printf("RX[%02x]\r\n", mTemp[i]);
+					TRACE("RX[%02x]\r\n", mTemp[i]);
 				break;
 			case START_DATA_TRANSMIT:
 				//mDisp.swap(); // swap on/offline buffer & refresh
@@ -166,7 +168,7 @@ void EPaperController::run()
 			mState = WAIT_COMMAND;
 			mSPIDriver.stopTransmit();
 			EPD_RESET_BUSY();
-			Serial1.println("sending timeout!");
+			TRACE("sending timeout!\r\n");
 		}
 	}
 }
@@ -217,7 +219,7 @@ void EPaperController::OnSendComplete()
 	{
 		mState = WAIT_COMMAND;
 		EPD_RESET_BUSY();
-		Serial1.println("sending complete!");
+		TRACE("sending complete!\r\n");
 	}
 }
 
@@ -461,7 +463,7 @@ void EPaperController::SPIDriver::TxHandler()
 	{
 		uint8_t data = *((uint8_t *)this->pTxBuffPtr++);
 		*((__IO uint8_t *)&this->Instance->TXDR) = data;
-		Serial1.printf("<%d>: %02X\r\n", this->TxXferCount, data);
+		TRACE("<%d>: %02X\r\n", this->TxXferCount, data);
 		this->TxXferCount--;
 
 		if (this->TxXferCount == 0)
@@ -475,6 +477,6 @@ void EPaperController::SPIDriver::TxHandler()
 		// send dummy-data
 		uint8_t data = 0x00;
 		*((__IO uint8_t *)&this->Instance->TXDR) = data;
-		Serial1.printf("[%02X]\r\n", data);
+		TRACE("[%02X]\r\n", data);
 	}
 }

@@ -224,11 +224,11 @@ void FlightComputer::standby()
 void FlightComputer::procDebugShell()
 {
 	// process shell command
-	while (Serial.available())
-	{
-		int ch = Serial.read();
-		lwshell_input(&ch, 1);
-	}
+	//while (Serial.available())
+	//{
+	//	int ch = Serial.read();
+	//	lwshell_input(&ch, 1);
+	//}
 }
 
 void FlightComputer::procInterProcess()
@@ -245,7 +245,7 @@ void FlightComputer::procInterProcess()
 		line_buf[line_len++] = data;
 		if (line_len == sizeof(line_buf) || data == '\n')
 		{
-			Serial.write((const char *)line_buf, line_len);
+			//Serial.write((const char *)line_buf, line_len);
 			if (line_buf[0] == '$')
 			{
 				for (int i = 0; i < line_len; i++)

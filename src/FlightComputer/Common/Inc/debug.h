@@ -13,16 +13,20 @@ extern "C"
 {
 #endif
 
+#define ENABLE_TRACE		0
 
 
-#if defined(DEBUG) && 1
+#if defined(DEBUG) && ENABLE_TRACE
 
-int Trace(const char* fmt, ...);
+void 	TraceInit();
+int 	Trace(const char* fmt, ...);
 
+#define TRACE_INIT()		TraceInit();
 #define TRACE(...)			Trace(__VA_ARGS__)
 
 #else
 
+#define TRACE_INIT()
 #define TRACE(...)
 
 #endif

@@ -7,7 +7,7 @@
 
 #include "Arduino.h"
 #include "EPaperDisplay.h"
-
+#include "debug.h"
 
 #if USE_MODEL_A
 
@@ -221,9 +221,7 @@ int EPaperDisplay::begin(void)
 
     if (mEPaperPMIC.wakeup() < 0)
     {
-#ifdef DEBUG
-    	Serial.println("PMIC wakeup failed!");
-#endif
+    	TRACE("PMIC wakeup failed!\r\n");
     	return -1;
     }
 
@@ -267,7 +265,9 @@ void EPaperDisplay::end()
 int EPaperDisplay::powerOn(void)
 {
 	//
-	if (mEPaperPMIC.wakeup() < 0 || mEPaperPMIC.powerOn() < 0)
+	if (mEPaperPMIC.getState() == EPaperPMIC::SLEEP && mEPaperPMIC.wakeup() < 0)
+		return -1;
+	if (mEPaperPMIC.getState() == EPaperPMIC::STANDBY && mEPaperPMIC.powerOn() < 0)
 		return -1;
 
 	//
@@ -867,15 +867,19 @@ void EPaperDisplay::drawPartial(const uint8_t* img_bytes, const uint8_t* old_byt
 
 void EPaperDisplay::refresh(bool fast)
 {
+	if (mEPaperPMIC.getState() != EPaperPMIC::ACTIVE)
+		fast = false;
+
 	if (powerOn() < 0)
 			return;
 
+	TRACE("refresh(%d)\r\n", fast);
 	if (fast)
 		fastUpdate();
 	else
 		display();
 
-	powerOff();
+	//powerOff();
 }
 
 

@@ -14,6 +14,7 @@
 #include "Variometer/KalmanFilter.h"
 #include "Variometer/Variometer.h"
 
+#define USE_INBOARD_GPS		(0)
 
 
 //
@@ -30,7 +31,11 @@ volatile vario_t* varioState = (vario_t *)BUFF_VARIO_STATE_ADDR;
 SPIClass spi(SPI4_MOSI, SPI4_MISO, SPI4_SCLK);
 //MPU9250 mpu(spi, SPI4_CS1);
 BMP280	bmp(spi, SPI4_CS2);
+#if USE_INBOARD_GPS
 NMEAParser nmea(Serial2);
+#else
+NMEAParser nmea(Serial);
+#endif
 KalmanFilter kalman(bmp/*, mpu*/);
 
 Variometer vario(kalman, nmea);
@@ -92,7 +97,11 @@ void setup(void)
 	analogReadResolution(12);
 
 	//
+#if USE_INBOARD_GPS
 	Serial2.begin(9600); // GPS
+#else
+	Serial.begin(9600); // GPS
+#endif
 	spi.begin(); // for sensor(bmp280 & mpu9250)
 	spi.setClockDivider(SPI_CLOCK_DIV128);
 
@@ -127,7 +136,11 @@ void loop(void)
 
 			vario.end();
 			spi.end();
+#if USE_INBOARD_GPS
 			Serial2.end();
+#else
+			Serial.end();
+#endif
 
 			HAL_SuspendTick();
 			HAL_PWREx_ClearPendingEvent();
